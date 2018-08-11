@@ -20,6 +20,7 @@ android {
 }
 
 dependencies {
+    compile 'com.google.code.gson:gson:2.8.5'
     compile 'com.github.wendux:DSBridge-Android:master-SNAPSHOT'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {

@@ -22,11 +22,19 @@ public class WhiteSdk {
         });
     }
 
-    public void joinRoom(RoomParams roomParams) {
+    /**
+     * 等待链接成功后才会返回 Room 对象
+     *
+     * @param roomParams
+     */
+    public Room joinRoom(RoomParams roomParams) {
         bridge.callHandler("sdk.joinRoom", new Object[]{
                 roomParams.getUuid(),
                 roomParams.getRoomToken()
         });
+
+        // FIXME
+        return new Room(bridge, context);
     }
 
 
