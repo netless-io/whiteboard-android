@@ -1,6 +1,20 @@
 package com.herewhite.sdk;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.util.Log;
+
+import com.herewhite.sdk.domain.Promise;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import wendu.dsbridge.OnReturnValue;
 
 /**
  * Created by buhe on 2018/8/10.
@@ -27,14 +41,22 @@ public class WhiteSdk {
      *
      * @param roomParams
      */
-    public Room joinRoom(RoomParams roomParams) {
-        bridge.callHandler("sdk.joinRoom", new Object[]{
-                roomParams.getUuid(),
-                roomParams.getRoomToken()
-        });
+    public void joinRoom(RoomParams roomParams, final Promise<Room> roomPromise) {
+        try {
+            bridge.callHandler("sdk.joinRoom", new Object[]{
+                    roomParams.getUuid(),
+                    roomParams.getRoomToken()
+            }, new OnReturnValue<String>() {
+                @Override
+                public void onValue(String retValue) {
+                    Log.d("jsbridge", "call succeed,return value is " + retValue);
+                    roomPromise.then(new Room(bridge, context));
+                }
+            });
+        } catch (Exception e) {
+            roomPromise.catchEx(e);
+        }
 
-        // FIXME
-        return new Room(bridge, context);
     }
 
 

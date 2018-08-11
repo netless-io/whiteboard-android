@@ -6,6 +6,8 @@ import android.widget.Toast;
 import android.support.v7.app.AppCompatActivity;
 
 import com.herewhite.sdk.domain.DeviceType;
+import com.herewhite.sdk.domain.GlobalState;
+import com.herewhite.sdk.domain.Promise;
 
 import wendu.dsbridge.DWebView;
 import wendu.dsbridge.OnReturnValue;
@@ -40,7 +42,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // /?uuid=test&roomToken=123&viewWidth=0&viewHeight=0  调用 native 的 createRoom 后得到
 
         WhiteSdk whiteSdk = new WhiteSdk(whiteBroadView, this, new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1));
-        whiteSdk.joinRoom(new RoomParams("test", "123"));
+        whiteSdk.joinRoom(new RoomParams("test", "123"), new Promise<Room>() {
+            @Override
+            public void then(Room room) {
+//                GlobalState globalState = new GlobalState();
+//                globalState.setCurrentSceneIndex(2);
+//                room.setGlobalState(globalState);
+
+                room.setViewSize(100, 100);
+
+            }
+
+            @Override
+            public void catchEx(Throwable t) {
+
+            }
+        });
 
     }
 
