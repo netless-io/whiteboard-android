@@ -5,6 +5,8 @@ import android.view.View;
 import android.widget.Toast;
 import android.support.v7.app.AppCompatActivity;
 
+import com.herewhite.sdk.domain.DeviceType;
+
 import wendu.dsbridge.DWebView;
 import wendu.dsbridge.OnReturnValue;
 
