@@ -1,18 +1,16 @@
 package com.herewhite.sdk;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.Log;
+import android.webkit.JavascriptInterface;
 
 import com.herewhite.sdk.domain.Promise;
+import com.herewhite.sdk.domain.RoomPhase;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import wendu.dsbridge.OnReturnValue;
 
@@ -25,10 +23,12 @@ public class WhiteSdk {
 
     private final WhiteBroadView bridge;
     private final Context context;
+    private final List<RoomCallbacks> listeners = new ArrayList<>();
 
     public WhiteSdk(WhiteBroadView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration) {
         this.bridge = bridge;
         this.context = context;
+        bridge.addJavascriptObject(this, "sdk");
         bridge.callHandler("sdk.newWhiteSdk", new Object[]{
                 whiteSdkConfiguration.getDeviceType().name(),
                 whiteSdkConfiguration.getZoomMaxScale(),
@@ -57,6 +57,28 @@ public class WhiteSdk {
             roomPromise.catchEx(e);
         }
 
+    }
+
+    public void addRoomCallbacks(RoomCallbacks callback) {
+        listeners.add(callback);
+    }
+
+    @JavascriptInterface
+    public Object firePhaseChanged(Object args) throws JSONException {
+//         获取事件,反序列化然后发送通知给监听者
+        for (RoomCallbacks roomCallbacks : listeners) {
+            roomCallbacks.onPhaseChanged(RoomPhase.valueOf(args.toString()));
+        }
+        return 0;
+    }
+
+    @JavascriptInterface
+    public Object fireKickedWithReason(Object args) throws JSONException {
+        // 获取事件,反序列化然后发送通知给监听者
+        for (RoomCallbacks roomCallbacks : listeners) {
+            roomCallbacks.onKickedWithReason(args.toString());
+        }
+        return 0;
     }
 
 
