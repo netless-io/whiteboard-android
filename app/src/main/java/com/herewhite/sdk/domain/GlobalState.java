@@ -5,4 +5,13 @@ package com.herewhite.sdk.domain;
  */
 
 public class GlobalState {
+    private int currentSceneIndex;
+
+    public int getCurrentSceneIndex() {
+        return currentSceneIndex;
+    }
+
+    public void setCurrentSceneIndex(int currentSceneIndex) {
+        this.currentSceneIndex = currentSceneIndex;
+    }
 }
