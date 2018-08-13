@@ -33,11 +33,7 @@ public class WhiteSdk {
         this.bridge = bridge;
         this.context = context;
         bridge.addJavascriptObject(this, "sdk");
-        bridge.callHandler("sdk.newWhiteSdk", new Object[]{
-                whiteSdkConfiguration.getDeviceType().name(),
-                whiteSdkConfiguration.getZoomMaxScale(),
-                whiteSdkConfiguration.getZoomMinScale()
-        });
+        bridge.callHandler("sdk.newWhiteSdk", new Object[]{gson.toJson(whiteSdkConfiguration)});
     }
 
     /**
