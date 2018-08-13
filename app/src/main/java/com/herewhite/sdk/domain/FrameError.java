@@ -9,7 +9,7 @@ public class FrameError {
     private long userId;
     private String error;
 
-    public FrameError(long userId, Exception error) {
+    public FrameError(long userId, String error) {
         this.userId = userId;
         this.error = error;
     }

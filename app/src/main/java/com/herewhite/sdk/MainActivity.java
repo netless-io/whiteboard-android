@@ -5,10 +5,12 @@ import android.view.View;
 import android.widget.Toast;
 import android.support.v7.app.AppCompatActivity;
 
+import com.google.gson.Gson;
 import com.herewhite.sdk.domain.DeviceType;
 import com.herewhite.sdk.domain.GlobalState;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
+import com.herewhite.sdk.domain.RoomState;
 
 import wendu.dsbridge.DWebView;
 import wendu.dsbridge.OnReturnValue;
@@ -16,6 +18,7 @@ import wendu.dsbridge.OnReturnValue;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     WhiteBroadView whiteBroadView;
+    Gson gson = new Gson();
 
     public <T extends View> T getView(int viewId) {
         View view = findViewById(viewId);
@@ -48,6 +51,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onPhaseChanged(RoomPhase phase) {
                 showToast(phase.name());
                 // handle room phase
+            }
+
+            @Override
+            public void onRoomStateChanged(RoomState modifyState) {
+                showToast(gson.toJson(modifyState));
             }
         });
         whiteSdk.joinRoom(new RoomParams("test", "123"), new Promise<Room>() {
