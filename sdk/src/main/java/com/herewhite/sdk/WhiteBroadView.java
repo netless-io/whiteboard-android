@@ -24,6 +24,7 @@ public class WhiteBroadView extends DWebView {
 
     private void init(){
         //DEBUG
-        this.loadUrl("http://192.168.1.5:3100");
+        DWebView.setWebContentsDebuggingEnabled(true);
+        this.loadUrl("http://192.168.199.111:3100");
     }
 }

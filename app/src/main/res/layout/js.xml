@@ -5,32 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.herewhite.sdk.MainActivity">
+    tools:context=".MainActivity">
 
-    <ScrollView
+    <com.herewhite.sdk.WhiteBroadView
+        android:id="@+id/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-            <Button
-                android:id="@+id/addValue"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="addValue(3,4)"
-                android:textAllCaps="false" />
-            <com.herewhite.sdk.WhiteBroadView
-                android:id="@+id/white"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="visible" />
-
-        </LinearLayout>
-    </ScrollView>
-
+        android:visibility="visible" />
 
 </LinearLayout>
