@@ -14,6 +14,7 @@ import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
 import com.herewhite.sdk.domain.DeviceType;
 import com.herewhite.sdk.domain.GlobalState;
+import com.herewhite.sdk.domain.MemberState;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
@@ -52,10 +53,9 @@ public class MainActivity extends AppCompatActivity {
         whiteSdk.joinRoom(new RoomParams("test", "123"), new Promise<Room>() {
             @Override
             public void then(Room room) {
-                GlobalState globalState = new GlobalState();
-                globalState.setCurrentSceneIndex(2);
-                room.setGlobalState(globalState);
-
+                MemberState memberState = new MemberState();
+                memberState.setStrokeWidth(30);
+                room.setMemberState(memberState);
 //                room.setViewSize(100, 100);
 
             }
