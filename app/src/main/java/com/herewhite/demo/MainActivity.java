@@ -1,19 +1,22 @@
-package com.herewhite.sdk;
+package com.herewhite.demo;
 
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
-import android.support.v7.app.AppCompatActivity;
 
 import com.google.gson.Gson;
+import com.herewhite.sdk.AbstractRoomCallbacks;
+import com.herewhite.sdk.Room;
+import com.herewhite.sdk.RoomParams;
+import com.herewhite.sdk.WhiteBroadView;
+import com.herewhite.sdk.WhiteSdk;
+import com.herewhite.sdk.WhiteSdkConfiguration;
 import com.herewhite.sdk.domain.DeviceType;
 import com.herewhite.sdk.domain.GlobalState;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
-
-import wendu.dsbridge.DWebView;
-import wendu.dsbridge.OnReturnValue;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,11 +52,11 @@ public class MainActivity extends AppCompatActivity {
         whiteSdk.joinRoom(new RoomParams("test", "123"), new Promise<Room>() {
             @Override
             public void then(Room room) {
-//                GlobalState globalState = new GlobalState();
-//                globalState.setCurrentSceneIndex(2);
-//                room.setGlobalState(globalState);
+                GlobalState globalState = new GlobalState();
+                globalState.setCurrentSceneIndex(2);
+                room.setGlobalState(globalState);
 
-                room.setViewSize(100, 100);
+//                room.setViewSize(100, 100);
 
             }
 
