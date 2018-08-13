@@ -83,8 +83,7 @@ public class WhiteSdk {
             roomCallbacks.onKickedWithReason(String.valueOf(args));
         }
     }
-
-
+    
     @JavascriptInterface
     public void fireDisconnectWithError(Object args) throws JSONException {
         // 获取事件,反序列化然后发送通知给监听者
