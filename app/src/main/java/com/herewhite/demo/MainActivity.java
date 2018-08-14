@@ -24,20 +24,18 @@ public class MainActivity extends AppCompatActivity {
     WhiteBroadView whiteBroadView;
     Gson gson = new Gson();
 
-    public <T extends View> T getView(int viewId) {
-        View view = findViewById(viewId);
-        return (T) view;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.js);
 
-        whiteBroadView = getView(R.id.white);
+        whiteBroadView = (WhiteBroadView) findViewById(R.id.white);
         // /?uuid=test&roomToken=123&viewWidth=0&viewHeight=0  调用 native 的 createRoom 后得到
 
-        WhiteSdk whiteSdk = new WhiteSdk(whiteBroadView, this, new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1));
+        WhiteSdk whiteSdk = new WhiteSdk(
+                whiteBroadView,
+                this,
+                new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1));
         whiteSdk.addRoomCallbacks(new AbstractRoomCallbacks() {
             @Override
             public void onPhaseChanged(RoomPhase phase) {
@@ -54,14 +52,27 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void then(Room room) {
                 MemberState memberState = new MemberState();
-                memberState.setStrokeWidth(30);
+                memberState.setStrokeColor(new int[]{255, 0, 0});
                 room.setMemberState(memberState);
+
 //                room.setViewSize(100, 100);
 
+
+                room.getMemberState(new Promise<MemberState>() {
+                    @Override
+                    public void then(MemberState memberState1) {
+                        memberState1.getStrokeColor();
+                    }
+
+                    @Override
+                    public void catchEx(Exception t) {
+
+                    }
+                });
             }
 
             @Override
-            public void catchEx(Throwable t) {
+            public void catchEx(Exception t) {
 
             }
         });

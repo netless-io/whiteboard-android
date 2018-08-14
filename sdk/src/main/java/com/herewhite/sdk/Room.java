@@ -5,7 +5,10 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.herewhite.sdk.domain.GlobalState;
 import com.herewhite.sdk.domain.MemberState;
+import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.ViewMode;
+
+import wendu.dsbridge.OnReturnValue;
 
 /**
  * Created by buhe on 2018/8/10.
@@ -38,4 +41,36 @@ public class Room {
     public void setViewSize(int width, int height) {
         bridge.callHandler("room.setViewSize", new Object[]{width, height});
     }
+
+    public void getGlobalState(final Promise<GlobalState> promise) {
+        bridge.callHandler("room.getGlobalState", new Object[]{}, new OnReturnValue<Object>() {
+            @Override
+            public void onValue(Object o) {
+                // TODO
+//                promise.then(o);
+            }
+        });
+    }
+
+    public void getMemberState(final Promise<MemberState> promise) {
+        bridge.callHandler("room.getMemberState", new Object[]{}, new OnReturnValue<Object>() {
+            @Override
+            public void onValue(Object o) {
+                // TODO
+//                promise.then(o);
+            }
+        });
+    }
+
+    public void getViewMode(final Promise<ViewMode> promise) {
+        bridge.callHandler("room.getViewMode", new Object[]{}, new OnReturnValue<Object>() {
+            @Override
+            public void onValue(Object o) {
+                // TODO
+//                promise.then(o);
+            }
+        });
+    }
+
+
 }
