@@ -38,6 +38,8 @@ public class Room {
     }
 
     public void setMemberState(MemberState memberState) {
+        Log.i("white", gson.toJson(memberState));
+
         bridge.callHandler("room.setMemberState", new Object[]{gson.toJson(memberState)});
     }
 

@@ -51,7 +51,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void then(Room room) {
                 MemberState memberState = new MemberState();
-                memberState.setStrokeColor(new int[]{255, 0, 0});
+                memberState.setStrokeColor(new int[]{99, 99, 99});
+                memberState.setCurrentApplianceName("rectangle");
+                memberState.setStrokeWidth(10);
                 room.setMemberState(memberState);
 
 //                room.setViewSize(100, 100);
