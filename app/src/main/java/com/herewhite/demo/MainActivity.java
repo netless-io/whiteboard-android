@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 //                showToast(gson.toJson(modifyState));
             }
         });
-        whiteSdk.joinRoom(new RoomParams("test", "123"), new Promise<Room>() {
+        whiteSdk.joinRoom(new RoomParams("b48cef24907a4862aa2e7ba20c77705a", "WHITEcGFydG5lcl9pZD1QNnR4cXJEQlZrZmJNZWRUdGVLenBURXRnZzhjbGZ6ZnZteUQmc2lnPWQwMmU4MDhlZDQxMDcwZjNmNGY3MjQ4NzdiMmY1M2Y0ZDE3ZThjYjQ6YWRtaW5JZD0xJnJvb21JZD1iNDhjZWYyNDkwN2E0ODYyYWEyZTdiYTIwYzc3NzA1YSZ0ZWFtSWQ9MSZleHBpcmVfdGltZT0xNTY1OTQ3MTU1JmFrPVA2dHhxckRCVmtmYk1lZFR0ZUt6cFRFdGdnOGNsZnpmdm15RCZjcmVhdGVfdGltZT0xNTM0MzkwMjAzJm5vbmNlPTE1MzQzOTAyMDI5NzIwMCZyb2xlPXB1Ymxpc2hlcg"), new Promise<Room>() {
             @Override
             public void then(Room room) {
                 MemberState memberState = new MemberState();
