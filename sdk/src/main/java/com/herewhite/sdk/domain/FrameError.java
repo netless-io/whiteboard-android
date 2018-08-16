@@ -6,7 +6,7 @@ package com.herewhite.sdk.domain;
 
 public class FrameError {
 
-    private long userId;
+    private Long userId;
     private String error;
 
     public FrameError(long userId, String error) {

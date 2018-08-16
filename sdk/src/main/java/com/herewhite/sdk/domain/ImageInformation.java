@@ -7,10 +7,10 @@ package com.herewhite.sdk.domain;
 public class ImageInformation {
 
     private String uuid;
-    private double centerX;
-    private double centerY;
-    private double width;
-    private double height;
+    private Double centerX;
+    private Double centerY;
+    private Double width;
+    private Double height;
 
     public String getUuid() {
         return uuid;

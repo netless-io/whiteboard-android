@@ -6,8 +6,8 @@ package com.herewhite.sdk.domain;
 
 public class PptPage {
     private String src;
-    private double width;
-    private double height;
+    private Double width;
+    private Double height;
 
     public String getSrc() {
         return src;

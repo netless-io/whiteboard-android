@@ -5,10 +5,10 @@ package com.herewhite.sdk.domain;
  */
 
 public class LinearTransformationDescription {
-    private double deltaX;
-    private double deltaY;
-    private double scaleX;
-    private double scaleY;
+    private Double deltaX;
+    private Double deltaY;
+    private Double scaleX;
+    private Double scaleY;
 
     public double getDeltaX() {
         return deltaX;
