@@ -9,6 +9,12 @@ public class PptPage {
     private Double width;
     private Double height;
 
+    public PptPage(String src, Double width, Double height) {
+        this.src = src;
+        this.width = width;
+        this.height = height;
+    }
+
     public String getSrc() {
         return src;
     }

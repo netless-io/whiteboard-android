@@ -22,10 +22,14 @@ public class WhiteBroadView extends DWebView {
         init();
     }
 
-    private void init(){
+    private void init() {
         //DEBUG
         DWebView.setWebContentsDebuggingEnabled(true);
 //        this.loadUrl("http://10.63.74.141:3100");
-        this.loadUrl("file:///android_asset/index.html");
+        this.loadUrl("file:///android_asset/cloud/index.html");
+    }
+
+    public void switchEnv(Environment environment) {
+        this.loadUrl("file:///android_asset/" + environment.name() + "/index.html");
     }
 }

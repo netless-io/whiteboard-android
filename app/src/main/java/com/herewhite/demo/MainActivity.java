@@ -15,10 +15,10 @@ import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
 import com.herewhite.sdk.domain.BroadcastState;
 import com.herewhite.sdk.domain.DeviceType;
-import com.herewhite.sdk.domain.MemberState;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
+import com.herewhite.sdk.domain.ViewMode;
 
 import java.io.IOException;
 
@@ -77,26 +77,24 @@ public class MainActivity extends AppCompatActivity {
         whiteSdk.joinRoom(new RoomParams(uuid, roomToken), new Promise<Room>() {
             @Override
             public void then(Room room) {
-                MemberState memberState = new MemberState();
-//                memberState.setStrokeColor(new int[]{99, 99, 99});
-                memberState.setCurrentApplianceName("rectangle");
-//                memberState.setStrokeWidth(10);
-                room.setMemberState(memberState);
-
-//                room.setViewSize(100, 100);
-
-
-//                room.getMemberState(new Promise<MemberState>() {
-//                    @Override
-//                    public void then(MemberState memberState1) {
-//                        showToast(memberState1.getStrokeColor()[0]);
-//                    }
+//                MemberState memberState = new MemberState();
+////                memberState.setStrokeColor(new int[]{99, 99, 99});
+//                memberState.setCurrentApplianceName("rectangle");
+////                memberState.setStrokeWidth(10);
+//                room.setMemberState(memberState);
 //
-//                    @Override
-//                    public void catchEx(Exception t) {
+//                room.insertNewPage(1);
+//                room.removePage(1);
 //
-//                    }
+//                GlobalState globalState = new GlobalState();
+//                globalState.setCurrentSceneIndex(1);
+//                room.setGlobalState(globalState);
+//
+//                room.pushPptPages(new PptPage[]{
+//                        new PptPage("https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/image.png", 600d, 600d),
 //                });
+
+                room.setViewMode(ViewMode.broadcaster);
 
                 room.getBroadcastState(new Promise<BroadcastState>() {
                     @Override
