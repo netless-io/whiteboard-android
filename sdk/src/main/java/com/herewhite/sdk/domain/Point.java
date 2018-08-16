@@ -5,8 +5,8 @@ package com.herewhite.sdk.domain;
  */
 
 public class Point {
-    private double x;
-    private double y;
+    private Double x;
+    private Double y;
 
     public double getX() {
         return x;

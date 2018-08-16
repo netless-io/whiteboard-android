@@ -7,8 +7,8 @@ package com.herewhite.sdk.domain;
 public class MemberState {
     private String currentApplianceName;
     private int[] strokeColor;
-    private double strokeWidth;
-    private double textSize;
+    private Double strokeWidth;
+    private Double textSize;
 
     public String getCurrentApplianceName() {
         return currentApplianceName;

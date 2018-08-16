@@ -7,7 +7,7 @@ package com.herewhite.sdk.domain;
 public class BroadcastState {
 
     private ViewMode mode;
-    private long broadcasterId;
+    private Long broadcasterId;
     private MemberInformation broadcasterInformation;
 
     public ViewMode getMode() {

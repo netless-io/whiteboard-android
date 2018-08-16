@@ -5,10 +5,10 @@ package com.herewhite.sdk.domain;
  */
 
 public class TextareaLine {
-    private double dx;
-    private double dy;
+    private Double dx;
+    private Double dy;
     private String text;
-    private int textLength;
+    private Integer textLength;
 
     public double getDx() {
         return dx;

@@ -5,7 +5,7 @@ package com.herewhite.sdk.domain;
  */
 
 public class MemberInformation {
-    private long id;
+    private Long id;
     private String nickName;
     private String avatar;
 

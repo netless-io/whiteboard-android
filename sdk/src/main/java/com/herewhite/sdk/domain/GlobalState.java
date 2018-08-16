@@ -5,7 +5,7 @@ package com.herewhite.sdk.domain;
  */
 
 public class GlobalState {
-    private int currentSceneIndex;
+    private Integer currentSceneIndex;
 
     public int getCurrentSceneIndex() {
         return currentSceneIndex;

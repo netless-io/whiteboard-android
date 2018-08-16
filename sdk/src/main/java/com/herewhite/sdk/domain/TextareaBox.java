@@ -5,9 +5,9 @@ package com.herewhite.sdk.domain;
  */
 
 public class TextareaBox {
-    private double scale;
-    private double width;
-    private double height;
+    private Double scale;
+    private Double width;
+    private Double height;
     private String originalText;
     private TextareaLine[] textLines;
 

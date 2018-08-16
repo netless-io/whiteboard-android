@@ -5,8 +5,8 @@ package com.herewhite.sdk.domain;
  */
 
 public class RoomMember {
-    private long memberId;
-    private boolean isRtcConnected;
+    private Long memberId;
+    private Boolean isRtcConnected;
     private String currentApplianceName;
     private MemberInformation information;
 
