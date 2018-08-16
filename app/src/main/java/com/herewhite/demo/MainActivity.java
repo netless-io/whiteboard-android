@@ -2,9 +2,11 @@ package com.herewhite.demo;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.herewhite.sdk.AbstractRoomCallbacks;
 import com.herewhite.sdk.Room;
 import com.herewhite.sdk.RoomParams;
@@ -18,22 +20,47 @@ import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
 
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
 public class MainActivity extends AppCompatActivity {
 
     WhiteBroadView whiteBroadView;
     Gson gson = new Gson();
+    DemoAPI demoAPI = new DemoAPI();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.js);
-
         whiteBroadView = (WhiteBroadView) findViewById(R.id.white);
-        // /?uuid=test&roomToken=123&viewWidth=0&viewHeight=0  调用 native 的 createRoom 后得到
+        demoAPI.createRoom("unknow", 100, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
 
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                JsonObject room = gson.fromJson(response.body().string(), JsonObject.class);
+                String uuid = room.getAsJsonObject("msg").getAsJsonObject("room").get("uuid").getAsString();
+                String roomToken = room.getAsJsonObject("msg").get("roomToken").getAsString();
+                Log.i("white", uuid + "|" + roomToken);
+
+                joinRoom(uuid, roomToken);
+            }
+        });
+
+
+    }
+
+    private void joinRoom(String uuid, String roomToken) {
         WhiteSdk whiteSdk = new WhiteSdk(
                 whiteBroadView,
-                this,
+                MainActivity.this,
                 new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1));
         whiteSdk.addRoomCallbacks(new AbstractRoomCallbacks() {
             @Override
@@ -47,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 //                showToast(gson.toJson(modifyState));
             }
         });
-        whiteSdk.joinRoom(new RoomParams("b48cef24907a4862aa2e7ba20c77705a", "WHITEcGFydG5lcl9pZD1QNnR4cXJEQlZrZmJNZWRUdGVLenBURXRnZzhjbGZ6ZnZteUQmc2lnPWQwMmU4MDhlZDQxMDcwZjNmNGY3MjQ4NzdiMmY1M2Y0ZDE3ZThjYjQ6YWRtaW5JZD0xJnJvb21JZD1iNDhjZWYyNDkwN2E0ODYyYWEyZTdiYTIwYzc3NzA1YSZ0ZWFtSWQ9MSZleHBpcmVfdGltZT0xNTY1OTQ3MTU1JmFrPVA2dHhxckRCVmtmYk1lZFR0ZUt6cFRFdGdnOGNsZnpmdm15RCZjcmVhdGVfdGltZT0xNTM0MzkwMjAzJm5vbmNlPTE1MzQzOTAyMDI5NzIwMCZyb2xlPXB1Ymxpc2hlcg"), new Promise<Room>() {
+        whiteSdk.joinRoom(new RoomParams(uuid, roomToken), new Promise<Room>() {
             @Override
             public void then(Room room) {
                 MemberState memberState = new MemberState();
@@ -90,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     void showToast(Object o) {
