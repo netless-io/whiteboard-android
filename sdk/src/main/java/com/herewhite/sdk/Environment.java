@@ -5,5 +5,5 @@ package com.herewhite.sdk;
  */
 
 public enum Environment {
-    edge, cloud
+    edge, cloud, dev
 }
