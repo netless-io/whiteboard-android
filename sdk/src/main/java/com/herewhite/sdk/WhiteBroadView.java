@@ -12,7 +12,7 @@ import wendu.dsbridge.DWebView;
 public class WhiteBroadView extends DWebView {
 
 
-    private Environment environment;
+    private Environment environment = Environment.cloud;
 
     public WhiteBroadView(Context context) {
         super(context);
@@ -34,7 +34,7 @@ public class WhiteBroadView extends DWebView {
     public void switchEnv(Environment environment) {
         this.environment = environment;
         if (environment == Environment.dev) {
-            this.loadUrl("http://192.168.1.5:3100");
+            this.loadUrl("http://192.168.31.216:3100");
         } else {
             this.loadUrl("file:///android_asset/" + environment.name() + "/index.html");
         }

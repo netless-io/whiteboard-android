@@ -16,6 +16,7 @@ import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
 import com.herewhite.sdk.domain.BroadcastState;
 import com.herewhite.sdk.domain.DeviceType;
+import com.herewhite.sdk.domain.GlobalState;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.js);
         whiteBroadView = (WhiteBroadView) findViewById(R.id.white);
-        whiteBroadView.switchEnv(Environment.dev);
+//        whiteBroadView.switchEnv(Environment.dev);
         demoAPI.createRoom("unknow", 100, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -86,6 +87,11 @@ public class MainActivity extends AppCompatActivity {
         whiteSdk.joinRoom(new RoomParams(uuid, roomToken), new Promise<Room>() {
             @Override
             public void then(Room room) {
+
+                room.insertNewPage(1);
+                GlobalState globalState = new GlobalState();
+                globalState.setCurrentSceneIndex(0);
+                room.setGlobalState(globalState);
 //                MemberState memberState = new MemberState();
 ////                memberState.setStrokeColor(new int[]{99, 99, 99});
 //                memberState.setCurrentApplianceName("rectangle");
@@ -103,19 +109,19 @@ public class MainActivity extends AppCompatActivity {
 //                        new PptPage("https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/image.png", 600d, 600d),
 //                });
 
-                room.setViewMode(ViewMode.broadcaster);
-
-                room.getBroadcastState(new Promise<BroadcastState>() {
-                    @Override
-                    public void then(BroadcastState broadcastState) {
-                        showToast(broadcastState.getMode());
-                    }
-
-                    @Override
-                    public void catchEx(Exception t) {
-
-                    }
-                });
+//                room.setViewMode(ViewMode.broadcaster);
+//
+//                room.getBroadcastState(new Promise<BroadcastState>() {
+//                    @Override
+//                    public void then(BroadcastState broadcastState) {
+//                        showToast(broadcastState.getMode());
+//                    }
+//
+//                    @Override
+//                    public void catchEx(Exception t) {
+//
+//                    }
+//                });
 
             }
 
