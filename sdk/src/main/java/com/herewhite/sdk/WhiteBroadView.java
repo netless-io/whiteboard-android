@@ -12,6 +12,8 @@ import wendu.dsbridge.DWebView;
 public class WhiteBroadView extends DWebView {
 
 
+    private Environment environment;
+
     public WhiteBroadView(Context context) {
         super(context);
         init();
@@ -25,11 +27,20 @@ public class WhiteBroadView extends DWebView {
     private void init() {
         //DEBUG
         DWebView.setWebContentsDebuggingEnabled(true);
-//        this.loadUrl("http://10.63.74.141:3100");
+//        this.loadUrl("http://192.168.1.5:3100");
         this.loadUrl("file:///android_asset/cloud/index.html");
     }
 
     public void switchEnv(Environment environment) {
-        this.loadUrl("file:///android_asset/" + environment.name() + "/index.html");
+        this.environment = environment;
+        if (environment == Environment.dev) {
+            this.loadUrl("http://192.168.1.5:3100");
+        } else {
+            this.loadUrl("file:///android_asset/" + environment.name() + "/index.html");
+        }
+    }
+
+    public Environment getEnv() {
+        return environment;
     }
 }

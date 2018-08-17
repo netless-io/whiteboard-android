@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.herewhite.sdk.AbstractRoomCallbacks;
+import com.herewhite.sdk.Environment;
 import com.herewhite.sdk.Room;
 import com.herewhite.sdk.RoomParams;
 import com.herewhite.sdk.WhiteBroadView;
@@ -26,6 +27,9 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
+import static com.herewhite.demo.DemoAPI.TEST_ROOM_TOKEN;
+import static com.herewhite.demo.DemoAPI.TEST_UUID;
+
 public class MainActivity extends AppCompatActivity {
 
     WhiteBroadView whiteBroadView;
@@ -37,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.js);
         whiteBroadView = (WhiteBroadView) findViewById(R.id.white);
+        whiteBroadView.switchEnv(Environment.dev);
         demoAPI.createRoom("unknow", 100, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -49,8 +54,12 @@ public class MainActivity extends AppCompatActivity {
                 String uuid = room.getAsJsonObject("msg").getAsJsonObject("room").get("uuid").getAsString();
                 String roomToken = room.getAsJsonObject("msg").get("roomToken").getAsString();
                 Log.i("white", uuid + "|" + roomToken);
+                if (whiteBroadView.getEnv() == Environment.dev) {
+                    joinRoom(TEST_UUID, TEST_ROOM_TOKEN);
+                } else {
+                    joinRoom(uuid, roomToken);
+                }
 
-                joinRoom(uuid, roomToken);
             }
         });
 

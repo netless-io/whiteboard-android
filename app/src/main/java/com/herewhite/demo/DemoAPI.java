@@ -38,4 +38,7 @@ public class DemoAPI {
         Call call = client.newCall(request);
         call.enqueue(callback);
     }
+
+    static String TEST_UUID = "test";
+    static String TEST_ROOM_TOKEN = "test";
 }
