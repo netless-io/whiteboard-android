@@ -7,5 +7,5 @@ package com.herewhite.sdk.domain;
 public interface Promise<T> {
     void then(T t);
 
-    void catchEx(Exception t);
+    void catchEx(SDKError t);
 }

@@ -14,13 +14,13 @@ import com.herewhite.sdk.RoomParams;
 import com.herewhite.sdk.WhiteBroadView;
 import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
-import com.herewhite.sdk.domain.BroadcastState;
+import com.herewhite.sdk.domain.Appliance;
 import com.herewhite.sdk.domain.DeviceType;
-import com.herewhite.sdk.domain.GlobalState;
+import com.herewhite.sdk.domain.MemberState;
+import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
-import com.herewhite.sdk.domain.ViewMode;
 
 import java.io.IOException;
 
@@ -88,15 +88,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void then(Room room) {
 
-                room.insertNewPage(1);
-                GlobalState globalState = new GlobalState();
-                globalState.setCurrentSceneIndex(0);
-                room.setGlobalState(globalState);
-//                MemberState memberState = new MemberState();
-////                memberState.setStrokeColor(new int[]{99, 99, 99});
-//                memberState.setCurrentApplianceName("rectangle");
+
+//                room.insertNewPage(1);
+//                GlobalState globalState = new GlobalState();
+//                globalState.setCurrentSceneIndex(0);
+//                room.setGlobalState(globalState);
+                MemberState memberState = new MemberState();
+//                memberState.setStrokeColor(new int[]{99, 99, 99});
+                memberState.setCurrentApplianceName(Appliance.ELLIPSE);
 ////                memberState.setStrokeWidth(10);
-//                room.setMemberState(memberState);
+                room.setMemberState(memberState);
 //
 //                room.insertNewPage(1);
 //                room.removePage(1);
@@ -126,8 +127,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void catchEx(Exception t) {
-
+            public void catchEx(SDKError t) {
+                showToast(t.getMessage());
             }
         });
     }
