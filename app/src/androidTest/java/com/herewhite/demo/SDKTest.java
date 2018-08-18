@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.herewhite.sdk.AbstractRoomCallbacks;
+import com.herewhite.sdk.Environment;
 import com.herewhite.sdk.Room;
 import com.herewhite.sdk.RoomParams;
 import com.herewhite.sdk.WhiteBroadView;
@@ -20,6 +21,7 @@ import com.herewhite.sdk.domain.GlobalState;
 import com.herewhite.sdk.domain.MemberState;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomState;
+import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.ViewMode;
 
 import org.hamcrest.Matcher;
@@ -100,7 +102,7 @@ public class SDKTest {
                         }
 
                         @Override
-                        public void catchEx(Exception t) {
+                        public void catchEx(SDKError t) {
 
                         }
                     });
@@ -115,8 +117,7 @@ public class SDKTest {
 
     }
 
-    //    @Test
-    // 不通过 要改 white-sdk
+    @Test
     public void testJoinRoomError() {
         // Type text and then press the button.
         final Lock lock = new ReentrantLock();
@@ -134,9 +135,9 @@ public class SDKTest {
                         }
 
                         @Override
-                        public void catchEx(Exception t) {
+                        public void catchEx(SDKError t) {
                             assertNotNull(t);
-                            Log.i("white", t.getMessage());
+                            Log.i("white", t.getMessage() + t.getJsStack());
                             lock.lock();
                             waitRoom.signal();
                             lock.unlock();
@@ -190,7 +191,7 @@ public class SDKTest {
                                 }
 
                                 @Override
-                                public void catchEx(Exception t) {
+                                public void catchEx(SDKError t) {
 
                                 }
                             });
@@ -199,7 +200,7 @@ public class SDKTest {
                         }
 
                         @Override
-                        public void catchEx(Exception t) {
+                        public void catchEx(SDKError t) {
 
                         }
                     });
@@ -250,7 +251,7 @@ public class SDKTest {
                                 }
 
                                 @Override
-                                public void catchEx(Exception t) {
+                                public void catchEx(SDKError t) {
 
                                 }
                             });
@@ -259,7 +260,7 @@ public class SDKTest {
                         }
 
                         @Override
-                        public void catchEx(Exception t) {
+                        public void catchEx(SDKError t) {
 
                         }
                     });
@@ -311,7 +312,7 @@ public class SDKTest {
                                 }
 
                                 @Override
-                                public void catchEx(Exception t) {
+                                public void catchEx(SDKError t) {
 
                                 }
                             });
@@ -320,7 +321,7 @@ public class SDKTest {
                         }
 
                         @Override
-                        public void catchEx(Exception t) {
+                        public void catchEx(SDKError t) {
 
                         }
                     });
@@ -349,7 +350,7 @@ public class SDKTest {
                     whiteSdk.addRoomCallbacks(new AbstractRoomCallbacks() {
                         @Override
                         public void onRoomStateChanged(RoomState modifyState) {
-                            assertEquals("onRoomStateChanged",modifyState.getMemberState().getCurrentApplianceName(), "rectangle");
+                            assertEquals("onRoomStateChanged", modifyState.getMemberState().getCurrentApplianceName(), "rectangle");
                             lock.lock();
                             waitRoom.signal();
                             lock.unlock();
@@ -367,7 +368,7 @@ public class SDKTest {
                         }
 
                         @Override
-                        public void catchEx(Exception t) {
+                        public void catchEx(SDKError t) {
 
                         }
                     });

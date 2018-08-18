@@ -1,11 +1,12 @@
 package com.herewhite.sdk;
 
 import android.content.Context;
-import android.util.Log;
 import android.webkit.JavascriptInterface;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.herewhite.sdk.domain.FrameError;
+import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
@@ -48,13 +49,27 @@ public class WhiteSdk {
                     roomParams.getRoomToken()
             }, new OnReturnValue<String>() {
                 @Override
-                public void onValue(String retValue) {
-                    Log.d("jsbridge", "call succeed,return value is " + retValue);
-                    roomPromise.then(new Room(bridge, context));
+                public void onValue(String room) {
+//                    Log.i("white", "call succeed,return value is " + retValue);
+                    JsonObject jsonObject = gson.fromJson(room, JsonObject.class);
+                    if (jsonObject.has("__error")) {
+                        String msg = "Unknow exception";
+                        String jsStack = "Unknow stack";
+                        if (jsonObject.getAsJsonObject("__error").has("message")) {
+                            msg = jsonObject.getAsJsonObject("__error").get("message").getAsString();
+                        }
+                        if (jsonObject.getAsJsonObject("__error").has("jsStack")) {
+                            jsStack = jsonObject.getAsJsonObject("__error").get("jsStack").getAsString();
+                        }
+                        roomPromise.catchEx(new SDKError(msg, jsStack));
+                    } else {
+                        roomPromise.then(new Room(bridge, context));
+                    }
+
                 }
             });
         } catch (Exception e) {
-            roomPromise.catchEx(e);
+            roomPromise.catchEx(new SDKError(e.getMessage()));
         }
 
     }
