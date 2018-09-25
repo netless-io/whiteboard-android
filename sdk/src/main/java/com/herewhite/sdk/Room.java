@@ -114,15 +114,6 @@ public class Room {
         });
     }
 
-    public void getTransform(final Promise<LinearTransformationDescription> promise) {
-        bridge.callHandler("room.getTransform", new Object[]{}, new OnReturnValue<Object>() {
-            @Override
-            public void onValue(Object o) {
-                promise.then(gson.fromJson(String.valueOf(o), LinearTransformationDescription.class));
-            }
-        });
-    }
-
     public void getBroadcastState(final Promise<BroadcastState> promise) {
         bridge.callHandler("room.getBroadcastState", new Object[]{}, new OnReturnValue<Object>() {
             @Override
