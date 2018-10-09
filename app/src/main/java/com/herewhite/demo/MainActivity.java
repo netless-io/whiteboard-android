@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 room.addMagixEventListener("helloworld", new EventListener() {
                     @Override
                     public void onEvent(EventEntry eventEntry) {
-                        showToast(gson.toJson(eventEntry));
+                        showToast(gson.toJson(eventEntry.getPayload()));
                     }
                 });
 
@@ -119,8 +119,36 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 Map<String, String> payload = new HashMap<>();
-                payload.put("test", "ddd");
+                payload.put("test", "1");
                 room.dispatchMagixEvent(new AkkoEvent("helloworld", payload));
+
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                payload = new HashMap<>();
+                payload.put("test", "2");
+                room.dispatchMagixEvent(new AkkoEvent("helloworld", payload));
+
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                room.removeMagixEventListener("helloworld");
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                payload = new HashMap<>();
+                payload.put("test", "nothing");
+
+                room.dispatchMagixEvent(new AkkoEvent("helloworld", payload));
+
+
 
 
 //
