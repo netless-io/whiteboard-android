@@ -14,6 +14,7 @@ import com.herewhite.sdk.RoomParams;
 import com.herewhite.sdk.WhiteBroadView;
 import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
+import com.herewhite.sdk.domain.AkkoEvent;
 import com.herewhite.sdk.domain.Appliance;
 import com.herewhite.sdk.domain.DeviceType;
 import com.herewhite.sdk.domain.EventEntry;
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 if (whiteBroadView.getEnv() == Environment.dev) {
                     joinRoom(TEST_UUID, TEST_ROOM_TOKEN);
                 } else {
-                    joinRoom("f80293406b4c490da88e9e2e62c70ec0", "WHITEcGFydG5lcl9pZD1QNnR4cXJEQlZrZmJNZWRUdGVLenBURXRnZzhjbGZ6ZnZteUQmc2lnPTM2MTkyOWMzMWRkNDgyNGM1ZmU5NjQ3MGU1ZjU4YTlhYjgzOGEyMGM6YWRtaW5JZD0xJnJvb21JZD1mODAyOTM0MDZiNGM0OTBkYTg4ZTllMmU2MmM3MGVjMCZ0ZWFtSWQ9MSZleHBpcmVfdGltZT0xNTcwNjUxMjMzJmFrPVA2dHhxckRCVmtmYk1lZFR0ZUt6cFRFdGdnOGNsZnpmdm15RCZjcmVhdGVfdGltZT0xNTM5MDk0MjgxJm5vbmNlPTE1MzkwOTQyODE0NjgwMCZyb2xlPXB1Ymxpc2hlcg");
+                    joinRoom(uuid, roomToken);
                 }
 
             }
@@ -119,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 Map<String, String> payload = new HashMap<>();
                 payload.put("test", "ddd");
-                room.dispatchMagixEvent(new EventEntry("helloworld", payload));
+                room.dispatchMagixEvent(new AkkoEvent("helloworld", payload));
 
 
 //

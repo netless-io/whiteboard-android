@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.herewhite.sdk.domain.AkkoEvent;
 import com.herewhite.sdk.domain.BroadcastState;
 import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.EventListener;
@@ -146,7 +147,7 @@ public class Room {
         }
     }
 
-    public void dispatchMagixEvent(EventEntry eventEntry) {
+    public void dispatchMagixEvent(AkkoEvent eventEntry) {
         bridge.callHandler("room.dispatchMagixEvent", new Object[]{gson.toJson(eventEntry)});
     }
 
