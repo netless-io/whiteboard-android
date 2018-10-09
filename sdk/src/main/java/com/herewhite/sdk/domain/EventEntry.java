@@ -4,10 +4,23 @@ public class EventEntry {
     private String uuid;
     private String eventName;
     private Object payload;
+    private int scope;
+    private long authorId;
 
-    public EventEntry(String eventName, Object payload) {
-        this.eventName = eventName;
-        this.payload = payload;
+    public int getScope() {
+        return scope;
+    }
+
+    public void setScope(int scope) {
+        this.scope = scope;
+    }
+
+    public long getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(long authorId) {
+        this.authorId = authorId;
     }
 
     public String getUuid() {

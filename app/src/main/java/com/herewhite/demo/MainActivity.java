@@ -108,8 +108,8 @@ public class MainActivity extends AppCompatActivity {
 
                 room.addMagixEventListener("helloworld", new EventListener() {
                     @Override
-                    public void onEvent(Object payload) {
-                        showToast(payload);
+                    public void onEvent(EventEntry eventEntry) {
+                        showToast(gson.toJson(eventEntry));
                     }
                 });
 
