@@ -14,15 +14,22 @@ import com.herewhite.sdk.RoomParams;
 import com.herewhite.sdk.WhiteBroadView;
 import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
+import com.herewhite.sdk.domain.AkkoEvent;
 import com.herewhite.sdk.domain.Appliance;
 import com.herewhite.sdk.domain.DeviceType;
+import com.herewhite.sdk.domain.EventEntry;
+import com.herewhite.sdk.domain.EventListener;
 import com.herewhite.sdk.domain.MemberState;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -98,6 +105,24 @@ public class MainActivity extends AppCompatActivity {
                 memberState.setCurrentApplianceName(Appliance.ELLIPSE);
 ////                memberState.setStrokeWidth(10);
                 room.setMemberState(memberState);
+
+                room.addMagixEventListener("helloworld", new EventListener() {
+                    @Override
+                    public void onEvent(Object payload) {
+                        showToast(payload);
+                    }
+                });
+
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Map<String, String> payload = new HashMap<>();
+                payload.put("test", "ddd");
+                room.dispatchMagixEvent(new AkkoEvent("helloworld", payload));
+
+
 //
 //                room.insertNewPage(1);
 //                room.removePage(1);

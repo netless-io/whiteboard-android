@@ -4,7 +4,9 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.herewhite.sdk.domain.AkkoEvent;
 import com.herewhite.sdk.domain.BroadcastState;
+import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.EventListener;
 import com.herewhite.sdk.domain.GlobalState;
 import com.herewhite.sdk.domain.ImageInformation;
@@ -138,19 +140,25 @@ public class Room {
 
     }
 
-    public void fireMagixEvent(String eventName, JSONObject payload) {
+    public void fireMagixEvent(String eventName, Object payload) {
         EventListener eventListener = eventListenerConcurrentHashMap.get(eventName);
         if (eventListener != null) {
             eventListener.onEvent(payload);
         }
     }
 
+    public void dispatchMagixEvent(AkkoEvent eventEntry) {
+        bridge.callHandler("room.dispatchMagixEvent", new Object[]{gson.toJson(eventEntry)});
+    }
+
     public void addMagixEventListener(String eventName, EventListener eventListener) {
         this.eventListenerConcurrentHashMap.put(eventName, eventListener);
+        bridge.callHandler("room.addMagixEventListener", new Object[]{eventName});
     }
 
     public void removeMagixEventListener(String eventName) {
         this.eventListenerConcurrentHashMap.remove(eventName);
+        bridge.callHandler("room.removeMagixEventListener", new Object[]{eventName});
     }
 
 

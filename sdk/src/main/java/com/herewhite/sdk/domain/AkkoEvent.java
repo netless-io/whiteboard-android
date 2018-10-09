@@ -1,21 +1,12 @@
 package com.herewhite.sdk.domain;
 
-public class EventEntry {
-    private String uuid;
+public class AkkoEvent {
     private String eventName;
     private Object payload;
 
-    public EventEntry(String eventName, Object payload) {
+    public AkkoEvent(String eventName, Object payload) {
         this.eventName = eventName;
         this.payload = payload;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
     }
 
     public String getEventName() {
