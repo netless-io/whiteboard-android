@@ -27,8 +27,8 @@ public class WhiteBroadView extends DWebView {
     private void init() {
         //DEBUG
         DWebView.setWebContentsDebuggingEnabled(true);
-        this.loadUrl("http://192.168.199.111:3100");
-//        this.loadUrl("file:///android_asset/cloud/index.html");
+//        this.loadUrl("http://192.168.199.111:3100");
+        this.loadUrl("file:///android_asset/cloud/index.html");
     }
 
     public void switchEnv(Environment environment) {
