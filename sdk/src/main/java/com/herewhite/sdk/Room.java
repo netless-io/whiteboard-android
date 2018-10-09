@@ -147,10 +147,12 @@ public class Room {
 
     public void addMagixEventListener(String eventName, EventListener eventListener) {
         this.eventListenerConcurrentHashMap.put(eventName, eventListener);
+        bridge.callHandler("room.addMagixEventListener", new Object[]{eventName});
     }
 
     public void removeMagixEventListener(String eventName) {
         this.eventListenerConcurrentHashMap.remove(eventName);
+        bridge.callHandler("room.removeMagixEventListener", new Object[]{eventName});
     }
 
 
