@@ -1,11 +1,14 @@
 package com.herewhite.sdk.domain;
 
-import org.json.JSONObject;
-
 public class EventEntry {
     private String uuid;
     private String eventName;
-    private JSONObject Payload;
+    private Object payload;
+
+    public EventEntry(String eventName, Object payload) {
+        this.eventName = eventName;
+        this.payload = payload;
+    }
 
     public String getUuid() {
         return uuid;
@@ -23,11 +26,11 @@ public class EventEntry {
         this.eventName = eventName;
     }
 
-    public JSONObject getPayload() {
-        return Payload;
+    public Object getPayload() {
+        return payload;
     }
 
-    public void setPayload(JSONObject payload) {
-        Payload = payload;
+    public void setPayload(Object payload) {
+        this.payload = payload;
     }
 }
