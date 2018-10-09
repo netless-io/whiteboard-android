@@ -140,10 +140,10 @@ public class Room {
 
     }
 
-    public void fireMagixEvent(String eventName, Object payload) {
-        EventListener eventListener = eventListenerConcurrentHashMap.get(eventName);
+    public void fireMagixEvent(EventEntry eventEntry) {
+        EventListener eventListener = eventListenerConcurrentHashMap.get(eventEntry.getEventName());
         if (eventListener != null) {
-            eventListener.onEvent(payload);
+            eventListener.onEvent(eventEntry);
         }
     }
 

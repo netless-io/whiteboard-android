@@ -3,5 +3,5 @@ package com.herewhite.sdk.domain;
 import org.json.JSONObject;
 
 public interface EventListener {
-    void onEvent(Object payload);
+    void onEvent(EventEntry eventEntry);
 }

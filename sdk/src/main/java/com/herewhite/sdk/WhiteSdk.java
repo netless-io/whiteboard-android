@@ -143,7 +143,7 @@ public class WhiteSdk {
         EventEntry eventEntry = gson.fromJson(String.valueOf(args), EventEntry.class);
         Room room = this.roomConcurrentHashMap.get(eventEntry.getUuid());
         if (room != null) {
-            room.fireMagixEvent(eventEntry.getEventName(), eventEntry.getPayload());
+            room.fireMagixEvent(eventEntry);
         }
     }
 }
