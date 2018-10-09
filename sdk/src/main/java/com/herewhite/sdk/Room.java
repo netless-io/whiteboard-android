@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.herewhite.sdk.domain.BroadcastState;
+import com.herewhite.sdk.domain.EventListener;
 import com.herewhite.sdk.domain.GlobalState;
 import com.herewhite.sdk.domain.ImageInformation;
 import com.herewhite.sdk.domain.LinearTransformationDescription;
@@ -14,6 +15,10 @@ import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomMember;
 import com.herewhite.sdk.domain.TextareaBox;
 import com.herewhite.sdk.domain.ViewMode;
+
+import org.json.JSONObject;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 import wendu.dsbridge.OnReturnValue;
 
@@ -25,12 +30,17 @@ public class Room {
 
     private final static Gson gson = new Gson();
 
+    private String uuid;
     private final WhiteBroadView bridge;
     private final Context context;
+    private WhiteSdk sdk;
+    private ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
 
-    public Room(WhiteBroadView bridge, Context context) {
+    public Room(String uuid, WhiteBroadView bridge, Context context, WhiteSdk sdk) {
+        this.uuid = uuid;
         this.bridge = bridge;
         this.context = context;
+        this.sdk = sdk;
     }
 
     public void setGlobalState(GlobalState globalState) {
@@ -51,6 +61,7 @@ public class Room {
 
     public void disconnect() {
         bridge.callHandler("room.disconnect", new Object[]{});
+        this.sdk.releaseRoom(this.uuid);
     }
 
     public void updateTextarea(TextareaBox textareaBox) {
@@ -125,6 +136,21 @@ public class Room {
 
     public void convertToPointInWorld() {
 
+    }
+
+    public void fireMagixEvent(String eventName, JSONObject payload) {
+        EventListener eventListener = eventListenerConcurrentHashMap.get(eventName);
+        if (eventListener != null) {
+            eventListener.onEvent(payload);
+        }
+    }
+
+    public void addMagixEventListener(String eventName, EventListener eventListener) {
+        this.eventListenerConcurrentHashMap.put(eventName, eventListener);
+    }
+
+    public void removeMagixEventListener(String eventName) {
+        this.eventListenerConcurrentHashMap.remove(eventName);
     }
 
 

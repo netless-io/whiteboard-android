@@ -5,6 +5,7 @@ import android.webkit.JavascriptInterface;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.FrameError;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Promise;
@@ -15,6 +16,8 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import wendu.dsbridge.OnReturnValue;
 
@@ -29,6 +32,7 @@ public class WhiteSdk {
     private final WhiteBroadView bridge;
     private final Context context;
     private final List<RoomCallbacks> listeners = new ArrayList<>();
+    private final ConcurrentHashMap<String, Room> roomConcurrentHashMap = new ConcurrentHashMap<>(); // uuid ,Room
 
     public WhiteSdk(WhiteBroadView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration) {
         this.bridge = bridge;
@@ -42,16 +46,16 @@ public class WhiteSdk {
      *
      * @param roomParams
      */
-    public void joinRoom(RoomParams roomParams, final Promise<Room> roomPromise) {
+    public void joinRoom(final RoomParams roomParams, final Promise<Room> roomPromise) {
         try {
             bridge.callHandler("sdk.joinRoom", new Object[]{
                     roomParams.getUuid(),
                     roomParams.getRoomToken()
             }, new OnReturnValue<String>() {
                 @Override
-                public void onValue(String room) {
+                public void onValue(String roomString) {
 //                    Log.i("white", "call succeed,return value is " + retValue);
-                    JsonObject jsonObject = gson.fromJson(room, JsonObject.class);
+                    JsonObject jsonObject = gson.fromJson(roomString, JsonObject.class);
                     if (jsonObject.has("__error")) {
                         String msg = "Unknow exception";
                         String jsStack = "Unknow stack";
@@ -63,7 +67,9 @@ public class WhiteSdk {
                         }
                         roomPromise.catchEx(new SDKError(msg, jsStack));
                     } else {
-                        roomPromise.then(new Room(bridge, context));
+                        Room room = new Room(roomParams.getUuid(), bridge, context, WhiteSdk.this);
+                        roomConcurrentHashMap.put(roomParams.getUuid(), room);
+                        roomPromise.then(room);
                     }
 
                 }
@@ -128,4 +134,16 @@ public class WhiteSdk {
         }
     }
 
+    public void releaseRoom(String uuid) {
+        this.roomConcurrentHashMap.remove(uuid);
+    }
+
+    @JavascriptInterface
+    public void fireMagixEvent(Object args) {
+        EventEntry eventEntry = gson.fromJson(String.valueOf(args), EventEntry.class);
+        Room room = this.roomConcurrentHashMap.get(eventEntry.getUuid());
+        if (room != null) {
+            room.fireMagixEvent(eventEntry.getEventName(), eventEntry.getPayload());
+        }
+    }
 }
