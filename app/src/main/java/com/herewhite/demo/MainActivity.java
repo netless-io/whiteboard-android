@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onRoomStateChanged(RoomState modifyState) {
-//                showToast(gson.toJson(modifyState));
+                showToast(gson.toJson(modifyState));
             }
         });
         whiteSdk.joinRoom(new RoomParams(uuid, roomToken), new Promise<Room>() {
