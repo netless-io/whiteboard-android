@@ -5,10 +5,9 @@ package com.herewhite.sdk.domain;
  */
 
 public enum RoomPhase {
-    ready,
     connecting,
     connected,
     reconnecting,
+    disconnecting,
     disconnected,
-    closed,
 }
