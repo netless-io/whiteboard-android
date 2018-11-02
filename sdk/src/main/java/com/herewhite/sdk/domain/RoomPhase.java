@@ -9,6 +9,6 @@ public enum RoomPhase {
     connecting,
     connected,
     reconnecting,
-    disconnecting,
+    disconnected,
     closed,
 }
