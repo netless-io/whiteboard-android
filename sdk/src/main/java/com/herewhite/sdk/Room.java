@@ -95,7 +95,11 @@ public class Room {
         bridge.callHandler("room.getGlobalState", new Object[]{}, new OnReturnValue<Object>() {
             @Override
             public void onValue(Object o) {
-                promise.then(gson.fromJson(String.valueOf(o), GlobalState.class));
+                try {
+                    promise.then(gson.fromJson(String.valueOf(o), GlobalState.class));
+                } catch (Throwable e) {
+                    Logger.error("An exception occurred while resolve getGlobalState method promise", e);
+                }
             }
         });
     }
@@ -104,7 +108,11 @@ public class Room {
         bridge.callHandler("room.getMemberState", new OnReturnValue<String>() {
             @Override
             public void onValue(String o) {
-                promise.then(gson.fromJson(String.valueOf(o), MemberState.class));
+                try {
+                    promise.then(gson.fromJson(String.valueOf(o), MemberState.class));
+                } catch (Throwable e) {
+                    Logger.error("An exception occurred while resolve getMemberState method promise", e);
+                }
             }
         });
     }
@@ -113,7 +121,11 @@ public class Room {
         bridge.callHandler("room.getRoomMembers", new Object[]{}, new OnReturnValue<Object>() {
             @Override
             public void onValue(Object o) {
-                promise.then(gson.fromJson(String.valueOf(o), RoomMember[].class));
+                try {
+                    promise.then(gson.fromJson(String.valueOf(o), RoomMember[].class));
+                } catch (Throwable e) {
+                    Logger.error("An exception occurred while resolve getRoomMembers method promise", e);
+                }
             }
         });
     }
@@ -122,7 +134,11 @@ public class Room {
         bridge.callHandler("room.getPptImages", new Object[]{}, new OnReturnValue<Object>() {
             @Override
             public void onValue(Object o) {
-                promise.then(gson.fromJson(String.valueOf(o), String[].class));
+                try {
+                    promise.then(gson.fromJson(String.valueOf(o), String[].class));
+                } catch (Throwable e) {
+                    Logger.error("An exception occurred while resolve getPptImages method promise", e);
+                }
             }
         });
     }
@@ -131,7 +147,11 @@ public class Room {
         bridge.callHandler("room.getBroadcastState", new Object[]{}, new OnReturnValue<Object>() {
             @Override
             public void onValue(Object o) {
-                promise.then(gson.fromJson(String.valueOf(o), BroadcastState.class));
+                try {
+                    promise.then(gson.fromJson(String.valueOf(o), BroadcastState.class));
+                } catch (Throwable e) {
+                    Logger.error("An exception occurred while resolve getBroadcastState method promise", e);
+                }
             }
         });
     }
@@ -143,7 +163,11 @@ public class Room {
     public void fireMagixEvent(EventEntry eventEntry) {
         EventListener eventListener = eventListenerConcurrentHashMap.get(eventEntry.getEventName());
         if (eventListener != null) {
-            eventListener.onEvent(eventEntry);
+            try {
+                eventListener.onEvent(eventEntry);
+            } catch (Throwable e) {
+                Logger.error("An exception occurred while sending the event", e);
+            }
         }
     }
 

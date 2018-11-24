@@ -65,11 +65,19 @@ public class WhiteSdk {
                         if (jsonObject.getAsJsonObject("__error").has("jsStack")) {
                             jsStack = jsonObject.getAsJsonObject("__error").get("jsStack").getAsString();
                         }
-                        roomPromise.catchEx(new SDKError(msg, jsStack));
+                        try {
+                            roomPromise.catchEx(new SDKError(msg, jsStack));
+                        } catch (Throwable e) {
+                            Logger.error("An exception occurred while catch joinRoom method exception", e);
+                        }
                     } else {
                         Room room = new Room(roomParams.getUuid(), bridge, context, WhiteSdk.this);
                         roomConcurrentHashMap.put(roomParams.getUuid(), room);
-                        roomPromise.then(room);
+                        try {
+                            roomPromise.then(room);
+                        } catch (Throwable e) {
+                            Logger.error("An exception occurred while resolve joinRoom method promise", e);
+                        }
                     }
 
                 }
@@ -88,7 +96,11 @@ public class WhiteSdk {
     public void firePhaseChanged(Object args) throws JSONException {
 //         获取事件,反序列化然后发送通知给监听者
         for (RoomCallbacks roomCallbacks : listeners) {
-            roomCallbacks.onPhaseChanged(RoomPhase.valueOf(String.valueOf(args)));
+            try {
+                roomCallbacks.onPhaseChanged(RoomPhase.valueOf(String.valueOf(args)));
+            } catch (Throwable e) {
+                Logger.error("An exception occurred while invoke onPhaseChanged method", e);
+            }
         }
     }
 
@@ -96,7 +108,12 @@ public class WhiteSdk {
     public void fireKickedWithReason(Object args) throws JSONException {
         // 获取事件,反序列化然后发送通知给监听者
         for (RoomCallbacks roomCallbacks : listeners) {
-            roomCallbacks.onKickedWithReason(String.valueOf(args));
+            try {
+                roomCallbacks.onKickedWithReason(String.valueOf(args));
+            } catch (Throwable e) {
+                Logger.error("An exception occurred while invoke onKickedWithReason method", e);
+            }
+
         }
     }
 
@@ -104,7 +121,11 @@ public class WhiteSdk {
     public void fireDisconnectWithError(Object args) throws JSONException {
         // 获取事件,反序列化然后发送通知给监听者
         for (RoomCallbacks roomCallbacks : listeners) {
-            roomCallbacks.onDisconnectWithError(new Exception(String.valueOf(args)));
+            try {
+                roomCallbacks.onDisconnectWithError(new Exception(String.valueOf(args)));
+            } catch (Throwable e) {
+                Logger.error("An exception occurred while invoke onDisconnectWithError method", e);
+            }
         }
     }
 
@@ -113,7 +134,12 @@ public class WhiteSdk {
         // 获取事件,反序列化然后发送通知给监听者
         RoomState roomState = gson.fromJson(String.valueOf(args), RoomState.class);
         for (RoomCallbacks roomCallbacks : listeners) {
-            roomCallbacks.onRoomStateChanged(roomState);
+            try {
+                roomCallbacks.onRoomStateChanged(roomState);
+            } catch (Throwable e) {
+                Logger.error("An exception occurred while invoke onRoomStateChanged method", e);
+            }
+
         }
     }
 
@@ -121,7 +147,12 @@ public class WhiteSdk {
     public void fireBeingAbleToCommitChange(Object args) throws JSONException {
         // 获取事件,反序列化然后发送通知给监听者
         for (RoomCallbacks roomCallbacks : listeners) {
-            roomCallbacks.onBeingAbleToCommitChange(Boolean.valueOf(String.valueOf(args)));
+            try {
+                roomCallbacks.onBeingAbleToCommitChange(Boolean.valueOf(String.valueOf(args)));
+            } catch (Throwable e) {
+                Logger.error("An exception occurred while invoke onBeingAbleToCommitChange method", e);
+            }
+
         }
     }
 
@@ -130,7 +161,11 @@ public class WhiteSdk {
         // 获取事件,反序列化然后发送通知给监听者
         FrameError frameError = gson.fromJson(String.valueOf(args), FrameError.class);
         for (RoomCallbacks roomCallbacks : listeners) {
-            roomCallbacks.onCatchErrorWhenAppendFrame(frameError.getUserId(), new Exception(frameError.getError()));
+            try {
+                roomCallbacks.onCatchErrorWhenAppendFrame(frameError.getUserId(), new Exception(frameError.getError()));
+            } catch (Throwable e) {
+                Logger.error("An exception occurred while invoke onCatchErrorWhenAppendFrame method", e);
+            }
         }
     }
 
