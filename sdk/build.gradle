@@ -4,7 +4,7 @@ group='com.github.duty-os'
 
 android {
     compileSdkVersion 28
-    buildToolsVersion "28.0.0"
+    buildToolsVersion "28.0.2"
 
     defaultConfig {
         minSdkVersion 19
