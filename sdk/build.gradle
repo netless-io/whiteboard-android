@@ -29,6 +29,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     api 'com.google.code.gson:gson:2.8.5'
-    api 'com.github.wendux:DSBridge-Android:master-SNAPSHOT'
+    api 'com.github.wendux:DSBridge-Android:ac150b630b'
     testImplementation 'junit:junit:4.12'
 }
