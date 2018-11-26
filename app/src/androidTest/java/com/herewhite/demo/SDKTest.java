@@ -20,6 +20,7 @@ import com.herewhite.sdk.domain.DeviceType;
 import com.herewhite.sdk.domain.GlobalState;
 import com.herewhite.sdk.domain.MemberState;
 import com.herewhite.sdk.domain.Promise;
+import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.ViewMode;
@@ -389,10 +390,74 @@ public class SDKTest {
                     whiteSdk.addRoomCallbacks(new AbstractRoomCallbacks() {
                         @Override
                         public void onRoomStateChanged(RoomState modifyState) {
-                            assertEquals("onRoomStateChanged", modifyState.getMemberState().getCurrentApplianceName(), "rectangle");
+//                            assertEquals("onRoomStateChanged", modifyState.getMemberState().getCurrentApplianceName(), "rectangle");
+//                            lock.lock();
+//                            waitRoom.signal();
+//                            lock.unlock();
+                        }
+
+                        @Override
+                        public void onPhaseChanged(RoomPhase phase) {
                             lock.lock();
                             waitRoom.signal();
                             lock.unlock();
+                        }
+                    });
+                    whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new Promise<Room>() {
+                        @Override
+                        public void then(Room room) {
+                            assertNotNull(room);
+                            Log.i("white", "room create");
+                            MemberState memberState = new MemberState();
+                            memberState.setCurrentApplianceName("rectangle");
+                            room.setMemberState(memberState);
+
+                        }
+
+                        @Override
+                        public void catchEx(SDKError t) {
+
+                        }
+                    });
+                }
+            });
+            waitRoom.await();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            lock.unlock();
+        }
+
+    }
+
+
+    @Test
+    public void testAddCallBackThrowExceptionOnCallback() {
+        // Type text and then press the button.
+        final Lock lock = new ReentrantLock();
+        lock.lock();
+        try {
+            final Condition waitRoom = lock.newCondition();
+            onView(withId(R.id.white)).perform(new SDKViewAction() {
+                @Override
+                public void perform(UiController uiController, View view) {
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
+                    whiteSdk.addRoomCallbacks(new AbstractRoomCallbacks() {
+                        @Override
+                        public void onRoomStateChanged(RoomState modifyState) {
+//                            assertEquals("onRoomStateChanged", modifyState.getMemberState().getCurrentApplianceName(), "rectangle");
+//                            lock.lock();
+//                            waitRoom.signal();
+//                            lock.unlock();
+//                            throw new RuntimeException("I am a runtime exception");
+                        }
+
+                        @Override
+                        public void onPhaseChanged(RoomPhase phase) {
+                            lock.lock();
+                            waitRoom.signal();
+                            lock.unlock();
+                            throw new RuntimeException("I am a runtime exception");
                         }
                     });
                     whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new Promise<Room>() {
