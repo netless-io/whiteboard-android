@@ -28,7 +28,7 @@ dependencies {
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.google.code.gson:gson:2.8.5'
-    compile 'com.github.wendux:DSBridge-Android:ac150b630b'
+    api 'com.google.code.gson:gson:2.8.5'
+    api 'com.github.wendux:DSBridge-Android:ac150b630b'
     testImplementation 'junit:junit:4.12'
 }
