@@ -39,6 +39,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by buhe on 2018/8/16.
@@ -104,6 +105,7 @@ public class SDKTest {
 
                         @Override
                         public void catchEx(SDKError t) {
+                            assertTrue(false);
 
                         }
                     });

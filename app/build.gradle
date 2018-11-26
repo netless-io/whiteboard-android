@@ -22,8 +22,7 @@ android {
 dependencies {
     implementation project(':sdk')
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
-    implementation 'com.android.support:appcompat-v7:28.+'
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.google.code.gson:gson:2.8.5'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
