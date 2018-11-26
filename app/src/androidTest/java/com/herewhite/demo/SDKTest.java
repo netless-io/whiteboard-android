@@ -118,6 +118,44 @@ public class SDKTest {
     }
 
     @Test
+    public void testJoinRoomThrowErrorOnCallback() {
+        // Type text and then press the button.
+        final Lock lock = new ReentrantLock();
+        lock.lock();
+        try {
+            final Condition waitRoom = lock.newCondition();
+            onView(withId(R.id.white)).perform(new SDKViewAction() {
+                @Override
+                public void perform(UiController uiController, View view) {
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
+                    whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new Promise<Room>() {
+                        @Override
+                        public void then(Room room) {
+                            assertNotNull(room);
+                            Log.i("white", "room create");
+                            lock.lock();
+                            waitRoom.signal();
+                            lock.unlock();
+                            throw new RuntimeException("I am a runtime exception");
+                        }
+
+                        @Override
+                        public void catchEx(SDKError t) {
+
+                        }
+                    });
+                }
+            });
+            waitRoom.await();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            lock.unlock();
+        }
+
+    }
+
+    @Test
     public void testJoinRoomError() {
         // Type text and then press the button.
         final Lock lock = new ReentrantLock();
@@ -141,6 +179,7 @@ public class SDKTest {
                             lock.lock();
                             waitRoom.signal();
                             lock.unlock();
+                            throw new RuntimeException("I am a runtime exception");
                         }
                     });
                 }
