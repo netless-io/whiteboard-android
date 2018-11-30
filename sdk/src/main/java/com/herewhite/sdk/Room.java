@@ -12,9 +12,12 @@ import com.herewhite.sdk.domain.GlobalState;
 import com.herewhite.sdk.domain.ImageInformation;
 import com.herewhite.sdk.domain.LinearTransformationDescription;
 import com.herewhite.sdk.domain.MemberState;
+import com.herewhite.sdk.domain.Point;
 import com.herewhite.sdk.domain.PptPage;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomMember;
+import com.herewhite.sdk.domain.SDKError;
+import com.herewhite.sdk.domain.ScreenshotParam;
 import com.herewhite.sdk.domain.TextareaBox;
 import com.herewhite.sdk.domain.ViewMode;
 
@@ -99,6 +102,7 @@ public class Room {
                     promise.then(gson.fromJson(String.valueOf(o), GlobalState.class));
                 } catch (Throwable e) {
                     Logger.error("An exception occurred while resolve getGlobalState method promise", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
                 }
             }
         });
@@ -112,6 +116,7 @@ public class Room {
                     promise.then(gson.fromJson(String.valueOf(o), MemberState.class));
                 } catch (Throwable e) {
                     Logger.error("An exception occurred while resolve getMemberState method promise", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
                 }
             }
         });
@@ -125,6 +130,7 @@ public class Room {
                     promise.then(gson.fromJson(String.valueOf(o), RoomMember[].class));
                 } catch (Throwable e) {
                     Logger.error("An exception occurred while resolve getRoomMembers method promise", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
                 }
             }
         });
@@ -138,6 +144,7 @@ public class Room {
                     promise.then(gson.fromJson(String.valueOf(o), String[].class));
                 } catch (Throwable e) {
                     Logger.error("An exception occurred while resolve getPptImages method promise", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
                 }
             }
         });
@@ -151,14 +158,48 @@ public class Room {
                     promise.then(gson.fromJson(String.valueOf(o), BroadcastState.class));
                 } catch (Throwable e) {
                     Logger.error("An exception occurred while resolve getBroadcastState method promise", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
                 }
             }
         });
     }
 
-    public void convertToPointInWorld() {
-
+    public void zoomChange(double scale) {
+        bridge.callHandler("room.zoomChange", new Object[]{scale});
     }
+
+    public void disableOperations(boolean disableOperations) {
+        bridge.callHandler("room.disableOperations", new Object[]{disableOperations});
+    }
+
+//    public void screenshot(ScreenshotParam screenshotParam, final Promise<Object> promise) {
+//        bridge.callHandler("room.screenshot", new Object[]{screenshotParam}, new OnReturnValue<Object>() {
+//            @Override
+//            public void onValue(Object o) {
+//                try {
+//                    promise.then(o);
+//                } catch (Throwable e) {
+//                    Logger.error("An exception occurred while resolve screenshot method promise", e);
+//                    promise.catchEx(new SDKError(e.getMessage()));
+//                }
+//            }
+//        });
+//    }
+
+//    public void convertToPointInWorld(double x, double y, final Promise<Point> promise) {
+//        bridge.callHandler("room.convertToPointInWorld", new Object[]{}, new OnReturnValue<Object>() {
+//            @Override
+//            public void onValue(Object o) {
+//                try {
+//                    promise.then(gson.fromJson(String.valueOf(o), Point.class));
+//                } catch (Throwable e) {
+//                    Logger.error("An exception occurred while resolve convertToPointInWorld method promise", e);
+//                    promise.catchEx(new SDKError(e.getMessage()));
+//                }
+//            }
+//        });
+//    }
+
 
     public void fireMagixEvent(EventEntry eventEntry) {
         EventListener eventListener = eventListenerConcurrentHashMap.get(eventEntry.getEventName());

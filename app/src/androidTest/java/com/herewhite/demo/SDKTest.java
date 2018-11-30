@@ -488,6 +488,168 @@ public class SDKTest {
         }
 
     }
+
+
+    @Test
+    public void testDisconnect() {
+        // Type text and then press the button.
+        final Lock lock = new ReentrantLock();
+        lock.lock();
+        try {
+            final Condition waitRoom = lock.newCondition();
+            onView(withId(R.id.white)).perform(new SDKViewAction() {
+                @Override
+                public void perform(UiController uiController, View view) {
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
+                    whiteSdk.addRoomCallbacks(new AbstractRoomCallbacks() {
+                        @Override
+                        public void onRoomStateChanged(RoomState modifyState) {
+//                            assertEquals("onRoomStateChanged", modifyState.getMemberState().getCurrentApplianceName(), "rectangle");
+//                            lock.lock();
+//                            waitRoom.signal();
+//                            lock.unlock();
+                        }
+
+                        @Override
+                        public void onPhaseChanged(RoomPhase phase) {
+                            if(phase == RoomPhase.disconnected){
+                                lock.lock();
+                                waitRoom.signal();
+                                lock.unlock();
+                            }
+                        }
+                    });
+                    whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new Promise<Room>() {
+                        @Override
+                        public void then(Room room) {
+                            assertNotNull(room);
+                            Log.i("white", "room create");
+
+
+                            room.disconnect();
+
+                        }
+
+                        @Override
+                        public void catchEx(SDKError t) {
+
+                        }
+                    });
+                }
+            });
+            waitRoom.await();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            lock.unlock();
+        }
+
+    }
+
+
+    @Test
+    public void testZoomChange() {
+        // Type text and then press the button.
+        final Lock lock = new ReentrantLock();
+        lock.lock();
+        try {
+            final Condition waitRoom = lock.newCondition();
+            onView(withId(R.id.white)).perform(new SDKViewAction() {
+                @Override
+                public void perform(UiController uiController, View view) {
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
+                    whiteSdk.addRoomCallbacks(new AbstractRoomCallbacks() {
+                        @Override
+                        public void onRoomStateChanged(RoomState modifyState) {
+//                            assertEquals("onRoomStateChanged", modifyState.getMemberState().getCurrentApplianceName(), "rectangle");
+//                            lock.lock();
+//                            waitRoom.signal();
+//                            lock.unlock();
+                        }
+
+                        @Override
+                        public void onPhaseChanged(RoomPhase phase) {
+
+                        }
+                    });
+                    whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new Promise<Room>() {
+                        @Override
+                        public void then(Room room) {
+                            assertNotNull(room);
+                            Log.i("white", "room create");
+                            room.zoomChange(5);
+                            lock.lock();
+                            waitRoom.signal();
+                            lock.unlock();
+                        }
+
+                        @Override
+                        public void catchEx(SDKError t) {
+
+                        }
+                    });
+                }
+            });
+            waitRoom.await();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            lock.unlock();
+        }
+
+    }
+
+    @Test
+    public void testDisableOperations() {
+        // Type text and then press the button.
+        final Lock lock = new ReentrantLock();
+        lock.lock();
+        try {
+            final Condition waitRoom = lock.newCondition();
+            onView(withId(R.id.white)).perform(new SDKViewAction() {
+                @Override
+                public void perform(UiController uiController, View view) {
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
+                    whiteSdk.addRoomCallbacks(new AbstractRoomCallbacks() {
+                        @Override
+                        public void onRoomStateChanged(RoomState modifyState) {
+//                            assertEquals("onRoomStateChanged", modifyState.getMemberState().getCurrentApplianceName(), "rectangle");
+//                            lock.lock();
+//                            waitRoom.signal();
+//                            lock.unlock();
+                        }
+
+                        @Override
+                        public void onPhaseChanged(RoomPhase phase) {
+
+                        }
+                    });
+                    whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new Promise<Room>() {
+                        @Override
+                        public void then(Room room) {
+                            assertNotNull(room);
+                            Log.i("white", "room create");
+                            room.disableOperations(true);
+                            lock.lock();
+                            waitRoom.signal();
+                            lock.unlock();
+                        }
+
+                        @Override
+                        public void catchEx(SDKError t) {
+
+                        }
+                    });
+                }
+            });
+            waitRoom.await();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            lock.unlock();
+        }
+
+    }
 }
 
 

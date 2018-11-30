@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.herewhite.sdk.AbstractRoomCallbacks;
 import com.herewhite.sdk.Environment;
+import com.herewhite.sdk.Logger;
 import com.herewhite.sdk.Room;
 import com.herewhite.sdk.RoomParams;
 import com.herewhite.sdk.WhiteBroadView;
@@ -20,10 +21,12 @@ import com.herewhite.sdk.domain.DeviceType;
 import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.EventListener;
 import com.herewhite.sdk.domain.MemberState;
+import com.herewhite.sdk.domain.Point;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
+import com.herewhite.sdk.domain.ScreenshotParam;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -101,8 +104,40 @@ public class MainActivity extends AppCompatActivity {
                 MemberState memberState = new MemberState();
 //                memberState.setStrokeColor(new int[]{99, 99, 99});
                 memberState.setCurrentApplianceName(Appliance.ELLIPSE);
+
 ////                memberState.setStrokeWidth(10);
                 room.setMemberState(memberState);
+
+                room.zoomChange(10);
+//                ScreenshotParam screenshotParam = new ScreenshotParam();
+//                screenshotParam.setHeight(640);
+//                screenshotParam.setWidth(480);
+
+                room.disableOperations(true);
+
+//                room.screenshot(screenshotParam, new Promise<Object>() {
+//                    @Override
+//                    public void then(Object o) {
+//                        Logger.info(o.toString());
+//                    }
+//
+//                    @Override
+//                    public void catchEx(SDKError t) {
+//                        Logger.error("screenshot  error", t);
+//                    }
+//                });
+
+//                room.convertToPointInWorld(10, 10, new Promise<Point>() {
+//                    @Override
+//                    public void then(Point point) {
+//                        Logger.info(point.toString());
+//                    }
+//
+//                    @Override
+//                    public void catchEx(SDKError t) {
+//                        Logger.error("convertToPointInWorld  error", t);
+//                    }
+//                });
 
                 room.addMagixEventListener("helloworld", new EventListener() {
                     @Override
@@ -145,8 +180,6 @@ public class MainActivity extends AppCompatActivity {
                 payload.put("test", "nothing");
 
                 room.dispatchMagixEvent(new AkkoEvent("helloworld", payload));
-
-
 
 
 //
