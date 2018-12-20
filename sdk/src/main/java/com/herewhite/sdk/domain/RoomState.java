@@ -12,6 +12,7 @@ public class RoomState {
     private LinearTransformationDescription transform;
     private RoomMember[] roomMembers;
     private String[] pptImages;
+    private Double zoomScale;
 
     public GlobalState getGlobalState() {
         return globalState;
@@ -59,5 +60,13 @@ public class RoomState {
 
     public void setPptImages(String[] pptImages) {
         this.pptImages = pptImages;
+    }
+
+    public Double getZoomScale() {
+        return zoomScale;
+    }
+
+    public void setZoomScale(Double zoomScale) {
+        this.zoomScale = zoomScale;
     }
 }
