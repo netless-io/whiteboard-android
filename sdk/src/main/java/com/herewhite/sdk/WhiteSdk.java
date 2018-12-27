@@ -11,9 +11,11 @@ import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
+import com.tencent.smtt.sdk.QbSdk;
 
 import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.WeakHashMap;
@@ -33,6 +35,20 @@ public class WhiteSdk {
     private final Context context;
     private final List<RoomCallbacks> listeners = new ArrayList<>();
     private final ConcurrentHashMap<String, Room> roomConcurrentHashMap = new ConcurrentHashMap<>(); // uuid ,Room
+
+    public static void initEngine(Context context, final Promise<Boolean> promise) {
+        QbSdk.initX5Environment(context, new QbSdk.PreInitCallback() {
+            @Override
+            public void onCoreInitFinished() {
+            }
+
+            @Override
+            public void onViewInitFinished(boolean b) {
+                promise.then(true);
+            }
+        });
+    }
+
 
     public WhiteSdk(WhiteBroadView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration) {
         this.bridge = bridge;

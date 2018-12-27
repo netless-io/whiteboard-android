@@ -3,6 +3,9 @@ package com.herewhite.sdk;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import com.tencent.smtt.export.external.extension.interfaces.IX5WebViewExtension;
+import com.tencent.smtt.sdk.QbSdk;
+
 import wendu.dsbridge.DWebView;
 
 /**
@@ -26,8 +29,10 @@ public class WhiteBroadView extends DWebView {
 
     private void init() {
         //DEBUG
-        DWebView.setWebContentsDebuggingEnabled(true);
+//        DWebView.setWebContentsDebuggingEnabled(true);
+//        System.out.println("WebView version " + DWebView.getTbsSDKVersion(this.getContext()));
 //        this.loadUrl("http://192.168.199.111:3100");
+        IX5WebViewExtension e = this.getX5WebViewExtension();
         this.loadUrl("file:///android_asset/cloud/index.html");
     }
 

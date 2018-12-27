@@ -7,7 +7,7 @@ android {
     buildToolsVersion "28.0.2"
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 17
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -29,6 +29,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation 'com.google.code.gson:gson:2.8.5'
-    api 'com.github.wendux:DSBridge-Android:ac150b630b'
+    api 'com.github.wendux:DSBridge-Android:x5-3.0-SNAPSHOT'
     testImplementation 'junit:junit:4.12'
 }

@@ -27,6 +27,7 @@ import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.ScreenshotParam;
+import com.tencent.smtt.sdk.QbSdk;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -49,29 +50,38 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.js);
-        whiteBroadView = (WhiteBroadView) findViewById(R.id.white);
-//        whiteBroadView.switchEnv(Environment.dev);
-        demoAPI.createRoom("unknow", 100, new Callback() {
+        WhiteSdk.initEngine(this.getApplicationContext(), new Promise<Boolean>() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void then(Boolean aBoolean) {
+                whiteBroadView = (WhiteBroadView) findViewById(R.id.white);
+//        whiteBroadView.switchEnv(Environment.dev);
+                demoAPI.createRoom("unknow", 100, new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
 
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        JsonObject room = gson.fromJson(response.body().string(), JsonObject.class);
+                        String uuid = room.getAsJsonObject("msg").getAsJsonObject("room").get("uuid").getAsString();
+                        String roomToken = room.getAsJsonObject("msg").get("roomToken").getAsString();
+                        Log.i("white", uuid + "|" + roomToken);
+                        if (whiteBroadView.getEnv() == Environment.dev) {
+                            joinRoom(TEST_UUID, TEST_ROOM_TOKEN);
+                        } else {
+                            joinRoom(uuid, roomToken);
+                        }
+
+                    }
+                });
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                JsonObject room = gson.fromJson(response.body().string(), JsonObject.class);
-                String uuid = room.getAsJsonObject("msg").getAsJsonObject("room").get("uuid").getAsString();
-                String roomToken = room.getAsJsonObject("msg").get("roomToken").getAsString();
-                Log.i("white", uuid + "|" + roomToken);
-                if (whiteBroadView.getEnv() == Environment.dev) {
-                    joinRoom(TEST_UUID, TEST_ROOM_TOKEN);
-                } else {
-                    joinRoom(uuid, roomToken);
-                }
+            public void catchEx(SDKError t) {
 
             }
         });
-
 
     }
 
@@ -103,17 +113,17 @@ public class MainActivity extends AppCompatActivity {
 //                room.setGlobalState(globalState);
                 MemberState memberState = new MemberState();
 //                memberState.setStrokeColor(new int[]{99, 99, 99});
-                memberState.setCurrentApplianceName(Appliance.ELLIPSE);
+                memberState.setCurrentApplianceName(Appliance.RECTANGLE);
 
 ////                memberState.setStrokeWidth(10);
                 room.setMemberState(memberState);
 
-                room.zoomChange(10);
+//                room.zoomChange(10);
 //                ScreenshotParam screenshotParam = new ScreenshotParam();
 //                screenshotParam.setHeight(640);
 //                screenshotParam.setWidth(480);
 
-                room.disableOperations(true);
+//                room.disableOperations(true);
 
 //                room.screenshot(screenshotParam, new Promise<Object>() {
 //                    @Override
