@@ -57,7 +57,7 @@ public class Room {
     }
 
     public void setViewMode(ViewMode viewMode) {
-        bridge.callHandler("room.setViewMode", new Object[]{gson.toJson(viewMode)});
+        bridge.callHandler("room.setViewMode", new Object[]{viewMode.name()});
     }
 
     public void setViewSize(int width, int height) {

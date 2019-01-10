@@ -5,7 +5,7 @@ package com.herewhite.sdk.domain;
  */
 
 public enum ViewMode {
-    freedom,
-    follower,
-    broadcaster
+    Freedom,
+    Follower,
+    Broadcaster
 }
