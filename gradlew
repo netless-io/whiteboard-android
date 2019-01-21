@@ -7,6 +7,8 @@
 ##############################################################################
 
 # Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
+yes | $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-28"
+yes | $ANDROID_HOME/tools/bin/sdkmanager "build-tools;28.0.2"
 DEFAULT_JVM_OPTS=""
 
 APP_NAME="Gradle"
