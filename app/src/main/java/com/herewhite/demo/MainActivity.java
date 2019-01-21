@@ -20,13 +20,16 @@ import com.herewhite.sdk.domain.Appliance;
 import com.herewhite.sdk.domain.DeviceType;
 import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.EventListener;
+import com.herewhite.sdk.domain.GlobalState;
 import com.herewhite.sdk.domain.MemberState;
 import com.herewhite.sdk.domain.Point;
+import com.herewhite.sdk.domain.PptPage;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.ScreenshotParam;
+import com.herewhite.sdk.domain.UrlInterrupter;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -79,7 +82,13 @@ public class MainActivity extends AppCompatActivity {
         WhiteSdk whiteSdk = new WhiteSdk(
                 whiteBroadView,
                 MainActivity.this,
-                new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1));
+                new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1),
+                new UrlInterrupter() {
+                    @Override
+                    public String urlInterrupter(String sourceUrl) {
+                        return sourceUrl;
+                    }
+                });
         whiteSdk.addRoomCallbacks(new AbstractRoomCallbacks() {
             @Override
             public void onPhaseChanged(RoomPhase phase) {
@@ -108,12 +117,12 @@ public class MainActivity extends AppCompatActivity {
 ////                memberState.setStrokeWidth(10);
                 room.setMemberState(memberState);
 
-                room.zoomChange(10);
+//                room.zoomChange(10);
 //                ScreenshotParam screenshotParam = new ScreenshotParam();
 //                screenshotParam.setHeight(640);
 //                screenshotParam.setWidth(480);
 
-                room.disableOperations(true);
+//                room.disableOperations(true);
 
 //                room.screenshot(screenshotParam, new Promise<Object>() {
 //                    @Override
@@ -190,9 +199,13 @@ public class MainActivity extends AppCompatActivity {
 //                globalState.setCurrentSceneIndex(1);
 //                room.setGlobalState(globalState);
 //
-//                room.pushPptPages(new PptPage[]{
-//                        new PptPage("https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/image.png", 600d, 600d),
-//                });
+                room.pushPptPages(new PptPage[]{
+                        new PptPage("https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/image.png", 600d, 600d),
+                });
+
+                GlobalState globalState = new GlobalState();
+                globalState.setCurrentSceneIndex(1);
+                room.setGlobalState(globalState);
 
 //                room.setViewMode(ViewMode.broadcaster);
 //

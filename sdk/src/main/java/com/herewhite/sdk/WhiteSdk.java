@@ -7,16 +7,16 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.FrameError;
-import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
+import com.herewhite.sdk.domain.SDKError;
+import com.herewhite.sdk.domain.UrlInterrupter;
 
 import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import wendu.dsbridge.OnReturnValue;
@@ -31,14 +31,27 @@ public class WhiteSdk {
 
     private final WhiteBroadView bridge;
     private final Context context;
+    private UrlInterrupter urlInterrupter;
     private final List<RoomCallbacks> listeners = new ArrayList<>();
     private final ConcurrentHashMap<String, Room> roomConcurrentHashMap = new ConcurrentHashMap<>(); // uuid ,Room
+    private final boolean hasUrlInterrupterAPI;
 
     public WhiteSdk(WhiteBroadView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration) {
         this.bridge = bridge;
         this.context = context;
+        this.hasUrlInterrupterAPI = false;
         bridge.addJavascriptObject(this, "sdk");
         bridge.callHandler("sdk.newWhiteSdk", new Object[]{gson.toJson(whiteSdkConfiguration)});
+    }
+
+    public WhiteSdk(WhiteBroadView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, UrlInterrupter urlInterrupter) {
+        this.bridge = bridge;
+        this.context = context;
+        this.urlInterrupter = urlInterrupter;
+        this.hasUrlInterrupterAPI = true;
+        bridge.addJavascriptObject(this, "sdk");
+        bridge.callHandler("sdk.newWhiteSdk", new Object[]{gson.toJson(whiteSdkConfiguration)});
+
     }
 
     /**
@@ -180,5 +193,15 @@ public class WhiteSdk {
         if (room != null) {
             room.fireMagixEvent(eventEntry);
         }
+    }
+
+    @JavascriptInterface
+    public String hasUrlInterrupterAPI(Object args) {
+        return this.hasUrlInterrupterAPI ? "true" : "false";
+    }
+
+    @JavascriptInterface
+    public String urlInterrupter(Object args) {
+        return this.urlInterrupter.urlInterrupter(String.valueOf(args));
     }
 }
