@@ -9,31 +9,22 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.herewhite.sdk.AbstractRoomCallbacks;
 import com.herewhite.sdk.Environment;
-import com.herewhite.sdk.Logger;
 import com.herewhite.sdk.Room;
 import com.herewhite.sdk.RoomParams;
 import com.herewhite.sdk.WhiteBroadView;
 import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
-import com.herewhite.sdk.domain.AkkoEvent;
 import com.herewhite.sdk.domain.Appliance;
 import com.herewhite.sdk.domain.DeviceType;
-import com.herewhite.sdk.domain.EventEntry;
-import com.herewhite.sdk.domain.EventListener;
-import com.herewhite.sdk.domain.GlobalState;
 import com.herewhite.sdk.domain.MemberState;
-import com.herewhite.sdk.domain.Point;
-import com.herewhite.sdk.domain.PptPage;
+import com.herewhite.sdk.domain.RoomMouseEvent;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
-import com.herewhite.sdk.domain.ScreenshotParam;
 import com.herewhite.sdk.domain.UrlInterrupter;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -82,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         WhiteSdk whiteSdk = new WhiteSdk(
                 whiteBroadView,
                 MainActivity.this,
-                new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1),
+                new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1, true),
                 new UrlInterrupter() {
                     @Override
                     public String urlInterrupter(String sourceUrl) {
@@ -112,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 //                room.setGlobalState(globalState);
                 MemberState memberState = new MemberState();
 //                memberState.setStrokeColor(new int[]{99, 99, 99});
-                memberState.setCurrentApplianceName(Appliance.ELLIPSE);
+                memberState.setCurrentApplianceName(Appliance.PENCIL);
 
 ////                memberState.setStrokeWidth(10);
                 room.setMemberState(memberState);
@@ -122,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 //                screenshotParam.setHeight(640);
 //                screenshotParam.setWidth(480);
 
-//                room.disableOperations(true);
+                room.disableOperations(true);
 
 //                room.screenshot(screenshotParam, new Promise<Object>() {
 //                    @Override
@@ -148,47 +139,47 @@ public class MainActivity extends AppCompatActivity {
 //                    }
 //                });
 
-                room.addMagixEventListener("helloworld", new EventListener() {
-                    @Override
-                    public void onEvent(EventEntry eventEntry) {
-                        showToast(gson.toJson(eventEntry.getPayload()));
-                    }
-                });
-
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Map<String, String> payload = new HashMap<>();
-                payload.put("test", "1");
-                room.dispatchMagixEvent(new AkkoEvent("helloworld", payload));
-
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                payload = new HashMap<>();
-                payload.put("test", "2");
-                room.dispatchMagixEvent(new AkkoEvent("helloworld", payload));
-
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                room.removeMagixEventListener("helloworld");
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                payload = new HashMap<>();
-                payload.put("test", "nothing");
-
-                room.dispatchMagixEvent(new AkkoEvent("helloworld", payload));
+//                room.addMagixEventListener("helloworld", new EventListener() {
+//                    @Override
+//                    public void onEvent(EventEntry eventEntry) {
+//                        showToast(gson.toJson(eventEntry.getPayload()));
+//                    }
+//                });
+//
+//                try {
+//                    Thread.sleep(2000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                Map<String, String> payload = new HashMap<>();
+//                payload.put("test", "1");
+//                room.dispatchMagixEvent(new AkkoEvent("helloworld", payload));
+//
+//                try {
+//                    Thread.sleep(2000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                payload = new HashMap<>();
+//                payload.put("test", "2");
+//                room.dispatchMagixEvent(new AkkoEvent("helloworld", payload));
+//
+//                try {
+//                    Thread.sleep(2000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                room.removeMagixEventListener("helloworld");
+//                try {
+//                    Thread.sleep(2000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                payload = new HashMap<>();
+//                payload.put("test", "nothing");
+//
+//                room.dispatchMagixEvent(new AkkoEvent("helloworld", payload));
 
 
 //
@@ -199,13 +190,20 @@ public class MainActivity extends AppCompatActivity {
 //                globalState.setCurrentSceneIndex(1);
 //                room.setGlobalState(globalState);
 //
-                room.pushPptPages(new PptPage[]{
-                        new PptPage("https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/image.png", 600d, 600d),
-                });
+//                room.pushPptPages(new PptPage[]{
+//                        new PptPage("https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/image.png", 600d, 600d),
+//                });
+//
+//                GlobalState globalState = new GlobalState();
+//                globalState.setCurrentSceneIndex(1);
+//                room.setGlobalState(globalState);
 
-                GlobalState globalState = new GlobalState();
-                globalState.setCurrentSceneIndex(1);
-                room.setGlobalState(globalState);
+                room.externalDeviceEventDown(new RoomMouseEvent(300,300));
+                room.externalDeviceEventMove(new RoomMouseEvent(300,400));
+                room.externalDeviceEventMove(new RoomMouseEvent(300,500));
+                room.externalDeviceEventMove(new RoomMouseEvent(300,600));
+                room.externalDeviceEventMove(new RoomMouseEvent(300,700));
+                room.externalDeviceEventLeave(new RoomMouseEvent(300,700));
 
 //                room.setViewMode(ViewMode.broadcaster);
 //

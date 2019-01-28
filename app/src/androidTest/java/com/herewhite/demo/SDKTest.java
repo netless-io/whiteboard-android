@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 
 import com.herewhite.sdk.AbstractRoomCallbacks;
-import com.herewhite.sdk.Environment;
 import com.herewhite.sdk.Room;
 import com.herewhite.sdk.RoomParams;
 import com.herewhite.sdk.WhiteBroadView;
@@ -75,7 +74,7 @@ public class SDKTest {
 
             @Override
             public void perform(UiController uiController, View view) {
-                WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
+                WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
                 assertNotNull(whiteSdk);
             }
         });
@@ -92,7 +91,7 @@ public class SDKTest {
             onView(withId(R.id.white)).perform(new SDKViewAction() {
                 @Override
                 public void perform(UiController uiController, View view) {
-                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
                     whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new Promise<Room>() {
                         @Override
                         public void then(Room room) {
@@ -130,7 +129,7 @@ public class SDKTest {
             onView(withId(R.id.white)).perform(new SDKViewAction() {
                 @Override
                 public void perform(UiController uiController, View view) {
-                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
                     whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new Promise<Room>() {
                         @Override
                         public void then(Room room) {
@@ -168,7 +167,7 @@ public class SDKTest {
             onView(withId(R.id.white)).perform(new SDKViewAction() {
                 @Override
                 public void perform(UiController uiController, View view) {
-                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
                     whiteSdk.joinRoom(new RoomParams(UUID + "NotExist", ROOM_TOKEN), new Promise<Room>() {
                         @Override
                         public void then(Room room) {
@@ -206,7 +205,7 @@ public class SDKTest {
             onView(withId(R.id.white)).perform(new SDKViewAction() {
                 @Override
                 public void perform(UiController uiController, View view) {
-                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
                     whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new Promise<Room>() {
                         @Override
                         public void then(Room room) {
@@ -268,7 +267,7 @@ public class SDKTest {
             onView(withId(R.id.white)).perform(new SDKViewAction() {
                 @Override
                 public void perform(UiController uiController, View view) {
-                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
                     whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new Promise<Room>() {
                         @Override
                         public void then(Room room) {
@@ -327,7 +326,7 @@ public class SDKTest {
             onView(withId(R.id.white)).perform(new SDKViewAction() {
                 @Override
                 public void perform(UiController uiController, View view) {
-                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
                     whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new Promise<Room>() {
                         @Override
                         public void then(Room room) {
@@ -388,7 +387,7 @@ public class SDKTest {
             onView(withId(R.id.white)).perform(new SDKViewAction() {
                 @Override
                 public void perform(UiController uiController, View view) {
-                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
                     whiteSdk.addRoomCallbacks(new AbstractRoomCallbacks() {
                         @Override
                         public void onRoomStateChanged(RoomState modifyState) {
@@ -443,7 +442,7 @@ public class SDKTest {
             onView(withId(R.id.white)).perform(new SDKViewAction() {
                 @Override
                 public void perform(UiController uiController, View view) {
-                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
                     whiteSdk.addRoomCallbacks(new AbstractRoomCallbacks() {
                         @Override
                         public void onRoomStateChanged(RoomState modifyState) {
@@ -500,7 +499,7 @@ public class SDKTest {
             onView(withId(R.id.white)).perform(new SDKViewAction() {
                 @Override
                 public void perform(UiController uiController, View view) {
-                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
                     whiteSdk.addRoomCallbacks(new AbstractRoomCallbacks() {
                         @Override
                         public void onRoomStateChanged(RoomState modifyState) {
@@ -557,7 +556,7 @@ public class SDKTest {
             onView(withId(R.id.white)).perform(new SDKViewAction() {
                 @Override
                 public void perform(UiController uiController, View view) {
-                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
                     whiteSdk.addRoomCallbacks(new AbstractRoomCallbacks() {
                         @Override
                         public void onRoomStateChanged(RoomState modifyState) {
@@ -609,7 +608,7 @@ public class SDKTest {
             onView(withId(R.id.white)).perform(new SDKViewAction() {
                 @Override
                 public void perform(UiController uiController, View view) {
-                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
                     whiteSdk.addRoomCallbacks(new AbstractRoomCallbacks() {
                         @Override
                         public void onRoomStateChanged(RoomState modifyState) {
