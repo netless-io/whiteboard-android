@@ -16,6 +16,7 @@ import com.herewhite.sdk.domain.Point;
 import com.herewhite.sdk.domain.PptPage;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomMember;
+import com.herewhite.sdk.domain.RoomMouseEvent;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.ScreenshotParam;
 import com.herewhite.sdk.domain.TextareaBox;
@@ -224,6 +225,23 @@ public class Room {
     public void removeMagixEventListener(String eventName) {
         this.eventListenerConcurrentHashMap.remove(eventName);
         bridge.callHandler("room.removeMagixEventListener", new Object[]{eventName});
+    }
+
+
+    public void externalDeviceEventDown(RoomMouseEvent mouseEvent) {
+        bridge.callHandler("room.externalDeviceEventDown", new Object[]{gson.toJson(mouseEvent)});
+    }
+
+    public void externalDeviceEventMove(RoomMouseEvent mouseEvent) {
+        bridge.callHandler("room.externalDeviceEventMove", new Object[]{gson.toJson(mouseEvent)});
+    }
+
+    public void externalDeviceEventUp(RoomMouseEvent mouseEvent) {
+        bridge.callHandler("room.externalDeviceEventUp", new Object[]{gson.toJson(mouseEvent)});
+    }
+
+    public void externalDeviceEventLeave(RoomMouseEvent mouseEvent) {
+        bridge.callHandler("room.externalDeviceEventLeave", new Object[]{gson.toJson(mouseEvent)});
     }
 
 
