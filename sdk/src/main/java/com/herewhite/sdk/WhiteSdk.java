@@ -204,4 +204,9 @@ public class WhiteSdk {
     public String urlInterrupter(Object args) {
         return this.urlInterrupter.urlInterrupter(String.valueOf(args));
     }
+
+    @JavascriptInterface
+    public void logger(Object args) {
+        Logger.info("From JS: " + String.valueOf(args));
+    }
 }

@@ -9,32 +9,22 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.herewhite.sdk.AbstractRoomCallbacks;
 import com.herewhite.sdk.Environment;
-import com.herewhite.sdk.Logger;
 import com.herewhite.sdk.Room;
 import com.herewhite.sdk.RoomParams;
 import com.herewhite.sdk.WhiteBroadView;
 import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
-import com.herewhite.sdk.domain.AkkoEvent;
 import com.herewhite.sdk.domain.Appliance;
 import com.herewhite.sdk.domain.DeviceType;
-import com.herewhite.sdk.domain.EventEntry;
-import com.herewhite.sdk.domain.EventListener;
-import com.herewhite.sdk.domain.GlobalState;
 import com.herewhite.sdk.domain.MemberState;
-import com.herewhite.sdk.domain.Point;
-import com.herewhite.sdk.domain.PptPage;
 import com.herewhite.sdk.domain.RoomMouseEvent;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
-import com.herewhite.sdk.domain.ScreenshotParam;
 import com.herewhite.sdk.domain.UrlInterrupter;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -83,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         WhiteSdk whiteSdk = new WhiteSdk(
                 whiteBroadView,
                 MainActivity.this,
-                new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1),
+                new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1, true),
                 new UrlInterrupter() {
                     @Override
                     public String urlInterrupter(String sourceUrl) {
@@ -208,12 +198,12 @@ public class MainActivity extends AppCompatActivity {
 //                globalState.setCurrentSceneIndex(1);
 //                room.setGlobalState(globalState);
 
-                room.externalDeviceEventDown(new RoomMouseEvent(30,30));
-                room.externalDeviceEventMove(new RoomMouseEvent(30,40));
-                room.externalDeviceEventMove(new RoomMouseEvent(30,50));
-                room.externalDeviceEventMove(new RoomMouseEvent(30,60));
-                room.externalDeviceEventMove(new RoomMouseEvent(30,70));
-                room.externalDeviceEventLeave(new RoomMouseEvent(30,80));
+                room.externalDeviceEventDown(new RoomMouseEvent(300,300));
+                room.externalDeviceEventMove(new RoomMouseEvent(300,400));
+                room.externalDeviceEventMove(new RoomMouseEvent(300,500));
+                room.externalDeviceEventMove(new RoomMouseEvent(300,600));
+                room.externalDeviceEventMove(new RoomMouseEvent(300,700));
+                room.externalDeviceEventLeave(new RoomMouseEvent(300,700));
 
 //                room.setViewMode(ViewMode.broadcaster);
 //

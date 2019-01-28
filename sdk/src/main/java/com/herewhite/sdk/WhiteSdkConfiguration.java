@@ -10,11 +10,17 @@ public class WhiteSdkConfiguration {
     private DeviceType deviceType;
     private double zoomMaxScale;
     private double zoomMinScale;
+    private boolean enableDebug;
 
     public WhiteSdkConfiguration(DeviceType deviceType, double zoomMaxScale, double zoomMinScale) {
+        this(deviceType, zoomMaxScale, zoomMinScale, false);
+    }
+
+    public WhiteSdkConfiguration(DeviceType deviceType, double zoomMaxScale, double zoomMinScale, boolean enableDebug) {
         this.deviceType = deviceType;
         this.zoomMaxScale = zoomMaxScale;
         this.zoomMinScale = zoomMinScale;
+        this.enableDebug = enableDebug;
     }
 
     public DeviceType getDeviceType() {
@@ -39,5 +45,13 @@ public class WhiteSdkConfiguration {
 
     public void setZoomMinScale(double zoomMinScale) {
         this.zoomMinScale = zoomMinScale;
+    }
+
+    public boolean isEnableDebug() {
+        return enableDebug;
+    }
+
+    public void setEnableDebug(boolean enableDebug) {
+        this.enableDebug = enableDebug;
     }
 }
