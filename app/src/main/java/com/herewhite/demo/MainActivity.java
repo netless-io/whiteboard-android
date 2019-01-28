@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 //                screenshotParam.setHeight(640);
 //                screenshotParam.setWidth(480);
 
-//                room.disableOperations(true);
+                room.disableOperations(true);
 
 //                room.screenshot(screenshotParam, new Promise<Object>() {
 //                    @Override
