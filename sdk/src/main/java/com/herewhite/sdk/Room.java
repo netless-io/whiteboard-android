@@ -99,7 +99,6 @@ public class Room {
     public void insertImage(ImageInformationWithUrl imageInformationWithUrl) {
         ImageInformation imageInformation = new ImageInformation();
         String uuid = UUID.randomUUID().toString();
-        Logger.info(uuid);
         imageInformation.setUuid(uuid);
         imageInformation.setCenterX(imageInformationWithUrl.getCenterX());
         imageInformation.setCenterY(imageInformationWithUrl.getCenterY());
