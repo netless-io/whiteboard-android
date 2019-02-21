@@ -10,6 +10,7 @@ import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.EventListener;
 import com.herewhite.sdk.domain.GlobalState;
 import com.herewhite.sdk.domain.ImageInformation;
+import com.herewhite.sdk.domain.ImageInformationWithUrl;
 import com.herewhite.sdk.domain.LinearTransformationDescription;
 import com.herewhite.sdk.domain.MemberState;
 import com.herewhite.sdk.domain.Point;
@@ -24,6 +25,7 @@ import com.herewhite.sdk.domain.ViewMode;
 
 import org.json.JSONObject;
 
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import wendu.dsbridge.OnReturnValue;
@@ -83,7 +85,7 @@ public class Room {
     }
 
     public void insertImage(ImageInformation imageInfo) {
-        bridge.callHandler("room.removePage", new Object[]{gson.toJson(imageInfo)});
+        bridge.callHandler("room.insertImage", new Object[]{gson.toJson(imageInfo)});
     }
 
     public void pushPptPages(PptPage[] pages) {
@@ -92,6 +94,19 @@ public class Room {
 
     public void completeImageUpload(String uuid, String url) {
         bridge.callHandler("room.completeImageUpload", new Object[]{uuid, url});
+    }
+
+    public void insertImage(ImageInformationWithUrl imageInformationWithUrl) {
+        ImageInformation imageInformation = new ImageInformation();
+        String uuid = UUID.randomUUID().toString();
+        Logger.info(uuid);
+        imageInformation.setUuid(uuid);
+        imageInformation.setCenterX(imageInformationWithUrl.getCenterX());
+        imageInformation.setCenterY(imageInformationWithUrl.getCenterY());
+        imageInformation.setHeight(imageInformationWithUrl.getHeight());
+        imageInformation.setWidth(imageInformationWithUrl.getWidth());
+        this.insertImage(imageInformation);
+        this.completeImageUpload(uuid, imageInformationWithUrl.getUrl());
     }
 
 
