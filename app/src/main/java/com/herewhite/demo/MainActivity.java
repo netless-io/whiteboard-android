@@ -16,6 +16,7 @@ import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
 import com.herewhite.sdk.domain.Appliance;
 import com.herewhite.sdk.domain.DeviceType;
+import com.herewhite.sdk.domain.ImageInformationWithUrl;
 import com.herewhite.sdk.domain.MemberState;
 import com.herewhite.sdk.domain.RoomMouseEvent;
 import com.herewhite.sdk.domain.SDKError;
@@ -108,12 +109,14 @@ public class MainActivity extends AppCompatActivity {
 ////                memberState.setStrokeWidth(10);
                 room.setMemberState(memberState);
 
+                room.insertImage(new ImageInformationWithUrl(0d, 0d, 100d, 200d, "https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/image.png"));
+
 //                room.zoomChange(10);
 //                ScreenshotParam screenshotParam = new ScreenshotParam();
 //                screenshotParam.setHeight(640);
 //                screenshotParam.setWidth(480);
 
-                room.disableOperations(true);
+//                room.disableOperations(true);
 
 //                room.screenshot(screenshotParam, new Promise<Object>() {
 //                    @Override
@@ -198,12 +201,12 @@ public class MainActivity extends AppCompatActivity {
 //                globalState.setCurrentSceneIndex(1);
 //                room.setGlobalState(globalState);
 
-                room.externalDeviceEventDown(new RoomMouseEvent(300,300));
-                room.externalDeviceEventMove(new RoomMouseEvent(300,400));
-                room.externalDeviceEventMove(new RoomMouseEvent(300,500));
-                room.externalDeviceEventMove(new RoomMouseEvent(300,600));
-                room.externalDeviceEventMove(new RoomMouseEvent(300,700));
-                room.externalDeviceEventLeave(new RoomMouseEvent(300,700));
+//                room.externalDeviceEventDown(new RoomMouseEvent(300,300));
+//                room.externalDeviceEventMove(new RoomMouseEvent(300,400));
+//                room.externalDeviceEventMove(new RoomMouseEvent(300,500));
+//                room.externalDeviceEventMove(new RoomMouseEvent(300,600));
+//                room.externalDeviceEventMove(new RoomMouseEvent(300,700));
+//                room.externalDeviceEventLeave(new RoomMouseEvent(300,700));
 
 //                room.setViewMode(ViewMode.broadcaster);
 //
