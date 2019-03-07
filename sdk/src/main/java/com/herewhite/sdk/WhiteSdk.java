@@ -6,17 +6,10 @@ import android.webkit.JavascriptInterface;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.herewhite.sdk.domain.EventEntry;
-import com.herewhite.sdk.domain.FrameError;
 import com.herewhite.sdk.domain.Promise;
-import com.herewhite.sdk.domain.RoomPhase;
-import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
 
-import org.json.JSONException;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import wendu.dsbridge.OnReturnValue;
@@ -31,27 +24,22 @@ public class WhiteSdk {
 
     private final WhiteBroadView bridge;
     private final Context context;
+    private final RoomCallbacksImplement roomCallbacksImplement;
     private UrlInterrupter urlInterrupter;
-    private final List<RoomCallbacks> listeners = new ArrayList<>();
+
     private final ConcurrentHashMap<String, Room> roomConcurrentHashMap = new ConcurrentHashMap<>(); // uuid ,Room
-    private final boolean hasUrlInterrupterAPI;
 
     public WhiteSdk(WhiteBroadView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration) {
         this.bridge = bridge;
         this.context = context;
-        this.hasUrlInterrupterAPI = false;
-        bridge.addJavascriptObject(this, "sdk");
+        this.roomCallbacksImplement = new RoomCallbacksImplement();
+        bridge.addJavascriptObject(new RoomCallbacksImplement(), "room");
         bridge.callHandler("sdk.newWhiteSdk", new Object[]{gson.toJson(whiteSdkConfiguration)});
     }
 
-    public WhiteSdk(WhiteBroadView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, UrlInterrupter urlInterrupter) {
-        this.bridge = bridge;
-        this.context = context;
-        this.urlInterrupter = urlInterrupter;
-        this.hasUrlInterrupterAPI = true;
-        bridge.addJavascriptObject(this, "sdk");
-        bridge.callHandler("sdk.newWhiteSdk", new Object[]{gson.toJson(whiteSdkConfiguration)});
 
+    public void addRoomCallbacks(RoomCallbacks callback) {
+        roomCallbacksImplement.addRoomCallbacks(callback);
     }
 
     /**
@@ -101,86 +89,6 @@ public class WhiteSdk {
 
     }
 
-    public void addRoomCallbacks(RoomCallbacks callback) {
-        listeners.add(callback);
-    }
-
-    @JavascriptInterface
-    public void firePhaseChanged(Object args) throws JSONException {
-//         获取事件,反序列化然后发送通知给监听者
-        for (RoomCallbacks roomCallbacks : listeners) {
-            try {
-                roomCallbacks.onPhaseChanged(RoomPhase.valueOf(String.valueOf(args)));
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onPhaseChanged method", e);
-            }
-        }
-    }
-
-    @JavascriptInterface
-    public void fireKickedWithReason(Object args) throws JSONException {
-        // 获取事件,反序列化然后发送通知给监听者
-        for (RoomCallbacks roomCallbacks : listeners) {
-            try {
-                roomCallbacks.onKickedWithReason(String.valueOf(args));
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onKickedWithReason method", e);
-            }
-
-        }
-    }
-
-    @JavascriptInterface
-    public void fireDisconnectWithError(Object args) throws JSONException {
-        // 获取事件,反序列化然后发送通知给监听者
-        for (RoomCallbacks roomCallbacks : listeners) {
-            try {
-                roomCallbacks.onDisconnectWithError(new Exception(String.valueOf(args)));
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onDisconnectWithError method", e);
-            }
-        }
-    }
-
-    @JavascriptInterface
-    public void fireRoomStateChanged(Object args) throws JSONException {
-        // 获取事件,反序列化然后发送通知给监听者
-        RoomState roomState = gson.fromJson(String.valueOf(args), RoomState.class);
-        for (RoomCallbacks roomCallbacks : listeners) {
-            try {
-                roomCallbacks.onRoomStateChanged(roomState);
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onRoomStateChanged method", e);
-            }
-
-        }
-    }
-
-    @JavascriptInterface
-    public void fireBeingAbleToCommitChange(Object args) throws JSONException {
-        // 获取事件,反序列化然后发送通知给监听者
-        for (RoomCallbacks roomCallbacks : listeners) {
-            try {
-                roomCallbacks.onBeingAbleToCommitChange(Boolean.valueOf(String.valueOf(args)));
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onBeingAbleToCommitChange method", e);
-            }
-
-        }
-    }
-
-    @JavascriptInterface
-    public void fireCatchErrorWhenAppendFrame(Object args) throws JSONException {
-        // 获取事件,反序列化然后发送通知给监听者
-        FrameError frameError = gson.fromJson(String.valueOf(args), FrameError.class);
-        for (RoomCallbacks roomCallbacks : listeners) {
-            try {
-                roomCallbacks.onCatchErrorWhenAppendFrame(frameError.getUserId(), new Exception(frameError.getError()));
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onCatchErrorWhenAppendFrame method", e);
-            }
-        }
-    }
 
     public void releaseRoom(String uuid) {
         this.roomConcurrentHashMap.remove(uuid);
@@ -193,11 +101,6 @@ public class WhiteSdk {
         if (room != null) {
             room.fireMagixEvent(eventEntry);
         }
-    }
-
-    @JavascriptInterface
-    public String hasUrlInterrupterAPI(Object args) {
-        return this.hasUrlInterrupterAPI ? "true" : "false";
     }
 
     @JavascriptInterface

@@ -11,6 +11,7 @@ public class WhiteSdkConfiguration {
     private double zoomMaxScale;
     private double zoomMinScale;
     private boolean enableDebug;
+    private boolean hasUrlInterrupterAPI = false;
 
     public WhiteSdkConfiguration(DeviceType deviceType, double zoomMaxScale, double zoomMinScale) {
         this(deviceType, zoomMaxScale, zoomMinScale, false);
@@ -53,5 +54,13 @@ public class WhiteSdkConfiguration {
 
     public void setEnableDebug(boolean enableDebug) {
         this.enableDebug = enableDebug;
+    }
+
+    public boolean isHasUrlInterrupterAPI() {
+        return hasUrlInterrupterAPI;
+    }
+
+    public void setHasUrlInterrupterAPI(boolean hasUrlInterrupterAPI) {
+        this.hasUrlInterrupterAPI = hasUrlInterrupterAPI;
     }
 }

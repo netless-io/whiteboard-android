@@ -1,7 +1,6 @@
 package com.herewhite.sdk;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.herewhite.sdk.domain.AkkoEvent;
@@ -11,19 +10,16 @@ import com.herewhite.sdk.domain.EventListener;
 import com.herewhite.sdk.domain.GlobalState;
 import com.herewhite.sdk.domain.ImageInformation;
 import com.herewhite.sdk.domain.ImageInformationWithUrl;
-import com.herewhite.sdk.domain.LinearTransformationDescription;
 import com.herewhite.sdk.domain.MemberState;
-import com.herewhite.sdk.domain.Point;
 import com.herewhite.sdk.domain.PptPage;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomMember;
 import com.herewhite.sdk.domain.RoomMouseEvent;
 import com.herewhite.sdk.domain.SDKError;
-import com.herewhite.sdk.domain.ScreenshotParam;
+import com.herewhite.sdk.domain.Scene;
+import com.herewhite.sdk.domain.SceneState;
 import com.herewhite.sdk.domain.TextareaBox;
 import com.herewhite.sdk.domain.ViewMode;
-
-import org.json.JSONObject;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -52,11 +48,11 @@ public class Room {
     }
 
     public void setGlobalState(GlobalState globalState) {
-        bridge.callHandler("room.setGlobalState", new Object[]{gson.toJson(globalState)});
+        bridge.callHandler("room.setGlobalState", new Object[]{globalState});
     }
 
     public void setMemberState(MemberState memberState) {
-        bridge.callHandler("room.setMemberState", new Object[]{gson.toJson(memberState)});
+        bridge.callHandler("room.setMemberState", new Object[]{memberState});
     }
 
     public void setViewMode(ViewMode viewMode) {
@@ -73,7 +69,7 @@ public class Room {
     }
 
     public void updateTextarea(TextareaBox textareaBox) {
-        bridge.callHandler("room.updateTextarea", new Object[]{gson.toJson(textareaBox)});
+        bridge.callHandler("room.updateTextarea", new Object[]{textareaBox});
     }
 
     public void insertNewPage(int index) {
@@ -85,11 +81,11 @@ public class Room {
     }
 
     public void insertImage(ImageInformation imageInfo) {
-        bridge.callHandler("room.insertImage", new Object[]{gson.toJson(imageInfo)});
+        bridge.callHandler("room.insertImage", new Object[]{imageInfo});
     }
 
     public void pushPptPages(PptPage[] pages) {
-        bridge.callHandler("room.pushPptPages", new Object[]{gson.toJson(pages)});
+        bridge.callHandler("room.pushPptPages", new Object[]{pages});
     }
 
     public void completeImageUpload(String uuid, String url) {
@@ -151,18 +147,67 @@ public class Room {
         });
     }
 
-    public void getPptImages(final Promise<String[]> promise) {
-        bridge.callHandler("room.getPptImages", new Object[]{}, new OnReturnValue<Object>() {
+    /**
+     * 获取当前场景状态
+     *
+     * @param promise
+     */
+    public void getSceneState(final Promise<SceneState> promise) {
+        bridge.callHandler("room.getSceneState", new Object[]{}, new OnReturnValue<Object>() {
             @Override
             public void onValue(Object o) {
                 try {
-                    promise.then(gson.fromJson(String.valueOf(o), String[].class));
+                    promise.then(gson.fromJson(String.valueOf(o), SceneState.class));
                 } catch (Throwable e) {
-                    Logger.error("An exception occurred while resolve getPptImages method promise", e);
+                    Logger.error("An exception occurred while resolve getRoomMembers method promise", e);
                     promise.catchEx(new SDKError(e.getMessage()));
                 }
             }
         });
+    }
+
+    /**
+     * 获取当前目录下，所有页面的信息
+     *
+     * @param promise
+     */
+    public void getScenes(final Promise<Scene[]> promise) {
+        bridge.callHandler("room.getScenes", new Object[]{}, new OnReturnValue<Object>() {
+            @Override
+            public void onValue(Object o) {
+                try {
+                    promise.then(gson.fromJson(String.valueOf(o), Scene[].class));
+                } catch (Throwable e) {
+                    Logger.error("An exception occurred while resolve getRoomMembers method promise", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
+                }
+            }
+        });
+    }
+
+    /**
+     * 切换到某个 Scene
+     *
+     * @param path
+     */
+    public void setScenePath(String path) {
+        bridge.callHandler("room.setScenePath", new Object[]{path});
+    }
+
+    public void putScenes(String dir, Scene[] scenes, int index) {
+        bridge.callHandler("room.putScenes", new Object[]{dir, scenes, index});
+    }
+
+    public void putScenes(String dir, Scene[] scenes) {
+        bridge.callHandler("room.putScenes", new Object[]{dir, scenes});
+    }
+
+    public void moveScene(String source, String target) {
+        bridge.callHandler("room.moveScene", new Object[]{source, target});
+    }
+
+    public void removeScenes(String dirOrPath) {
+        bridge.callHandler("room.removeScenes", new Object[]{dirOrPath});
     }
 
     public void getBroadcastState(final Promise<BroadcastState> promise) {
@@ -228,7 +273,7 @@ public class Room {
     }
 
     public void dispatchMagixEvent(AkkoEvent eventEntry) {
-        bridge.callHandler("room.dispatchMagixEvent", new Object[]{gson.toJson(eventEntry)});
+        bridge.callHandler("room.dispatchMagixEvent", new Object[]{eventEntry});
     }
 
     public void addMagixEventListener(String eventName, EventListener eventListener) {
@@ -243,19 +288,19 @@ public class Room {
 
 
     public void externalDeviceEventDown(RoomMouseEvent mouseEvent) {
-        bridge.callHandler("room.externalDeviceEventDown", new Object[]{gson.toJson(mouseEvent)});
+        bridge.callHandler("room.externalDeviceEventDown", new Object[]{mouseEvent});
     }
 
     public void externalDeviceEventMove(RoomMouseEvent mouseEvent) {
-        bridge.callHandler("room.externalDeviceEventMove", new Object[]{gson.toJson(mouseEvent)});
+        bridge.callHandler("room.externalDeviceEventMove", new Object[]{mouseEvent});
     }
 
     public void externalDeviceEventUp(RoomMouseEvent mouseEvent) {
-        bridge.callHandler("room.externalDeviceEventUp", new Object[]{gson.toJson(mouseEvent)});
+        bridge.callHandler("room.externalDeviceEventUp", new Object[]{mouseEvent});
     }
 
     public void externalDeviceEventLeave(RoomMouseEvent mouseEvent) {
-        bridge.callHandler("room.externalDeviceEventLeave", new Object[]{gson.toJson(mouseEvent)});
+        bridge.callHandler("room.externalDeviceEventLeave", new Object[]{mouseEvent});
     }
 
 

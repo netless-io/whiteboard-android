@@ -9,9 +9,10 @@ public class RoomState {
     private GlobalState globalState;
     private MemberState memberState;
     private BroadcastState broadcastState;
-    private LinearTransformationDescription transform;
+    private SceneState sceneState;
+    //    private LinearTransformationDescription transform;
     private RoomMember[] roomMembers;
-    private String[] pptImages;
+    //    private String[] pptImages;
     private Double zoomScale;
 
     public GlobalState getGlobalState() {
@@ -38,13 +39,13 @@ public class RoomState {
         this.broadcastState = broadcastState;
     }
 
-    public LinearTransformationDescription getTransform() {
-        return transform;
-    }
-
-    public void setTransform(LinearTransformationDescription transform) {
-        this.transform = transform;
-    }
+//    public LinearTransformationDescription getTransform() {
+//        return transform;
+//    }
+//
+//    public void setTransform(LinearTransformationDescription transform) {
+//        this.transform = transform;
+//    }
 
     public RoomMember[] getRoomMembers() {
         return roomMembers;
@@ -54,13 +55,13 @@ public class RoomState {
         this.roomMembers = roomMembers;
     }
 
-    public String[] getPptImages() {
-        return pptImages;
-    }
-
-    public void setPptImages(String[] pptImages) {
-        this.pptImages = pptImages;
-    }
+//    public String[] getPptImages() {
+//        return pptImages;
+//    }
+//
+//    public void setPptImages(String[] pptImages) {
+//        this.pptImages = pptImages;
+//    }
 
     public Double getZoomScale() {
         return zoomScale;
@@ -68,5 +69,13 @@ public class RoomState {
 
     public void setZoomScale(Double zoomScale) {
         this.zoomScale = zoomScale;
+    }
+
+    public SceneState getSceneState() {
+        return sceneState;
+    }
+
+    public void setSceneState(SceneState sceneState) {
+        this.sceneState = sceneState;
     }
 }
