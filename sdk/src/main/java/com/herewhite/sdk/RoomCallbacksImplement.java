@@ -18,18 +18,26 @@ import java.util.List;
 
 public class RoomCallbacksImplement {
     private final static Gson gson = new Gson();
-    private final List<RoomCallbacks> listeners = new ArrayList<>();
+    private RoomCallbacks listener;
 
-    public void addRoomCallbacks(RoomCallbacks callback) {
-        listeners.add(callback);
+    public RoomCallbacksImplement() {
+
+    }
+
+    public RoomCallbacks getListener() {
+        return listener;
+    }
+
+    public void setListener(RoomCallbacks listener) {
+        this.listener = listener;
     }
 
     @JavascriptInterface
-    public void firePhaseChanged(Object args) throws JSONException {
+    public void firePhaseChanged(Object args) {
 //         获取事件,反序列化然后发送通知给监听者
-        for (RoomCallbacks roomCallbacks : listeners) {
+        if (listener != null) {
             try {
-                roomCallbacks.onPhaseChanged(RoomPhase.valueOf(String.valueOf(args)));
+                listener.onPhaseChanged(RoomPhase.valueOf(String.valueOf(args)));
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onPhaseChanged method", e);
             }
@@ -37,11 +45,11 @@ public class RoomCallbacksImplement {
     }
 
     @JavascriptInterface
-    public void fireKickedWithReason(Object args) throws JSONException {
+    public void fireKickedWithReason(Object args) {
         // 获取事件,反序列化然后发送通知给监听者
-        for (RoomCallbacks roomCallbacks : listeners) {
+        if (listener != null) {
             try {
-                roomCallbacks.onKickedWithReason(String.valueOf(args));
+                listener.onKickedWithReason(String.valueOf(args));
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onKickedWithReason method", e);
             }
@@ -50,11 +58,11 @@ public class RoomCallbacksImplement {
     }
 
     @JavascriptInterface
-    public void fireDisconnectWithError(Object args) throws JSONException {
+    public void fireDisconnectWithError(Object args) {
         // 获取事件,反序列化然后发送通知给监听者
-        for (RoomCallbacks roomCallbacks : listeners) {
+        if (listener != null) {
             try {
-                roomCallbacks.onDisconnectWithError(new Exception(String.valueOf(args)));
+                listener.onDisconnectWithError(new Exception(String.valueOf(args)));
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onDisconnectWithError method", e);
             }
@@ -62,12 +70,12 @@ public class RoomCallbacksImplement {
     }
 
     @JavascriptInterface
-    public void fireRoomStateChanged(Object args) throws JSONException {
+    public void fireRoomStateChanged(Object args) {
         // 获取事件,反序列化然后发送通知给监听者
         RoomState roomState = gson.fromJson(String.valueOf(args), RoomState.class);
-        for (RoomCallbacks roomCallbacks : listeners) {
+        if (listener != null) {
             try {
-                roomCallbacks.onRoomStateChanged(roomState);
+                listener.onRoomStateChanged(roomState);
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onRoomStateChanged method", e);
             }
@@ -76,11 +84,11 @@ public class RoomCallbacksImplement {
     }
 
     @JavascriptInterface
-    public void fireBeingAbleToCommitChange(Object args) throws JSONException {
+    public void fireBeingAbleToCommitChange(Object args) {
         // 获取事件,反序列化然后发送通知给监听者
-        for (RoomCallbacks roomCallbacks : listeners) {
+        if (listener != null) {
             try {
-                roomCallbacks.onBeingAbleToCommitChange(Boolean.valueOf(String.valueOf(args)));
+                listener.onBeingAbleToCommitChange(Boolean.valueOf(String.valueOf(args)));
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onBeingAbleToCommitChange method", e);
             }
@@ -89,12 +97,12 @@ public class RoomCallbacksImplement {
     }
 
     @JavascriptInterface
-    public void fireCatchErrorWhenAppendFrame(Object args) throws JSONException {
+    public void fireCatchErrorWhenAppendFrame(Object args) {
         // 获取事件,反序列化然后发送通知给监听者
         FrameError frameError = gson.fromJson(String.valueOf(args), FrameError.class);
-        for (RoomCallbacks roomCallbacks : listeners) {
+        if (listener != null) {
             try {
-                roomCallbacks.onCatchErrorWhenAppendFrame(frameError.getUserId(), new Exception(frameError.getError()));
+                listener.onCatchErrorWhenAppendFrame(frameError.getUserId(), new Exception(frameError.getError()));
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onCatchErrorWhenAppendFrame method", e);
             }
