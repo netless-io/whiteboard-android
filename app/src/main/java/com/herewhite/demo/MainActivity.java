@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
 //                screenshotParam.setHeight(640);
 //                screenshotParam.setWidth(480);
 
-//                room.disableOperations(true);
+                room.disableOperations(true);
 
 //                room.screenshot(screenshotParam, new Promise<Object>() {
 //                    @Override
@@ -154,21 +154,21 @@ public class MainActivity extends AppCompatActivity {
 //                    }
 //                });
 
-                room.addMagixEventListener("helloworld", new EventListener() {
-                    @Override
-                    public void onEvent(EventEntry eventEntry) {
-                        showToast(gson.toJson(eventEntry.getPayload()));
-                    }
-                });
-////
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Map<String, String> payload = new HashMap<>();
-                payload.put("test", "1");
-                room.dispatchMagixEvent(new AkkoEvent("helloworld", payload));
+//                room.addMagixEventListener("helloworld", new EventListener() {
+//                    @Override
+//                    public void onEvent(EventEntry eventEntry) {
+//                        showToast(gson.toJson(eventEntry.getPayload()));
+//                    }
+//                });
+//////
+//                try {
+//                    Thread.sleep(2000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                Map<String, String> payload = new HashMap<>();
+//                payload.put("test", "1");
+//                room.dispatchMagixEvent(new AkkoEvent("helloworld", payload));
 //////
 //                try {
 //                    Thread.sleep(2000);
@@ -213,12 +213,12 @@ public class MainActivity extends AppCompatActivity {
 //                globalState.setCurrentSceneIndex(1);
 //                room.setGlobalState(globalState);
 
-                room.externalDeviceEventDown(new RoomMouseEvent(300,300));
-                room.externalDeviceEventMove(new RoomMouseEvent(300,400));
-                room.externalDeviceEventMove(new RoomMouseEvent(300,500));
-                room.externalDeviceEventMove(new RoomMouseEvent(300,600));
-                room.externalDeviceEventMove(new RoomMouseEvent(300,700));
-                room.externalDeviceEventLeave(new RoomMouseEvent(300,700));
+                room.externalDeviceEventDown(new RoomMouseEvent(100,300));
+                room.externalDeviceEventMove(new RoomMouseEvent(100,400));
+                room.externalDeviceEventMove(new RoomMouseEvent(100,500));
+                room.externalDeviceEventMove(new RoomMouseEvent(100,600));
+                room.externalDeviceEventMove(new RoomMouseEvent(100,700));
+                room.externalDeviceEventUp(new RoomMouseEvent(100,700));
 
 //                room.setViewMode(ViewMode.broadcaster);
 //
