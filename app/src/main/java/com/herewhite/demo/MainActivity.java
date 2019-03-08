@@ -264,6 +264,10 @@ public class MainActivity extends AppCompatActivity {
 
                 room.setScenePath("/good/page1");
 
+                room.moveScene("/good/page1", "/good/page2");
+
+//                room.removeScenes("/good/page1");
+
 //                room.externalDeviceEventDown(new RoomMouseEvent(100, 300));
 //                room.externalDeviceEventMove(new RoomMouseEvent(100, 400));
 //                room.externalDeviceEventMove(new RoomMouseEvent(100, 500));
