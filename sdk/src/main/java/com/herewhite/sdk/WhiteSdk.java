@@ -5,13 +5,12 @@ import android.webkit.JavascriptInterface;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.PlayerConfiguration;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
-import com.herewhite.sdk.implement.BridgeWrapper;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import wendu.dsbridge.OnReturnValue;
@@ -25,7 +24,6 @@ public class WhiteSdk {
     private final static Gson gson = new Gson();
 
     private final WhiteBroadView bridge;
-    private final BridgeWrapper bridgeWrapper;
     private final Context context;
     private final RoomCallbacksImplement roomCallbacksImplement;
     private final PlayerCallbacksImplement playerCallbacksImplement;
@@ -44,7 +42,6 @@ public class WhiteSdk {
         this.urlInterrupter = urlInterrupter;
         this.roomCallbacksImplement = new RoomCallbacksImplement();
         this.playerCallbacksImplement = new PlayerCallbacksImplement();
-        bridgeWrapper = new BridgeWrapper(bridge);
         bridge.addJavascriptObject(this, "sdk");
         bridge.addJavascriptObject(this.roomCallbacksImplement, "room");
         bridge.addJavascriptObject(this.playerCallbacksImplement, "player");
@@ -65,7 +62,7 @@ public class WhiteSdk {
             if (roomCallbacks != null) {
                 this.roomCallbacksImplement.setListener(roomCallbacks);  // 覆盖
             }
-            bridgeWrapper.callHandler("sdk.joinRoom", new Object[]{
+            bridge.callHandler("sdk.joinRoom", new Object[]{
                     roomParams.getUuid(),
                     roomParams.getRoomToken()
             }, new OnReturnValue<String>() {
@@ -90,6 +87,7 @@ public class WhiteSdk {
                     } else {
                         Room room = new Room(roomParams.getUuid(), bridge, context, WhiteSdk.this);
                         roomConcurrentHashMap.put(roomParams.getUuid(), room);
+                        roomCallbacksImplement.setRoom(room);
                         try {
                             roomPromise.then(room);
                         } catch (Throwable e) {
@@ -161,14 +159,6 @@ public class WhiteSdk {
         }
     }
 
-    @JavascriptInterface
-    public void fireMagixEvent(Object args) {
-        EventEntry eventEntry = gson.fromJson(String.valueOf(args), EventEntry.class);
-        Room room = this.roomConcurrentHashMap.get(eventEntry.getUuid());
-        if (room != null) {
-            room.fireMagixEvent(eventEntry);
-        }
-    }
 
     @JavascriptInterface
     public String urlInterrupter(Object args) {
@@ -180,6 +170,6 @@ public class WhiteSdk {
 
     @JavascriptInterface
     public void logger(Object args) {
-        Logger.info("From JS: " + String.valueOf(args));
+        Logger.info("From JS: " + gson.fromJson(String.valueOf(args), Map.class));
     }
 }

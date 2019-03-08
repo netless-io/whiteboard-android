@@ -10,18 +10,18 @@ public class WhiteSdkConfiguration {
     private DeviceType deviceType;
     private double zoomMaxScale;
     private double zoomMinScale;
-    private boolean enableDebug;
+    private boolean debug;
     private boolean hasUrlInterrupterAPI = false;
 
     public WhiteSdkConfiguration(DeviceType deviceType, double zoomMaxScale, double zoomMinScale) {
         this(deviceType, zoomMaxScale, zoomMinScale, false);
     }
 
-    public WhiteSdkConfiguration(DeviceType deviceType, double zoomMaxScale, double zoomMinScale, boolean enableDebug) {
+    public WhiteSdkConfiguration(DeviceType deviceType, double zoomMaxScale, double zoomMinScale, boolean debug) {
         this.deviceType = deviceType;
         this.zoomMaxScale = zoomMaxScale;
         this.zoomMinScale = zoomMinScale;
-        this.enableDebug = enableDebug;
+        this.debug = debug;
     }
 
     public DeviceType getDeviceType() {
@@ -48,12 +48,12 @@ public class WhiteSdkConfiguration {
         this.zoomMinScale = zoomMinScale;
     }
 
-    public boolean isEnableDebug() {
-        return enableDebug;
+    public boolean isDebug() {
+        return debug;
     }
 
-    public void setEnableDebug(boolean enableDebug) {
-        this.enableDebug = enableDebug;
+    public void setDebug(boolean debug) {
+        this.debug = debug;
     }
 
     public boolean isHasUrlInterrupterAPI() {

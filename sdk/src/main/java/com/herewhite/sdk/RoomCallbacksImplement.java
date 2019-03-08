@@ -20,6 +20,7 @@ import java.util.List;
 public class RoomCallbacksImplement {
     private final static Gson gson = new Gson();
     private RoomCallbacks listener;
+    private Room room;
 
     public RoomCallbacksImplement() {
 
@@ -32,6 +33,23 @@ public class RoomCallbacksImplement {
     public void setListener(RoomCallbacks listener) {
         this.listener = listener;
     }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
+    @JavascriptInterface
+    public void fireMagixEvent(Object args) {
+        EventEntry eventEntry = gson.fromJson(String.valueOf(args), EventEntry.class);
+        if (room != null) {
+            room.fireMagixEvent(eventEntry);
+        }
+    }
+
 
     @JavascriptInterface
     public void firePhaseChanged(Object args) {

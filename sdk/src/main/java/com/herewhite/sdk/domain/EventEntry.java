@@ -4,14 +4,14 @@ public class EventEntry {
     private String uuid;
     private String eventName;
     private Object payload;
-    private int scope;
+    private String scope;
     private long authorId;
 
-    public int getScope() {
+    public String getScope() {
         return scope;
     }
 
-    public void setScope(int scope) {
+    public void setScope(String scope) {
         this.scope = scope;
     }
 
