@@ -5,7 +5,7 @@ public class PlayerState {
     /**
      * 房间用户状态
      */
-    private RoomMember roomMembers;
+    private RoomMember[] roomMembers;
     /**
      * 用户观察状态
      */
@@ -19,11 +19,11 @@ public class PlayerState {
         this.globalState = globalState;
     }
 
-    public RoomMember getRoomMembers() {
+    public RoomMember[] getRoomMembers() {
         return roomMembers;
     }
 
-    public void setRoomMembers(RoomMember roomMembers) {
+    public void setRoomMembers(RoomMember[] roomMembers) {
         this.roomMembers = roomMembers;
     }
 

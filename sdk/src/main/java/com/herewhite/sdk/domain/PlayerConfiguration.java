@@ -3,8 +3,8 @@ package com.herewhite.sdk.domain;
 public class PlayerConfiguration {
     private String room;
     private String slice;
-    private long beginTimestamp;
-    private long duration;
+    private Long beginTimestamp;
+    private Long duration;
     private String audioUrl;
 
     public String getRoom() {
@@ -23,19 +23,19 @@ public class PlayerConfiguration {
         this.slice = slice;
     }
 
-    public long getBeginTimestamp() {
+    public Long getBeginTimestamp() {
         return beginTimestamp;
     }
 
-    public void setBeginTimestamp(long beginTimestamp) {
+    public void setBeginTimestamp(Long beginTimestamp) {
         this.beginTimestamp = beginTimestamp;
     }
 
-    public long getDuration() {
+    public Long getDuration() {
         return duration;
     }
 
-    public void setDuration(long duration) {
+    public void setDuration(Long duration) {
         this.duration = duration;
     }
 

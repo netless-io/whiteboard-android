@@ -7,15 +7,8 @@ import com.google.gson.JsonObject;
 import com.herewhite.sdk.domain.FrameError;
 import com.herewhite.sdk.domain.PlayerPhase;
 import com.herewhite.sdk.domain.PlayerState;
-import com.herewhite.sdk.domain.RoomPhase;
-import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UpdateCursor;
-
-import org.json.JSONException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by buhe on 2018/8/12.

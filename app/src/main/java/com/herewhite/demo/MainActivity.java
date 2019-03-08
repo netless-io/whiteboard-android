@@ -9,6 +9,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.herewhite.sdk.AbstractRoomCallbacks;
 import com.herewhite.sdk.Environment;
+import com.herewhite.sdk.Logger;
+import com.herewhite.sdk.Player;
 import com.herewhite.sdk.Room;
 import com.herewhite.sdk.RoomParams;
 import com.herewhite.sdk.WhiteBroadView;
@@ -21,6 +23,7 @@ import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.EventListener;
 import com.herewhite.sdk.domain.ImageInformationWithUrl;
 import com.herewhite.sdk.domain.MemberState;
+import com.herewhite.sdk.domain.PlayerConfiguration;
 import com.herewhite.sdk.domain.RoomMouseEvent;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Promise;
@@ -56,6 +59,43 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.js);
         whiteBroadView = (WhiteBroadView) findViewById(R.id.white);
 //        whiteBroadView.switchEnv(Environment.dev);
+//        try {
+//            realtime();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+        WhiteSdk whiteSdk = new WhiteSdk(
+                whiteBroadView,
+                MainActivity.this,
+                new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1, true),
+                new UrlInterrupter() {
+                    @Override
+                    public String urlInterrupter(String sourceUrl) {
+                        return sourceUrl;
+                    }
+                });
+
+        PlayerConfiguration playerConfiguration = new PlayerConfiguration();
+        playerConfiguration.setRoom("1bd317e6fba74a69a81eccbd4c79db2c");
+        playerConfiguration.setAudioUrl("https://ohuuyffq2.qnssl.com/98398e2c5a43d74321214984294c157e_60def9bac25e4a378235f6249cae63c1.m3u8");
+
+        whiteSdk.createPlayer(playerConfiguration, new Promise<Player>() {
+            @Override
+            public void then(Player player) {
+                player.play();
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+                Logger.error("create player error, ", t);
+            }
+        });
+
+
+    }
+
+    private void realtime() throws IOException {
         demoAPI.createRoom("unknow", 100, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -76,8 +116,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
 
     private void joinRoom(String uuid, String roomToken) {
@@ -213,12 +251,12 @@ public class MainActivity extends AppCompatActivity {
 //                globalState.setCurrentSceneIndex(1);
 //                room.setGlobalState(globalState);
 
-                room.externalDeviceEventDown(new RoomMouseEvent(100,300));
-                room.externalDeviceEventMove(new RoomMouseEvent(100,400));
-                room.externalDeviceEventMove(new RoomMouseEvent(100,500));
-                room.externalDeviceEventMove(new RoomMouseEvent(100,600));
-                room.externalDeviceEventMove(new RoomMouseEvent(100,700));
-                room.externalDeviceEventUp(new RoomMouseEvent(100,700));
+                room.externalDeviceEventDown(new RoomMouseEvent(100, 300));
+                room.externalDeviceEventMove(new RoomMouseEvent(100, 400));
+                room.externalDeviceEventMove(new RoomMouseEvent(100, 500));
+                room.externalDeviceEventMove(new RoomMouseEvent(100, 600));
+                room.externalDeviceEventMove(new RoomMouseEvent(100, 700));
+                room.externalDeviceEventUp(new RoomMouseEvent(100, 700));
 
 //                room.setViewMode(ViewMode.broadcaster);
 //
