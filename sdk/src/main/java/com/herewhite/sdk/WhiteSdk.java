@@ -5,18 +5,12 @@ import android.webkit.JavascriptInterface;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.herewhite.sdk.domain.EventEntry;
-import com.herewhite.sdk.domain.FrameError;
+import com.herewhite.sdk.domain.PlayerConfiguration;
 import com.herewhite.sdk.domain.Promise;
-import com.herewhite.sdk.domain.RoomPhase;
-import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
 
-import org.json.JSONException;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import wendu.dsbridge.OnReturnValue;
@@ -31,27 +25,31 @@ public class WhiteSdk {
 
     private final WhiteBroadView bridge;
     private final Context context;
+    private final RoomCallbacksImplement roomCallbacksImplement;
+    private final PlayerCallbacksImplement playerCallbacksImplement;
     private UrlInterrupter urlInterrupter;
-    private final List<RoomCallbacks> listeners = new ArrayList<>();
+
     private final ConcurrentHashMap<String, Room> roomConcurrentHashMap = new ConcurrentHashMap<>(); // uuid ,Room
-    private final boolean hasUrlInterrupterAPI;
+    private final ConcurrentHashMap<String, Player> playerConcurrentHashMap = new ConcurrentHashMap<>(); // uuid ,Player
 
     public WhiteSdk(WhiteBroadView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration) {
-        this.bridge = bridge;
-        this.context = context;
-        this.hasUrlInterrupterAPI = false;
-        bridge.addJavascriptObject(this, "sdk");
-        bridge.callHandler("sdk.newWhiteSdk", new Object[]{gson.toJson(whiteSdkConfiguration)});
+        this(bridge, context, whiteSdkConfiguration, null);
     }
 
     public WhiteSdk(WhiteBroadView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, UrlInterrupter urlInterrupter) {
         this.bridge = bridge;
         this.context = context;
         this.urlInterrupter = urlInterrupter;
-        this.hasUrlInterrupterAPI = true;
+        this.roomCallbacksImplement = new RoomCallbacksImplement();
+        this.playerCallbacksImplement = new PlayerCallbacksImplement();
         bridge.addJavascriptObject(this, "sdk");
-        bridge.callHandler("sdk.newWhiteSdk", new Object[]{gson.toJson(whiteSdkConfiguration)});
+        bridge.addJavascriptObject(this.roomCallbacksImplement, "room");
+        bridge.addJavascriptObject(this.playerCallbacksImplement, "player");
+        bridge.callHandler("sdk.newWhiteSdk", new Object[]{whiteSdkConfiguration});
+    }
 
+    public void joinRoom(final RoomParams roomParams, final Promise<Room> roomPromise) {
+        this.joinRoom(roomParams, null, roomPromise);
     }
 
     /**
@@ -59,8 +57,11 @@ public class WhiteSdk {
      *
      * @param roomParams
      */
-    public void joinRoom(final RoomParams roomParams, final Promise<Room> roomPromise) {
+    public void joinRoom(final RoomParams roomParams, final RoomCallbacks roomCallbacks, final Promise<Room> roomPromise) {
         try {
+            if (roomCallbacks != null) {
+                this.roomCallbacksImplement.setListener(roomCallbacks);  // 覆盖
+            }
             bridge.callHandler("sdk.joinRoom", new Object[]{
                     roomParams.getUuid(),
                     roomParams.getRoomToken()
@@ -86,6 +87,7 @@ public class WhiteSdk {
                     } else {
                         Room room = new Room(roomParams.getUuid(), bridge, context, WhiteSdk.this);
                         roomConcurrentHashMap.put(roomParams.getUuid(), room);
+                        roomCallbacksImplement.setRoom(room);
                         try {
                             roomPromise.then(room);
                         } catch (Throwable e) {
@@ -101,112 +103,73 @@ public class WhiteSdk {
 
     }
 
-    public void addRoomCallbacks(RoomCallbacks callback) {
-        listeners.add(callback);
-    }
-
-    @JavascriptInterface
-    public void firePhaseChanged(Object args) throws JSONException {
-//         获取事件,反序列化然后发送通知给监听者
-        for (RoomCallbacks roomCallbacks : listeners) {
-            try {
-                roomCallbacks.onPhaseChanged(RoomPhase.valueOf(String.valueOf(args)));
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onPhaseChanged method", e);
-            }
-        }
-    }
-
-    @JavascriptInterface
-    public void fireKickedWithReason(Object args) throws JSONException {
-        // 获取事件,反序列化然后发送通知给监听者
-        for (RoomCallbacks roomCallbacks : listeners) {
-            try {
-                roomCallbacks.onKickedWithReason(String.valueOf(args));
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onKickedWithReason method", e);
-            }
-
-        }
-    }
-
-    @JavascriptInterface
-    public void fireDisconnectWithError(Object args) throws JSONException {
-        // 获取事件,反序列化然后发送通知给监听者
-        for (RoomCallbacks roomCallbacks : listeners) {
-            try {
-                roomCallbacks.onDisconnectWithError(new Exception(String.valueOf(args)));
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onDisconnectWithError method", e);
-            }
-        }
-    }
-
-    @JavascriptInterface
-    public void fireRoomStateChanged(Object args) throws JSONException {
-        // 获取事件,反序列化然后发送通知给监听者
-        RoomState roomState = gson.fromJson(String.valueOf(args), RoomState.class);
-        for (RoomCallbacks roomCallbacks : listeners) {
-            try {
-                roomCallbacks.onRoomStateChanged(roomState);
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onRoomStateChanged method", e);
-            }
-
-        }
-    }
-
-    @JavascriptInterface
-    public void fireBeingAbleToCommitChange(Object args) throws JSONException {
-        // 获取事件,反序列化然后发送通知给监听者
-        for (RoomCallbacks roomCallbacks : listeners) {
-            try {
-                roomCallbacks.onBeingAbleToCommitChange(Boolean.valueOf(String.valueOf(args)));
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onBeingAbleToCommitChange method", e);
-            }
-
-        }
-    }
-
-    @JavascriptInterface
-    public void fireCatchErrorWhenAppendFrame(Object args) throws JSONException {
-        // 获取事件,反序列化然后发送通知给监听者
-        FrameError frameError = gson.fromJson(String.valueOf(args), FrameError.class);
-        for (RoomCallbacks roomCallbacks : listeners) {
-            try {
-                roomCallbacks.onCatchErrorWhenAppendFrame(frameError.getUserId(), new Exception(frameError.getError()));
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onCatchErrorWhenAppendFrame method", e);
-            }
-        }
-    }
 
     public void releaseRoom(String uuid) {
         this.roomConcurrentHashMap.remove(uuid);
     }
 
-    @JavascriptInterface
-    public void fireMagixEvent(Object args) {
-        EventEntry eventEntry = gson.fromJson(String.valueOf(args), EventEntry.class);
-        Room room = this.roomConcurrentHashMap.get(eventEntry.getUuid());
-        if (room != null) {
-            room.fireMagixEvent(eventEntry);
+    public void releasePlayer(String uuid) {
+        this.playerConcurrentHashMap.remove(uuid);
+    }
+
+    public void createPlayer(final PlayerConfiguration playerConfiguration, final Promise<Player> playerPromise) {
+        this.createPlayer(playerConfiguration, null, playerPromise);
+    }
+
+    public void createPlayer(final PlayerConfiguration playerConfiguration, PlayerEventListener playerEventListener, final Promise<Player> playerPromise) {
+        try {
+            if (playerEventListener != null) {
+                this.playerCallbacksImplement.setListener(playerEventListener);
+            }
+            bridge.callHandler("sdk.replayRoom", new Object[]{
+                    playerConfiguration
+            }, new OnReturnValue<String>() {
+                @Override
+                public void onValue(String roomString) {
+//                    Log.i("white", "call succeed,return value is " + retValue);
+                    JsonObject jsonObject = gson.fromJson(roomString, JsonObject.class);
+                    if (jsonObject.has("__error")) {
+                        String msg = "Unknow exception";
+                        String jsStack = "Unknow stack";
+                        if (jsonObject.getAsJsonObject("__error").has("message")) {
+                            msg = jsonObject.getAsJsonObject("__error").get("message").getAsString();
+                        }
+                        if (jsonObject.getAsJsonObject("__error").has("jsStack")) {
+                            jsStack = jsonObject.getAsJsonObject("__error").get("jsStack").getAsString();
+                        }
+                        try {
+                            playerPromise.catchEx(new SDKError(msg, jsStack));
+                        } catch (Throwable e) {
+                            Logger.error("An exception occurred while catch joinRoom method exception", e);
+                        }
+                    } else {
+                        Player room = new Player(playerConfiguration.getRoom(), bridge, context, WhiteSdk.this);
+                        playerConcurrentHashMap.put(playerConfiguration.getRoom(), room);
+                        try {
+                            playerPromise.then(room);
+                        } catch (Throwable e) {
+                            Logger.error("An exception occurred while resolve joinRoom method promise", e);
+                        }
+                    }
+
+                }
+            });
+        } catch (Exception e) {
+            playerPromise.catchEx(new SDKError(e.getMessage()));
         }
     }
 
-    @JavascriptInterface
-    public String hasUrlInterrupterAPI(Object args) {
-        return this.hasUrlInterrupterAPI ? "true" : "false";
-    }
 
     @JavascriptInterface
     public String urlInterrupter(Object args) {
+        if (this.urlInterrupter == null) {
+            return String.valueOf(args);
+        }
         return this.urlInterrupter.urlInterrupter(String.valueOf(args));
     }
 
     @JavascriptInterface
     public void logger(Object args) {
-        Logger.info("From JS: " + String.valueOf(args));
+        Logger.info("From JS: " + gson.fromJson(String.valueOf(args), Map.class));
     }
 }
