@@ -57,6 +57,15 @@ public class WhiteBroadView extends DWebView {
 
     }
 
+    public void callHandler(String method, Object[] args) {
+        this.callHandler(method, args, (OnReturnValue) null);
+    }
+
+    public <T> void callHandler(String method, OnReturnValue<T> handler) {
+        this.callHandler(method, (Object[]) null, handler);
+    }
+
+
     private Object[] toMaps(Object[] objects) {
         if (objects != null) {
             Object[] maps = new Object[objects.length];

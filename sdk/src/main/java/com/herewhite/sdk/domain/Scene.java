@@ -4,7 +4,15 @@ public class Scene {
 
     private String name;
     private String componentsCount;
-    private PptPage pptPage;
+    private PptPage ppt;
+
+    public Scene() {
+    }
+
+    public Scene(String name, PptPage ppt) {
+        this.name = name;
+        this.ppt = ppt;
+    }
 
     public String getName() {
         return name;
@@ -22,11 +30,11 @@ public class Scene {
         this.componentsCount = componentsCount;
     }
 
-    public PptPage getPptPage() {
-        return pptPage;
+    public PptPage getPpt() {
+        return ppt;
     }
 
-    public void setPptPage(PptPage pptPage) {
-        this.pptPage = pptPage;
+    public void setPpt(PptPage ppt) {
+        this.ppt = ppt;
     }
 }

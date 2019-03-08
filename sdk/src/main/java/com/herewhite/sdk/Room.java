@@ -84,9 +84,9 @@ public class Room {
         bridge.callHandler("room.insertImage", new Object[]{imageInfo});
     }
 
-    public void pushPptPages(PptPage[] pages) {
-        bridge.callHandler("room.pushPptPages", new Object[]{pages});
-    }
+//    public void pushPptPages(PptPage[] pages) {
+//        bridge.callHandler("room.pushPptPages", new Object[]{pages});
+//    }
 
     public void completeImageUpload(String uuid, String url) {
         bridge.callHandler("room.completeImageUpload", new Object[]{uuid, url});
@@ -198,9 +198,9 @@ public class Room {
         bridge.callHandler("room.putScenes", new Object[]{dir, scenes, index});
     }
 
-    public void putScenes(String dir, Scene[] scenes) {
-        bridge.callHandler("room.putScenes", new Object[]{dir, scenes});
-    }
+//    public void putScenes(String dir, Scene[] scenes) {
+//        bridge.callHandler("room.putScenes", new Object[]{dir, scenes, 0});
+//    }
 
     public void moveScene(String source, String target) {
         bridge.callHandler("room.moveScene", new Object[]{source, target});

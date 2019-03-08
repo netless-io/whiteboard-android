@@ -24,11 +24,13 @@ import com.herewhite.sdk.domain.EventListener;
 import com.herewhite.sdk.domain.ImageInformationWithUrl;
 import com.herewhite.sdk.domain.MemberState;
 import com.herewhite.sdk.domain.PlayerConfiguration;
+import com.herewhite.sdk.domain.PptPage;
 import com.herewhite.sdk.domain.RoomMouseEvent;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
+import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.UrlInterrupter;
 import com.herewhite.sdk.domain.ViewMode;
 
@@ -58,13 +60,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.js);
         whiteBroadView = (WhiteBroadView) findViewById(R.id.white);
-//        whiteBroadView.switchEnv(Environment.dev);
-//        try {
-//            realtime();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
 
+        try {
+            realtime();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+//        player();
+
+
+    }
+
+    private void player() {
         WhiteSdk whiteSdk = new WhiteSdk(
                 whiteBroadView,
                 MainActivity.this,
@@ -91,8 +99,6 @@ public class MainActivity extends AppCompatActivity {
                 Logger.error("create player error, ", t);
             }
         });
-
-
     }
 
     private void realtime() throws IOException {
@@ -166,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
 //                screenshotParam.setHeight(640);
 //                screenshotParam.setWidth(480);
 
-                room.disableOperations(true);
+//                room.disableOperations(true);
 
 //                room.screenshot(screenshotParam, new Promise<Object>() {
 //                    @Override
@@ -251,12 +257,19 @@ public class MainActivity extends AppCompatActivity {
 //                globalState.setCurrentSceneIndex(1);
 //                room.setGlobalState(globalState);
 
-                room.externalDeviceEventDown(new RoomMouseEvent(100, 300));
-                room.externalDeviceEventMove(new RoomMouseEvent(100, 400));
-                room.externalDeviceEventMove(new RoomMouseEvent(100, 500));
-                room.externalDeviceEventMove(new RoomMouseEvent(100, 600));
-                room.externalDeviceEventMove(new RoomMouseEvent(100, 700));
-                room.externalDeviceEventUp(new RoomMouseEvent(100, 700));
+
+                room.putScenes("/good", new Scene[]{
+                        new Scene("page1", new PptPage("https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/image.png", 600d, 600d))
+                }, 0);
+
+                room.setScenePath("/good/page1");
+
+//                room.externalDeviceEventDown(new RoomMouseEvent(100, 300));
+//                room.externalDeviceEventMove(new RoomMouseEvent(100, 400));
+//                room.externalDeviceEventMove(new RoomMouseEvent(100, 500));
+//                room.externalDeviceEventMove(new RoomMouseEvent(100, 600));
+//                room.externalDeviceEventMove(new RoomMouseEvent(100, 700));
+//                room.externalDeviceEventUp(new RoomMouseEvent(100, 700));
 
 //                room.setViewMode(ViewMode.broadcaster);
 //
