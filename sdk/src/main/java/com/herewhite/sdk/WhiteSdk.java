@@ -10,6 +10,7 @@ import com.herewhite.sdk.domain.PlayerConfiguration;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
+import com.herewhite.sdk.implement.BridgeWrapper;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -24,6 +25,7 @@ public class WhiteSdk {
     private final static Gson gson = new Gson();
 
     private final WhiteBroadView bridge;
+    private final BridgeWrapper bridgeWrapper;
     private final Context context;
     private final RoomCallbacksImplement roomCallbacksImplement;
     private final PlayerCallbacksImplement playerCallbacksImplement;
@@ -42,9 +44,11 @@ public class WhiteSdk {
         this.urlInterrupter = urlInterrupter;
         this.roomCallbacksImplement = new RoomCallbacksImplement();
         this.playerCallbacksImplement = new PlayerCallbacksImplement();
+        bridgeWrapper = new BridgeWrapper(bridge);
+        bridge.addJavascriptObject(this, "sdk");
         bridge.addJavascriptObject(this.roomCallbacksImplement, "room");
         bridge.addJavascriptObject(this.playerCallbacksImplement, "player");
-        bridge.callHandler("sdk.newWhiteSdk", new Object[]{gson.toJson(whiteSdkConfiguration)});
+        bridge.callHandler("sdk.newWhiteSdk", new Object[]{whiteSdkConfiguration});
     }
 
     public void joinRoom(final RoomParams roomParams, final Promise<Room> roomPromise) {
@@ -61,7 +65,7 @@ public class WhiteSdk {
             if (roomCallbacks != null) {
                 this.roomCallbacksImplement.setListener(roomCallbacks);  // 覆盖
             }
-            bridge.callHandler("sdk.joinRoom", new Object[]{
+            bridgeWrapper.callHandler("sdk.joinRoom", new Object[]{
                     roomParams.getUuid(),
                     roomParams.getRoomToken()
             }, new OnReturnValue<String>() {

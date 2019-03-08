@@ -3,6 +3,7 @@ package com.herewhite.sdk;
 import android.webkit.JavascriptInterface;
 
 import com.google.gson.Gson;
+import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.FrameError;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;

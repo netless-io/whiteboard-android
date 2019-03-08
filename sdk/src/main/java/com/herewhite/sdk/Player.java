@@ -9,6 +9,7 @@ import com.herewhite.sdk.domain.PlayerState;
 import com.herewhite.sdk.domain.PlayerTimeInfo;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.SDKError;
+import com.herewhite.sdk.implement.BridgeWrapper;
 
 import wendu.dsbridge.OnReturnValue;
 
@@ -16,14 +17,14 @@ public class Player {
     private final static Gson gson = new Gson();
 
     private final String room;
-    private final WhiteBroadView bridge;
+    private final BridgeWrapper bridge;
     private final Context context;
     private final WhiteSdk whiteSdk;
 
     public Player(String room, WhiteBroadView bridge, Context context, WhiteSdk whiteSdk) {
 
         this.room = room;
-        this.bridge = bridge;
+        this.bridge = new BridgeWrapper(bridge);
         this.context = context;
         this.whiteSdk = whiteSdk;
     }

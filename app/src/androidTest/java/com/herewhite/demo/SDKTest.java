@@ -47,8 +47,8 @@ import static org.junit.Assert.assertTrue;
 @LargeTest
 public class SDKTest {
 
-    String UUID = "60b930cbf869408aaebee7a2d051b1df";
-    String ROOM_TOKEN = "WHITEcGFydG5lcl9pZD1QNnR4cXJEQlZrZmJNZWRUdGVLenBURXRnZzhjbGZ6ZnZteUQmc2lnPTA3Nzk1YjY5NDU2ZTE2ZjNjODNiMzFkNjMxZTQ0N2YzZWJjNjk3MzU6YWRtaW5JZD0xJnJvb21JZD02MGI5MzBjYmY4Njk0MDhhYWViZWU3YTJkMDUxYjFkZiZ0ZWFtSWQ9MSZleHBpcmVfdGltZT0xNTcyMTg5NzQ0JmFrPVA2dHhxckRCVmtmYk1lZFR0ZUt6cFRFdGdnOGNsZnpmdm15RCZjcmVhdGVfdGltZT0xNTQwNjMyNzkyJm5vbmNlPTE1NDA2MzI3OTI0NTQwMCZyb2xlPXB1Ymxpc2hlcg";
+    String UUID = "82aa9fd939154ab08ba8313256e03a63";
+    String ROOM_TOKEN = "WHITEcGFydG5lcl9pZD1QNnR4cXJEQlZrZmJNZWRUdGVLenBURXRnZzhjbGZ6ZnZteUQmc2lnPWM4MGI3YTNhMjU0ZWQxMjZjNTEwM2M1MjdkM2FjM2Q2YmU5OTkzYTg6YWRtaW5JZD0xJnJvb21JZD04MmFhOWZkOTM5MTU0YWIwOGJhODMxMzI1NmUwM2E2MyZ0ZWFtSWQ9MSZleHBpcmVfdGltZT0xNTgzNTE3ODc4JmFrPVA2dHhxckRCVmtmYk1lZFR0ZUt6cFRFdGdnOGNsZnpmdm15RCZjcmVhdGVfdGltZT0xNTUxOTYwOTI2Jm5vbmNlPTE1NTE5NjA5MjU5NDEwMCZyb2xlPXB1Ymxpc2hlcg";
 
     @Rule
     public ActivityTestRule<MainTestActivity> mActivityRule = new ActivityTestRule<>(
@@ -74,7 +74,7 @@ public class SDKTest {
 
             @Override
             public void perform(UiController uiController, View view) {
-                WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
+                WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
                 assertNotNull(whiteSdk);
             }
         });
@@ -91,7 +91,7 @@ public class SDKTest {
             onView(withId(R.id.white)).perform(new SDKViewAction() {
                 @Override
                 public void perform(UiController uiController, View view) {
-                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
                     whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new Promise<Room>() {
                         @Override
                         public void then(Room room) {
@@ -129,7 +129,7 @@ public class SDKTest {
             onView(withId(R.id.white)).perform(new SDKViewAction() {
                 @Override
                 public void perform(UiController uiController, View view) {
-                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
                     whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new Promise<Room>() {
                         @Override
                         public void then(Room room) {
@@ -167,7 +167,7 @@ public class SDKTest {
             onView(withId(R.id.white)).perform(new SDKViewAction() {
                 @Override
                 public void perform(UiController uiController, View view) {
-                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
                     whiteSdk.joinRoom(new RoomParams(UUID + "NotExist", ROOM_TOKEN), new Promise<Room>() {
                         @Override
                         public void then(Room room) {
@@ -205,7 +205,7 @@ public class SDKTest {
             onView(withId(R.id.white)).perform(new SDKViewAction() {
                 @Override
                 public void perform(UiController uiController, View view) {
-                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
                     whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new Promise<Room>() {
                         @Override
                         public void then(Room room) {
@@ -267,13 +267,13 @@ public class SDKTest {
             onView(withId(R.id.white)).perform(new SDKViewAction() {
                 @Override
                 public void perform(UiController uiController, View view) {
-                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
                     whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new Promise<Room>() {
                         @Override
                         public void then(Room room) {
                             assertNotNull(room);
                             Log.i("white", "room create");
-                            room.setViewMode(ViewMode.broadcaster);
+                            room.setViewMode(ViewMode.Broadcaster);
 
 
                             try {
@@ -285,7 +285,7 @@ public class SDKTest {
                             room.getBroadcastState(new Promise<BroadcastState>() {
                                 @Override
                                 public void then(BroadcastState broadcastState) {
-                                    assertEquals("set view mode ", ViewMode.broadcaster, broadcastState.getMode());
+                                    assertEquals("set view mode ", ViewMode.Broadcaster, broadcastState.getMode());
                                     lock.lock();
                                     waitRoom.signal();
                                     lock.unlock();
@@ -326,7 +326,7 @@ public class SDKTest {
             onView(withId(R.id.white)).perform(new SDKViewAction() {
                 @Override
                 public void perform(UiController uiController, View view) {
-                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
                     whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new Promise<Room>() {
                         @Override
                         public void then(Room room) {
@@ -387,8 +387,8 @@ public class SDKTest {
             onView(withId(R.id.white)).perform(new SDKViewAction() {
                 @Override
                 public void perform(UiController uiController, View view) {
-                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
-                    whiteSdk.addRoomCallbacks(new AbstractRoomCallbacks() {
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
+                    whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new AbstractRoomCallbacks() {
                         @Override
                         public void onRoomStateChanged(RoomState modifyState) {
 //                            assertEquals("onRoomStateChanged", modifyState.getMemberState().getCurrentApplianceName(), "rectangle");
@@ -403,8 +403,7 @@ public class SDKTest {
                             waitRoom.signal();
                             lock.unlock();
                         }
-                    });
-                    whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new Promise<Room>() {
+                    }, new Promise<Room>() {
                         @Override
                         public void then(Room room) {
                             assertNotNull(room);
@@ -442,8 +441,8 @@ public class SDKTest {
             onView(withId(R.id.white)).perform(new SDKViewAction() {
                 @Override
                 public void perform(UiController uiController, View view) {
-                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
-                    whiteSdk.addRoomCallbacks(new AbstractRoomCallbacks() {
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
+                    whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new AbstractRoomCallbacks() {
                         @Override
                         public void onRoomStateChanged(RoomState modifyState) {
 //                            assertEquals("onRoomStateChanged", modifyState.getMemberState().getCurrentApplianceName(), "rectangle");
@@ -460,8 +459,7 @@ public class SDKTest {
                             lock.unlock();
                             throw new RuntimeException("I am a runtime exception");
                         }
-                    });
-                    whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new Promise<Room>() {
+                    }, new Promise<Room>() {
                         @Override
                         public void then(Room room) {
                             assertNotNull(room);
@@ -499,8 +497,8 @@ public class SDKTest {
             onView(withId(R.id.white)).perform(new SDKViewAction() {
                 @Override
                 public void perform(UiController uiController, View view) {
-                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
-                    whiteSdk.addRoomCallbacks(new AbstractRoomCallbacks() {
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
+                    whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new AbstractRoomCallbacks() {
                         @Override
                         public void onRoomStateChanged(RoomState modifyState) {
 //                            assertEquals("onRoomStateChanged", modifyState.getMemberState().getCurrentApplianceName(), "rectangle");
@@ -511,14 +509,13 @@ public class SDKTest {
 
                         @Override
                         public void onPhaseChanged(RoomPhase phase) {
-                            if(phase == RoomPhase.disconnected){
+                            if (phase == RoomPhase.disconnected) {
                                 lock.lock();
                                 waitRoom.signal();
                                 lock.unlock();
                             }
                         }
-                    });
-                    whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new Promise<Room>() {
+                    }, new Promise<Room>() {
                         @Override
                         public void then(Room room) {
                             assertNotNull(room);
@@ -556,8 +553,8 @@ public class SDKTest {
             onView(withId(R.id.white)).perform(new SDKViewAction() {
                 @Override
                 public void perform(UiController uiController, View view) {
-                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
-                    whiteSdk.addRoomCallbacks(new AbstractRoomCallbacks() {
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
+                    whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new AbstractRoomCallbacks() {
                         @Override
                         public void onRoomStateChanged(RoomState modifyState) {
 //                            assertEquals("onRoomStateChanged", modifyState.getMemberState().getCurrentApplianceName(), "rectangle");
@@ -570,8 +567,7 @@ public class SDKTest {
                         public void onPhaseChanged(RoomPhase phase) {
 
                         }
-                    });
-                    whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new Promise<Room>() {
+                    }, new Promise<Room>() {
                         @Override
                         public void then(Room room) {
                             assertNotNull(room);
@@ -608,8 +604,8 @@ public class SDKTest {
             onView(withId(R.id.white)).perform(new SDKViewAction() {
                 @Override
                 public void perform(UiController uiController, View view) {
-                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d, enableDebug));
-                    whiteSdk.addRoomCallbacks(new AbstractRoomCallbacks() {
+                    WhiteSdk whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
+                    whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new AbstractRoomCallbacks() {
                         @Override
                         public void onRoomStateChanged(RoomState modifyState) {
 //                            assertEquals("onRoomStateChanged", modifyState.getMemberState().getCurrentApplianceName(), "rectangle");
@@ -622,8 +618,7 @@ public class SDKTest {
                         public void onPhaseChanged(RoomPhase phase) {
 
                         }
-                    });
-                    whiteSdk.joinRoom(new RoomParams(UUID, ROOM_TOKEN), new Promise<Room>() {
+                    }, new Promise<Room>() {
                         @Override
                         public void then(Room room) {
                             assertNotNull(room);

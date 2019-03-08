@@ -10,6 +10,9 @@ public class MemberState {
     private Double strokeWidth;
     private Double textSize;
 
+    public MemberState() {
+    }
+
     public String getCurrentApplianceName() {
         return currentApplianceName;
     }

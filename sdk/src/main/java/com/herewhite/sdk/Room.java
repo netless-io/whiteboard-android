@@ -20,6 +20,7 @@ import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.SceneState;
 import com.herewhite.sdk.domain.TextareaBox;
 import com.herewhite.sdk.domain.ViewMode;
+import com.herewhite.sdk.implement.BridgeWrapper;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,14 +36,14 @@ public class Room {
     private final static Gson gson = new Gson();
 
     private String uuid;
-    private final WhiteBroadView bridge;
+    private final BridgeWrapper bridge;
     private final Context context;
     private WhiteSdk sdk;
     private ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
 
     public Room(String uuid, WhiteBroadView bridge, Context context, WhiteSdk sdk) {
         this.uuid = uuid;
-        this.bridge = bridge;
+        this.bridge = new BridgeWrapper(bridge);
         this.context = context;
         this.sdk = sdk;
     }
@@ -303,5 +304,9 @@ public class Room {
         bridge.callHandler("room.externalDeviceEventLeave", new Object[]{mouseEvent});
     }
 
+
+    public static void main(String[] args) {
+
+    }
 
 }
