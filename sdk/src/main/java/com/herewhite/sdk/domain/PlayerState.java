@@ -6,6 +6,8 @@ public class PlayerState {
      * 房间用户状态
      */
     private RoomMember[] roomMembers;
+
+    private SceneState sceneState;
     /**
      * 用户观察状态
      */

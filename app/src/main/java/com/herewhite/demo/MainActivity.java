@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.herewhite.sdk.AbstractPlayerEventListener;
 import com.herewhite.sdk.AbstractRoomCallbacks;
 import com.herewhite.sdk.Environment;
 import com.herewhite.sdk.Logger;
@@ -16,31 +17,20 @@ import com.herewhite.sdk.RoomParams;
 import com.herewhite.sdk.WhiteBroadView;
 import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
-import com.herewhite.sdk.domain.AkkoEvent;
-import com.herewhite.sdk.domain.Appliance;
 import com.herewhite.sdk.domain.DeviceType;
-import com.herewhite.sdk.domain.EventEntry;
-import com.herewhite.sdk.domain.EventListener;
-import com.herewhite.sdk.domain.ImageInformationWithUrl;
-import com.herewhite.sdk.domain.MemberState;
 import com.herewhite.sdk.domain.PlayerConfiguration;
+import com.herewhite.sdk.domain.PlayerPhase;
+import com.herewhite.sdk.domain.PlayerState;
 import com.herewhite.sdk.domain.PptPage;
-import com.herewhite.sdk.domain.RoomMouseEvent;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.Scene;
+import com.herewhite.sdk.domain.UpdateCursor;
 import com.herewhite.sdk.domain.UrlInterrupter;
-import com.herewhite.sdk.domain.ViewMode;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -60,14 +50,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.js);
         whiteBroadView = (WhiteBroadView) findViewById(R.id.white);
+//
+//        try {
+//            realtime();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
-        try {
-            realtime();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-//        player();
+        player();
 
 
     }
@@ -85,10 +75,55 @@ public class MainActivity extends AppCompatActivity {
                 });
 
         PlayerConfiguration playerConfiguration = new PlayerConfiguration();
-        playerConfiguration.setRoom("1bd317e6fba74a69a81eccbd4c79db2c");
+        playerConfiguration.setRoom("f892bd37ba6c4031a8e59b52d308f829");
         playerConfiguration.setAudioUrl("https://ohuuyffq2.qnssl.com/98398e2c5a43d74321214984294c157e_60def9bac25e4a378235f6249cae63c1.m3u8");
 
-        whiteSdk.createPlayer(playerConfiguration, new Promise<Player>() {
+        whiteSdk.createPlayer(playerConfiguration, new AbstractPlayerEventListener() {
+            @Override
+            public void onPhaseChanged(PlayerPhase phase) {
+                showToast(gson.toJson(phase));
+            }
+
+            @Override
+            public void onLoadFirstFrame() {
+                showToast("onLoadFirstFrame");
+            }
+
+            @Override
+            public void onSliceChanged(String slice) {
+                showToast(slice);
+            }
+
+            @Override
+            public void onPlayerStateChanged(PlayerState modifyState) {
+                showToast(gson.toJson(modifyState));
+            }
+
+            @Override
+            public void onStoppedWithError(SDKError error) {
+                showToast(error.getJsStack());
+            }
+
+            @Override
+            public void onScheduleTimeChanged(long time) {
+                showToast(time);
+            }
+
+            @Override
+            public void onCatchErrorWhenAppendFrame(SDKError error) {
+                showToast(error.getJsStack());
+            }
+
+            @Override
+            public void onCatchErrorWhenRender(SDKError error) {
+                showToast(error.getJsStack());
+            }
+
+            @Override
+            public void onCursorViewsUpdate(UpdateCursor updateCursor) {
+                showToast(gson.toJson(updateCursor));
+            }
+        }, new Promise<Player>() {
             @Override
             public void then(Player player) {
                 player.play();
