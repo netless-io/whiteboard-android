@@ -66,9 +66,9 @@ public class PlayerCallbacksImplement {
     @JavascriptInterface
     public void onPlayerStateChanged(Object args) {
         // 获取事件,反序列化然后发送通知给监听者
-        PlayerState playerState = gson.fromJson(String.valueOf(args), PlayerState.class);
         if (listener != null) {
             try {
+                PlayerState playerState = gson.fromJson(String.valueOf(args), PlayerState.class);
                 listener.onPlayerStateChanged(playerState);
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onPlayerStateChanged method", e);
@@ -125,9 +125,9 @@ public class PlayerCallbacksImplement {
     @JavascriptInterface
     public void onCatchErrorWhenRender(Object args) {
         // 获取事件,反序列化然后发送通知给监听者
-        FrameError frameError = gson.fromJson(String.valueOf(args), FrameError.class);
         if (listener != null) {
             try {
+                FrameError frameError = gson.fromJson(String.valueOf(args), FrameError.class);
                 listener.onCatchErrorWhenRender(resolverSDKError(args));
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onCatchErrorWhenRender method", e);
@@ -138,9 +138,9 @@ public class PlayerCallbacksImplement {
     @JavascriptInterface
     public void onCursorViewsUpdate(Object args) {
         // 获取事件,反序列化然后发送通知给监听者
-        UpdateCursor updateCursor = gson.fromJson(String.valueOf(args), UpdateCursor.class);
         if (listener != null) {
             try {
+                UpdateCursor updateCursor = gson.fromJson(String.valueOf(args), UpdateCursor.class);
                 listener.onCursorViewsUpdate(updateCursor);
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onCursorViewsUpdate method", e);
