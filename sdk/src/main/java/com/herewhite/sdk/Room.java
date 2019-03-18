@@ -72,21 +72,9 @@ public class Room {
         bridge.callHandler("room.updateTextarea", new Object[]{textareaBox});
     }
 
-    public void insertNewPage(int index) {
-        bridge.callHandler("room.insertNewPage", new Object[]{index});
-    }
-
-    public void removePage(int index) {
-        bridge.callHandler("room.removePage", new Object[]{index});
-    }
-
     public void insertImage(ImageInformation imageInfo) {
         bridge.callHandler("room.insertImage", new Object[]{imageInfo});
     }
-
-//    public void pushPptPages(PptPage[] pages) {
-//        bridge.callHandler("room.pushPptPages", new Object[]{pages});
-//    }
 
     public void completeImageUpload(String uuid, String url) {
         bridge.callHandler("room.completeImageUpload", new Object[]{uuid, url});
@@ -198,10 +186,6 @@ public class Room {
         bridge.callHandler("room.putScenes", new Object[]{dir, scenes, index});
     }
 
-//    public void putScenes(String dir, Scene[] scenes) {
-//        bridge.callHandler("room.putScenes", new Object[]{dir, scenes, 0});
-//    }
-
     public void moveScene(String source, String target) {
         bridge.callHandler("room.moveScene", new Object[]{source, target});
     }
@@ -231,20 +215,6 @@ public class Room {
     public void disableOperations(boolean disableOperations) {
         bridge.callHandler("room.disableOperations", new Object[]{disableOperations});
     }
-
-//    public void screenshot(ScreenshotParam screenshotParam, final Promise<Object> promise) {
-//        bridge.callHandler("room.screenshot", new Object[]{screenshotParam}, new OnReturnValue<Object>() {
-//            @Override
-//            public void onValue(Object o) {
-//                try {
-//                    promise.then(o);
-//                } catch (Throwable e) {
-//                    Logger.error("An exception occurred while resolve screenshot method promise", e);
-//                    promise.catchEx(new SDKError(e.getMessage()));
-//                }
-//            }
-//        });
-//    }
 
 //    public void convertToPointInWorld(double x, double y, final Promise<Point> promise) {
 //        bridge.callHandler("room.convertToPointInWorld", new Object[]{}, new OnReturnValue<Object>() {
