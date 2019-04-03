@@ -1,5 +1,7 @@
 package com.herewhite.sdk;
 
+import com.herewhite.sdk.domain.MemberInformation;
+
 /**
  * Created by buhe on 2018/8/11.
  */
@@ -11,12 +13,20 @@ public class RoomParams {
     private String roomToken;
     private String sessionToken;
     private String userToken;
-
+    private MemberInformation memberInfo;
 
     public RoomParams(String uuid, String roomToken) {
+        this(uuid, roomToken, null);
+    }
+
+    public RoomParams(String uuid, String roomToken, MemberInformation memberInfo) {
         this.uuid = uuid;
         this.roomToken = roomToken;
+        this.memberInfo = memberInfo;
     }
+
+    public MemberInformation getMemberInfo() { return memberInfo; }
+    public void setMemberInfo(MemberInformation memberInfo) { this.memberInfo = memberInfo; }
 
     public long getPreviousUserId() {
         return previousUserId;

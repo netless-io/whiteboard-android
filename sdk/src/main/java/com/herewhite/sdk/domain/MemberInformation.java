@@ -8,6 +8,15 @@ public class MemberInformation {
     private Long id;
     private String nickName;
     private String avatar;
+    private String userId;
+
+    public MemberInformation() {
+
+    }
+
+    public MemberInformation(String userId) {
+        this.userId = userId;
+    }
 
     public long getId() {
         return id;
@@ -20,6 +29,9 @@ public class MemberInformation {
     public String getNickName() {
         return nickName;
     }
+
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
 
     public void setNickName(String nickName) {
         this.nickName = nickName;

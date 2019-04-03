@@ -12,6 +12,7 @@ public class WhiteSdkConfiguration {
     private double zoomMinScale;
     private boolean debug;
     private boolean hasUrlInterrupterAPI = false;
+    private boolean userCursor = false;
 
     public WhiteSdkConfiguration(DeviceType deviceType, double zoomMaxScale, double zoomMinScale) {
         this(deviceType, zoomMaxScale, zoomMinScale, false);
@@ -27,6 +28,10 @@ public class WhiteSdkConfiguration {
     public DeviceType getDeviceType() {
         return deviceType;
     }
+
+    public void setUserCursor(boolean userCursor) { this.userCursor = userCursor; }
+
+    public boolean isUserCursor() { return userCursor; }
 
     public void setDeviceType(DeviceType deviceType) {
         this.deviceType = deviceType;
