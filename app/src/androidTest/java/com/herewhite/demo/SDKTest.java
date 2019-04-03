@@ -211,11 +211,7 @@ public class SDKTest {
                         public void then(Room room) {
                             assertNotNull(room);
                             Log.i("white", "room create");
-                            room.insertNewPage(1);
-                            GlobalState globalState = new GlobalState();
-                            globalState.setCurrentSceneIndex(1);
-                            room.setGlobalState(globalState);
-
+                            //FIXME 增加2.0的新方法测试
                             try {
                                 Thread.sleep(1000); // FIXME
                             } catch (InterruptedException e) {
