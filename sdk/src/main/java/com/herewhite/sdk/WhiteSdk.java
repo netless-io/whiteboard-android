@@ -169,6 +169,11 @@ public class WhiteSdk {
     }
 
     @JavascriptInterface
+    public void throwError(Object args) {
+        Logger.info("Error From JS: " + gson.fromJson(String.valueOf(args), Map.class));
+    }
+
+    @JavascriptInterface
     public void logger(Object args) {
         Logger.info("From JS: " + gson.fromJson(String.valueOf(args), Map.class));
     }

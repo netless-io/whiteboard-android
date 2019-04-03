@@ -12,6 +12,7 @@ import com.herewhite.sdk.domain.ImageInformation;
 import com.herewhite.sdk.domain.ImageInformationWithUrl;
 import com.herewhite.sdk.domain.MemberState;
 import com.herewhite.sdk.domain.PptPage;
+import com.herewhite.sdk.domain.Point;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomMember;
 import com.herewhite.sdk.domain.RoomMouseEvent;
@@ -216,19 +217,19 @@ public class Room {
         bridge.callHandler("room.disableOperations", new Object[]{disableOperations});
     }
 
-//    public void convertToPointInWorld(double x, double y, final Promise<Point> promise) {
-//        bridge.callHandler("room.convertToPointInWorld", new Object[]{}, new OnReturnValue<Object>() {
-//            @Override
-//            public void onValue(Object o) {
-//                try {
-//                    promise.then(gson.fromJson(String.valueOf(o), Point.class));
-//                } catch (Throwable e) {
-//                    Logger.error("An exception occurred while resolve convertToPointInWorld method promise", e);
-//                    promise.catchEx(new SDKError(e.getMessage()));
-//                }
-//            }
-//        });
-//    }
+    public void convertToPointInWorld(double x, double y, final Promise<Point> promise) {
+        bridge.callHandler("room.convertToPointInWorld", new Object[]{x, y}, new OnReturnValue<Object>() {
+            @Override
+            public void onValue(Object o) {
+                try {
+                    promise.then(gson.fromJson(String.valueOf(o), Point.class));
+                } catch (Throwable e) {
+                    Logger.error("An exception occurred while resolve convertToPointInWorld method promise", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
+                }
+            }
+        });
+    }
 
 
     public void fireMagixEvent(EventEntry eventEntry) {
