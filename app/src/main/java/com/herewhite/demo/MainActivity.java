@@ -4,13 +4,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.herewhite.sdk.AbstractPlayerEventListener;
 import com.herewhite.sdk.AbstractRoomCallbacks;
 import com.herewhite.sdk.Environment;
 import com.herewhite.sdk.Logger;
+import com.herewhite.sdk.domain.MemberInformation;
+import com.herewhite.sdk.domain.Point;
 import com.herewhite.sdk.Player;
 import com.herewhite.sdk.Room;
 import com.herewhite.sdk.RoomParams;
@@ -51,13 +52,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.js);
         whiteBroadView = (WhiteBroadView) findViewById(R.id.white);
 //
-//        try {
-//            realtime();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            realtime();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        player();
+//        player();
 
 
     }
@@ -160,16 +161,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void joinRoom(String uuid, String roomToken) {
+        WhiteSdkConfiguration sdkConfiguration = new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1, true);
+        sdkConfiguration.setUserCursor(true);
         WhiteSdk whiteSdk = new WhiteSdk(
                 whiteBroadView,
                 MainActivity.this,
-                new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1, true),
+                sdkConfiguration,
                 new UrlInterrupter() {
                     @Override
                     public String urlInterrupter(String sourceUrl) {
                         return sourceUrl;
                     }
                 });
+        MemberInformation info = new MemberInformation("313131");
+        info.setAvatar("https://white-pan.oss-cn-shanghai.aliyuncs.com/40/image/mask.jpg");
+        Log.i("room message:", uuid + "\n" + roomToken);
         whiteSdk.joinRoom(new RoomParams(uuid, roomToken), new AbstractRoomCallbacks() {
             @Override
             public void onPhaseChanged(RoomPhase phase) {
