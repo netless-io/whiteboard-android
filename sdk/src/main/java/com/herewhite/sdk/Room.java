@@ -35,7 +35,7 @@ public class Room {
 
     private final static Gson gson = new Gson();
     private final WhiteBroadView bridge;
-
+    private Integer timeDelay;
     private String uuid;
     private final Context context;
     private WhiteSdk sdk;
@@ -46,6 +46,7 @@ public class Room {
         this.bridge = bridge;
         this.context = context;
         this.sdk = sdk;
+        this.timeDelay = 0;
     }
 
     public void setGlobalState(GlobalState globalState) {
@@ -257,6 +258,13 @@ public class Room {
         bridge.callHandler("room.removeMagixEventListener", new Object[]{eventName});
     }
 
+    public void setTimeDelay(Integer timeDelay) {
+        bridge.callHandler("room.timeDelay", new Object[]{timeDelay * 1000});
+    }
+
+    public Integer getTimeDelay() {
+        return this.timeDelay;
+    }
 
     public void externalDeviceEventDown(RoomMouseEvent mouseEvent) {
         bridge.callHandler("room.externalDeviceEventDown", new Object[]{mouseEvent});

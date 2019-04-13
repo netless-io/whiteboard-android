@@ -2,6 +2,7 @@ package com.herewhite.sdk;
 
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
+import com.herewhite.sdk.domain.UpdateCursor;
 
 /**
  * Created by buhe on 2018/8/12.
@@ -29,4 +30,7 @@ public interface RoomCallbacks {
 
     /** 用户错误事件捕获，附带用户 id，以及错误原因 */
     void onCatchErrorWhenAppendFrame(long userId, Exception error);
+
+    /** 用户自定义头像所需要的数据 */
+    void onCursorViewsUpdate(UpdateCursor updateCursor);
 }

@@ -163,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
     private void joinRoom(String uuid, String roomToken) {
         WhiteSdkConfiguration sdkConfiguration = new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1, true);
         sdkConfiguration.setUserCursor(true);
+        sdkConfiguration.setCustomCursor(true);
         WhiteSdk whiteSdk = new WhiteSdk(
                 whiteBroadView,
                 MainActivity.this,

@@ -7,6 +7,7 @@ import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.FrameError;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
+import com.herewhite.sdk.domain.UpdateCursor;
 
 import org.json.JSONException;
 
@@ -124,6 +125,18 @@ public class RoomCallbacksImplement {
                 listener.onCatchErrorWhenAppendFrame(frameError.getUserId(), new Exception(frameError.getError()));
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onCatchErrorWhenAppendFrame method", e);
+            }
+        }
+    }
+
+    @JavascriptInterface
+    public void onCursorViewsUpdate(Object args) {
+        if (listener != null) {
+            try {
+                UpdateCursor updateCursor = gson.fromJson(String.valueOf(args), UpdateCursor.class);
+                listener.onCursorViewsUpdate(updateCursor);
+            } catch (Throwable e) {
+                Logger.error("An exception occurred while invoke onCursorViewsUpdate method", e);
             }
         }
     }

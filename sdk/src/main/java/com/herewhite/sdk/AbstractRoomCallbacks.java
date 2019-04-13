@@ -3,6 +3,7 @@ package com.herewhite.sdk;
 
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
+import com.herewhite.sdk.domain.UpdateCursor;
 
 /**
  * Created by buhe on 2018/8/12.
@@ -36,6 +37,11 @@ public abstract class AbstractRoomCallbacks implements RoomCallbacks {
 
     @Override
     public void onCatchErrorWhenAppendFrame(long userId, Exception error) {
+
+    }
+
+    @Override
+    public void onCursorViewsUpdate(UpdateCursor updateCursor) {
 
     }
 }
