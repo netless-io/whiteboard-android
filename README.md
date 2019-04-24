@@ -1,5 +1,6 @@
-# white sdk android
+# white sdk android [![Release](https://jitpack.io/v/duty-os/white-sdk-android.svg)](http://developer.herewhite.com)
 
-[![Release](https://jitpack.io/v/duty-os/white-sdk-android.svg)]
-(https://jitpack.io/#duty-os/white-sdk-android)
+SDK latest release: https://github.com/duty-os/white-sdk-android/releases/latest
+
+
 
