@@ -257,9 +257,9 @@ public class Room {
         this.eventListenerConcurrentHashMap.remove(eventName);
         bridge.callHandler("room.removeMagixEventListener", new Object[]{eventName});
     }
-
     public void setTimeDelay(Integer timeDelay) {
-        bridge.callHandler("room.timeDelay", new Object[]{timeDelay * 1000});
+        bridge.callHandler("room.setTimeDelay", new Object[]{timeDelay * 1000});
+        this.timeDelay = timeDelay;
     }
 
     public Integer getTimeDelay() {
