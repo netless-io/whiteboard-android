@@ -82,6 +82,10 @@ public class Room {
         bridge.callHandler("room.completeImageUpload", new Object[]{uuid, url});
     }
 
+    public void cleanScene(boolean retainPpt) {
+        bridge.callHandler("room.cleanScene", new Object[]{retainPpt});
+    }
+
     public void insertImage(ImageInformationWithUrl imageInformationWithUrl) {
         ImageInformation imageInformation = new ImageInformation();
         String uuid = UUID.randomUUID().toString();
