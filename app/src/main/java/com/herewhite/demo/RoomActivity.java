@@ -11,7 +11,6 @@ import com.herewhite.sdk.AbstractRoomCallbacks;
 import com.herewhite.sdk.Environment;
 import com.herewhite.sdk.Logger;
 import com.herewhite.sdk.domain.MemberInformation;
-import com.herewhite.sdk.domain.Point;
 import com.herewhite.sdk.Player;
 import com.herewhite.sdk.Room;
 import com.herewhite.sdk.RoomParams;
@@ -40,7 +39,7 @@ import okhttp3.Response;
 import static com.herewhite.demo.DemoAPI.TEST_ROOM_TOKEN;
 import static com.herewhite.demo.DemoAPI.TEST_UUID;
 
-public class MainActivity extends AppCompatActivity {
+public class RoomActivity extends AppCompatActivity {
 
     WhiteBroadView whiteBroadView;
     Gson gson = new Gson();
@@ -66,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private void player() {
         WhiteSdk whiteSdk = new WhiteSdk(
                 whiteBroadView,
-                MainActivity.this,
+                RoomActivity.this,
                 new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1, true),
                 new UrlInterrupter() {
                     @Override
@@ -166,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
         sdkConfiguration.setCustomCursor(true);
         WhiteSdk whiteSdk = new WhiteSdk(
                 whiteBroadView,
-                MainActivity.this,
+                RoomActivity.this,
                 sdkConfiguration,
                 new UrlInterrupter() {
                     @Override
