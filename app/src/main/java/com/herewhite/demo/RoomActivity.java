@@ -6,30 +6,11 @@ import android.util.Log;
 import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.herewhite.sdk.AbstractPlayerEventListener;
-import com.herewhite.sdk.AbstractRoomCallbacks;
-import com.herewhite.sdk.Environment;
-import com.herewhite.sdk.Logger;
-import com.herewhite.sdk.domain.DeviceType;
-import com.herewhite.sdk.domain.MemberInformation;
-import com.herewhite.sdk.Player;
-import com.herewhite.sdk.Room;
-import com.herewhite.sdk.RoomParams;
-import com.herewhite.sdk.WhiteBroadView;
-import com.herewhite.sdk.WhiteSdk;
-import com.herewhite.sdk.WhiteSdkConfiguration;
-import com.herewhite.sdk.domain.PlayerConfiguration;
-import com.herewhite.sdk.domain.PlayerPhase;
-import com.herewhite.sdk.domain.PlayerState;
-import com.herewhite.sdk.domain.Promise;
-import com.herewhite.sdk.domain.RoomPhase;
-import com.herewhite.sdk.domain.RoomState;
-import com.herewhite.sdk.domain.SDKError;
-import com.herewhite.sdk.domain.Scene;
-import com.herewhite.sdk.domain.UpdateCursor;
-import com.herewhite.sdk.domain.UrlInterrupter;
+import com.herewhite.sdk.*;
+import com.herewhite.sdk.domain.*;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -39,6 +20,12 @@ import static com.herewhite.demo.DemoAPI.TEST_ROOM_TOKEN;
 import static com.herewhite.demo.DemoAPI.TEST_UUID;
 
 public class RoomActivity extends AppCompatActivity {
+
+    /*和 iOS 名字一致*/
+    final String EVENT_NAME = "WhiteCommandCustomEvent";
+
+    final String SCENE_DIR = "/dir";
+
 
     WhiteBroadView whiteBroadView;
     Room room;
@@ -101,10 +88,6 @@ public class RoomActivity extends AppCompatActivity {
                     }
                 });
 
-        /*插入图片*/
-        MemberInformation info = new MemberInformation("313131");
-        info.setAvatar("https://white-pan.oss-cn-shanghai.aliyuncs.com/40/image/mask.jpg");
-
         whiteSdk.joinRoom(new RoomParams(uuid, roomToken), new AbstractRoomCallbacks() {
             @Override
             public void onPhaseChanged(RoomPhase phase) {
@@ -129,11 +112,158 @@ public class RoomActivity extends AppCompatActivity {
         });
     }
 
+    public void broadcaster() {
+        Log.i("action", "set broadcaster");
+        room.setViewMode(ViewMode.Broadcaster);
+    }
 
+    public void getBroadcastState() {
+        Log.i("action", "get broadcastState");
+        room.getBroadcastState(new Promise<BroadcastState>() {
+            @Override
+            public void then(BroadcastState broadcastState) {
+                showToast(broadcastState.getMode());
+                Log.i("room info", broadcastState.toString());
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+
+            }
+        });
+    }
+
+    public void dispatchCustomEvent() {
+
+        Log.i("action", "dispatchCustomEvent");
+
+        HashMap payload = new HashMap<>();
+        payload.put("device", "android");
+
+        room.dispatchMagixEvent(new AkkoEvent(EVENT_NAME, payload));
+    }
+
+    private void addCustomEventListener() {
+        room.addMagixEventListener(EVENT_NAME, new EventListener() {
+            @Override
+            public void onEvent(EventEntry eventEntry) {
+                Log.i("action", "customEvent");
+                showToast(gson.toJson(eventEntry.getPayload()));
+            }
+        });
+    }
+
+    public void cleanScene() {
+        Log.i("action", "cleanScene");
+        room.cleanScene(true);
+    }
+
+    public void insertNewScene() {
+        Log.i("action", "insertNewScene");
+        room.putScenes(SCENE_DIR, new Scene[]{
+                new Scene("page1")}, 0);
+        room.setScenePath(SCENE_DIR + "/page1");
+    }
+
+    public void insertPPT() {
+        Log.i("action", "insertPpt");
+        room.putScenes(SCENE_DIR, new Scene[]{
+            new Scene("page2", new PptPage("https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/alin-rusu-1239275-unsplash_opt.jpg", 600d, 600d))
+        }, 0);
+        room.setScenePath(SCENE_DIR + "/page2");
+    }
+
+    public void inserImage() {
+        room.insertImage(new ImageInformationWithUrl(0d, 0d, 100d, 200d, "https://white-pan.oss-cn-shanghai.aliyuncs.com/40/image/mask.jpg"));
+    }
+
+    public void getScene() {
+        room.getScenes(new Promise<Scene[]>() {
+            @Override
+            public void then(Scene[] scenes) {
+                //TODO:do any thing you want
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+
+            }
+        });
+    }
+
+    public void getRoomPhase() {
+        //TODO:增加获取的 API
+    }
+
+    public void disconnect() {
+
+
+        //如果不需要，则直接断开连接即可
+        //room.disconnect();
+    }
+
+    public void readonly() {
+        room.disableOperations(true);
+    }
+
+    public void pencil() {
+        MemberState mberState = new MemberState();
+        mberState.setStrokeColor(new int[]{99, 99, 99});
+        mberState.setCurrentApplianceName(Appliance.PENCIL);
+        mberState.setStrokeWidth(10);
+        mberState.setTextSize(10);
+        room.setMemberState(mberState);
+    }
+
+    public void rectangle() {
+        MemberState mberState = new MemberState();
+        mberState.setStrokeColor(new int[]{99, 99, 99});
+        mberState.setCurrentApplianceName(Appliance.RECTANGLE);
+        mberState.setStrokeWidth(10);
+        mberState.setTextSize(10);
+        room.setMemberState(mberState);
+    }
+
+    public void color() {
+        MemberState mberState = new MemberState();
+        mberState.setStrokeColor(new int[]{200, 200, 200});
+        mberState.setCurrentApplianceName(Appliance.PENCIL);
+        mberState.setStrokeWidth(4);
+        mberState.setTextSize(10);
+        room.setMemberState(mberState);
+    }
+
+    public void convertPoint() {
+        //获取特定点，在白板内部的坐标点
+        room.convertToPointInWorld(0, 0, new Promise<Point>() {
+            @Override
+            public void then(Point point) {
+                Logger.info(point.toString());
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+                Logger.error("convertToPointInWorld  error", t);
+            }
+        });
+    }
+
+    public void externalEvent() {
+        room.disableOperations(true);
+        room.externalDeviceEventDown(new RoomMouseEvent(100, 300));
+        room.externalDeviceEventMove(new RoomMouseEvent(100, 400));
+        room.externalDeviceEventMove(new RoomMouseEvent(100, 500));
+        room.externalDeviceEventMove(new RoomMouseEvent(100, 600));
+        room.externalDeviceEventMove(new RoomMouseEvent(100, 700));
+        room.externalDeviceEventUp(new RoomMouseEvent(100, 700));
+        room.disableOperations(false);
+    }
+
+    public void zoomChange() {
+        room.zoomChange(10);
+    }
 
     void showToast(Object o) {
         Toast.makeText(this, o.toString(), Toast.LENGTH_SHORT).show();
     }
-
-
 }

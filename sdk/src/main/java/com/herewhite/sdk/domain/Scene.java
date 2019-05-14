@@ -9,6 +9,10 @@ public class Scene {
     public Scene() {
     }
 
+    public Scene(String name) {
+        this.name = name;
+    }
+
     public Scene(String name, PptPage ppt) {
         this.name = name;
         this.ppt = ppt;
