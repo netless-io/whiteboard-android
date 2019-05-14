@@ -5,4 +5,5 @@
     <string name="join">join</string>
     <string name="replay">replay</string>
     <string name="create">create</string>
+    <string name="title_activity_play">PlayActivity</string>
 </resources>

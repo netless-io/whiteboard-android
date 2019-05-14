@@ -12,6 +12,10 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
+            android:name=".PlayActivity"
+            android:label="@string/title_activity_play"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".StartActivity"
             android:label="@string/title_activity_start"
             android:theme="@style/AppTheme.NoActionBar">
@@ -21,8 +25,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RoomActivity"/>
-        <activity android:name=".MainTestActivity"></activity>
+        <activity android:name=".RoomActivity" />
+        <activity android:name=".MainTestActivity" />
     </application>
 
 </manifest>
