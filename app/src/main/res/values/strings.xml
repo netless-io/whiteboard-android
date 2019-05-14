@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">SDK</string>
+    <string name="app_name">WhiteSDKDemo</string>
+    <string name="title_activity_start">首页</string>
+    <string name="uuid">uuid</string>
+    <string name="join">join</string>
+    <string name="replay">replay</string>
+    <string name="create">create</string>
 </resources>
