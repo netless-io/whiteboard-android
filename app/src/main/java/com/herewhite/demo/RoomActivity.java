@@ -197,6 +197,18 @@ public class RoomActivity extends AppCompatActivity {
 
     public void disconnect() {
 
+        //如果需要房间断开连接后回调
+        room.disconnect(new Promise<Object>() {
+            @Override
+            public void then(Object o) {
+                Log.i("action", "room disconnect success");
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+
+            }
+        });
 
         //如果不需要，则直接断开连接即可
         //room.disconnect();

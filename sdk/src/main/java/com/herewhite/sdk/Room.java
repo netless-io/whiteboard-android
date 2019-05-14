@@ -16,6 +16,8 @@ import com.herewhite.sdk.domain.Point;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomMember;
 import com.herewhite.sdk.domain.RoomMouseEvent;
+import com.herewhite.sdk.domain.RoomPhase;
+import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.SceneState;
@@ -67,6 +69,21 @@ public class Room {
 
     public void disconnect() {
         bridge.callHandler("room.disconnect", new Object[]{});
+        this.sdk.releaseRoom(this.uuid);
+    }
+
+    public void disconnect(final Promise<Object> promise) {
+        bridge.callHandler("room.disconnect", new Object[]{}, new OnReturnValue<Object>() {
+            @Override
+            public void onValue(Object o) {
+                try {
+                    promise.then(gson.fromJson(String.valueOf(o), GlobalState.class));
+                } catch (Throwable e) {
+                    Logger.error("An exception occurred while resolve getGlobalState method promise", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
+                }
+            }
+        });
         this.sdk.releaseRoom(this.uuid);
     }
 
@@ -171,6 +188,50 @@ public class Room {
             public void onValue(Object o) {
                 try {
                     promise.then(gson.fromJson(String.valueOf(o), Scene[].class));
+                } catch (Throwable e) {
+                    Logger.error("An exception occurred while resolve getRoomMembers method promise", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
+                }
+            }
+        });
+    }
+
+    public void getZoomScale(final Promise<Number> promise) {
+        bridge.callHandler("room.getZoomScale", new OnReturnValue<Object>() {
+            @Override
+            public void onValue(Object o) {
+                try {
+                    promise.then(gson.fromJson(String.valueOf(o), Number.class));
+                } catch (Throwable e) {
+                    Logger.error("An exception occurred while resolve getZoomScale method promise", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
+                }
+            }
+        });
+    }
+
+    public void getRoomPhase(final Promise<RoomPhase> promise) {
+        bridge.callHandler("room.getRoomPhase", new OnReturnValue<Object>() {
+            @Override
+            public void onValue(Object o) {
+                try {
+                    //TODO:待测试
+                    promise.then(RoomPhase.valueOf(String.valueOf(o)));
+                } catch (Throwable e) {
+                    Logger.error("An exception occurred while resolve getZoomScale method promise", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
+                }
+            }
+        });
+    }
+
+    public void getRoomState(final Promise<RoomState> promise) {
+        bridge.callHandler("room.state.getRoomState", new OnReturnValue<Object>() {
+            @Override
+            public void onValue(Object o) {
+                try {
+                    //TODO:待测试反序列化是否正确
+                    promise.then(gson.fromJson(String.valueOf(o), RoomState.class));
                 } catch (Throwable e) {
                     Logger.error("An exception occurred while resolve getRoomMembers method promise", e);
                     promise.catchEx(new SDKError(e.getMessage()));
