@@ -3,6 +3,8 @@ package com.herewhite.demo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -26,7 +28,6 @@ public class RoomActivity extends AppCompatActivity {
 
     final String SCENE_DIR = "/dir";
 
-
     WhiteBroadView whiteBroadView;
     Room room;
     Gson gson = new Gson();
@@ -42,6 +43,21 @@ public class RoomActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.room_command, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.broadcast:
+                break;
+        }
+        return true;
     }
 
     private void createRoom() throws IOException {
@@ -97,7 +113,8 @@ public class RoomActivity extends AppCompatActivity {
 
             @Override
             public void onRoomStateChanged(RoomState modifyState) {
-                showToast(gson.toJson(modifyState));
+                Log.i("info", gson.toJson(modifyState));
+//                showToast(gson.toJson(modifyState));
             }
         }, new Promise<Room>() {
             @Override
@@ -112,12 +129,12 @@ public class RoomActivity extends AppCompatActivity {
         });
     }
 
-    public void broadcaster() {
-        Log.i("action", "set broadcaster");
+    public void broadcast(MenuItem item) {
+        Log.i("action", "set broadcast");
         room.setViewMode(ViewMode.Broadcaster);
     }
 
-    public void getBroadcastState() {
+    public void getBroadcastState(MenuItem item) {
         Log.i("action", "get broadcastState");
         room.getBroadcastState(new Promise<BroadcastState>() {
             @Override
@@ -133,7 +150,7 @@ public class RoomActivity extends AppCompatActivity {
         });
     }
 
-    public void dispatchCustomEvent() {
+    public void dispatchCustomEvent(MenuItem item) {
 
         Log.i("action", "dispatchCustomEvent");
 
@@ -153,19 +170,19 @@ public class RoomActivity extends AppCompatActivity {
         });
     }
 
-    public void cleanScene() {
+    public void cleanScene(MenuItem item) {
         Log.i("action", "cleanScene");
         room.cleanScene(true);
     }
 
-    public void insertNewScene() {
+    public void insertNewScene(MenuItem item) {
         Log.i("action", "insertNewScene");
         room.putScenes(SCENE_DIR, new Scene[]{
                 new Scene("page1")}, 0);
         room.setScenePath(SCENE_DIR + "/page1");
     }
 
-    public void insertPPT() {
+    public void insertPPT(MenuItem item) {
         Log.i("action", "insertPpt");
         room.putScenes(SCENE_DIR, new Scene[]{
             new Scene("page2", new PptPage("https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/alin-rusu-1239275-unsplash_opt.jpg", 600d, 600d))
@@ -173,11 +190,11 @@ public class RoomActivity extends AppCompatActivity {
         room.setScenePath(SCENE_DIR + "/page2");
     }
 
-    public void inserImage() {
+    public void insertImage(MenuItem item) {
         room.insertImage(new ImageInformationWithUrl(0d, 0d, 100d, 200d, "https://white-pan.oss-cn-shanghai.aliyuncs.com/40/image/mask.jpg"));
     }
 
-    public void getScene() {
+    public void getScene(MenuItem item) {
         room.getScenes(new Promise<Scene[]>() {
             @Override
             public void then(Scene[] scenes) {
@@ -191,11 +208,21 @@ public class RoomActivity extends AppCompatActivity {
         });
     }
 
-    public void getRoomPhase() {
-        //TODO:增加获取的 API
+    public void getRoomPhase(MenuItem item) {
+        room.getRoomState(new Promise<RoomState>() {
+            @Override
+            public void then(RoomState roomState) {
+                Log.i("room info", roomState.toString());
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+
+            }
+        });
     }
 
-    public void disconnect() {
+    public void disconnect(MenuItem item) {
 
         //如果需要房间断开连接后回调
         room.disconnect(new Promise<Object>() {
@@ -214,38 +241,42 @@ public class RoomActivity extends AppCompatActivity {
         //room.disconnect();
     }
 
-    public void readonly() {
+    public void readonly(MenuItem item) {
         room.disableOperations(true);
     }
 
-    public void pencil() {
-        MemberState mberState = new MemberState();
-        mberState.setStrokeColor(new int[]{99, 99, 99});
-        mberState.setCurrentApplianceName(Appliance.PENCIL);
-        mberState.setStrokeWidth(10);
-        mberState.setTextSize(10);
-        room.setMemberState(mberState);
+    public void disableReadonly(MenuItem item) {
+        room.disableOperations(false);
     }
 
-    public void rectangle() {
-        MemberState mberState = new MemberState();
-        mberState.setStrokeColor(new int[]{99, 99, 99});
-        mberState.setCurrentApplianceName(Appliance.RECTANGLE);
-        mberState.setStrokeWidth(10);
-        mberState.setTextSize(10);
-        room.setMemberState(mberState);
+    public void pencil(MenuItem item) {
+        MemberState memberState = new MemberState();
+        memberState.setStrokeColor(new int[]{99, 99, 99});
+        memberState.setCurrentApplianceName(Appliance.PENCIL);
+        memberState.setStrokeWidth(10);
+        memberState.setTextSize(10);
+        room.setMemberState(memberState);
     }
 
-    public void color() {
-        MemberState mberState = new MemberState();
-        mberState.setStrokeColor(new int[]{200, 200, 200});
-        mberState.setCurrentApplianceName(Appliance.PENCIL);
-        mberState.setStrokeWidth(4);
-        mberState.setTextSize(10);
-        room.setMemberState(mberState);
+    public void rectangle(MenuItem item) {
+        MemberState memberState = new MemberState();
+        memberState.setStrokeColor(new int[]{99, 99, 99});
+        memberState.setCurrentApplianceName(Appliance.RECTANGLE);
+        memberState.setStrokeWidth(10);
+        memberState.setTextSize(10);
+        room.setMemberState(memberState);
     }
 
-    public void convertPoint() {
+    public void color(MenuItem item) {
+        MemberState memberState = new MemberState();
+        memberState.setStrokeColor(new int[]{200, 200, 200});
+        memberState.setCurrentApplianceName(Appliance.PENCIL);
+        memberState.setStrokeWidth(4);
+        memberState.setTextSize(10);
+        room.setMemberState(memberState);
+    }
+
+    public void convertPoint(MenuItem item) {
         //获取特定点，在白板内部的坐标点
         room.convertToPointInWorld(0, 0, new Promise<Point>() {
             @Override
@@ -260,7 +291,7 @@ public class RoomActivity extends AppCompatActivity {
         });
     }
 
-    public void externalEvent() {
+    public void externalEvent(MenuItem item) {
         room.disableOperations(true);
         room.externalDeviceEventDown(new RoomMouseEvent(100, 300));
         room.externalDeviceEventMove(new RoomMouseEvent(100, 400));
@@ -271,7 +302,7 @@ public class RoomActivity extends AppCompatActivity {
         room.disableOperations(false);
     }
 
-    public void zoomChange() {
+    public void zoomChange(MenuItem item) {
         room.zoomChange(10);
     }
 
