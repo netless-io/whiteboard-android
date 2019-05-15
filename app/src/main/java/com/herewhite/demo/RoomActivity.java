@@ -27,6 +27,8 @@ public class RoomActivity extends AppCompatActivity {
     final String EVENT_NAME = "WhiteCommandCustomEvent";
 
     final String SCENE_DIR = "/dir";
+    final String ROOM_INFO = "room info";
+    final String ROOM_ACTION = "room action";
 
     WhiteBroadView whiteBroadView;
     Room room;
@@ -61,8 +63,8 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     private void createRoom() throws IOException {
-        /*该请求，应该存放在业务服务器中，客户端从业务服务器，获取 roomToken。*/
-        demoAPI.createRoom("unknow", 100, new Callback() {
+        /* 该请求，应该存放在业务服务器中，客户端从业务服务器，获取 roomToken。*/
+        demoAPI.createRoom("sdk demo", 100, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.e("createRoom fail", e.toString());
@@ -73,7 +75,6 @@ public class RoomActivity extends AppCompatActivity {
                 JsonObject room = gson.fromJson(response.body().string(), JsonObject.class);
                 String uuid = room.getAsJsonObject("msg").getAsJsonObject("room").get("uuid").getAsString();
                 String roomToken = room.getAsJsonObject("msg").get("roomToken").getAsString();
-                Log.i("white", uuid + "|" + roomToken);
                 if (whiteBroadView.getEnv() == Environment.dev) {
                     joinRoom(TEST_UUID, TEST_ROOM_TOKEN);
                 } else {
@@ -85,7 +86,7 @@ public class RoomActivity extends AppCompatActivity {
 
     private void joinRoom(String uuid, String roomToken) {
 
-        Log.i("room info:", uuid + "\n" + roomToken);
+        logRoomInfo("room uuid: " + uuid + "roomToken" + roomToken);
 
         WhiteSdkConfiguration sdkConfiguration = new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1, true);
         /*显示用户头像*/
@@ -108,18 +109,18 @@ public class RoomActivity extends AppCompatActivity {
             @Override
             public void onPhaseChanged(RoomPhase phase) {
                 showToast(phase.name());
-                // handle room phase
             }
 
             @Override
             public void onRoomStateChanged(RoomState modifyState) {
-                Log.i("info", gson.toJson(modifyState));
-//                showToast(gson.toJson(modifyState));
+                logRoomInfo(gson.toJson(modifyState));
             }
         }, new Promise<Room>() {
             @Override
             public void then(Room wRoom) {
+                logRoomInfo("join in room success");
                 room = wRoom;
+                addCustomEventListener();
             }
 
             @Override
@@ -129,18 +130,28 @@ public class RoomActivity extends AppCompatActivity {
         });
     }
 
+    private void addCustomEventListener() {
+        room.addMagixEventListener(EVENT_NAME, new EventListener() {
+            @Override
+            public void onEvent(EventEntry eventEntry) {
+                logRoomInfo("customEvent payload: " + eventEntry.getPayload().toString());
+                showToast(gson.toJson(eventEntry.getPayload()));
+            }
+        });
+    }
+
     public void broadcast(MenuItem item) {
-        Log.i("action", "set broadcast");
+        logAction();
         room.setViewMode(ViewMode.Broadcaster);
     }
 
     public void getBroadcastState(MenuItem item) {
-        Log.i("action", "get broadcastState");
+        logAction();
         room.getBroadcastState(new Promise<BroadcastState>() {
             @Override
             public void then(BroadcastState broadcastState) {
                 showToast(broadcastState.getMode());
-                Log.i("room info", broadcastState.toString());
+                logRoomInfo(gson.toJson(broadcastState));
             }
 
             @Override
@@ -151,39 +162,27 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     public void dispatchCustomEvent(MenuItem item) {
-
-        Log.i("action", "dispatchCustomEvent");
-
+        logAction();
         HashMap payload = new HashMap<>();
         payload.put("device", "android");
 
         room.dispatchMagixEvent(new AkkoEvent(EVENT_NAME, payload));
     }
 
-    private void addCustomEventListener() {
-        room.addMagixEventListener(EVENT_NAME, new EventListener() {
-            @Override
-            public void onEvent(EventEntry eventEntry) {
-                Log.i("action", "customEvent");
-                showToast(gson.toJson(eventEntry.getPayload()));
-            }
-        });
-    }
-
     public void cleanScene(MenuItem item) {
-        Log.i("action", "cleanScene");
+        logAction();
         room.cleanScene(true);
     }
 
     public void insertNewScene(MenuItem item) {
-        Log.i("action", "insertNewScene");
+        logAction();
         room.putScenes(SCENE_DIR, new Scene[]{
                 new Scene("page1")}, 0);
         room.setScenePath(SCENE_DIR + "/page1");
     }
 
     public void insertPPT(MenuItem item) {
-        Log.i("action", "insertPpt");
+        logAction();
         room.putScenes(SCENE_DIR, new Scene[]{
             new Scene("page2", new PptPage("https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/alin-rusu-1239275-unsplash_opt.jpg", 600d, 600d))
         }, 0);
@@ -195,10 +194,11 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     public void getScene(MenuItem item) {
+        logAction();
         room.getScenes(new Promise<Scene[]>() {
             @Override
             public void then(Scene[] scenes) {
-                //TODO:do any thing you want
+                logRoomInfo(gson.toJson(scenes));
             }
 
             @Override
@@ -209,10 +209,11 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     public void getRoomPhase(MenuItem item) {
+        logAction();
         room.getRoomState(new Promise<RoomState>() {
             @Override
             public void then(RoomState roomState) {
-                Log.i("room info", roomState.toString());
+                logRoomInfo("roomState: " + gson.toJson(roomState));
             }
 
             @Override
@@ -228,7 +229,7 @@ public class RoomActivity extends AppCompatActivity {
         room.disconnect(new Promise<Object>() {
             @Override
             public void then(Object o) {
-                Log.i("action", "room disconnect success");
+                logAction("disconnect success");
             }
 
             @Override
@@ -242,14 +243,17 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     public void readonly(MenuItem item) {
+        logAction();
         room.disableOperations(true);
     }
 
     public void disableReadonly(MenuItem item) {
+        logAction();
         room.disableOperations(false);
     }
 
     public void pencil(MenuItem item) {
+        logAction();
         MemberState memberState = new MemberState();
         memberState.setStrokeColor(new int[]{99, 99, 99});
         memberState.setCurrentApplianceName(Appliance.PENCIL);
@@ -259,6 +263,7 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     public void rectangle(MenuItem item) {
+        logAction();
         MemberState memberState = new MemberState();
         memberState.setStrokeColor(new int[]{99, 99, 99});
         memberState.setCurrentApplianceName(Appliance.RECTANGLE);
@@ -268,6 +273,7 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     public void color(MenuItem item) {
+        logAction();
         MemberState memberState = new MemberState();
         memberState.setStrokeColor(new int[]{200, 200, 200});
         memberState.setCurrentApplianceName(Appliance.PENCIL);
@@ -281,7 +287,7 @@ public class RoomActivity extends AppCompatActivity {
         room.convertToPointInWorld(0, 0, new Promise<Point>() {
             @Override
             public void then(Point point) {
-                Logger.info(point.toString());
+                logRoomInfo(gson.toJson(point));
             }
 
             @Override
@@ -292,6 +298,7 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     public void externalEvent(MenuItem item) {
+        logAction();
         room.disableOperations(true);
         room.externalDeviceEventDown(new RoomMouseEvent(100, 300));
         room.externalDeviceEventMove(new RoomMouseEvent(100, 400));
@@ -303,7 +310,33 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     public void zoomChange(MenuItem item) {
-        room.zoomChange(10);
+        room.getZoomScale(new Promise<Number>() {
+            @Override
+            public void then(Number number) {
+                if (number.intValue() != 1) {
+                    room.zoomChange(1);
+                } else {
+                    room.zoomChange(5);
+                }
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+
+            }
+        });
+    }
+
+    void logRoomInfo(String str) {
+        Log.i(ROOM_INFO, Thread.currentThread().getStackTrace()[3].getMethodName() + " " + str);
+    }
+
+    void logAction(String str) {
+        Log.i(ROOM_ACTION, Thread.currentThread().getStackTrace()[3].getMethodName() + " " + str);
+    }
+
+    void logAction() {
+        Log.i(ROOM_ACTION, Thread.currentThread().getStackTrace()[3].getMethodName());
     }
 
     void showToast(Object o) {
