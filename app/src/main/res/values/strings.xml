@@ -15,6 +15,7 @@
     <string name="insertImage_command">插入图片</string>
     <string name="getScene_command">获取 Scene 状态</string>
     <string name="getRoomPhase_command">获取房间连接状态</string>
+    <string name="getRoomState_command">获取房间连接状态</string>
     <string name="disconnect_command">断开连接</string>
     <string name="readonly_command">只读</string>
     <string name="disableReadonly_command">取消只读</string>

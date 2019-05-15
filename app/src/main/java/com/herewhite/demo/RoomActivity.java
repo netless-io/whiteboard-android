@@ -210,6 +210,23 @@ public class RoomActivity extends AppCompatActivity {
 
     public void getRoomPhase(MenuItem item) {
         logAction();
+        room.getRoomPhase(new Promise<RoomPhase>() {
+            @Override
+            public void then(RoomPhase roomPhase) {
+                logRoomInfo("RoomPhase: " + gson.toJson(roomPhase));
+
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+
+            }
+        });
+    }
+
+    public void getRoomState(MenuItem item) {
+        logAction();
+        //获取房间状态，包含很多信息
         room.getRoomState(new Promise<RoomState>() {
             @Override
             public void then(RoomState roomState) {

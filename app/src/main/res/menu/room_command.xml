@@ -30,6 +30,9 @@
     <item android:id="@+id/getRoomPhase"
         android:onClick="getRoomPhase"
         android:title="@string/getRoomPhase_command"/>
+    <item android:id="@+id/getRoomState"
+        android:onClick="getRoomState"
+        android:title="@string/getRoomState_command"/>
     <item android:id="@+id/disconnect"
         android:onClick="disconnect"
         android:title="@string/disconnect_command"/>
