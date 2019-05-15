@@ -1,5 +1,6 @@
 package com.herewhite.demo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,20 +23,15 @@ public class PlayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        Intent intent = getIntent();
+        String uuid = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
+        if (uuid != null) {
+            whiteBroadView = findViewById(R.id.white);
+            player(uuid);
+        }
     }
 
-    private void player() {
+    private void player(String uuid) {
         WhiteSdk whiteSdk = new WhiteSdk(
                 whiteBroadView,
                 PlayActivity.this,
@@ -48,8 +44,10 @@ public class PlayActivity extends AppCompatActivity {
                 });
 
         PlayerConfiguration playerConfiguration = new PlayerConfiguration();
-        playerConfiguration.setRoom("f892bd37ba6c4031a8e59b52d308f829");
-        playerConfiguration.setAudioUrl("https://ohuuyffq2.qnssl.com/98398e2c5a43d74321214984294c157e_60def9bac25e4a378235f6249cae63c1.m3u8");
+//        playerConfiguration.setRoom("f892bd37ba6c4031a8e59b52d308f829");
+        playerConfiguration.setRoom(uuid);
+        //TODO:提供更正式的 m3u8
+//        playerConfiguration.setAudioUrl("https://ohuuyffq2.qnssl.com/98398e2c5a43d74321214984294c157e_60def9bac25e4a378235f6249cae63c1.m3u8");
 
         whiteSdk.createPlayer(playerConfiguration, new AbstractPlayerEventListener() {
             @Override

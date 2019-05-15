@@ -22,8 +22,7 @@ public class StartActivity extends AppCompatActivity {
 
     public String getUuid() {
         EditText text = findViewById(R.id.editText);
-        String uuid = text.getText().toString();
-        return uuid;
+        return text.getText().toString();
     }
 
     public void createRoom(View view) {
