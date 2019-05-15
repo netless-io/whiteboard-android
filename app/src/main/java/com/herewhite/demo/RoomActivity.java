@@ -1,5 +1,6 @@
 package com.herewhite.demo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -40,10 +41,12 @@ public class RoomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.js);
         whiteBroadView = findViewById(R.id.white);
-        try {
+        Intent intent = getIntent();
+        String uuid = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
+        if (uuid == null) {
             createRoom();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            getRoomToken(uuid);
         }
     }
 
@@ -62,23 +65,51 @@ public class RoomActivity extends AppCompatActivity {
         return true;
     }
 
-    private void createRoom() throws IOException {
+    private void createRoom() {
         /* 该请求，应该存放在业务服务器中，客户端从业务服务器，获取 roomToken。*/
         demoAPI.createRoom("sdk demo", 100, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e("createRoom fail", e.toString());
+                Log.e("create room fail", e.toString());
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                JsonObject room = gson.fromJson(response.body().string(), JsonObject.class);
-                String uuid = room.getAsJsonObject("msg").getAsJsonObject("room").get("uuid").getAsString();
-                String roomToken = room.getAsJsonObject("msg").get("roomToken").getAsString();
-                if (whiteBroadView.getEnv() == Environment.dev) {
-                    joinRoom(TEST_UUID, TEST_ROOM_TOKEN);
-                } else {
-                    joinRoom(uuid, roomToken);
+            public void onResponse(Call call, Response response) {
+                try {
+                    JsonObject room = gson.fromJson(response.body().string(), JsonObject.class);
+                    String uuid = room.getAsJsonObject("msg").getAsJsonObject("room").get("uuid").getAsString();
+                    String roomToken = room.getAsJsonObject("msg").get("roomToken").getAsString();
+                    if (whiteBroadView.getEnv() == Environment.dev) {
+                        joinRoom(TEST_UUID, TEST_ROOM_TOKEN);
+                    } else {
+                        joinRoom(uuid, roomToken);
+                    }
+                } catch (Throwable e) {
+                    Log.e("create room fail", e.toString());
+                }
+            }
+        });
+    }
+
+    private void getRoomToken(final String uuid) {
+        demoAPI.getRoomToken(uuid, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("create room fail", e.toString());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
+                try {
+                    JsonObject room = gson.fromJson(response.body().string(), JsonObject.class);
+                    String roomToken = room.getAsJsonObject("msg").get("roomToken").getAsString();
+                    if (whiteBroadView.getEnv() == Environment.dev) {
+                        joinRoom(TEST_UUID, TEST_ROOM_TOKEN);
+                    } else {
+                        joinRoom(uuid, roomToken);
+                    }
+                } catch (Throwable e) {
+                    Log.e("create room fail", e.toString());
                 }
             }
         });
