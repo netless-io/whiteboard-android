@@ -28,6 +28,10 @@ public class DemoAPI {
     OkHttpClient client = new OkHttpClient();
     Gson gson = new Gson();
 
+    public boolean validateToken() {
+        return sdkToken.length() > 200;
+    }
+
     public void createRoom(String name, int limit, Callback callback) {
         Map<String, Object> roomSpec = new HashMap<>();
         roomSpec.put("name", name);
