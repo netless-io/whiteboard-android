@@ -67,6 +67,10 @@ public class Room {
         bridge.callHandler("room.setViewSize", new Object[]{width, height});
     }
 
+    public void refreshViewSize() {
+        bridge.callHandler("room.refreshViewSize", new Object[]{});
+    }
+
     public void disconnect() {
         bridge.callHandler("room.disconnect", new Object[]{});
         this.sdk.releaseRoom(this.uuid);
