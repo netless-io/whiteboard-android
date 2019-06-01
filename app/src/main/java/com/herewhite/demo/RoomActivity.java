@@ -145,13 +145,11 @@ public class RoomActivity extends AppCompatActivity {
 
     private void joinRoom(String uuid, String roomToken) {
 
-        logRoomInfo("room uuid: " + uuid + "roomToken" + roomToken);
+        logRoomInfo("room uuid: " + uuid + "\nroomToken: " + roomToken);
 
         WhiteSdkConfiguration sdkConfiguration = new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1, true);
         /*显示用户头像*/
         sdkConfiguration.setUserCursor(true);
-        /*接受用户头像信息回调，自己实现头像回调。会导致 UserCursor 设置失效。*/
-        sdkConfiguration.setCustomCursor(true);
 
         WhiteSdk whiteSdk = new WhiteSdk(
                 whiteBroadView,

@@ -36,6 +36,7 @@ public class DemoAPI {
         Map<String, Object> roomSpec = new HashMap<>();
         roomSpec.put("name", name);
         roomSpec.put("limit", limit);
+        roomSpec.put("mode", "historied");
         RequestBody body = RequestBody.create(JSON, gson.toJson(roomSpec));
         Request request = new Request.Builder()
                 .url(host + "/room?token=" + sdkToken)
