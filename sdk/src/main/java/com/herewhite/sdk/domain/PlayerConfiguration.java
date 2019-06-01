@@ -2,10 +2,16 @@ package com.herewhite.sdk.domain;
 
 public class PlayerConfiguration {
     private String room;
+    private String roomToken;
     private String slice;
     private Long beginTimestamp;
     private Long duration;
     private String audioUrl;
+
+    public PlayerConfiguration(String room, String roomToken) {
+        this.room = room;
+        this.roomToken = roomToken;
+    }
 
     public String getRoom() {
         return room;
@@ -14,6 +20,10 @@ public class PlayerConfiguration {
     public void setRoom(String room) {
         this.room = room;
     }
+
+    public String getRoomToken() { return roomToken; }
+
+    public void setRoomToken(String roomToken) { this.roomToken = roomToken; }
 
     public String getSlice() {
         return slice;
