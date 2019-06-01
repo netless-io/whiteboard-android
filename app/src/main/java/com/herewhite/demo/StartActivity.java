@@ -67,6 +67,7 @@ public class StartActivity extends AppCompatActivity {
             tokenAlert();
             return;
         }
+//        f892bd37ba6c4031a8e59b52d308f829
         Intent intent = new Intent(this, RoomActivity.class);
         if (getUuid().length() > 0) {
             intent.putExtra(EXTRA_MESSAGE, getUuid());

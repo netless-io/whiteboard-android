@@ -125,7 +125,6 @@ public class RoomActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) {
                 try {
-
                     if (response.code() == 200) {
                         JsonObject room = gson.fromJson(response.body().string(), JsonObject.class);
                         String roomToken = room.getAsJsonObject("msg").get("roomToken").getAsString();

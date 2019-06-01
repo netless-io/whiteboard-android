@@ -1,17 +1,22 @@
 package com.herewhite.demo;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.herewhite.sdk.*;
 import com.herewhite.sdk.domain.*;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class PlayActivity extends AppCompatActivity {
 
@@ -24,14 +29,54 @@ public class PlayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
         Intent intent = getIntent();
-        String uuid = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
+        final String uuid = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
         if (uuid != null) {
             whiteBroadView = findViewById(R.id.white);
-            player(uuid);
+
+            new DemoAPI().getRoomToken(uuid, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    try {
+                        if (response.code() == 200) {
+                            JsonObject room = gson.fromJson(response.body().string(), JsonObject.class);
+                            String roomToken = room.getAsJsonObject("msg").get("roomToken").getAsString();
+                            player(uuid, roomToken);
+                        } else {
+                            alert("获取房间 token 失败", response.body().string());
+                        }
+                    } catch (Throwable e) {
+                        alert("获取房间 token 失败", e.toString());
+                    }
+                }
+            });
         }
     }
 
-    private void player(String uuid) {
+    public void alert(final String title, final String detail) {
+
+        runOnUiThread(new Runnable() {
+            public void run() {
+                AlertDialog alertDialog = new AlertDialog.Builder(PlayActivity.this).create();
+                alertDialog.setTitle(title);
+                alertDialog.setMessage(detail);
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                finish();
+                            }
+                        });
+                alertDialog.show();
+            }
+        });
+    }
+
+    private void player(String uuid, String roomToken) {
         WhiteSdk whiteSdk = new WhiteSdk(
                 whiteBroadView,
                 PlayActivity.this,
@@ -43,9 +88,7 @@ public class PlayActivity extends AppCompatActivity {
                     }
                 });
 
-        PlayerConfiguration playerConfiguration = new PlayerConfiguration();
-//        playerConfiguration.setRoom("f892bd37ba6c4031a8e59b52d308f829");
-        playerConfiguration.setRoom(uuid);
+        PlayerConfiguration playerConfiguration = new PlayerConfiguration(uuid, roomToken);
         //TODO:提供更正式的 m3u8
 //        playerConfiguration.setAudioUrl("https://ohuuyffq2.qnssl.com/98398e2c5a43d74321214984294c157e_60def9bac25e4a378235f6249cae63c1.m3u8");
 
