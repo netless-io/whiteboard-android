@@ -52,11 +52,6 @@ public class Player {
         bridge.callHandler("player.setObserverMode", new Object[]{mode.name()});
     }
 
-    //设置跟随的用户
-    public void setFollowUserId(int userId) {
-        bridge.callHandler("player.setFollowUserId", new Object[]{userId});
-    }
-
     /**
      * 获取房间状态
      * 目前：初始状态为 WhitePlayerPhaseWaitingFirstFrame
