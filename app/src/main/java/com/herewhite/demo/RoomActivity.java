@@ -41,7 +41,7 @@ public class RoomActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.js);
+        setContentView(R.layout.activity_room);
         whiteBroadView = findViewById(R.id.white);
         Intent intent = getIntent();
         String uuid = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
