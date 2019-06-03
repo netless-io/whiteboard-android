@@ -4,6 +4,7 @@ import android.webkit.JavascriptInterface;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.FrameError;
 import com.herewhite.sdk.domain.PlayerPhase;
 import com.herewhite.sdk.domain.PlayerState;
@@ -135,16 +136,16 @@ public class PlayerCallbacksImplement {
         }
     }
 
-    @JavascriptInterface
-    public void onCursorViewsUpdate(Object args) {
-        // 获取事件,反序列化然后发送通知给监听者
-        if (listener != null) {
-            try {
-                UpdateCursor updateCursor = gson.fromJson(String.valueOf(args), UpdateCursor.class);
-                listener.onCursorViewsUpdate(updateCursor);
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onCursorViewsUpdate method", e);
-            }
-        }
-    }
+//    @JavascriptInterface
+//    public void onCursorViewsUpdate(Object args) {
+//        // 获取事件,反序列化然后发送通知给监听者
+//        if (listener != null) {
+//            try {
+//                UpdateCursor updateCursor = gson.fromJson(String.valueOf(args), UpdateCursor.class);
+//                listener.onCursorViewsUpdate(updateCursor);
+//            } catch (Throwable e) {
+//                Logger.error("An exception occurred while invoke onCursorViewsUpdate method", e);
+//            }
+//        }
+//    }
 }

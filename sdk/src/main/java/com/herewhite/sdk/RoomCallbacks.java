@@ -32,5 +32,5 @@ public interface RoomCallbacks {
     void onCatchErrorWhenAppendFrame(long userId, Exception error);
 
     /** 用户自定义头像所需要的数据 */
-    void onCursorViewsUpdate(UpdateCursor updateCursor);
+//    void onCursorViewsUpdate(UpdateCursor updateCursor);
 }

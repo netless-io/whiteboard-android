@@ -129,15 +129,15 @@ public class RoomCallbacksImplement {
         }
     }
 
-    @JavascriptInterface
-    public void onCursorViewsUpdate(Object args) {
-        if (listener != null) {
-            try {
-                UpdateCursor updateCursor = gson.fromJson(String.valueOf(args), UpdateCursor.class);
-                listener.onCursorViewsUpdate(updateCursor);
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onCursorViewsUpdate method", e);
-            }
-        }
-    }
+//    @JavascriptInterface
+//    public void onCursorViewsUpdate(Object args) {
+//        if (listener != null) {
+//            try {
+//                UpdateCursor updateCursor = gson.fromJson(String.valueOf(args), UpdateCursor.class);
+//                listener.onCursorViewsUpdate(updateCursor);
+//            } catch (Throwable e) {
+//                Logger.error("An exception occurred while invoke onCursorViewsUpdate method", e);
+//            }
+//        }
+//    }
 }

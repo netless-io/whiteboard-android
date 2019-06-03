@@ -48,5 +48,5 @@ public interface PlayerEventListener {
     /**
      * 用户头像信息变化
      */
-    void onCursorViewsUpdate(UpdateCursor updateCursor);
+//    void onCursorViewsUpdate(UpdateCursor updateCursor);
 }
