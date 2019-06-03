@@ -76,7 +76,7 @@ public class Player {
      * 回调得到的数据是空的
      */
     public void getPlayerState(final Promise<PlayerState> promise) {
-        bridge.callHandler("player.getPlayerState", new Object[]{}, new OnReturnValue<Object>() {
+        bridge.callHandler("player.state.playerState", new Object[]{}, new OnReturnValue<Object>() {
             @Override
             public void onValue(Object o) {
                 try {
@@ -92,7 +92,7 @@ public class Player {
 
     /** 获取播放器信息（当前时长，总市场，开始 UTC 时间戳） */
     public void getPlayerTimeInfo(final Promise<PlayerTimeInfo> promise) {
-        bridge.callHandler("player.getPlayerTimeInfo", new Object[]{}, new OnReturnValue<Object>() {
+        bridge.callHandler("player.state.timeInfo", new Object[]{}, new OnReturnValue<Object>() {
             @Override
             public void onValue(Object o) {
                 try {
