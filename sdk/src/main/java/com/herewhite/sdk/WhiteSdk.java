@@ -144,10 +144,11 @@ public class WhiteSdk {
                             Logger.error("An exception occurred while catch joinRoom method exception", e);
                         }
                     } else {
-                        Player room = new Player(playerConfiguration.getRoom(), bridge, context, WhiteSdk.this);
-                        playerConcurrentHashMap.put(playerConfiguration.getRoom(), room);
+                        Player player = new Player(playerConfiguration.getRoom(), bridge, context, WhiteSdk.this);
+                        playerCallbacksImplement.setPlayer(player);
+                        playerConcurrentHashMap.put(playerConfiguration.getRoom(), player);
                         try {
-                            playerPromise.then(room);
+                            playerPromise.then(player);
                         } catch (Throwable e) {
                             Logger.error("An exception occurred while resolve joinRoom method promise", e);
                         }

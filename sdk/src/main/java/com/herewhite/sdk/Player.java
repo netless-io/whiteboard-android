@@ -3,12 +3,17 @@ package com.herewhite.sdk;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.herewhite.sdk.domain.AkkoEvent;
+import com.herewhite.sdk.domain.EventEntry;
+import com.herewhite.sdk.domain.EventListener;
 import com.herewhite.sdk.domain.PlayerObserverMode;
 import com.herewhite.sdk.domain.PlayerPhase;
 import com.herewhite.sdk.domain.PlayerState;
 import com.herewhite.sdk.domain.PlayerTimeInfo;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.SDKError;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 import wendu.dsbridge.OnReturnValue;
 
@@ -19,6 +24,7 @@ public class Player {
     private final WhiteBroadView bridge;
     private final Context context;
     private final WhiteSdk whiteSdk;
+    private ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
 
     public Player(String room, WhiteBroadView bridge, Context context, WhiteSdk whiteSdk) {
 
@@ -69,6 +75,27 @@ public class Player {
                 }
             }
         });
+    }
+
+    public void fireMagixEvent(EventEntry eventEntry) {
+        EventListener eventListener = eventListenerConcurrentHashMap.get(eventEntry.getEventName());
+        if (eventListener != null) {
+            try {
+                eventListener.onEvent(eventEntry);
+            } catch (Throwable e) {
+                Logger.error("An exception occurred while sending the event", e);
+            }
+        }
+    }
+
+    public void removeMagixEventListener(String eventName) {
+        this.eventListenerConcurrentHashMap.remove(eventName);
+        bridge.callHandler("player.removeMagixEventListener", new Object[]{eventName});
+    }
+
+    public void addMagixEventListener(String eventName, EventListener eventListener) {
+        this.eventListenerConcurrentHashMap.put(eventName, eventListener);
+        bridge.callHandler("player.addEventListener", new Object[]{eventName});
     }
 
     /**

@@ -18,13 +18,31 @@ import com.herewhite.sdk.domain.UpdateCursor;
 public class PlayerCallbacksImplement {
     private final static Gson gson = new Gson();
     private PlayerEventListener listener;
+    private Player player;
+
 
     public PlayerEventListener getListener() {
         return listener;
     }
 
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
     public void setListener(PlayerEventListener listener) {
         this.listener = listener;
+    }
+
+    @JavascriptInterface
+    public void fireMagixEvent(Object args) {
+        EventEntry eventEntry = gson.fromJson(String.valueOf(args), EventEntry.class);
+        if (player != null) {
+            player.fireMagixEvent(eventEntry);
+        }
     }
 
     @JavascriptInterface
