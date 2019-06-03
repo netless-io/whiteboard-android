@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!-- Settings, should always be in the overflow -->
+    <item android:id="@+id/timeinfo"
+        android:onClick="getTimeInfo"
+        android:title="@string/getTimeInfo_command"/>
+    <item android:id="@+id/playState"
+        android:onClick="getPlayState"
+        android:title="@string/getPlayState_command"/>
+    <item android:id="@+id/getPhase"
+        android:onClick="getPhase"
+        android:title="@string/getPhase_command"/>
+    <item android:id="@+id/seek"
+        android:onClick="seek"
+        android:title="@string/seek_command"/>
+</menu>
