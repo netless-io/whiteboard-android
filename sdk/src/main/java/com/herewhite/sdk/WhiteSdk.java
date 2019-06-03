@@ -69,7 +69,6 @@ public class WhiteSdk {
             }, new OnReturnValue<String>() {
                 @Override
                 public void onValue(String roomString) {
-//                    Log.i("white", "call succeed,return value is " + retValue);
                     JsonObject jsonObject = gson.fromJson(roomString, JsonObject.class);
                     if (jsonObject.has("__error")) {
                         String msg = "Unknow exception";
@@ -127,7 +126,6 @@ public class WhiteSdk {
             }, new OnReturnValue<String>() {
                 @Override
                 public void onValue(String roomString) {
-//                    Log.i("white", "call succeed,return value is " + retValue);
                     JsonObject jsonObject = gson.fromJson(roomString, JsonObject.class);
                     if (jsonObject.has("__error")) {
                         String msg = "Unknow exception";
