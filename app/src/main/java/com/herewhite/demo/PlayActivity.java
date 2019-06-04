@@ -133,11 +133,6 @@ public class PlayActivity extends AppCompatActivity {
             public void onCatchErrorWhenRender(SDKError error) {
                 showToast(error.getJsStack());
             }
-
-            @Override
-            public void onCursorViewsUpdate(UpdateCursor updateCursor) {
-                showToast(gson.toJson(updateCursor));
-            }
         }, new Promise<Player>() {
             @Override
             public void then(Player wPlayer) {
