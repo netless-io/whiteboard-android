@@ -51,9 +51,4 @@ public abstract class AbstractPlayerEventListener implements PlayerEventListener
     public void onCatchErrorWhenRender(SDKError error) {
 
     }
-
-    @Override
-    public void onCursorViewsUpdate(UpdateCursor updateCursor) {
-
-    }
 }

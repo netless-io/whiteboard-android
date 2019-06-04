@@ -39,9 +39,4 @@ public abstract class AbstractRoomCallbacks implements RoomCallbacks {
     public void onCatchErrorWhenAppendFrame(long userId, Exception error) {
 
     }
-
-    @Override
-    public void onCursorViewsUpdate(UpdateCursor updateCursor) {
-
-    }
 }
