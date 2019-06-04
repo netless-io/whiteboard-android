@@ -220,7 +220,7 @@ public class RoomActivity extends AppCompatActivity {
 
     public void dispatchCustomEvent(MenuItem item) {
         logAction();
-        HashMap payload = new HashMap<>();
+        HashMap<String, String> payload = new HashMap<>();
         payload.put("device", "android");
 
         room.dispatchMagixEvent(new AkkoEvent(EVENT_NAME, payload));
