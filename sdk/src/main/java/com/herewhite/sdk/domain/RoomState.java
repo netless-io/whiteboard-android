@@ -16,48 +16,19 @@ public class RoomState extends WhiteObject {
     public GlobalState getGlobalState() {
         return globalState;
     }
-
-    public void setGlobalState(GlobalState globalState) {
-        this.globalState = globalState;
-    }
-
     public MemberState getMemberState() {
         return memberState;
     }
-
-    public void setMemberState(MemberState memberState) {
-        this.memberState = memberState;
-    }
-
     public BroadcastState getBroadcastState() {
         return broadcastState;
     }
-
-    public void setBroadcastState(BroadcastState broadcastState) {
-        this.broadcastState = broadcastState;
-    }
-
     public RoomMember[] getRoomMembers() {
         return roomMembers;
     }
-
-    public void setRoomMembers(RoomMember[] roomMembers) {
-        this.roomMembers = roomMembers;
-    }
-
     public Double getZoomScale() {
         return zoomScale;
     }
-
-    public void setZoomScale(Double zoomScale) {
-        this.zoomScale = zoomScale;
-    }
-
     public SceneState getSceneState() {
         return sceneState;
-    }
-
-    public void setSceneState(SceneState sceneState) {
-        this.sceneState = sceneState;
     }
 }

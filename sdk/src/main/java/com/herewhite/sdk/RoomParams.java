@@ -9,7 +9,6 @@ import com.herewhite.sdk.domain.WhiteObject;
 
 public class RoomParams extends WhiteObject {
 
-    private long previousUserId;
     private String uuid;
     private String roomToken;
     private String sessionToken;
@@ -28,14 +27,6 @@ public class RoomParams extends WhiteObject {
 
     public MemberInformation getMemberInfo() { return memberInfo; }
     public void setMemberInfo(MemberInformation memberInfo) { this.memberInfo = memberInfo; }
-
-    public long getPreviousUserId() {
-        return previousUserId;
-    }
-
-    public void setPreviousUserId(long previousUserId) {
-        this.previousUserId = previousUserId;
-    }
 
     public String getUuid() {
         return uuid;
