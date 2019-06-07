@@ -1,12 +1,13 @@
 package com.herewhite.sdk;
 
 import com.herewhite.sdk.domain.MemberInformation;
+import com.herewhite.sdk.domain.WhiteObject;
 
 /**
  * Created by buhe on 2018/8/11.
  */
 
-public class RoomParams {
+public class RoomParams extends WhiteObject {
 
     private long previousUserId;
     private String uuid;

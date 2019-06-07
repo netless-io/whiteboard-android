@@ -1,6 +1,6 @@
 package com.herewhite.sdk.domain;
 
-public class CursorView {
+public class CursorView extends WhiteObject {
     private int memberId;
     private double x;
     private double y;

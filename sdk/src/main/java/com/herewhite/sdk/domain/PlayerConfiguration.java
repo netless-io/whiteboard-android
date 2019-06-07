@@ -1,6 +1,6 @@
 package com.herewhite.sdk.domain;
 
-public class PlayerConfiguration {
+public class PlayerConfiguration extends WhiteObject {
     private String room;
     private String roomToken;
     private String slice;

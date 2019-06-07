@@ -1,6 +1,6 @@
 package com.herewhite.sdk.domain;
 
-public class SceneState {
+public class SceneState extends WhiteObject {
 
     private Scene[] scenes;
     private String scenePath;

@@ -1,6 +1,6 @@
 package com.herewhite.sdk.domain;
 
-public class EventEntry {
+public class EventEntry extends WhiteObject {
     private String uuid;
     private String eventName;
     private Object payload;

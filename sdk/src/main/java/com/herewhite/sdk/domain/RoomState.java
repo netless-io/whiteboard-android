@@ -4,7 +4,7 @@ package com.herewhite.sdk.domain;
  * Created by buhe on 2018/8/12.
  */
 
-public class RoomState {
+public class RoomState extends WhiteObject {
 
     private GlobalState globalState;
     private MemberState memberState;
