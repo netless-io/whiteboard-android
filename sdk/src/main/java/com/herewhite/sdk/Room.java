@@ -300,7 +300,6 @@ public class Room {
         });
     }
 
-
     public void fireMagixEvent(EventEntry eventEntry) {
         EventListener eventListener = eventListenerConcurrentHashMap.get(eventEntry.getEventName());
         if (eventListener != null) {
@@ -333,21 +332,4 @@ public class Room {
     public Integer getTimeDelay() {
         return this.timeDelay;
     }
-
-    public void externalDeviceEventDown(RoomMouseEvent mouseEvent) {
-        bridge.callHandler("room.externalDeviceEventDown", new Object[]{mouseEvent});
-    }
-
-    public void externalDeviceEventMove(RoomMouseEvent mouseEvent) {
-        bridge.callHandler("room.externalDeviceEventMove", new Object[]{mouseEvent});
-    }
-
-    public void externalDeviceEventUp(RoomMouseEvent mouseEvent) {
-        bridge.callHandler("room.externalDeviceEventUp", new Object[]{mouseEvent});
-    }
-
-    public void externalDeviceEventLeave(RoomMouseEvent mouseEvent) {
-        bridge.callHandler("room.externalDeviceEventLeave", new Object[]{mouseEvent});
-    }
-
 }
