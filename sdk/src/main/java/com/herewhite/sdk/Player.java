@@ -94,7 +94,7 @@ public class Player {
 
     public void addMagixEventListener(String eventName, EventListener eventListener) {
         this.eventListenerConcurrentHashMap.put(eventName, eventListener);
-        bridge.callHandler("player.addEventListener", new Object[]{eventName});
+        bridge.callHandler("player.addMagixEventListener", new Object[]{eventName});
     }
 
     /**
