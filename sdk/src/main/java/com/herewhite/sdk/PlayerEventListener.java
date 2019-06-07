@@ -3,7 +3,6 @@ package com.herewhite.sdk;
 import com.herewhite.sdk.domain.PlayerPhase;
 import com.herewhite.sdk.domain.PlayerState;
 import com.herewhite.sdk.domain.SDKError;
-import com.herewhite.sdk.domain.UpdateCursor;
 
 public interface PlayerEventListener {
     /**

@@ -9,7 +9,6 @@ import com.herewhite.sdk.domain.FrameError;
 import com.herewhite.sdk.domain.PlayerPhase;
 import com.herewhite.sdk.domain.PlayerState;
 import com.herewhite.sdk.domain.SDKError;
-import com.herewhite.sdk.domain.UpdateCursor;
 
 /**
  * Created by buhe on 2018/8/12.

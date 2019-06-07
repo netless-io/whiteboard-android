@@ -3,7 +3,6 @@ package com.herewhite.sdk;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.herewhite.sdk.domain.AkkoEvent;
 import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.EventListener;
 import com.herewhite.sdk.domain.PlayerObserverMode;
@@ -132,6 +131,4 @@ public class Player {
             }
         });
     }
-
-
 }

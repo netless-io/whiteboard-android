@@ -3,7 +3,6 @@ package com.herewhite.sdk;
 
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
-import com.herewhite.sdk.domain.UpdateCursor;
 
 /**
  * Created by buhe on 2018/8/12.

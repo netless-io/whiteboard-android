@@ -100,9 +100,7 @@ public class WhiteSdk {
         } catch (Exception e) {
             roomPromise.catchEx(new SDKError(e.getMessage()));
         }
-
     }
-
 
     public void releaseRoom(String uuid) {
         this.roomConcurrentHashMap.remove(uuid);
@@ -139,7 +137,7 @@ public class WhiteSdk {
                         try {
                             playerPromise.catchEx(new SDKError(msg, jsStack));
                         } catch (Throwable e) {
-                            Logger.error("An exception occurred while catch joinRoom method exception", e);
+                            Logger.error("An exception occurred while catch createPlayer method exception", e);
                         }
                     } else {
                         Player player = new Player(playerConfiguration.getRoom(), bridge, context, WhiteSdk.this);
@@ -151,14 +149,12 @@ public class WhiteSdk {
                             Logger.error("An exception occurred while resolve joinRoom method promise", e);
                         }
                     }
-
                 }
             });
         } catch (Exception e) {
             playerPromise.catchEx(new SDKError(e.getMessage()));
         }
     }
-
 
     @JavascriptInterface
     public String urlInterrupter(Object args) {
@@ -170,11 +166,11 @@ public class WhiteSdk {
 
     @JavascriptInterface
     public void throwError(Object args) {
-        Logger.info("Error From JS: " + gson.fromJson(String.valueOf(args), Map.class));
+        Logger.info("WhiteSDK JS error: " + gson.fromJson(String.valueOf(args), Map.class));
     }
 
     @JavascriptInterface
     public void logger(Object args) {
-        Logger.info("From JS: " + gson.fromJson(String.valueOf(args), Map.class));
+        Logger.info("WhiteSDK logger: " + gson.fromJson(String.valueOf(args), Map.class));
     }
 }

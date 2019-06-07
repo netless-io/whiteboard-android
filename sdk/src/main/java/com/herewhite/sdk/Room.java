@@ -11,7 +11,6 @@ import com.herewhite.sdk.domain.GlobalState;
 import com.herewhite.sdk.domain.ImageInformation;
 import com.herewhite.sdk.domain.ImageInformationWithUrl;
 import com.herewhite.sdk.domain.MemberState;
-import com.herewhite.sdk.domain.PptPage;
 import com.herewhite.sdk.domain.Point;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomMember;
