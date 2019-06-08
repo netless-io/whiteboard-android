@@ -47,7 +47,7 @@ public class Player {
         this.whiteSdk.releasePlayer(room);
     }
 
-    //跳转至特定时间
+    //跳转至特定时间，开始时间为 0，单位毫秒
     public void seekToScheduleTime(long beginTime) {
         bridge.callHandler("player.seekToScheduleTime", new Object[]{beginTime});
     }
@@ -60,7 +60,6 @@ public class Player {
     /**
      * 获取房间状态
      * 目前：初始状态为 WhitePlayerPhaseWaitingFirstFrame
-     * 当 WhitePlayerPhaseWaitingFirstFrame 时，调用 getPlayerStateWithResult 返回值可能为空。
      */
     public void getPhase(final Promise<PlayerPhase> promise) {
         bridge.callHandler("player.getBroadcastState", new Object[]{}, new OnReturnValue<Object>() {
@@ -116,7 +115,7 @@ public class Player {
         });
     }
 
-    /** 获取播放器信息（当前时长，总市场，开始 UTC 时间戳） */
+    /** 获取播放器信息（当前时长，总时长，开始 UTC 时间戳）单位：毫秒 */
     public void getPlayerTimeInfo(final Promise<PlayerTimeInfo> promise) {
         bridge.callHandler("player.state.timeInfo", new Object[]{}, new OnReturnValue<Object>() {
             @Override
