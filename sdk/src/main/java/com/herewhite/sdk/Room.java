@@ -62,6 +62,10 @@ public class Room {
         bridge.callHandler("room.setViewMode", new Object[]{viewMode.name()});
     }
 
+    /**
+     * @deprecated use refreshViewSize instead.
+     */
+    @Deprecated
     public void setViewSize(int width, int height) {
         bridge.callHandler("room.setViewSize", new Object[]{width, height});
     }
