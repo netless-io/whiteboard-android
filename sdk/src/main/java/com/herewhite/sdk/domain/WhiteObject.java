@@ -1,5 +1,6 @@
 package com.herewhite.sdk.domain;
 import com.google.gson.Gson;
+import org.json.JSONObject;
 
 public class WhiteObject {
 
@@ -7,5 +8,14 @@ public class WhiteObject {
     @Override
     public String toString() {
         return gson.toJson(this);
+    }
+
+    public JSONObject toJSON() {
+        try {
+            JSONObject jsonObject = new JSONObject(this.toString());
+            return jsonObject;
+        } catch (Exception e) {
+            return new JSONObject();
+        }
     }
 }
