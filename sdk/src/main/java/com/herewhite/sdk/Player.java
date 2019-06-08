@@ -52,29 +52,7 @@ public class Player {
         bridge.callHandler("player.seekToScheduleTime", new Object[]{beginTime});
     }
 
-    //设置查看模式
-    public void setObserverMode(PlayerObserverMode mode) {
-        bridge.callHandler("player.setObserverMode", new Object[]{mode.name()});
-    }
-
-    /**
-     * 获取房间状态
-     * 目前：初始状态为 WhitePlayerPhaseWaitingFirstFrame
-     */
-    public void getPhase(final Promise<PlayerPhase> promise) {
-        bridge.callHandler("player.getBroadcastState", new Object[]{}, new OnReturnValue<Object>() {
-            @Override
-            public void onValue(Object o) {
-                try {
-                    promise.then(PlayerPhase.valueOf(String.valueOf(o)));
-                } catch (Throwable e) {
-                    Logger.error("An exception occurred while resolve getPhase method promise", e);
-                    promise.catchEx(new SDKError(e.getMessage()));
-                }
-            }
-        });
-    }
-
+    //region Event API
     public void fireMagixEvent(EventEntry eventEntry) {
         EventListener eventListener = eventListenerConcurrentHashMap.get(eventEntry.getEventName());
         if (eventListener != null) {
@@ -94,6 +72,31 @@ public class Player {
     public void addMagixEventListener(String eventName, EventListener eventListener) {
         this.eventListenerConcurrentHashMap.put(eventName, eventListener);
         bridge.callHandler("player.addMagixEventListener", new Object[]{eventName});
+    }
+    //endregion
+
+    //设置查看模式
+    public void setObserverMode(PlayerObserverMode mode) {
+        bridge.callHandler("player.setObserverMode", new Object[]{mode.name()});
+    }
+
+    //region Get API
+    /**
+     * 获取房间状态
+     * 目前：初始状态为 WhitePlayerPhaseWaitingFirstFrame
+     */
+    public void getPhase(final Promise<PlayerPhase> promise) {
+        bridge.callHandler("player.getBroadcastState", new Object[]{}, new OnReturnValue<Object>() {
+            @Override
+            public void onValue(Object o) {
+                try {
+                    promise.then(PlayerPhase.valueOf(String.valueOf(o)));
+                } catch (Throwable e) {
+                    Logger.error("An exception occurred while resolve getPhase method promise", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
+                }
+            }
+        });
     }
 
     /**
@@ -130,4 +133,5 @@ public class Player {
             }
         });
     }
+    //endregion
 }

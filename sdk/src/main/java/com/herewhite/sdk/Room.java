@@ -50,6 +50,7 @@ public class Room {
         this.timeDelay = 0;
     }
 
+    //region Set API
     public void setGlobalState(GlobalState globalState) {
         bridge.callHandler("room.setGlobalState", new Object[]{globalState});
     }
@@ -69,6 +70,7 @@ public class Room {
     public void setViewSize(int width, int height) {
         bridge.callHandler("room.setViewSize", new Object[]{width, height});
     }
+    //endregion
 
     public void refreshViewSize() {
         bridge.callHandler("room.refreshViewSize", new Object[]{});
@@ -84,6 +86,7 @@ public class Room {
             @Override
             public void onValue(Object o) {
                 try {
+                    //TODO:应该为空
                     promise.then(gson.fromJson(String.valueOf(o), GlobalState.class));
                 } catch (Throwable e) {
                     Logger.error("An exception occurred while resolve getGlobalState method promise", e);
@@ -106,10 +109,6 @@ public class Room {
         bridge.callHandler("room.completeImageUpload", new Object[]{uuid, url});
     }
 
-    public void cleanScene(boolean retainPpt) {
-        bridge.callHandler("room.cleanScene", new Object[]{retainPpt});
-    }
-
     public void insertImage(ImageInformationWithUrl imageInformationWithUrl) {
         ImageInformation imageInformation = new ImageInformation();
         String uuid = UUID.randomUUID().toString();
@@ -123,6 +122,7 @@ public class Room {
     }
 
 
+    //region Get API
     public void getGlobalState(final Promise<GlobalState> promise) {
         bridge.callHandler("room.getGlobalState", new Object[]{}, new OnReturnValue<Object>() {
             @Override
@@ -159,6 +159,20 @@ public class Room {
                     promise.then(gson.fromJson(String.valueOf(o), RoomMember[].class));
                 } catch (Throwable e) {
                     Logger.error("An exception occurred while resolve getRoomMembers method promise", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
+                }
+            }
+        });
+    }
+
+    public void getBroadcastState(final Promise<BroadcastState> promise) {
+        bridge.callHandler("room.getBroadcastState", new Object[]{}, new OnReturnValue<Object>() {
+            @Override
+            public void onValue(Object o) {
+                try {
+                    promise.then(gson.fromJson(String.valueOf(o), BroadcastState.class));
+                } catch (Throwable e) {
+                    Logger.error("An exception occurred while resolve getBroadcastState method promise", e);
                     promise.catchEx(new SDKError(e.getMessage()));
                 }
             }
@@ -246,7 +260,9 @@ public class Room {
             }
         });
     }
+    //endregion
 
+    //region Scene API
     /**
      * 切换到某个 Scene
      *
@@ -268,19 +284,10 @@ public class Room {
         bridge.callHandler("room.removeScenes", new Object[]{dirOrPath});
     }
 
-    public void getBroadcastState(final Promise<BroadcastState> promise) {
-        bridge.callHandler("room.getBroadcastState", new Object[]{}, new OnReturnValue<Object>() {
-            @Override
-            public void onValue(Object o) {
-                try {
-                    promise.then(gson.fromJson(String.valueOf(o), BroadcastState.class));
-                } catch (Throwable e) {
-                    Logger.error("An exception occurred while resolve getBroadcastState method promise", e);
-                    promise.catchEx(new SDKError(e.getMessage()));
-                }
-            }
-        });
+    public void cleanScene(boolean retainPpt) {
+        bridge.callHandler("room.cleanScene", new Object[]{retainPpt});
     }
+    //endregion
 
     public void zoomChange(double scale) {
         bridge.callHandler("room.zoomChange", new Object[]{scale});
@@ -304,6 +311,18 @@ public class Room {
         });
     }
 
+    //region Delay API
+    public void setTimeDelay(Integer timeDelay) {
+        bridge.callHandler("room.setTimeDelay", new Object[]{timeDelay * 1000});
+        this.timeDelay = timeDelay;
+    }
+
+    public Integer getTimeDelay() {
+        return this.timeDelay;
+    }
+    //endregion
+
+    //region Event API
     public void fireMagixEvent(EventEntry eventEntry) {
         EventListener eventListener = eventListenerConcurrentHashMap.get(eventEntry.getEventName());
         if (eventListener != null) {
@@ -328,12 +347,5 @@ public class Room {
         this.eventListenerConcurrentHashMap.remove(eventName);
         bridge.callHandler("room.removeMagixEventListener", new Object[]{eventName});
     }
-    public void setTimeDelay(Integer timeDelay) {
-        bridge.callHandler("room.setTimeDelay", new Object[]{timeDelay * 1000});
-        this.timeDelay = timeDelay;
-    }
-
-    public Integer getTimeDelay() {
-        return this.timeDelay;
-    }
+    //endregion
 }
