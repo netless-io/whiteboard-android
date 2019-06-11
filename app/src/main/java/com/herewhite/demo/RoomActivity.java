@@ -20,6 +20,7 @@ import java.util.HashMap;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import wendu.dsbridge.DWebView;
 
 import static com.herewhite.demo.DemoAPI.TEST_ROOM_TOKEN;
 import static com.herewhite.demo.DemoAPI.TEST_UUID;
@@ -43,6 +44,7 @@ public class RoomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
         whiteBroadView = findViewById(R.id.white);
+        DWebView.setWebContentsDebuggingEnabled(true);
         Intent intent = getIntent();
         String uuid = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
         if (uuid == null) {
