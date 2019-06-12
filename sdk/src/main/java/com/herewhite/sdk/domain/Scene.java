@@ -1,6 +1,6 @@
 package com.herewhite.sdk.domain;
 
-public class Scene {
+public class Scene extends WhiteObject {
 
     private String name;
     private String componentsCount;

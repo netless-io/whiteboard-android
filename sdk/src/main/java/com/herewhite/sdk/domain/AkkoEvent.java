@@ -1,6 +1,6 @@
 package com.herewhite.sdk.domain;
 
-public class AkkoEvent {
+public class AkkoEvent extends WhiteObject {
     private String eventName;
     private Object payload;
 

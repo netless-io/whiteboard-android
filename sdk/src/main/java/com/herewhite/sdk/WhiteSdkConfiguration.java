@@ -1,12 +1,13 @@
 package com.herewhite.sdk;
 
 import com.herewhite.sdk.domain.DeviceType;
+import com.herewhite.sdk.domain.WhiteObject;
 
 /**
  * Created by buhe on 2018/8/10.
  */
 
-public class WhiteSdkConfiguration {
+public class WhiteSdkConfiguration extends WhiteObject {
     private DeviceType deviceType;
     private double zoomMaxScale;
     private double zoomMinScale;

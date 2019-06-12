@@ -4,7 +4,7 @@ package com.herewhite.sdk.domain;
  * Created by buhe on 2018/8/13.
  */
 
-public class MemberInformation {
+public class MemberInformation extends WhiteObject {
     private Long id;
     private String nickName;
     private String avatar;

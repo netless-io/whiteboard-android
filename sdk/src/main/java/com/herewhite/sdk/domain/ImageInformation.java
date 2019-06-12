@@ -4,7 +4,7 @@ package com.herewhite.sdk.domain;
  * Created by buhe on 2018/8/15.
  */
 
-public class ImageInformation {
+public class ImageInformation extends WhiteObject {
 
     private String uuid;
     private Double centerX;

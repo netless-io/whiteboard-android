@@ -4,7 +4,7 @@ package com.herewhite.sdk.domain;
  * Created by buhe on 2018/8/13.
  */
 
-public class FrameError {
+public class FrameError extends WhiteObject {
 
     private Long userId;
     private String error;

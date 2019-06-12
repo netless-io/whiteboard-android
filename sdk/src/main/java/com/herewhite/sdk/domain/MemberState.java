@@ -4,7 +4,7 @@ package com.herewhite.sdk.domain;
  * Created by buhe on 2018/8/11.
  */
 
-public class MemberState {
+public class MemberState extends WhiteObject {
     private String currentApplianceName;
     private int[] strokeColor;
     private Double strokeWidth;

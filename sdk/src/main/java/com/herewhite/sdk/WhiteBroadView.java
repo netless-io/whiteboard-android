@@ -4,6 +4,11 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import com.google.gson.Gson;
+import com.herewhite.sdk.domain.WhiteObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import wendu.dsbridge.DWebView;
 import wendu.dsbridge.OnReturnValue;
@@ -73,15 +78,27 @@ public class WhiteBroadView extends DWebView {
         }
     }
 
+    private static final Class[] PRIMITIVE_TYPES = { int.class, long.class, short.class,
+            float.class, double.class, byte.class, boolean.class, char.class, Integer.class, Long.class,
+            Short.class, Float.class, Double.class, Byte.class, Boolean.class, Character.class };
+    private static List<Class> PRIMITIVE_LIST = new ArrayList<>(Arrays.asList(PRIMITIVE_TYPES));
+
+    private static boolean isPrimitiveOrStringOrNull(Object target) {
+        if (target instanceof String) {
+            return true;
+        } else if (target == null) {
+            return true;
+        }
+
+        return PRIMITIVE_LIST.contains(target.getClass());
+    }
+
     private Object toJSON(Object object) {
-        if (object instanceof Double
-                || object instanceof Integer
-                || object instanceof Long
-                || object instanceof Float
-                || object instanceof Short
-                || object instanceof Boolean
-                || object instanceof String) {
+
+        if (isPrimitiveOrStringOrNull(object)) {
             return object;
+        } else if (object instanceof WhiteObject) {
+            return ((WhiteObject) object).toJSON();
         } else {
             return gson.toJson(object);
         }

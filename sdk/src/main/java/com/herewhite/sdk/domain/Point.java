@@ -4,7 +4,7 @@ package com.herewhite.sdk.domain;
  * Created by buhe on 2018/8/15.
  */
 
-public class Point {
+public class Point extends WhiteObject {
     private Double x;
     private Double y;
 
@@ -24,11 +24,4 @@ public class Point {
         this.y = y;
     }
 
-    @Override
-    public String toString() {
-        return "Point{" +
-                "x=" + x +
-                ", y=" + y +
-                '}';
-    }
 }

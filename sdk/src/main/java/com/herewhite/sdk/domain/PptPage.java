@@ -4,7 +4,7 @@ package com.herewhite.sdk.domain;
  * Created by buhe on 2018/8/15.
  */
 
-public class PptPage {
+public class PptPage extends WhiteObject {
     private String src;
     private Double width;
     private Double height;

@@ -12,24 +12,11 @@ public class PlayerState {
      * 用户观察状态
      */
     private PlayerObserverMode observerMode;
-
     public GlobalState getGlobalState() {
         return globalState;
     }
-
-    public void setGlobalState(GlobalState globalState) {
-        this.globalState = globalState;
-    }
-
     public RoomMember[] getRoomMembers() {
         return roomMembers;
     }
 
-    public void setRoomMembers(RoomMember[] roomMembers) {
-        this.roomMembers = roomMembers;
-    }
-
-    public void setObserverMode(PlayerObserverMode observerMode) {
-        this.observerMode = observerMode;
-    }
 }

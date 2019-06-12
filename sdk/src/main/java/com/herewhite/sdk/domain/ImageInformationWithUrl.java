@@ -1,6 +1,6 @@
 package com.herewhite.sdk.domain;
 
-public class ImageInformationWithUrl {
+public class ImageInformationWithUrl extends WhiteObject {
 
     public ImageInformationWithUrl() {
     }

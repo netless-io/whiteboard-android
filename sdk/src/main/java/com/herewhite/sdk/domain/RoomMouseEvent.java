@@ -3,7 +3,7 @@ package com.herewhite.sdk.domain;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RoomMouseEvent {
+public class RoomMouseEvent extends WhiteObject {
     private double x;
     private double y;
     private Map<Object,Object> targetsMap = new HashMap<>();

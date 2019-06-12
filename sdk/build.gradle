@@ -27,11 +27,13 @@ android {
 }
 
 dependencies {
-//    compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation 'com.google.code.gson:gson:2.8.5'
     api 'com.github.wendux:DSBridge-Android:ac150b630b'
+    testImplementation 'org.json:json:20180130'
     testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support:support-annotations:24.0.0'
+    androidTestImplementation 'com.android.support.test:runner:0.5'
 }
