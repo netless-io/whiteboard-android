@@ -3,7 +3,7 @@ package com.herewhite.demo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-public class MainTestActivity extends AppCompatActivity {
+public class TestActivity extends AppCompatActivity {
 
 
     @Override
