@@ -1,6 +1,8 @@
 package com.herewhite.demo;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.herewhite.sdk.Environment;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,6 +32,36 @@ public class DemoAPI {
 
     public boolean validateToken() {
         return sdkToken.length() > 200;
+    }
+
+    public interface Result {
+        public void success(String uuid, String roomToken);
+        public void fail(String message);
+    }
+
+    public void getRoom(final Result result) {
+        createRoom("test room", 100, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                result.fail("网络请求错误: " + e.toString());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
+                try {
+                    if (response.code() == 200) {
+                        JsonObject room = gson.fromJson(response.body().string(), JsonObject.class);
+                        String uuid = room.getAsJsonObject("msg").getAsJsonObject("room").get("uuid").getAsString();
+                        String roomToken = room.getAsJsonObject("msg").get("roomToken").getAsString();
+                        result.success(uuid, roomToken);
+                    } else {
+                        result.fail("网络请求错误" + response.body().string());
+                    }
+                } catch (Throwable e) {
+                    result.fail("创建房间失败" + e.toString());
+                }
+            }
+        });
     }
 
     public void createRoom(String name, int limit, Callback callback) {
