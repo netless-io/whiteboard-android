@@ -375,14 +375,6 @@ public class RoomActivity extends AppCompatActivity {
 
     public void externalEvent(MenuItem item) {
         logAction();
-        room.disableOperations(true);
-        room.externalDeviceEventDown(new RoomMouseEvent(100, 300));
-        room.externalDeviceEventMove(new RoomMouseEvent(100, 400));
-        room.externalDeviceEventMove(new RoomMouseEvent(100, 500));
-        room.externalDeviceEventMove(new RoomMouseEvent(100, 600));
-        room.externalDeviceEventMove(new RoomMouseEvent(100, 700));
-        room.externalDeviceEventUp(new RoomMouseEvent(100, 700));
-        room.disableOperations(false);
     }
 
     public void zoomChange(MenuItem item) {
