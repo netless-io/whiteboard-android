@@ -52,6 +52,8 @@ public class RoomCallbacksImplement {
         if (listener != null) {
             try {
                 listener.onPhaseChanged(RoomPhase.valueOf(String.valueOf(args)));
+            } catch (AssertionError a) {
+                throw a;
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onPhaseChanged method", e);
             }
@@ -64,6 +66,8 @@ public class RoomCallbacksImplement {
         if (listener != null) {
             try {
                 listener.onKickedWithReason(String.valueOf(args));
+            } catch (AssertionError a) {
+                throw a;
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onKickedWithReason method", e);
             }
@@ -77,6 +81,8 @@ public class RoomCallbacksImplement {
         if (listener != null) {
             try {
                 listener.onDisconnectWithError(new Exception(String.valueOf(args)));
+            } catch (AssertionError a) {
+                throw a;
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onDisconnectWithError method", e);
             }
@@ -90,6 +96,8 @@ public class RoomCallbacksImplement {
         if (listener != null) {
             try {
                 listener.onRoomStateChanged(roomState);
+            } catch (AssertionError a) {
+                throw a;
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onRoomStateChanged method", e);
             }
@@ -103,6 +111,8 @@ public class RoomCallbacksImplement {
         if (listener != null) {
             try {
                 listener.onBeingAbleToCommitChange(Boolean.valueOf(String.valueOf(args)));
+            } catch (AssertionError a) {
+                throw a;
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onBeingAbleToCommitChange method", e);
             }
@@ -117,6 +127,8 @@ public class RoomCallbacksImplement {
         if (listener != null) {
             try {
                 listener.onCatchErrorWhenAppendFrame(frameError.getUserId(), new Exception(frameError.getError()));
+            } catch (AssertionError a) {
+                throw a;
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onCatchErrorWhenAppendFrame method", e);
             }

@@ -3,6 +3,7 @@ package com.herewhite.sdk;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.AkkoEvent;
 import com.herewhite.sdk.domain.BroadcastState;
 import com.herewhite.sdk.domain.EventEntry;
@@ -86,10 +87,14 @@ public class Room {
             @Override
             public void onValue(Object o) {
                 try {
-                    //TODO:应该为空
                     promise.then(gson.fromJson(String.valueOf(o), GlobalState.class));
+                } catch (AssertionError a) {
+                    throw a;
+                } catch (JsonSyntaxException e) {
+                    Logger.error("An JsonSyntaxException occurred while parse json from disconnect", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
                 } catch (Throwable e) {
-                    Logger.error("An exception occurred while resolve getGlobalState method promise", e);
+                    Logger.error("An exception occurred in disconnect promise then method", e);
                     promise.catchEx(new SDKError(e.getMessage()));
                 }
             }
@@ -129,8 +134,13 @@ public class Room {
             public void onValue(Object o) {
                 try {
                     promise.then(gson.fromJson(String.valueOf(o), GlobalState.class));
+                } catch (AssertionError a) {
+                    throw a;
+                } catch (JsonSyntaxException e) {
+                    Logger.error("An JsonSyntaxException occurred while parse json from getGlobalState", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
                 } catch (Throwable e) {
-                    Logger.error("An exception occurred while resolve getGlobalState method promise", e);
+                    Logger.error("An exception occurred in getGlobalState promise then method", e);
                     promise.catchEx(new SDKError(e.getMessage()));
                 }
             }
@@ -143,8 +153,13 @@ public class Room {
             public void onValue(String o) {
                 try {
                     promise.then(gson.fromJson(String.valueOf(o), MemberState.class));
+                } catch (AssertionError a) {
+                    throw a;
+                } catch (JsonSyntaxException e) {
+                    Logger.error("An JsonSyntaxException occurred while parse json from getMemberState", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
                 } catch (Throwable e) {
-                    Logger.error("An exception occurred while resolve getMemberState method promise", e);
+                    Logger.error("An exception occurred in getMemberState promise then method", e);
                     promise.catchEx(new SDKError(e.getMessage()));
                 }
             }
@@ -157,8 +172,13 @@ public class Room {
             public void onValue(Object o) {
                 try {
                     promise.then(gson.fromJson(String.valueOf(o), RoomMember[].class));
+                } catch (AssertionError a) {
+                    throw a;
+                } catch (JsonSyntaxException e) {
+                    Logger.error("An JsonSyntaxException occurred while parse json from getRoomMembers", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
                 } catch (Throwable e) {
-                    Logger.error("An exception occurred while resolve getRoomMembers method promise", e);
+                    Logger.error("An exception occurred in getRoomMembers promise then method", e);
                     promise.catchEx(new SDKError(e.getMessage()));
                 }
             }
@@ -171,8 +191,13 @@ public class Room {
             public void onValue(Object o) {
                 try {
                     promise.then(gson.fromJson(String.valueOf(o), BroadcastState.class));
+                } catch (AssertionError a) {
+                    throw a;
+                } catch (JsonSyntaxException e) {
+                    Logger.error("An JsonSyntaxException occurred while parse json from getBroadcastState", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
                 } catch (Throwable e) {
-                    Logger.error("An exception occurred while resolve getBroadcastState method promise", e);
+                    Logger.error("An exception occurred in getBroadcastState promise then method", e);
                     promise.catchEx(new SDKError(e.getMessage()));
                 }
             }
@@ -190,8 +215,13 @@ public class Room {
             public void onValue(Object o) {
                 try {
                     promise.then(gson.fromJson(String.valueOf(o), SceneState.class));
+                } catch (AssertionError a) {
+                    throw a;
+                } catch (JsonSyntaxException e) {
+                    Logger.error("An JsonSyntaxException occurred while parse json from getSceneState", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
                 } catch (Throwable e) {
-                    Logger.error("An exception occurred while resolve getRoomMembers method promise", e);
+                    Logger.error("An exception occurred in getSceneState promise then method", e);
                     promise.catchEx(new SDKError(e.getMessage()));
                 }
             }
@@ -209,8 +239,13 @@ public class Room {
             public void onValue(Object o) {
                 try {
                     promise.then(gson.fromJson(String.valueOf(o), Scene[].class));
+                } catch (AssertionError a) {
+                    throw a;
+                } catch (JsonSyntaxException e) {
+                    Logger.error("An JsonSyntaxException occurred while parse json from getScenes", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
                 } catch (Throwable e) {
-                    Logger.error("An exception occurred while resolve getRoomMembers method promise", e);
+                    Logger.error("An exception occurred in getScenes promise then method", e);
                     promise.catchEx(new SDKError(e.getMessage()));
                 }
             }
@@ -223,8 +258,13 @@ public class Room {
             public void onValue(Object o) {
                 try {
                     promise.then(gson.fromJson(String.valueOf(o), Number.class));
+                } catch (AssertionError a) {
+                    throw a;
+                } catch (JsonSyntaxException e) {
+                    Logger.error("An JsonSyntaxException occurred while parse json from getZoomScale", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
                 } catch (Throwable e) {
-                    Logger.error("An exception occurred while resolve getZoomScale method promise", e);
+                    Logger.error("An exception occurred in getZoomScale promise then method", e);
                     promise.catchEx(new SDKError(e.getMessage()));
                 }
             }
@@ -238,8 +278,13 @@ public class Room {
                 try {
                     //TODO:待测试
                     promise.then(RoomPhase.valueOf(String.valueOf(o)));
+                } catch (AssertionError a) {
+                    throw a;
+                } catch (JsonSyntaxException e) {
+                    Logger.error("An JsonSyntaxException occurred while parse json from getRoomPhase", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
                 } catch (Throwable e) {
-                    Logger.error("An exception occurred while resolve getZoomScale method promise", e);
+                    Logger.error("An exception occurred in getRoomPhase promise then method", e);
                     promise.catchEx(new SDKError(e.getMessage()));
                 }
             }
@@ -253,8 +298,13 @@ public class Room {
                 try {
                     //TODO:待测试反序列化是否正确
                     promise.then(gson.fromJson(String.valueOf(o), RoomState.class));
+                } catch (AssertionError a) {
+                    throw a;
+                } catch (JsonSyntaxException e) {
+                    Logger.error("An JsonSyntaxException occurred while parse json from getRoomState", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
                 } catch (Throwable e) {
-                    Logger.error("An exception occurred while resolve getRoomMembers method promise", e);
+                    Logger.error("An exception occurred in getRoomState promise then method", e);
                     promise.catchEx(new SDKError(e.getMessage()));
                 }
             }
@@ -303,8 +353,13 @@ public class Room {
             public void onValue(Object o) {
                 try {
                     promise.then(gson.fromJson(String.valueOf(o), Point.class));
+                } catch (AssertionError a) {
+                    throw a;
+                } catch (JsonSyntaxException e) {
+                    Logger.error("An JsonSyntaxException occurred while parse json from convertToPointInWorld", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
                 } catch (Throwable e) {
-                    Logger.error("An exception occurred while resolve convertToPointInWorld method promise", e);
+                    Logger.error("An exception occurred in convertToPointInWorld promise then method", e);
                     promise.catchEx(new SDKError(e.getMessage()));
                 }
             }
@@ -328,6 +383,8 @@ public class Room {
         if (eventListener != null) {
             try {
                 eventListener.onEvent(eventEntry);
+            } catch (AssertionError a) {
+                throw a;
             } catch (Throwable e) {
                 Logger.error("An exception occurred while sending the event", e);
             }

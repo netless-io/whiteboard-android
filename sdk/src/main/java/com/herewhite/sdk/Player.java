@@ -3,6 +3,7 @@ package com.herewhite.sdk;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.EventListener;
 import com.herewhite.sdk.domain.PlayerObserverMode;
@@ -91,8 +92,13 @@ public class Player {
             public void onValue(Object o) {
                 try {
                     promise.then(PlayerPhase.valueOf(String.valueOf(o)));
+                } catch (AssertionError a) {
+                    throw a;
+                } catch (JsonSyntaxException e) {
+                    Logger.error("An JsonSyntaxException occurred while parse json from getPhase", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
                 } catch (Throwable e) {
-                    Logger.error("An exception occurred while resolve getPhase method promise", e);
+                    Logger.error("An exception occurred in getPhase promise then method", e);
                     promise.catchEx(new SDKError(e.getMessage()));
                 }
             }
@@ -110,8 +116,13 @@ public class Player {
                 try {
                     PlayerState playerState = gson.fromJson(String.valueOf(o), PlayerState.class);
                     promise.then(playerState);
+                } catch (AssertionError a) {
+                    throw a;
+                } catch (JsonSyntaxException e) {
+                    Logger.error("An JsonSyntaxException occurred while parse json from getPlayerState", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
                 } catch (Throwable e) {
-                    Logger.error("An exception occurred while resolve getPlayerState method promise", e);
+                    Logger.error("An exception occurred in getPlayerState promise then method", e);
                     promise.catchEx(new SDKError(e.getMessage()));
                 }
             }
@@ -126,8 +137,13 @@ public class Player {
                 try {
                     PlayerTimeInfo playerState = gson.fromJson(String.valueOf(o), PlayerTimeInfo.class);
                     promise.then(playerState);
+                } catch (AssertionError a) {
+                    throw a;
+                } catch (JsonSyntaxException e) {
+                    Logger.error("An JsonSyntaxException occurred while parse json from getPlayerTimeInfo", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
                 } catch (Throwable e) {
-                    Logger.error("An exception occurred while resolve getPlayerTimeInfo method promise", e);
+                    Logger.error("An exception occurred in getPlayerTimeInfo promise then method", e);
                     promise.catchEx(new SDKError(e.getMessage()));
                 }
             }

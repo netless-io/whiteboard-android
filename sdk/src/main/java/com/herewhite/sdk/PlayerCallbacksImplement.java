@@ -50,6 +50,8 @@ public class PlayerCallbacksImplement {
         if (listener != null) {
             try {
                 listener.onPhaseChanged(PlayerPhase.valueOf(String.valueOf(args)));
+            } catch (AssertionError a) {
+                throw a;
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onPhaseChanged method", e);
             }
@@ -62,6 +64,8 @@ public class PlayerCallbacksImplement {
         if (listener != null) {
             try {
                 listener.onLoadFirstFrame();
+            } catch (AssertionError a) {
+                throw a;
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onLoadFirstFrame method", e);
             }
@@ -75,6 +79,8 @@ public class PlayerCallbacksImplement {
         if (listener != null) {
             try {
                 listener.onSliceChanged(String.valueOf(args));
+            } catch (AssertionError a) {
+                throw a;
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onSliceChanged method", e);
             }
@@ -88,6 +94,8 @@ public class PlayerCallbacksImplement {
             try {
                 PlayerState playerState = gson.fromJson(String.valueOf(args), PlayerState.class);
                 listener.onPlayerStateChanged(playerState);
+            } catch (AssertionError a) {
+                throw a;
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onPlayerStateChanged method", e);
             }
@@ -101,6 +109,8 @@ public class PlayerCallbacksImplement {
         if (listener != null) {
             try {
                 listener.onStoppedWithError(resolverSDKError(args));
+            } catch (AssertionError a) {
+                throw a;
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onStoppedWithError method", e);
             }
@@ -122,6 +132,8 @@ public class PlayerCallbacksImplement {
         if (listener != null) {
             try {
                 listener.onScheduleTimeChanged(Long.parseLong(String.valueOf(args)));
+            } catch (AssertionError a) {
+                throw a;
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onScheduleTimeChanged method", e);
             }
@@ -134,6 +146,8 @@ public class PlayerCallbacksImplement {
         if (listener != null) {
             try {
                 listener.onCatchErrorWhenAppendFrame(resolverSDKError(args));
+            } catch (AssertionError a) {
+                throw a;
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onCatchErrorWhenAppendFrame method", e);
             }
@@ -147,6 +161,8 @@ public class PlayerCallbacksImplement {
             try {
                 FrameError frameError = gson.fromJson(String.valueOf(args), FrameError.class);
                 listener.onCatchErrorWhenRender(resolverSDKError(args));
+            } catch (AssertionError a) {
+                throw a;
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onCatchErrorWhenRender method", e);
             }
