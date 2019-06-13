@@ -18,6 +18,11 @@ public class SDKError extends Exception {
         this.jsStack = jsStack;
     }
 
+    @Override
+    public String toString() {
+        return super.toString() + " jsStack: " + getJsStack();
+    }
+
     public String getJsStack() {
         return jsStack;
     }
