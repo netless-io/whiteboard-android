@@ -43,9 +43,4 @@ public interface PlayerEventListener {
      * 渲染时，出错
      */
     void onCatchErrorWhenRender(SDKError error);
-
-    /**
-     * 用户头像信息变化
-     */
-//    void onCursorViewsUpdate(UpdateCursor updateCursor);
 }

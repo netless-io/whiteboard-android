@@ -168,17 +168,4 @@ public class PlayerCallbacksImplement {
             }
         }
     }
-
-//    @JavascriptInterface
-//    public void onCursorViewsUpdate(Object args) {
-//        // 获取事件,反序列化然后发送通知给监听者
-//        if (listener != null) {
-//            try {
-//                UpdateCursor updateCursor = gson.fromJson(String.valueOf(args), UpdateCursor.class);
-//                listener.onCursorViewsUpdate(updateCursor);
-//            } catch (Throwable e) {
-//                Logger.error("An exception occurred while invoke onCursorViewsUpdate method", e);
-//            }
-//        }
-//    }
 }
