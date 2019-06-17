@@ -6,6 +6,8 @@ import android.util.AttributeSet;
 import com.google.gson.Gson;
 import com.herewhite.sdk.domain.WhiteObject;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -99,6 +101,12 @@ public class WhiteBroadView extends DWebView {
             return object;
         } else if (object instanceof WhiteObject) {
             return ((WhiteObject) object).toJSON();
+        } else if (object instanceof WhiteObject[]) {
+            List<JSONObject> list = new ArrayList<>();
+            for (int i=0; i<((WhiteObject[]) object).length; i++) {
+                list.add(((WhiteObject[])object)[i].toJSON());
+            }
+            return list;
         } else {
             return gson.toJson(object);
         }
