@@ -183,7 +183,7 @@ public class SDKRoomTest {
 
         final Scene[] mScenes = new Scene[]{scene1, scene2};
         mRoom.putScenes("/ppt", mScenes, 0);
-        mRoom.setScenePath("ppt/ppt1");
+        mRoom.setScenePath("/ppt/ppt1");
 
         final CountDownLatch latch = new CountDownLatch(1);
 

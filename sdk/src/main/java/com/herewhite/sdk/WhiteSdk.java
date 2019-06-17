@@ -81,6 +81,8 @@ public class WhiteSdk {
                         }
                         try {
                             roomPromise.catchEx(new SDKError(msg, jsStack));
+                        } catch (AssertionError a) {
+                            throw a;
                         } catch (Throwable e) {
                             Logger.error("An exception occurred while catch joinRoom method exception", e);
                         }
@@ -90,6 +92,8 @@ public class WhiteSdk {
                         roomCallbacksImplement.setRoom(room);
                         try {
                             roomPromise.then(room);
+                        } catch (AssertionError a) {
+                            throw a;
                         } catch (Throwable e) {
                             Logger.error("An exception occurred while resolve joinRoom method promise", e);
                         }
@@ -97,6 +101,8 @@ public class WhiteSdk {
 
                 }
             });
+        } catch (AssertionError a) {
+            throw a;
         } catch (Exception e) {
             roomPromise.catchEx(new SDKError(e.getMessage()));
         }
@@ -136,6 +142,8 @@ public class WhiteSdk {
                         }
                         try {
                             playerPromise.catchEx(new SDKError(msg, jsStack));
+                        } catch (AssertionError a) {
+                            throw a;
                         } catch (Throwable e) {
                             Logger.error("An exception occurred while catch createPlayer method exception", e);
                         }
@@ -145,12 +153,16 @@ public class WhiteSdk {
                         playerConcurrentHashMap.put(playerConfiguration.getRoom(), player);
                         try {
                             playerPromise.then(player);
+                        } catch (AssertionError a) {
+                            throw a;
                         } catch (Throwable e) {
                             Logger.error("An exception occurred while resolve joinRoom method promise", e);
                         }
                     }
                 }
             });
+        } catch (AssertionError a) {
+            throw a;
         } catch (Exception e) {
             playerPromise.catchEx(new SDKError(e.getMessage()));
         }
