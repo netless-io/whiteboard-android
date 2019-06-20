@@ -65,7 +65,7 @@ public class WhiteSdk {
             bridge.callHandler("sdk.joinRoom", new Object[]{
                     roomParams.getUuid(),
                     roomParams.getRoomToken(),
-                    roomParams.getMemberInfo()
+                    roomParams.getUserPayload() != null ? roomParams.getUserPayload() : roomParams.getMemberInfo()
             }, new OnReturnValue<String>() {
                 @Override
                 public void onValue(String roomString) {
