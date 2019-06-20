@@ -328,6 +328,16 @@ public class RoomActivity extends AppCompatActivity {
         room.disableOperations(false);
     }
 
+    public void textarea(MenuItem item) {
+        logAction();
+        MemberState memberState = new MemberState();
+        memberState.setStrokeColor(new int[]{99, 99, 99});
+        memberState.setCurrentApplianceName(Appliance.TEXT);
+        memberState.setStrokeWidth(10);
+        memberState.setTextSize(10);
+        room.setMemberState(memberState);
+    }
+
     public void pencil(MenuItem item) {
         logAction();
         MemberState memberState = new MemberState();

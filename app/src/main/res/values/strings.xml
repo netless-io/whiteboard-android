@@ -29,4 +29,5 @@
     <string name="getPlayState_command">获取播放信息</string>
     <string name="getPhase_command">获取播放状态</string>
     <string name="seek_command">快进</string>
+    <string name="textarea_command">文本</string>
 </resources>
