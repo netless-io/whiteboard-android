@@ -32,6 +32,10 @@ public class WhiteSdk {
     private final ConcurrentHashMap<String, Room> roomConcurrentHashMap = new ConcurrentHashMap<>(); // uuid ,Room
     private final ConcurrentHashMap<String, Player> playerConcurrentHashMap = new ConcurrentHashMap<>(); // uuid ,Player
 
+    public static String Version() {
+        return "2.0.0";
+    }
+
     public WhiteSdk(WhiteBroadView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration) {
         this(bridge, context, whiteSdkConfiguration, null);
     }
