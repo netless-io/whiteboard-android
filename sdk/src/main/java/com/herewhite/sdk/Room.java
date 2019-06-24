@@ -1,6 +1,8 @@
 package com.herewhite.sdk;
 
 import android.content.Context;
+import android.view.MotionEvent;
+import android.view.View;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -343,7 +345,13 @@ public class Room {
         bridge.callHandler("room.zoomChange", new Object[]{scale});
     }
 
-    public void disableOperations(boolean disableOperations) {
+    public void disableOperations(final boolean disableOperations) {
+        bridge.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return !disableOperations;
+            }
+        });
         bridge.callHandler("room.disableOperations", new Object[]{disableOperations});
     }
 
