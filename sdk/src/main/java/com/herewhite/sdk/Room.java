@@ -346,13 +346,15 @@ public class Room {
     }
 
     public void disableOperations(final boolean disableOperations) {
-        bridge.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return !disableOperations;
-            }
-        });
         bridge.callHandler("room.disableOperations", new Object[]{disableOperations});
+    }
+
+    public void disableCameraTransform(final boolean disableOperations) {
+        bridge.callHandler("room.disableCamera", new Object[]{disableOperations});
+    }
+
+    public void disableDeviceInputs(final boolean disableOperations) {
+        bridge.callHandler("room.disableDeviceInputs", new Object[]{disableOperations});
     }
 
     public void convertToPointInWorld(double x, double y, final Promise<Point> promise) {
