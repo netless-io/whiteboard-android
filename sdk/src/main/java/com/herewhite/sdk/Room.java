@@ -341,6 +341,14 @@ public class Room {
     }
     //endregion
 
+    public void pptNextStep() {
+        bridge.callHandler("ppt.nextStep", new Object[]{});
+    }
+
+    public void pptPreviousStep() {
+        bridge.callHandler("ppt.previousStep", new Object[]{});
+    }
+
     public void zoomChange(double scale) {
         bridge.callHandler("room.zoomChange", new Object[]{scale});
     }
