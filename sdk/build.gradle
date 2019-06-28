@@ -31,6 +31,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
     api 'com.github.wendux:DSBridge-Android:ac150b630b'
     testImplementation 'org.json:json:20180130'
     testImplementation 'junit:junit:4.12'
