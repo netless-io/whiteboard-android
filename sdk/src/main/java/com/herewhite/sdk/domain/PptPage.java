@@ -1,10 +1,14 @@
 package com.herewhite.sdk.domain;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by buhe on 2018/8/15.
  */
 
 public class PptPage extends WhiteObject {
+
+    @SerializedName(value ="src", alternate = {"conversionFileUrl"})
     private String src;
     private Double width;
     private Double height;
