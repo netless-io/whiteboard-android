@@ -206,7 +206,7 @@ public class RoomActivity extends AppCompatActivity {
 
     public void staticConvert(MenuItem item) {
         Converter c = new Converter(this.roomToken);
-        c.startConvertTask("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/LightWaves.pdf", Converter.PptType.Static, new ConverterCallbacks(){
+        c.startConvertTask("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/LightWaves.pdf", Converter.ConvertType.Static, new ConverterCallbacks(){
             @Override
             public void onFailure(Converter.ConvertException e) {
                 logAction(e.getMessage());
@@ -228,7 +228,7 @@ public class RoomActivity extends AppCompatActivity {
 
     public void dynamicConvert(MenuItem item) {
         Converter c = new Converter(this.roomToken);
-        c.startConvertTask("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/-1/1.pptx", Converter.PptType.Dynamic, new ConverterCallbacks(){
+        c.startConvertTask("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/-1/1.pptx", Converter.ConvertType.Dynamic, new ConverterCallbacks(){
             @Override
             public void onFailure(Converter.ConvertException e) {
                 logAction(e.getMessage());
@@ -269,7 +269,7 @@ public class RoomActivity extends AppCompatActivity {
         });
 
         Converter c = new Converter(this.roomToken);
-        c.startConvertTask("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/-1/1.pptx", Converter.PptType.Dynamic, new ConverterCallbacks(){
+        c.startConvertTask("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/-1/1.pptx", Converter.ConvertType.Dynamic, new ConverterCallbacks(){
             @Override
             public void onFailure(Converter.ConvertException e) {
                 logAction("ppt fail");

@@ -4,7 +4,7 @@ import com.herewhite.sdk.Converter;
 
 public class ConvertedFiles {
     private String taskId;
-    private Converter.PptType type;
+    private Converter.ConvertType type;
     private Double width;
     private Double height;
 
@@ -16,11 +16,11 @@ public class ConvertedFiles {
         this.taskId = taskId;
     }
 
-    public Converter.PptType getType() {
+    public Converter.ConvertType getType() {
         return type;
     }
 
-    public void setType(Converter.PptType type) {
+    public void setType(Converter.ConvertType type) {
         this.type = type;
     }
 

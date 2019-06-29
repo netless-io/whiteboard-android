@@ -1,11 +1,12 @@
 package com.herewhite.sdk;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.herewhite.sdk.domain.ConvertErrorCode;
+import com.herewhite.sdk.domain.ConvertException;
 import com.herewhite.sdk.domain.ConvertedFiles;
 import com.herewhite.sdk.domain.ConversionInfo;
+import com.herewhite.sdk.domain.ConverterStatus;
 import com.herewhite.sdk.domain.PptPage;
 import com.herewhite.sdk.domain.Scene;
 
@@ -18,7 +19,6 @@ import java.util.concurrent.Executors;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -27,93 +27,10 @@ import okhttp3.Response;
 
 public class Converter {
 
-    public enum ConverterStatus {
-        Idle,
-        Created,
-        CreateFail,
-        Checking,
-        WaitingForNextCheck,
-        Timeout,
-        CheckingFail,
-        GetDynamicFail,
-        Success,
-        Fail,
-    }
-
-    public enum PptType {
+    public enum ConvertType {
         Unknown,
         Static,
         Dynamic,
-    }
-
-    public class ConvertException extends Exception {
-
-        private ConvertErrorCode code;
-
-        ConvertException(ConvertErrorCode code) {
-            this.code = code;
-        }
-
-        @Override
-        public String getMessage() {
-            String codeMessage = "";
-            switch (code) {
-                case NotFound:
-                    codeMessage = "未找到对应的 task 任务";
-                    break;
-                case ConvertFail:
-                    codeMessage = "转换失败";
-                    break;
-                case CheckTimeout:
-                    codeMessage = "查询请求超时，请重启轮询";
-                    break;
-                case CreatedFail:
-                    codeMessage = "创建失败";
-                    break;
-                case GetDynamicFail:
-                    codeMessage = "请求动态 ppt 出错";
-                    break;
-            }
-
-            if (codeMessage.isEmpty()) {
-                return "convert error: " + codeMessage + " error: " + super.getMessage();
-            } else {
-                return super.getMessage();
-            }
-        }
-
-        ConvertException(ConvertErrorCode code, String message) {
-            super(message);
-            this.code = code;
-        }
-
-        ConvertException(ConvertErrorCode code, Exception e) {
-            super(e);
-            this.code = code;
-        }
-
-        public ConvertErrorCode getCode() {
-            return code;
-        }
-    }
-
-    public enum ConvertErrorCode {
-
-        CreatedFail(20001),
-        ConvertFail(20002),
-        NotFound(20003),
-        CheckFail(2004),
-        CheckTimeout(20005),
-        GetDynamicFail(20006);
-
-        private int code;
-        ConvertErrorCode(int code) {
-            this.code=code;
-        }
-
-        public int getCode() {
-            return code;
-        }
     }
 
     public String getRoomToken() {
@@ -138,11 +55,7 @@ public class Converter {
 
     private ConverterStatus status;
     public Converter(String roomToken) {
-        this.roomToken = roomToken;
-        gson = new Gson();
-        status = ConverterStatus.Idle;
-        this.interval = 15000;
-        this.timeout = 3 * 60 * 1000;
+        new Converter(roomToken, 15 * 1000, 3 * 60 * 1000);
     }
 
     public Converter(String roomToken, long pollingInterval, long timeout) {
@@ -153,7 +66,7 @@ public class Converter {
         this.timeout = timeout;
     }
 
-    public static final MediaType JSON
+    private static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
     static ExecutorService poolExecutor = Executors.newSingleThreadExecutor();
     OkHttpClient client = new OkHttpClient();
@@ -161,8 +74,8 @@ public class Converter {
     static final String PPT_ORIGIN = "https://cloudcapiv4.herewhite.com";
     static final String PPT_ASSETS_ORIGIN = "https://white-cn-doc-convert.oss-cn-hangzhou.aliyuncs.com/dynamicConvert";
 
-    public void startConvertTask(String url, final PptType type, final ConverterCallbacks callback) {
-        String typeUrl = type.equals(PptType.Dynamic) ? "dynamic" : "static";
+    public void startConvertTask(String url, final ConvertType type, final ConverterCallbacks callback) {
+        String typeUrl = type.equals(ConvertType.Dynamic) ? "dynamic" : "static";
 
         Map<String, String> roomSpec = new HashMap<>();
         roomSpec.put("sourceUrl", url);
@@ -225,7 +138,6 @@ public class Converter {
                     e.printStackTrace();
                 }
 
-                Log.i("convert", String.valueOf(that.status));
                 if (that.status == ConverterStatus.CreateFail) {
                     return;
                 }
@@ -238,7 +150,7 @@ public class Converter {
 
                     @Override
                     public void onFinish(final ConversionInfo info) {
-                        if (type == PptType.Dynamic) {
+                        if (type == ConvertType.Dynamic) {
                             that.getDynamicPpt(taskId, new DynamicPptCallbacks() {
                                 @Override
                                 public void onSuccess(ConvertedFiles ppt) {
@@ -271,10 +183,9 @@ public class Converter {
         void onFailure(ConvertException e);
     }
 
-    private void polling(String taskId, PptType type, final ConvertingCallback callbacks) {
+    private void polling(String taskId, ConvertType type, final ConvertingCallback callbacks) {
         boolean canCheck = this.status == ConverterStatus.Timeout || this.status == ConverterStatus.CheckingFail || this.status == ConverterStatus.GetDynamicFail;
         if (this.status != ConverterStatus.Created && !canCheck) {
-            Log.i("polling", "polling: return");
             return;
         }
 
@@ -327,9 +238,9 @@ public class Converter {
         void onFailure(Exception e);
     }
 
-    private void checkProgress(String taskId, PptType type, final ProgressCallback progressCallback) {
+    private void checkProgress(String taskId, ConvertType type, final ProgressCallback progressCallback) {
 
-        String typeUrl = type.equals(PptType.Dynamic) ? "dynamic" : "static";
+        String typeUrl = type.equals(ConvertType.Dynamic) ? "dynamic" : "static";
 
         Request request = new Request.Builder()
                 .url(PPT_ORIGIN + "/services/" + typeUrl + "-conversion/tasks/" + taskId +"/progress?roomToken=" + this.roomToken)
@@ -419,7 +330,7 @@ public class Converter {
 
         ConvertedFiles files = new ConvertedFiles();
         files.setTaskId(this.taskId);
-        files.setType(PptType.Dynamic);
+        files.setType(ConvertType.Dynamic);
 
         final String prefix = PPT_ASSETS_ORIGIN + "/" + taskId;
 
@@ -443,7 +354,7 @@ public class Converter {
 
         ConvertedFiles files = new ConvertedFiles();
         files.setTaskId(taskId);
-        files.setType(PptType.Static);
+        files.setType(ConvertType.Static);
 
         for (int i = 0; i < fileLength; i++) {
             PptPage pptPage = info.getStaticConversionFileList()[i];
