@@ -238,7 +238,7 @@ public class Converter {
 
                     @Override
                     public void onFinish(final ConversionInfo info) {
-                        if (type != PptType.Dynamic) {
+                        if (type == PptType.Dynamic) {
                             that.getDynamicPpt(taskId, new DynamicPptCallbacks() {
                                 @Override
                                 public void onSuccess(ConvertedFiles ppt) {
