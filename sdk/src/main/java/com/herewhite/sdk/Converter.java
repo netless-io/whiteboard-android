@@ -380,15 +380,11 @@ public class Converter {
     }
 
     public void getDynamicPpt(String taskId, final DynamicPptCallbacks dynamicPptCallbacks) {
-        FormBody formBody = new FormBody.Builder()
-                .build();
-
         final String prefix = PPT_ASSETS_ORIGIN + "/" + taskId;
         Request request = new Request.Builder()
                 .url(prefix + "/info.json")
                 .header("Content-Type", "application/json")
                 .header("Accept","application/json")
-                .post(formBody)
                 .build();
         Call call = client.newCall(request);
 
