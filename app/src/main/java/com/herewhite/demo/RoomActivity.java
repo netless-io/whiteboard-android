@@ -90,6 +90,7 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     private void createRoom() {
+        final RoomActivity that = this;
         demoAPI.createRoom("sdk demo", 100, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -103,6 +104,7 @@ public class RoomActivity extends AppCompatActivity {
                         JsonObject room = gson.fromJson(response.body().string(), JsonObject.class);
                         String uuid = room.getAsJsonObject("msg").getAsJsonObject("room").get("uuid").getAsString();
                         String roomToken = room.getAsJsonObject("msg").get("roomToken").getAsString();
+                        that.roomToken = roomToken;
                         if (whiteBroadView.getEnv() == Environment.dev) {
                             joinRoom(TEST_UUID, TEST_ROOM_TOKEN);
                         } else {
@@ -202,6 +204,46 @@ public class RoomActivity extends AppCompatActivity {
         });
     }
 
+    public void staticConvert(MenuItem item) {
+        Converter c = new Converter(this.roomToken);
+        c.startConvertTask("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/LightWaves.pdf", Converter.PptType.Static, new ConverterCallbacks(){
+            @Override
+            public void onFailure(Converter.ConvertException e) {
+                logAction(e.getMessage());
+            }
+
+            @Override
+            public void onFinish(ConvertedFiles ppt, ConversionInfo convertInfo) {
+                logAction(convertInfo.toString());
+            }
+
+            @Override
+            public void onProgress(Double progress, ConversionInfo convertInfo) {
+                logAction(String.valueOf(progress));
+            }
+        });
+    }
+
+    public void dynamicConvert(MenuItem item) {
+        Converter c = new Converter(this.roomToken);
+        c.startConvertTask("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/-1/1.pptx", Converter.PptType.Dynamic, new ConverterCallbacks(){
+            @Override
+            public void onFailure(Converter.ConvertException e) {
+                logAction(e.getMessage());
+            }
+
+            @Override
+            public void onFinish(ConvertedFiles ppt, ConversionInfo convertInfo) {
+                logAction(convertInfo.toString());
+            }
+
+            @Override
+            public void onProgress(Double progress, ConversionInfo convertInfo) {
+                logAction(String.valueOf(progress));
+            }
+        });
+    }
+
     public void broadcast(MenuItem item) {
         logAction();
         room.setViewMode(ViewMode.Broadcaster);
@@ -219,6 +261,24 @@ public class RoomActivity extends AppCompatActivity {
             @Override
             public void catchEx(SDKError t) {
 
+            }
+        });
+
+        Converter c = new Converter(this.roomToken);
+        c.startConvertTask("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/-1/1.pptx", Converter.PptType.Dynamic, new ConverterCallbacks(){
+            @Override
+            public void onFailure(Converter.ConvertException e) {
+                logAction("ppt fail");
+            }
+
+            @Override
+            public void onFinish(ConvertedFiles ppt, ConversionInfo convertInfo) {
+                logAction(convertInfo.toString());
+            }
+
+            @Override
+            public void onProgress(Double progress, ConversionInfo convertInfo) {
+                logAction(String.valueOf(progress));
             }
         });
     }

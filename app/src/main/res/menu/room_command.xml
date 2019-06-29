@@ -21,6 +21,12 @@
     <item android:id="@+id/insert_ppt"
         android:onClick="insertPPT"
         android:title="@string/insert_ppt_command"/>
+    <item android:id="@+id/static_ppt"
+        android:onClick="staticConvert"
+        android:title="@string/staticConvert"/>
+    <item android:id="@+id/dynamic_ppt"
+        android:onClick="dynamicConvert"
+        android:title="@string/dynamicConvert"/>
     <item android:id="@+id/insertImage"
         android:onClick="insertImage"
         android:title="@string/insertImage_command"/>

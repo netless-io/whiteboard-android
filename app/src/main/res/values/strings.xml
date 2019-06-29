@@ -30,4 +30,6 @@
     <string name="getPhase_command">获取播放状态</string>
     <string name="seek_command">快进</string>
     <string name="textarea_command">文本</string>
+    <string name="staticConvert">静态转换</string>
+    <string name="dynamicConvert">动态转换</string>
 </resources>
