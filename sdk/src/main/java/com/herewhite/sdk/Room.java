@@ -278,7 +278,6 @@ public class Room {
             @Override
             public void onValue(Object o) {
                 try {
-                    //TODO:待测试
                     promise.then(RoomPhase.valueOf(String.valueOf(o)));
                 } catch (AssertionError a) {
                     throw a;
@@ -298,7 +297,6 @@ public class Room {
             @Override
             public void onValue(Object o) {
                 try {
-                    //TODO:待测试反序列化是否正确
                     promise.then(gson.fromJson(String.valueOf(o), RoomState.class));
                 } catch (AssertionError a) {
                     throw a;
