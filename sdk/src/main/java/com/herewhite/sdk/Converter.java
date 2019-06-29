@@ -1,5 +1,7 @@
 package com.herewhite.sdk;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.herewhite.sdk.domain.ConvertedFiles;
@@ -8,6 +10,8 @@ import com.herewhite.sdk.domain.PptPage;
 import com.herewhite.sdk.domain.Scene;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -126,7 +130,7 @@ public class Converter {
     private long interval;
     private long timeout;
     private String taskId;
-    private Boolean converting = false;
+    private boolean converting = true;
 
     public ConverterStatus getStatus() {
         return status;
@@ -149,6 +153,8 @@ public class Converter {
         this.timeout = timeout;
     }
 
+    public static final MediaType JSON
+            = MediaType.parse("application/json; charset=utf-8");
     static ExecutorService poolExecutor = Executors.newSingleThreadExecutor();
     OkHttpClient client = new OkHttpClient();
 
@@ -158,15 +164,15 @@ public class Converter {
     public void startConvertTask(String url, final PptType type, final ConverterCallbacks callback) {
         String typeUrl = type.equals(PptType.Dynamic) ? "dynamic" : "static";
 
-        FormBody formBody = new FormBody.Builder()
-                .add("sourceUrl", url)
-                .build();
+        Map<String, String> roomSpec = new HashMap<>();
+        roomSpec.put("sourceUrl", url);
+        RequestBody body = RequestBody.create(JSON, gson.toJson(roomSpec));
 
         Request request = new Request.Builder()
                 .url(PPT_ORIGIN + "/services/" + typeUrl + "-conversion/tasks?roomToken=" + this.roomToken)
                 .header("Content-Type", "application/json")
                 .header("Accept","application/json")
-                .post(formBody)
+                .post(body)
                 .build();
 
         final Call call = client.newCall(request);
@@ -193,10 +199,12 @@ public class Converter {
                     public void onResponse(Call call, Response response) throws IOException {
                         JsonObject json = gson.fromJson(response.body().string(), JsonObject.class);
                         if (response.code() == 200) {
-                            Boolean succeed = json.getAsJsonObject("msg").getAsJsonObject("succeed").getAsBoolean();
+                            JsonObject msg = json.getAsJsonObject("msg");
+                            boolean succeed = msg.getAsJsonPrimitive("succeed").getAsBoolean();
                             if (succeed) {
                                 that.status = ConverterStatus.Created;
                                 that.taskId = json.getAsJsonObject("msg").get("taskUUID").getAsString();
+                                callback.onProgress(0d, null);
                             } else {
                                 that.status = ConverterStatus.CreateFail;
                                 ConvertException e = new ConvertException(ConvertErrorCode.CreatedFail, gson.toJson(json));
@@ -217,11 +225,17 @@ public class Converter {
                     e.printStackTrace();
                 }
 
+                Log.i("convert", String.valueOf(that.status));
                 if (that.status == ConverterStatus.CreateFail) {
                     return;
                 }
 
-                that.checkResult(taskId, type, new ResultCallback() {
+                that.polling(taskId, type, new ConvertingCallback() {
+                    @Override
+                    public void onProgress(Double progress, ConversionInfo info) {
+                        callback.onProgress(progress, info);
+                    }
+
                     @Override
                     public void onFinish(final ConversionInfo info) {
                         if (type != PptType.Dynamic) {
@@ -243,23 +257,24 @@ public class Converter {
                     }
 
                     @Override
-                    public void onFailure(Exception e) {
-                        ConvertException exception = new ConvertException(ConvertErrorCode.CheckTimeout, e);
-                        callback.onFailure(exception);
+                    public void onFailure(ConvertException e) {
+                        callback.onFailure(e);
                     }
                 });
             }
         });
     }
 
-    interface ResultCallback {
+    interface ConvertingCallback {
+        void onProgress(Double progress, ConversionInfo info);
         void onFinish(ConversionInfo info);
-        void onFailure(Exception e);
+        void onFailure(ConvertException e);
     }
 
-    private void checkResult(String taskId, PptType type, final ResultCallback callbacks) {
-        Boolean canCheck = this.status == ConverterStatus.Timeout || this.status == ConverterStatus.CheckingFail || this.status == ConverterStatus.GetDynamicFail;
+    private void polling(String taskId, PptType type, final ConvertingCallback callbacks) {
+        boolean canCheck = this.status == ConverterStatus.Timeout || this.status == ConverterStatus.CheckingFail || this.status == ConverterStatus.GetDynamicFail;
         if (this.status != ConverterStatus.Created && !canCheck) {
+            Log.i("polling", "polling: return");
             return;
         }
 
@@ -279,6 +294,8 @@ public class Converter {
                     } else if (status == ConversionInfo.ServerConversionStatus.Finished) {
                         converting = false;
                         callbacks.onFinish(info);
+                    } else {
+                        callbacks.onProgress(info.getConvertedPercentage(), info);
                     }
                     try {
                         Thread.sleep(interval);
@@ -292,7 +309,8 @@ public class Converter {
                 @Override
                 public void onFailure(Exception e) {
                     that.status = ConverterStatus.CheckingFail;
-                    callbacks.onFailure(e);
+                    ConvertException exp = new ConvertException(ConvertErrorCode.CreatedFail);
+                    callbacks.onFailure(exp);
                     latch.countDown();
                 }
             });
@@ -314,7 +332,7 @@ public class Converter {
         String typeUrl = type.equals(PptType.Dynamic) ? "dynamic" : "static";
 
         Request request = new Request.Builder()
-                .url(PPT_ASSETS_ORIGIN + "/services/" + typeUrl + "-conversion/tasks/" + taskId +"/progress?roomToken=" + this.roomToken)
+                .url(PPT_ORIGIN + "/services/" + typeUrl + "-conversion/tasks/" + taskId +"/progress?roomToken=" + this.roomToken)
                 .header("Content-Type", "application/json")
                 .header("Accept","application/json")
                 .build();
@@ -336,7 +354,8 @@ public class Converter {
             public void onResponse(Call call, Response response) throws IOException {
                 JsonObject json = gson.fromJson(response.body().string(), JsonObject.class);
                 if (response.code() == 200) {
-                    ConversionInfo info = gson.fromJson(json.getAsJsonObject("msg").getAsJsonObject("task").getAsString(), ConversionInfo.class);
+                    JsonObject task = json.getAsJsonObject("msg").getAsJsonObject("task");
+                    ConversionInfo info = gson.fromJson(gson.toJson(task), ConversionInfo.class);
                     progressCallback.onProgress(info);
                     that.status = ConverterStatus.WaitingForNextCheck;
                 } else {

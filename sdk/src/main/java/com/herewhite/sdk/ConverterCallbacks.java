@@ -4,7 +4,7 @@ import com.herewhite.sdk.domain.ConvertedFiles;
 import com.herewhite.sdk.domain.ConversionInfo;
 
 public interface ConverterCallbacks {
-    public void onProgress(Double progress, ConversionInfo convertInfo);
-    public void onFinish(ConvertedFiles ppt, ConversionInfo convertInfo);
-    public void onFailure(Converter.ConvertException e);
+    void onProgress(Double progress, ConversionInfo convertInfo);
+    void onFinish(ConvertedFiles ppt, ConversionInfo convertInfo);
+    void onFailure(Converter.ConvertException e);
 }
