@@ -21,7 +21,7 @@ import okhttp3.Response;
 
 public class Converter {
 
-    public enum PptConverterStatus {
+    public enum ConverterStatus {
         Idle,
         Created,
         CreateFail,
@@ -40,11 +40,11 @@ public class Converter {
         Dynamic,
     }
 
-    public class PptConvertException extends Exception {
+    public class ConvertException extends Exception {
 
         private int code;
 
-        PptConvertException(int code) {
+        ConvertException(int code) {
             this.code = code;
         }
 
@@ -53,7 +53,7 @@ public class Converter {
         }
     }
 
-    public enum PptConvertErrorCode {
+    public enum ConvertErrorCode {
 
         CreatedFail(20001),
         ConvertFail(20002),
@@ -61,7 +61,7 @@ public class Converter {
         CheckTimeout(20004);
 
         private int code;
-        PptConvertErrorCode(int code) {
+        ConvertErrorCode(int code) {
             this.code=code;
         }
 
@@ -86,15 +86,25 @@ public class Converter {
     private String taskId;
     private Boolean converting = false;
 
-    public PptConverterStatus getStatus() {
+    public ConverterStatus getStatus() {
         return status;
     }
 
-    private PptConverterStatus status;
+    private ConverterStatus status;
     public Converter(String roomToken) {
-        roomToken = roomToken;
+        this.roomToken = roomToken;
         gson = new Gson();
-        status = PptConverterStatus.Idle;
+        status = ConverterStatus.Idle;
+        this.interval = 15000;
+        this.timeout = 3 * 60 * 1000;
+    }
+
+    public Converter(String roomToken, long pollingInterval, long timeout) {
+        this.roomToken = roomToken;
+        gson = new Gson();
+        status = ConverterStatus.Idle;
+        this.interval = pollingInterval;
+        this.timeout = timeout;
     }
 
     static ExecutorService poolExecutor = Executors.newSingleThreadExecutor();
@@ -103,10 +113,7 @@ public class Converter {
     static final String PPT_ORIGIN = "https://cloudcapiv4.herewhite.com";
     static final String PPT_ASSETS_ORIGIN = "https://white-cn-doc-convert.oss-cn-hangzhou.aliyuncs.com/dynamicConvert";
 
-    public void convertTask(String url,final PptType type, long interval, long timeout,final ConverterCallbacks callback) {
-
-        this.timeout = timeout;
-        this.interval = interval;
+    public void startConvertTask(String url, final PptType type, final ConverterCallbacks callback) {
         String typeUrl = type.equals(PptType.Dynamic) ? "dynamic" : "static";
 
         FormBody formBody = new FormBody.Builder()
@@ -131,8 +138,7 @@ public class Converter {
                 call.enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        that.status = PptConverterStatus.CreateFail;
-                        //TODO:能在 exception 里加错误码之类额外的信息吗？
+                        that.status = ConverterStatus.CreateFail;
                         try {
                             callback.onFailure(e);
                         } catch (Exception exception) {
@@ -147,14 +153,13 @@ public class Converter {
                             JsonObject room = gson.fromJson(response.body().string(), JsonObject.class);
                             Boolean succeed = room.getAsJsonObject("msg").getAsJsonObject("succeed").getAsBoolean();
                             if (succeed) {
-                                that.status = PptConverterStatus.Created;
+                                that.status = ConverterStatus.Created;
                                 that.taskId = room.getAsJsonObject("msg").get("taskUUID").getAsString();
                             } else {
-                                that.status = PptConverterStatus.CreateFail;
+                                that.status = ConverterStatus.CreateFail;
                             }
                         } else {
-                            //TODO:添加具体的错误信息
-                            that.status = PptConverterStatus.CreateFail;
+                            that.status = ConverterStatus.CreateFail;
                         }
                         latch.countDown();
                     }
@@ -164,6 +169,10 @@ public class Converter {
                     latch.wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                }
+
+                if (that.status == ConverterStatus.CreateFail) {
+                    return;
                 }
 
                 that.checkResult(taskId, type, new ResultCallback() {
@@ -177,17 +186,17 @@ public class Converter {
                                 }
 
                                 @Override
-                                public void onFail(Exception e) {
+                                public void onFailure(Exception e) {
                                     callback.onFailure(e);
                                 }
                             });
                         } else {
-                            callback.onFinish(that.transformPptInfo(info), info);
+                            callback.onFinish(that.getStaticPpt(info), info);
                         }
                     }
 
                     @Override
-                    public void onFail(Exception e) {
+                    public void onFailure(Exception e) {
                         callback.onFailure(e);
                     }
                 });
@@ -197,12 +206,12 @@ public class Converter {
 
     interface ResultCallback {
         void onFinish(ConversionInfo info);
-        void onFail(Exception e);
+        void onFailure(Exception e);
     }
 
     private void checkResult(String taskId, PptType type, final ResultCallback callbacks) {
-        Boolean canCheck = this.status == PptConverterStatus.Timeout || this.status == PptConverterStatus.CheckingFail || this.status == PptConverterStatus.GetDynamicFail;
-        if (this.status != PptConverterStatus.Created && !canCheck) {
+        Boolean canCheck = this.status == ConverterStatus.Timeout || this.status == ConverterStatus.CheckingFail || this.status == ConverterStatus.GetDynamicFail;
+        if (this.status != ConverterStatus.Created && !canCheck) {
             return;
         }
 
@@ -215,10 +224,10 @@ public class Converter {
                 public void onProgress(ConversionInfo info) {
                     ConversionInfo.ServerConversionStatus status = info.getConvertStatus();
                     if (status == ConversionInfo.ServerConversionStatus.Fail || status == ConversionInfo.ServerConversionStatus.NotFound) {
-                        that.status = PptConverterStatus.Fail;
+                        that.status = ConverterStatus.Fail;
                         converting = false;
-                        PptConvertException e = new PptConvertException(PptConvertErrorCode.ConvertFail.getCode());
-                        callbacks.onFail(e);
+                        ConvertException e = new ConvertException(ConvertErrorCode.ConvertFail.getCode());
+                        callbacks.onFailure(e);
                     } else if (status == ConversionInfo.ServerConversionStatus.Finished) {
                         converting = false;
                         callbacks.onFinish(info);
@@ -233,9 +242,9 @@ public class Converter {
                 }
 
                 @Override
-                public void onFail(Exception e) {
-                    that.status = PptConverterStatus.CheckingFail;
-                    callbacks.onFail(e);
+                public void onFailure(Exception e) {
+                    that.status = ConverterStatus.CheckingFail;
+                    callbacks.onFailure(e);
                     latch.countDown();
                 }
             });
@@ -249,7 +258,7 @@ public class Converter {
 
     private interface ProgressCallback {
         void onProgress(ConversionInfo info);
-        void onFail(Exception e);
+        void onFailure(Exception e);
     }
 
     private void checkProgress(String taskId, PptType type, final ProgressCallback progressCallback) {
@@ -266,12 +275,12 @@ public class Converter {
         final CountDownLatch latch = new CountDownLatch(1);
         final Converter that = this;
 
-        this.status = PptConverterStatus.Checking;
+        this.status = ConverterStatus.Checking;
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                progressCallback.onFail(e);
-                that.status = PptConverterStatus.CheckingFail;
+                progressCallback.onFailure(e);
+                that.status = ConverterStatus.CheckingFail;
                 latch.countDown();
             }
 
@@ -281,10 +290,12 @@ public class Converter {
                     JsonObject json = gson.fromJson(response.body().string(), JsonObject.class);
                     ConversionInfo info = gson.fromJson(json.getAsJsonObject("msg").getAsJsonObject("task").getAsString(), ConversionInfo.class);
                     progressCallback.onProgress(info);
+                    that.status = ConverterStatus.WaitingForNextCheck;
                 } else {
-
+                    that.status = ConverterStatus.CheckingFail;
+                    ConvertException e = new ConvertException(ConvertErrorCode.ConvertFail.getCode());
+                    progressCallback.onFailure(e);
                 }
-                that.status = PptConverterStatus.WaitingForNextCheck;
                 latch.countDown();
             }
         });
@@ -298,7 +309,7 @@ public class Converter {
 
     private interface DynamicPptCallbacks {
         void onSuccess(ConvertedFiles ppt);
-        void onFail(Exception e);
+        void onFailure(Exception e);
     }
 
     public void getDynamicPpt(String taskId, final DynamicPptCallbacks dynamicPptCallbacks) {
@@ -319,47 +330,57 @@ public class Converter {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                //TODO:封装异常，增加错误信息
-                dynamicPptCallbacks.onFail(e);
+                dynamicPptCallbacks.onFailure(e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-
-                JsonObject json = gson.fromJson(response.body().string(), JsonObject.class);
-
-                Integer count = json.get("totalPageSize").getAsInt();
-
-                String[] sliderURLs = new String[count];
-                Scene[] scenes = new Scene[count];
-
-                ConvertedFiles ppt = new ConvertedFiles();
-                ppt.setTaskId(that.taskId);
-                ppt.setType(PptType.Dynamic);
-
-                for (int i = 0; i < count; i++) {
-                    PptPage pptPage = new PptPage(String.valueOf(i+1), json.get("width").getAsDouble(), json.get("height").getAsDouble());
-                    pptPage.setSrc(prefix + "/slide/slide" + (i+1) + ".xml");
-                    sliderURLs[i] = pptPage.getSrc();
-                    scenes[i] = new Scene(String.valueOf(i+1), pptPage);
+                if (response.code() == 200) {
+                    ConvertedFiles ppt = that.getDynamicPpt(response);
+                    dynamicPptCallbacks.onSuccess(ppt);
+                } else {
+                    ConvertException e = new ConvertException(ConvertErrorCode.ConvertFail.getCode());
+                    dynamicPptCallbacks.onFailure(e);
                 }
 
-                ppt.setSlideURLs(sliderURLs);
-                ppt.setScenes(scenes);
-                dynamicPptCallbacks.onSuccess(ppt);
             }
         });
     }
 
-    private ConvertedFiles transformPptInfo(ConversionInfo info) {
+    private ConvertedFiles getDynamicPpt(Response response) throws IOException {
+        JsonObject json = gson.fromJson(response.body().string(), JsonObject.class);
+        Integer count = json.get("totalPageSize").getAsInt();
+
+        String[] sliderURLs = new String[count];
+        Scene[] scenes = new Scene[count];
+
+        ConvertedFiles files = new ConvertedFiles();
+        files.setTaskId(this.taskId);
+        files.setType(PptType.Dynamic);
+
+        final String prefix = PPT_ASSETS_ORIGIN + "/" + taskId;
+
+        for (int i = 0; i < count; i++) {
+            PptPage pptPage = new PptPage(String.valueOf(i+1), json.get("width").getAsDouble(), json.get("height").getAsDouble());
+            pptPage.setSrc(prefix + "/slide/slide" + (i+1) + ".xml");
+            sliderURLs[i] = pptPage.getSrc();
+            scenes[i] = new Scene(String.valueOf(i+1), pptPage);
+        }
+
+        files.setSlideURLs(sliderURLs);
+        files.setScenes(scenes);
+        return files;
+    }
+
+    private ConvertedFiles getStaticPpt(ConversionInfo info) {
 
         int fileLength = info.getStaticConversionFileList().length;
         String[] sliderURLs = new String[fileLength];
         Scene[] scenes = new Scene[fileLength];
 
-        ConvertedFiles ppt = new ConvertedFiles();
-        ppt.setTaskId(taskId);
-        ppt.setType(PptType.Static);
+        ConvertedFiles files = new ConvertedFiles();
+        files.setTaskId(taskId);
+        files.setType(PptType.Static);
 
         for (int i = 0; i < fileLength; i++) {
             PptPage pptPage = info.getStaticConversionFileList()[i];
@@ -368,9 +389,9 @@ public class Converter {
             scenes[i] = new Scene(String.valueOf(i+1), pptPage);
         }
 
-        ppt.setSlideURLs(sliderURLs);
-        ppt.setScenes(scenes);
+        files.setSlideURLs(sliderURLs);
+        files.setScenes(scenes);
 
-        return ppt;
+        return files;
     }
 }
