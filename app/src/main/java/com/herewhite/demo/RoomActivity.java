@@ -33,6 +33,7 @@ public class RoomActivity extends AppCompatActivity {
     final String SCENE_DIR = "/dir";
     final String ROOM_INFO = "room info";
     final String ROOM_ACTION = "room action";
+    private String roomToken;
 
     WhiteBroadView whiteBroadView;
     Room room;
@@ -118,6 +119,7 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     private void getRoomToken(final String uuid) {
+        final RoomActivity that = this;
         demoAPI.getRoomToken(uuid, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -130,6 +132,7 @@ public class RoomActivity extends AppCompatActivity {
                     if (response.code() == 200) {
                         JsonObject room = gson.fromJson(response.body().string(), JsonObject.class);
                         String roomToken = room.getAsJsonObject("msg").get("roomToken").getAsString();
+                        that.roomToken = roomToken;
                         if (whiteBroadView.getEnv() == Environment.dev) {
                             joinRoom(TEST_UUID, TEST_ROOM_TOKEN);
                         } else {
