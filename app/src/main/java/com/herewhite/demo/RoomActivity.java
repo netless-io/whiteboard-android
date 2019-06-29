@@ -214,6 +214,8 @@ public class RoomActivity extends AppCompatActivity {
 
             @Override
             public void onFinish(ConvertedFiles ppt, ConversionInfo convertInfo) {
+                room.putScenes("/static", ppt.getScenes(), 0);
+                room.setScenePath("/static/1");
                 logAction(convertInfo.toString());
             }
 
@@ -234,6 +236,8 @@ public class RoomActivity extends AppCompatActivity {
 
             @Override
             public void onFinish(ConvertedFiles ppt, ConversionInfo convertInfo) {
+                room.putScenes("/dynamic", ppt.getScenes(), 0);
+                room.setScenePath("/dynamic/1");
                 logAction(convertInfo.toString());
             }
 
