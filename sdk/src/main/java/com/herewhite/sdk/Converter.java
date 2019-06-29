@@ -166,7 +166,7 @@ public class Converter {
                 });
 
                 try {
-                    latch.wait();
+                    latch.await();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -249,7 +249,7 @@ public class Converter {
                 }
             });
             try {
-                latch.wait();
+                latch.await();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -301,7 +301,7 @@ public class Converter {
         });
 
         try {
-            latch.wait();
+            latch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
