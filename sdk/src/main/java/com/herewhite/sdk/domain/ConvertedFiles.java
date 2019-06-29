@@ -1,10 +1,10 @@
 package com.herewhite.sdk.domain;
 
-import com.herewhite.sdk.PptConverter;
+import com.herewhite.sdk.Converter;
 
-public class ConvertedPpt {
+public class ConvertedFiles {
     private String taskId;
-    private PptConverter.PptType type;
+    private Converter.PptType type;
     private Double width;
     private Double height;
 
@@ -16,11 +16,11 @@ public class ConvertedPpt {
         this.taskId = taskId;
     }
 
-    public PptConverter.PptType getType() {
+    public Converter.PptType getType() {
         return type;
     }
 
-    public void setType(PptConverter.PptType type) {
+    public void setType(Converter.PptType type) {
         this.type = type;
     }
 

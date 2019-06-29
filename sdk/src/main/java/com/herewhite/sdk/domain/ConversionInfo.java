@@ -1,6 +1,6 @@
 package com.herewhite.sdk.domain;
 
-public class PptConvertInfo extends WhiteObject {
+public class ConversionInfo extends WhiteObject {
 
     public enum ServerConversionStatus {
         Waiting,
