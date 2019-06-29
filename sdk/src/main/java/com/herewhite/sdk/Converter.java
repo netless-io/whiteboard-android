@@ -15,8 +15,10 @@ import java.util.concurrent.Executors;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class Converter {
@@ -42,13 +44,51 @@ public class Converter {
 
     public class ConvertException extends Exception {
 
-        private int code;
+        private ConvertErrorCode code;
 
-        ConvertException(int code) {
+        ConvertException(ConvertErrorCode code) {
             this.code = code;
         }
 
-        public int getCode() {
+        @Override
+        public String getMessage() {
+            String codeMessage = "";
+            switch (code) {
+                case NotFound:
+                    codeMessage = "未找到对应的 task 任务";
+                    break;
+                case ConvertFail:
+                    codeMessage = "转换失败";
+                    break;
+                case CheckTimeout:
+                    codeMessage = "查询请求超时，请重启轮询";
+                    break;
+                case CreatedFail:
+                    codeMessage = "创建失败";
+                    break;
+                case GetDynamicFail:
+                    codeMessage = "请求动态 ppt 出错";
+                    break;
+            }
+
+            if (codeMessage.isEmpty()) {
+                return "convert error: " + codeMessage + " error: " + super.getMessage();
+            } else {
+                return super.getMessage();
+            }
+        }
+
+        ConvertException(ConvertErrorCode code, String message) {
+            super(message);
+            this.code = code;
+        }
+
+        ConvertException(ConvertErrorCode code, Exception e) {
+            super(e);
+            this.code = code;
+        }
+
+        public ConvertErrorCode getCode() {
             return code;
         }
     }
@@ -58,7 +98,9 @@ public class Converter {
         CreatedFail(20001),
         ConvertFail(20002),
         NotFound(20003),
-        CheckTimeout(20004);
+        CheckFail(2004),
+        CheckTimeout(20005),
+        GetDynamicFail(20006);
 
         private int code;
         ConvertErrorCode(int code) {
@@ -133,14 +175,14 @@ public class Converter {
         poolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-
                 final CountDownLatch latch = new CountDownLatch(1);
                 call.enqueue(new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
                         that.status = ConverterStatus.CreateFail;
                         try {
-                            callback.onFailure(e);
+                            ConvertException convertE = new ConvertException(ConvertErrorCode.ConvertFail, e);
+                            callback.onFailure(convertE);
                         } catch (Exception exception) {
                             Logger.error("ppt converter", exception);
                         }
@@ -149,17 +191,21 @@ public class Converter {
 
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
+                        JsonObject json = gson.fromJson(response.body().string(), JsonObject.class);
                         if (response.code() == 200) {
-                            JsonObject room = gson.fromJson(response.body().string(), JsonObject.class);
-                            Boolean succeed = room.getAsJsonObject("msg").getAsJsonObject("succeed").getAsBoolean();
+                            Boolean succeed = json.getAsJsonObject("msg").getAsJsonObject("succeed").getAsBoolean();
                             if (succeed) {
                                 that.status = ConverterStatus.Created;
-                                that.taskId = room.getAsJsonObject("msg").get("taskUUID").getAsString();
+                                that.taskId = json.getAsJsonObject("msg").get("taskUUID").getAsString();
                             } else {
                                 that.status = ConverterStatus.CreateFail;
+                                ConvertException e = new ConvertException(ConvertErrorCode.CreatedFail, gson.toJson(json));
+                                callback.onFailure(e);
                             }
                         } else {
                             that.status = ConverterStatus.CreateFail;
+                            ConvertException e = new ConvertException(ConvertErrorCode.ConvertFail, gson.toJson(json));
+                            callback.onFailure(e);
                         }
                         latch.countDown();
                     }
@@ -187,7 +233,8 @@ public class Converter {
 
                                 @Override
                                 public void onFailure(Exception e) {
-                                    callback.onFailure(e);
+                                    ConvertException exception = new ConvertException(ConvertErrorCode.GetDynamicFail, e);
+                                    callback.onFailure(exception);
                                 }
                             });
                         } else {
@@ -197,7 +244,8 @@ public class Converter {
 
                     @Override
                     public void onFailure(Exception e) {
-                        callback.onFailure(e);
+                        ConvertException exception = new ConvertException(ConvertErrorCode.CheckTimeout, e);
+                        callback.onFailure(exception);
                     }
                 });
             }
@@ -226,7 +274,7 @@ public class Converter {
                     if (status == ConversionInfo.ServerConversionStatus.Fail || status == ConversionInfo.ServerConversionStatus.NotFound) {
                         that.status = ConverterStatus.Fail;
                         converting = false;
-                        ConvertException e = new ConvertException(ConvertErrorCode.ConvertFail.getCode());
+                        ConvertException e = new ConvertException(ConvertErrorCode.ConvertFail, info.getReason());
                         callbacks.onFailure(e);
                     } else if (status == ConversionInfo.ServerConversionStatus.Finished) {
                         converting = false;
@@ -286,14 +334,14 @@ public class Converter {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                JsonObject json = gson.fromJson(response.body().string(), JsonObject.class);
                 if (response.code() == 200) {
-                    JsonObject json = gson.fromJson(response.body().string(), JsonObject.class);
                     ConversionInfo info = gson.fromJson(json.getAsJsonObject("msg").getAsJsonObject("task").getAsString(), ConversionInfo.class);
                     progressCallback.onProgress(info);
                     that.status = ConverterStatus.WaitingForNextCheck;
                 } else {
                     that.status = ConverterStatus.CheckingFail;
-                    ConvertException e = new ConvertException(ConvertErrorCode.ConvertFail.getCode());
+                    ConvertException e = new ConvertException(ConvertErrorCode.ConvertFail, gson.toJson(json));
                     progressCallback.onFailure(e);
                 }
                 latch.countDown();
@@ -339,7 +387,7 @@ public class Converter {
                     ConvertedFiles ppt = that.getDynamicPpt(response);
                     dynamicPptCallbacks.onSuccess(ppt);
                 } else {
-                    ConvertException e = new ConvertException(ConvertErrorCode.ConvertFail.getCode());
+                    ConvertException e = new ConvertException(ConvertErrorCode.GetDynamicFail);
                     dynamicPptCallbacks.onFailure(e);
                 }
 

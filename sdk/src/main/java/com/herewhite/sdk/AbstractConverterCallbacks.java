@@ -15,7 +15,7 @@ public class AbstractConverterCallbacks implements ConverterCallbacks {
     }
 
     @Override
-    public void onFailure(Exception e) {
+    public void onFailure(Converter.ConvertException e) {
 
     }
 }
