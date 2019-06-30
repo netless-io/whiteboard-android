@@ -11,6 +11,7 @@ import com.herewhite.sdk.domain.PptPage;
 import com.herewhite.sdk.domain.Scene;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -64,6 +65,7 @@ public class Converter {
     private long timeout;
     private String taskId;
     private boolean converting = true;
+    private Date beginDate;
 
     public ConverterStatus getStatus() {
         return status;
@@ -92,6 +94,7 @@ public class Converter {
 
     public void startConvertTask(final String url, final ConvertType type, final ConverterCallbacks callback) {
 
+        beginDate = new Date();
         final Converter that = this;
         poolExecutor.execute(new Runnable() {
             @Override
@@ -205,7 +208,8 @@ public class Converter {
         }
 
         final Converter that = this;
-        while (converting) {
+        Date expireDate = new Date(this.beginDate.getTime() + this.timeout);
+        while (converting && expireDate.after(new Date())) {
             final CountDownLatch latch = new CountDownLatch(1);
             that.status = ConverterStatus.Checking;
             checkProgress(taskId, type, new ProgressCallback() {
@@ -248,6 +252,11 @@ public class Converter {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+        if (this.status == ConverterStatus.WaitingForNextCheck) {
+            this.status = ConverterStatus.Timeout;
+            ConvertException exp = new ConvertException(ConvertErrorCode.CheckTimeout);
+            callbacks.onFailure(exp);
         }
     }
 
