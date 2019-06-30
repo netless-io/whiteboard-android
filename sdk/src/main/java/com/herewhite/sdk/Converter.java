@@ -44,6 +44,22 @@ public class Converter {
         return taskId;
     }
 
+    public long getInterval() {
+        return interval;
+    }
+
+    public void setInterval(long interval) {
+        this.interval = interval;
+    }
+
+    public long getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
+    }
+
     private long interval;
     private long timeout;
     private String taskId;
