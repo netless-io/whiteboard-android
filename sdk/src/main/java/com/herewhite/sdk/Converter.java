@@ -207,6 +207,7 @@ public class Converter {
         final Converter that = this;
         while (converting) {
             final CountDownLatch latch = new CountDownLatch(1);
+            that.status = ConverterStatus.Checking;
             checkProgress(taskId, type, new ProgressCallback() {
                 @Override
                 public void onProgress(ConversionInfo info) {
@@ -219,8 +220,10 @@ public class Converter {
                         callbacks.onFailure(e);
                     } else if (status == ConversionInfo.ServerConversionStatus.Finished) {
                         converting = false;
+                        that.status = ConverterStatus.Success;
                         callbacks.onFinish(info);
                     } else {
+                        that.status = ConverterStatus.WaitingForNextCheck;
                         callbacks.onProgress(info.getConvertedPercentage(), info);
                     }
                     try {
