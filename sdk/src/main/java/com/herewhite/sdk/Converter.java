@@ -247,6 +247,7 @@ public class Converter {
                 public void onFailure(Exception e) {
                     ConvertException exp = new ConvertException(ConvertErrorCode.CheckFail);
                     callbacks.onFailure(exp);
+                    converting = false;
                     latch.countDown();
                 }
             });
