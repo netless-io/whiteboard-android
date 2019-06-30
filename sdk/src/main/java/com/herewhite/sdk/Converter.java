@@ -143,14 +143,14 @@ public class Converter {
                     return;
                 }
 
-                that.polling(taskId, type, new ConvertingCallback() {
+                that.polling(taskId, type, new ConvertCallback() {
                     @Override
-                    public void onProgress(Double progress, ConversionInfo info) {
+                    public void onConvertProgress(Double progress, ConversionInfo info) {
                         callback.onProgress(progress, info);
                     }
 
                     @Override
-                    public void onFinish(final ConversionInfo info) {
+                    public void onConvertFinish(final ConversionInfo info) {
                         if (type == ConvertType.Dynamic) {
                             that.getDynamicPpt(taskId, new DynamicPptCallbacks() {
                                 @Override
@@ -173,7 +173,7 @@ public class Converter {
                     }
 
                     @Override
-                    public void onFailure(ConvertException e) {
+                    public void onConvertFailure(ConvertException e) {
                         // 错误时状态，各个上一级根据情况设置状态码
                         callback.onFailure(e);
                     }
@@ -182,10 +182,10 @@ public class Converter {
         });
     }
 
-    private interface ConvertingCallback {
-        void onProgress(Double progress, ConversionInfo info);
-        void onFinish(ConversionInfo info);
-        void onFailure(ConvertException e);
+    private interface ConvertCallback {
+        void onConvertProgress(Double progress, ConversionInfo info);
+        void onConvertFinish(ConversionInfo info);
+        void onConvertFailure(ConvertException e);
     }
 
     private void createConvertTask(String url, ConvertType type, final Callback callback) {
@@ -205,7 +205,7 @@ public class Converter {
         call.enqueue(callback);
     }
 
-    private void polling(String taskId, ConvertType type, final ConvertingCallback callbacks) {
+    private void polling(String taskId, ConvertType type, final ConvertCallback callbacks) {
         boolean canCheck = this.status == ConverterStatus.Timeout || this.status == ConverterStatus.CheckingFail || this.status == ConverterStatus.GetDynamicFail;
         if (this.status != ConverterStatus.Created && !canCheck) {
             return;
@@ -216,23 +216,23 @@ public class Converter {
         while (converting && expireDate.after(new Date())) {
             final CountDownLatch latch = new CountDownLatch(1);
             that.status = ConverterStatus.Checking;
-            checkProgress(taskId, type, new ProgressCallback() {
+            checkProgress(taskId, type, new CheckCallback() {
                 @Override
-                public void onProgress(ConversionInfo info) {
+                public void onCheckResponse(ConversionInfo info) {
                     ConversionInfo.ServerConversionStatus status = info.getConvertStatus();
                     if (status == ConversionInfo.ServerConversionStatus.Fail || status == ConversionInfo.ServerConversionStatus.NotFound) {
                         converting = false;
                         that.status = ConverterStatus.Fail;
                         ConvertErrorCode code = status == ConversionInfo.ServerConversionStatus.Fail ? ConvertErrorCode.ConvertFail : ConvertErrorCode.NotFound;
                         ConvertException e = new ConvertException(code, info.getReason());
-                        callbacks.onFailure(e);
+                        callbacks.onConvertFailure(e);
                     } else if (status == ConversionInfo.ServerConversionStatus.Finished) {
                         //成功时，可能还要额外获取动态 ppt 内容，不直接设置状态
                         converting = false;
-                        callbacks.onFinish(info);
+                        callbacks.onConvertFinish(info);
                     } else {
                         that.status = ConverterStatus.WaitingForNextCheck;
-                        callbacks.onProgress(info.getConvertedPercentage(), info);
+                        callbacks.onConvertProgress(info.getConvertedPercentage(), info);
                     }
                     try {
                         Thread.sleep(interval);
@@ -244,9 +244,9 @@ public class Converter {
                 }
 
                 @Override
-                public void onFailure(Exception e) {
+                public void onCheckFailure(Exception e) {
                     ConvertException exp = new ConvertException(ConvertErrorCode.CheckFail);
-                    callbacks.onFailure(exp);
+                    callbacks.onConvertFailure(exp);
                     converting = false;
                     latch.countDown();
                 }
@@ -260,16 +260,16 @@ public class Converter {
         if (this.status == ConverterStatus.WaitingForNextCheck) {
             this.status = ConverterStatus.Timeout;
             ConvertException exp = new ConvertException(ConvertErrorCode.CheckTimeout);
-            callbacks.onFailure(exp);
+            callbacks.onConvertFailure(exp);
         }
     }
 
-    private interface ProgressCallback {
-        void onProgress(ConversionInfo info);
-        void onFailure(Exception e);
+    private interface CheckCallback {
+        void onCheckResponse(ConversionInfo info);
+        void onCheckFailure(Exception e);
     }
 
-    private void checkProgress(String taskId, ConvertType type, final ProgressCallback progressCallback) {
+    private void checkProgress(String taskId, ConvertType type, final CheckCallback checkCallback) {
 
         String typeUrl = type.equals(ConvertType.Dynamic) ? "dynamic" : "static";
 
@@ -287,7 +287,7 @@ public class Converter {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                progressCallback.onFailure(e);
+                checkCallback.onCheckFailure(e);
                 that.status = ConverterStatus.CheckingFail;
                 latch.countDown();
             }
@@ -298,10 +298,10 @@ public class Converter {
                 if (response.code() == 200) {
                     JsonObject task = json.getAsJsonObject("msg").getAsJsonObject("task");
                     ConversionInfo info = gson.fromJson(gson.toJson(task), ConversionInfo.class);
-                    progressCallback.onProgress(info);
+                    checkCallback.onCheckResponse(info);
                 } else {
                     ConvertException e = new ConvertException(ConvertErrorCode.ConvertFail, gson.toJson(json));
-                    progressCallback.onFailure(e);
+                    checkCallback.onCheckFailure(e);
                 }
                 latch.countDown();
             }
