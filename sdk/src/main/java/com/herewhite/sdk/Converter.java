@@ -155,22 +155,26 @@ public class Converter {
                             that.getDynamicPpt(taskId, new DynamicPptCallbacks() {
                                 @Override
                                 public void onSuccess(ConvertedFiles ppt) {
+                                    that.status = ConverterStatus.Success;
                                     callback.onFinish(ppt, info);
                                 }
 
                                 @Override
                                 public void onFailure(Exception e) {
+                                    that.status = ConverterStatus.GetDynamicFail;
                                     ConvertException exception = new ConvertException(ConvertErrorCode.GetDynamicFail, e);
                                     callback.onFailure(exception);
                                 }
                             });
                         } else {
+                            that.status = ConverterStatus.Success;
                             callback.onFinish(that.getStaticPpt(info), info);
                         }
                     }
 
                     @Override
                     public void onFailure(ConvertException e) {
+                        // 错误时状态，各个上一级根据情况设置状态码
                         callback.onFailure(e);
                     }
                 });
@@ -223,8 +227,8 @@ public class Converter {
                         ConvertException e = new ConvertException(code, info.getReason());
                         callbacks.onFailure(e);
                     } else if (status == ConversionInfo.ServerConversionStatus.Finished) {
+                        //成功时，可能还要额外获取动态 ppt 内容，不直接设置状态
                         converting = false;
-                        that.status = ConverterStatus.Success;
                         callbacks.onFinish(info);
                     } else {
                         that.status = ConverterStatus.WaitingForNextCheck;
@@ -241,7 +245,6 @@ public class Converter {
 
                 @Override
                 public void onFailure(Exception e) {
-                    that.status = ConverterStatus.CheckingFail;
                     ConvertException exp = new ConvertException(ConvertErrorCode.CheckFail);
                     callbacks.onFailure(exp);
                     latch.countDown();
@@ -295,9 +298,7 @@ public class Converter {
                     JsonObject task = json.getAsJsonObject("msg").getAsJsonObject("task");
                     ConversionInfo info = gson.fromJson(gson.toJson(task), ConversionInfo.class);
                     progressCallback.onProgress(info);
-                    that.status = ConverterStatus.WaitingForNextCheck;
                 } else {
-                    that.status = ConverterStatus.CheckingFail;
                     ConvertException e = new ConvertException(ConvertErrorCode.ConvertFail, gson.toJson(json));
                     progressCallback.onFailure(e);
                 }
