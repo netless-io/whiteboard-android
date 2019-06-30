@@ -69,42 +69,25 @@ public class Converter {
     private static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
     static ExecutorService poolExecutor = Executors.newSingleThreadExecutor();
-    OkHttpClient client = new OkHttpClient();
-
     static final String PPT_ORIGIN = "https://cloudcapiv4.herewhite.com";
     static final String PPT_ASSETS_ORIGIN = "https://white-cn-doc-convert.oss-cn-hangzhou.aliyuncs.com/dynamicConvert";
 
-    public void startConvertTask(String url, final ConvertType type, final ConverterCallbacks callback) {
-        String typeUrl = type.equals(ConvertType.Dynamic) ? "dynamic" : "static";
+    OkHttpClient client = new OkHttpClient();
 
-        Map<String, String> roomSpec = new HashMap<>();
-        roomSpec.put("sourceUrl", url);
-        RequestBody body = RequestBody.create(JSON, gson.toJson(roomSpec));
+    public void startConvertTask(final String url, final ConvertType type, final ConverterCallbacks callback) {
 
-        Request request = new Request.Builder()
-                .url(PPT_ORIGIN + "/services/" + typeUrl + "-conversion/tasks?roomToken=" + this.roomToken)
-                .header("Content-Type", "application/json")
-                .header("Accept","application/json")
-                .post(body)
-                .build();
-
-        final Call call = client.newCall(request);
         final Converter that = this;
-
         poolExecutor.execute(new Runnable() {
             @Override
             public void run() {
+
                 final CountDownLatch latch = new CountDownLatch(1);
-                call.enqueue(new Callback() {
+                that.createConvertTask(url, type, new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
                         that.status = ConverterStatus.CreateFail;
-                        try {
-                            ConvertException convertE = new ConvertException(ConvertErrorCode.ConvertFail, e);
-                            callback.onFailure(convertE);
-                        } catch (Exception exception) {
-                            Logger.error("ppt converter", exception);
-                        }
+                        ConvertException convertE = new ConvertException(ConvertErrorCode.CreatedFail, e);
+                        callback.onFailure(convertE);
                         latch.countDown();
                     }
 
@@ -117,7 +100,6 @@ public class Converter {
                             if (succeed) {
                                 that.status = ConverterStatus.Created;
                                 that.taskId = json.getAsJsonObject("msg").get("taskUUID").getAsString();
-                                callback.onProgress(0d, null);
                             } else {
                                 that.status = ConverterStatus.CreateFail;
                                 ConvertException e = new ConvertException(ConvertErrorCode.CreatedFail, gson.toJson(json));
@@ -183,6 +165,23 @@ public class Converter {
         void onFailure(ConvertException e);
     }
 
+    private void createConvertTask(String url, ConvertType type, final Callback callback) {
+        String typeUrl = type.equals(ConvertType.Dynamic) ? "dynamic" : "static";
+
+        Map<String, String> roomSpec = new HashMap<>();
+        roomSpec.put("sourceUrl", url);
+        RequestBody body = RequestBody.create(JSON, gson.toJson(roomSpec));
+
+        Request request = new Request.Builder()
+                .url(PPT_ORIGIN + "/services/" + typeUrl + "-conversion/tasks?roomToken=" + this.roomToken)
+                .header("Content-Type", "application/json")
+                .header("Accept","application/json")
+                .post(body)
+                .build();
+        final Call call = client.newCall(request);
+        call.enqueue(callback);
+    }
+
     private void polling(String taskId, ConvertType type, final ConvertingCallback callbacks) {
         boolean canCheck = this.status == ConverterStatus.Timeout || this.status == ConverterStatus.CheckingFail || this.status == ConverterStatus.GetDynamicFail;
         if (this.status != ConverterStatus.Created && !canCheck) {
@@ -190,7 +189,6 @@ public class Converter {
         }
 
         final Converter that = this;
-
         while (converting) {
             final CountDownLatch latch = new CountDownLatch(1);
             checkProgress(taskId, type, new ProgressCallback() {
@@ -198,9 +196,10 @@ public class Converter {
                 public void onProgress(ConversionInfo info) {
                     ConversionInfo.ServerConversionStatus status = info.getConvertStatus();
                     if (status == ConversionInfo.ServerConversionStatus.Fail || status == ConversionInfo.ServerConversionStatus.NotFound) {
-                        that.status = ConverterStatus.Fail;
                         converting = false;
-                        ConvertException e = new ConvertException(ConvertErrorCode.ConvertFail, info.getReason());
+                        that.status = ConverterStatus.Fail;
+                        ConvertErrorCode code = status == ConversionInfo.ServerConversionStatus.Fail ? ConvertErrorCode.ConvertFail : ConvertErrorCode.NotFound;
+                        ConvertException e = new ConvertException(code, info.getReason());
                         callbacks.onFailure(e);
                     } else if (status == ConversionInfo.ServerConversionStatus.Finished) {
                         converting = false;
@@ -220,7 +219,7 @@ public class Converter {
                 @Override
                 public void onFailure(Exception e) {
                     that.status = ConverterStatus.CheckingFail;
-                    ConvertException exp = new ConvertException(ConvertErrorCode.CreatedFail);
+                    ConvertException exp = new ConvertException(ConvertErrorCode.CheckFail);
                     callbacks.onFailure(exp);
                     latch.countDown();
                 }
