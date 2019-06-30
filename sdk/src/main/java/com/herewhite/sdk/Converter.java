@@ -159,7 +159,7 @@ public class Converter {
         });
     }
 
-    interface ConvertingCallback {
+    private interface ConvertingCallback {
         void onProgress(Double progress, ConversionInfo info);
         void onFinish(ConversionInfo info);
         void onFailure(ConvertException e);
@@ -289,7 +289,7 @@ public class Converter {
         void onFailure(Exception e);
     }
 
-    public void getDynamicPpt(String taskId, final DynamicPptCallbacks dynamicPptCallbacks) {
+    private void getDynamicPpt(String taskId, final DynamicPptCallbacks dynamicPptCallbacks) {
         final String prefix = PPT_ASSETS_ORIGIN + "/" + taskId;
         Request request = new Request.Builder()
                 .url(prefix + "/info.json")
