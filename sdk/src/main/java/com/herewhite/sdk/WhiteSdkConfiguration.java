@@ -3,6 +3,8 @@ package com.herewhite.sdk;
 import com.herewhite.sdk.domain.DeviceType;
 import com.herewhite.sdk.domain.WhiteObject;
 
+import java.util.HashMap;
+
 /**
  * Created by buhe on 2018/8/10.
  */
@@ -15,6 +17,15 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private boolean hasUrlInterrupterAPI = false;
     private boolean userCursor = false;
     private boolean customCursor = false;
+    private HashMap<String, String> font;
+
+    public HashMap<String, String> getFont() {
+        return font;
+    }
+
+    public void setFont(HashMap<String, String> font) {
+        this.font = font;
+    }
 
     public WhiteSdkConfiguration(DeviceType deviceType, double zoomMaxScale, double zoomMinScale) {
         this(deviceType, zoomMaxScale, zoomMinScale, false);
