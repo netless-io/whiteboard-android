@@ -208,7 +208,7 @@ public class RoomActivity extends AppCompatActivity {
         Converter c = new Converter(this.roomToken);
         c.startConvertTask("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/LightWaves.pdf", Converter.ConvertType.Static, new ConverterCallbacks(){
             @Override
-            public void onFailure(Converter.ConvertException e) {
+            public void onFailure(ConvertException e) {
                 logAction(e.getMessage());
             }
 
@@ -230,7 +230,7 @@ public class RoomActivity extends AppCompatActivity {
         Converter c = new Converter(this.roomToken);
         c.startConvertTask("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/-1/1.pptx", Converter.ConvertType.Dynamic, new ConverterCallbacks(){
             @Override
-            public void onFailure(Converter.ConvertException e) {
+            public void onFailure(ConvertException e) {
                 logAction(e.getMessage());
             }
 
@@ -271,7 +271,7 @@ public class RoomActivity extends AppCompatActivity {
         Converter c = new Converter(this.roomToken);
         c.startConvertTask("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/-1/1.pptx", Converter.ConvertType.Dynamic, new ConverterCallbacks(){
             @Override
-            public void onFailure(Converter.ConvertException e) {
+            public void onFailure(ConvertException e) {
                 logAction("ppt fail");
             }
 
@@ -285,6 +285,19 @@ public class RoomActivity extends AppCompatActivity {
                 logAction(String.valueOf(progress));
             }
         });
+    }
+
+    public void moveCamera(MenuItem item) {
+        logAction();
+        CameraConfig config = new CameraConfig();
+        config.setCenterX(100d);
+        room.moveCamera(config);
+    }
+
+    public void moveRectangle(MenuItem item) {
+        logAction();
+        RectangleConfig config = new RectangleConfig(200d, 400d);
+        room.moveCameraToContainer(config);
     }
 
     public void dispatchCustomEvent(MenuItem item) {

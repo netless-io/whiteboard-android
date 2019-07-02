@@ -9,6 +9,14 @@
     <item android:id="@+id/getBroadcastState"
         android:onClick="getBroadcastState"
         android:title="@string/getBroadcastState_command"/>
+    <item android:id="@+id/moveCamera"
+        android:onClick="moveCamera"
+        android:title="移动视角位置"
+        />
+    <item android:id="@+id/moveRectangle"
+        android:onClick="moveRectangle"
+        android:title="调整视野位置"
+        />
     <item android:id="@+id/dispatchCustomEvent"
         android:onClick="dispatchCustomEvent"
         android:title="@string/dispatchCustomEvent_command"/>
