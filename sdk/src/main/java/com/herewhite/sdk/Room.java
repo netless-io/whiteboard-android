@@ -35,21 +35,13 @@ import wendu.dsbridge.OnReturnValue;
  * Created by buhe on 2018/8/10.
  */
 
-public class Room {
+public class Room extends Displayer {
 
-    private final static Gson gson = new Gson();
-    private final WhiteBroadView bridge;
     private Integer timeDelay;
-    private String uuid;
-    private final Context context;
-    private WhiteSdk sdk;
     private ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
 
     public Room(String uuid, WhiteBroadView bridge, Context context, WhiteSdk sdk) {
-        this.uuid = uuid;
-        this.bridge = bridge;
-        this.context = context;
-        this.sdk = sdk;
+        super(uuid, bridge, context, sdk);
         this.timeDelay = 0;
     }
 

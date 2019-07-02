@@ -2,12 +2,15 @@ package com.herewhite.sdk;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
+
 public class Displayer {
 
     protected final WhiteBroadView bridge;
     protected String uuid;
     protected final Context context;
     protected WhiteSdk sdk;
+    protected final static Gson gson = new Gson();
 
     public Displayer(String uuid, WhiteBroadView bridge, Context context, WhiteSdk sdk) {
         this.uuid = uuid;

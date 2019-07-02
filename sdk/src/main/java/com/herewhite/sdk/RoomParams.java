@@ -28,7 +28,7 @@ public class RoomParams extends WhiteObject {
     private Object userPayload;
 
     public RoomParams(String uuid, String roomToken) {
-        this(uuid, roomToken, null);
+        this(uuid, roomToken, (Object) null);
     }
 
     /*

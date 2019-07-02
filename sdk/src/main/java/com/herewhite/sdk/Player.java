@@ -17,21 +17,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import wendu.dsbridge.OnReturnValue;
 
-public class Player {
-    private final static Gson gson = new Gson();
+public class Player extends Displayer {
 
-    private final String room;
-    private final WhiteBroadView bridge;
-    private final Context context;
-    private final WhiteSdk whiteSdk;
     private ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
 
     public Player(String room, WhiteBroadView bridge, Context context, WhiteSdk whiteSdk) {
-
-        this.room = room;
-        this.bridge = bridge;
-        this.context = context;
-        this.whiteSdk = whiteSdk;
+        super(room, bridge, context, whiteSdk);
     }
 
     public void play() {
@@ -45,7 +36,7 @@ public class Player {
     //stop 后，player 资源会被释放。需要重新创建WhitePlayer实例，才可以重新播放
     public void stop() {
         bridge.callHandler("player.stop", new Object[]{});
-        this.whiteSdk.releasePlayer(room);
+        this.sdk.releasePlayer(uuid);
     }
 
     //跳转至特定时间，开始时间为 0，单位毫秒
