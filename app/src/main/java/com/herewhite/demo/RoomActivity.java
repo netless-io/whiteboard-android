@@ -157,7 +157,11 @@ public class RoomActivity extends AppCompatActivity {
         WhiteSdkConfiguration sdkConfiguration = new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1, true);
         /*显示用户头像*/
         sdkConfiguration.setUserCursor(true);
-
+        HashMap<String, String> map = new HashMap<>();
+        map.put("Calibri", "https://your-cdn.com/Calibri.ttf");
+        map.put("宋体","https://your-cdn.com/Songti.ttf");
+        map.put("楷体",  "https://your-cdn.com/Kaiti.ttf");
+        sdkConfiguration.setFont(map);
         WhiteSdk whiteSdk = new WhiteSdk(
                 whiteBroadView,
                 RoomActivity.this,
@@ -277,7 +281,11 @@ public class RoomActivity extends AppCompatActivity {
 
             @Override
             public void onFinish(ConvertedFiles ppt, ConversionInfo convertInfo) {
-                logAction(convertInfo.toString());
+//                logAction(convertInfo.toString());
+                if (ppt.getScenes() != null) {
+                   room.putScenes("dynamic", ppt.getScenes(), 0);
+                   room.setScenePath("dynamic/1");
+                }
             }
 
             @Override
