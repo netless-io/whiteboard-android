@@ -73,7 +73,7 @@ public class Converter {
 
     private ConverterStatus status;
     public Converter(String roomToken) {
-        new Converter(roomToken, 15 * 1000, 3 * 60 * 1000);
+        this(roomToken, 15 * 1000, 3 * 60 * 1000);
     }
 
     public Converter(String roomToken, long pollingInterval, long timeout) {
