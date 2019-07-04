@@ -3,6 +3,7 @@ package com.herewhite.demo;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -228,6 +229,34 @@ public class RoomActivity extends AppCompatActivity {
             @Override
             public void catchEx(SDKError t) {
 
+            }
+        });
+    }
+
+    public void getPreviewImage(MenuItem item) {
+        room.getScenePreviewImage("/init", new Promise<Bitmap>() {
+            @Override
+            public void then(Bitmap bitmap) {
+                logAction("get bitmap");
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+                logAction("get bitmap error");
+            }
+        });
+    }
+
+    public void getSceneImage(MenuItem item) {
+        room.getSceneSnapshotImage("/init", new Promise<Bitmap>() {
+            @Override
+            public void then(Bitmap bitmap) {
+                logAction("get bitmap");
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+                logAction("get bitmap error");
             }
         });
     }

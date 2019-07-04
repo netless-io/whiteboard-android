@@ -41,6 +41,12 @@
     <item android:id="@+id/insertImage"
         android:onClick="insertImage"
         android:title="@string/insertImage_command"/>
+    <item android:id="@+id/getPreviewImage"
+        android:onClick="getPreviewImage"
+        android:title="@string/getPreview_command"/>
+    <item android:id="@+id/getSceneImage"
+        android:onClick="getSceneImage"
+        android:title="@string/getSceneImage_command"/>
     <item android:id="@+id/getScene"
         android:onClick="getScene"
         android:title="@string/getScene_command"/>

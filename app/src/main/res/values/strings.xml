@@ -33,4 +33,6 @@
     <string name="staticConvert">静态转换</string>
     <string name="dynamicConvert">动态转换</string>
     <string name="next_scene">下一页</string>
+    <string name="getPreview_command">获取预览截图</string>
+    <string name="getSceneImage_command">获取场景封面</string>
 </resources>
