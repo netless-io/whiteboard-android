@@ -208,6 +208,30 @@ public class RoomActivity extends AppCompatActivity {
         });
     }
 
+    public void nextScene(MenuItem item) {
+        room.getSceneState(new Promise<SceneState>() {
+            @Override
+            public void then(SceneState sceneState) {
+                room.setSceneIndex(sceneState.getIndex() + 1, new Promise<Boolean>() {
+                    @Override
+                    public void then(Boolean aBoolean) {
+
+                    }
+
+                    @Override
+                    public void catchEx(SDKError t) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+
+            }
+        });
+    }
+
     public void staticConvert(MenuItem item) {
         Converter c = new Converter(this.roomToken);
         c.startConvertTask("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/LightWaves.pdf", Converter.ConvertType.Static, new ConverterCallbacks(){

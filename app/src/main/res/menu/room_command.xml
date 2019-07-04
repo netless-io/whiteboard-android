@@ -29,6 +29,9 @@
     <item android:id="@+id/insert_ppt"
         android:onClick="insertPPT"
         android:title="@string/insert_ppt_command"/>
+    <item android:onClick="nextScene"
+        android:id="@+id/next_scene"
+        android:title="@string/next_scene" />
     <item android:id="@+id/static_ppt"
         android:onClick="staticConvert"
         android:title="@string/staticConvert"/>
