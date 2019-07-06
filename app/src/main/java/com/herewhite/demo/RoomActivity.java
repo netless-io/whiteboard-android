@@ -324,28 +324,6 @@ public class RoomActivity extends AppCompatActivity {
 
             }
         });
-
-        Converter c = new Converter(this.roomToken);
-        c.startConvertTask("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/-1/1.pptx", Converter.ConvertType.Dynamic, new ConverterCallbacks(){
-            @Override
-            public void onFailure(ConvertException e) {
-                logAction("ppt fail");
-            }
-
-            @Override
-            public void onFinish(ConvertedFiles ppt, ConversionInfo convertInfo) {
-//                logAction(convertInfo.toString());
-                if (ppt.getScenes() != null) {
-                   room.putScenes("dynamic", ppt.getScenes(), 0);
-                   room.setScenePath("dynamic/1");
-                }
-            }
-
-            @Override
-            public void onProgress(Double progress, ConversionInfo convertInfo) {
-                logAction(String.valueOf(progress));
-            }
-        });
     }
 
     public void moveCamera(MenuItem item) {
