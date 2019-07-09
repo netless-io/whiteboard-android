@@ -6,7 +6,9 @@ import android.graphics.BitmapFactory;
 import android.util.Base64;
 
 import com.google.gson.Gson;
+import com.herewhite.sdk.domain.CameraConfig;
 import com.herewhite.sdk.domain.Promise;
+import com.herewhite.sdk.domain.RectangleConfig;
 import com.herewhite.sdk.domain.SDKError;
 
 import wendu.dsbridge.OnReturnValue;
@@ -68,11 +70,11 @@ public class Displayer {
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length, opts);
     }
 
-    public void moveCamera(Object camera) {
+    public void moveCamera(CameraConfig camera) {
         this.bridge.callHandler("displayer.moveCamera", new Object[]{camera});
     }
 
-    public void moveCameraToContainer(Object rectange) {
+    public void moveCameraToContainer(RectangleConfig rectange) {
         this.bridge.callHandler("displayer.moveCameraToContain", new Object[]{rectange});
     }
 }
