@@ -5,6 +5,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.AkkoEvent;
 import com.herewhite.sdk.domain.BroadcastState;
@@ -312,6 +313,28 @@ public class Room extends Displayer {
      */
     public void setScenePath(String path) {
         bridge.callHandler("room.setScenePath", new Object[]{path});
+    }
+
+    public void setSceneIndex(Integer index, final Promise<Boolean> promise) {
+        bridge.callHandler("room.setSceneIndex", new Object[]{index}, new OnReturnValue<String>() {
+            @Override
+            public void onValue(String result) {
+                JsonObject jsonObject = gson.fromJson(result, JsonObject.class);
+                if (jsonObject.has("__error")) {
+                    String msg = "Unknow exception";
+                    String jsStack = "Unknow stack";
+                    if (jsonObject.getAsJsonObject("__error").has("message")) {
+                        msg = jsonObject.getAsJsonObject("__error").get("message").getAsString();
+                    }
+                    if (jsonObject.getAsJsonObject("__error").has("jsStack")) {
+                        jsStack = jsonObject.getAsJsonObject("__error").get("jsStack").getAsString();
+                    }
+                    promise.catchEx(new SDKError(msg, jsStack));
+                } else {
+                    promise.then(true);
+                }
+            }
+        });
     }
 
     public void putScenes(String dir, Scene[] scenes, int index) {

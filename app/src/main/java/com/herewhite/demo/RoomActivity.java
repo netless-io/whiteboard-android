@@ -3,6 +3,7 @@ package com.herewhite.demo;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -157,7 +158,11 @@ public class RoomActivity extends AppCompatActivity {
         WhiteSdkConfiguration sdkConfiguration = new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1, true);
         /*显示用户头像*/
         sdkConfiguration.setUserCursor(true);
-
+        HashMap<String, String> map = new HashMap<>();
+        map.put("Calibri", "https://your-cdn.com/Calibri.ttf");
+        map.put("宋体","https://your-cdn.com/Songti.ttf");
+        map.put("楷体",  "https://your-cdn.com/Kaiti.ttf");
+        sdkConfiguration.setFont(map);
         WhiteSdk whiteSdk = new WhiteSdk(
                 whiteBroadView,
                 RoomActivity.this,
@@ -200,6 +205,58 @@ public class RoomActivity extends AppCompatActivity {
             public void onEvent(EventEntry eventEntry) {
                 logRoomInfo("customEvent payload: " + eventEntry.getPayload().toString());
                 showToast(gson.toJson(eventEntry.getPayload()));
+            }
+        });
+    }
+
+    public void nextScene(MenuItem item) {
+        room.getSceneState(new Promise<SceneState>() {
+            @Override
+            public void then(SceneState sceneState) {
+                room.setSceneIndex(sceneState.getIndex() + 1, new Promise<Boolean>() {
+                    @Override
+                    public void then(Boolean aBoolean) {
+
+                    }
+
+                    @Override
+                    public void catchEx(SDKError t) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+
+            }
+        });
+    }
+
+    public void getPreviewImage(MenuItem item) {
+        room.getScenePreviewImage("/init", new Promise<Bitmap>() {
+            @Override
+            public void then(Bitmap bitmap) {
+                logAction("get bitmap");
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+                logAction("get bitmap error");
+            }
+        });
+    }
+
+    public void getSceneImage(MenuItem item) {
+        room.getSceneSnapshotImage("/init", new Promise<Bitmap>() {
+            @Override
+            public void then(Bitmap bitmap) {
+                logAction("get bitmap");
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+                logAction("get bitmap error");
             }
         });
     }
@@ -265,24 +322,6 @@ public class RoomActivity extends AppCompatActivity {
             @Override
             public void catchEx(SDKError t) {
 
-            }
-        });
-
-        Converter c = new Converter(this.roomToken);
-        c.startConvertTask("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/-1/1.pptx", Converter.ConvertType.Dynamic, new ConverterCallbacks(){
-            @Override
-            public void onFailure(ConvertException e) {
-                logAction("ppt fail");
-            }
-
-            @Override
-            public void onFinish(ConvertedFiles ppt, ConversionInfo convertInfo) {
-                logAction(convertInfo.toString());
-            }
-
-            @Override
-            public void onProgress(Double progress, ConversionInfo convertInfo) {
-                logAction(String.valueOf(progress));
             }
         });
     }
