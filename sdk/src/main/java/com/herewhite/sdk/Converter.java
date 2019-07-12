@@ -88,7 +88,6 @@ public class Converter {
             = MediaType.parse("application/json; charset=utf-8");
     static ExecutorService poolExecutor = Executors.newSingleThreadExecutor();
     static final String PPT_ORIGIN = "https://cloudcapiv4.herewhite.com";
-    static final String PPT_ASSETS_ORIGIN = "https://white-cn-doc-convert.oss-cn-hangzhou.aliyuncs.com/dynamicConvert";
 
     OkHttpClient client = new OkHttpClient();
 
@@ -151,25 +150,8 @@ public class Converter {
 
                     @Override
                     public void onConvertFinish(final ConversionInfo info) {
-                        if (type == ConvertType.Dynamic) {
-                            that.getDynamicPpt(taskId, new DynamicPptCallbacks() {
-                                @Override
-                                public void onSuccess(ConvertedFiles ppt) {
-                                    that.status = ConverterStatus.Success;
-                                    callback.onFinish(ppt, info);
-                                }
-
-                                @Override
-                                public void onFailure(Exception e) {
-                                    that.status = ConverterStatus.GetDynamicFail;
-                                    ConvertException exception = new ConvertException(ConvertErrorCode.GetDynamicFail, e);
-                                    callback.onFailure(exception);
-                                }
-                            });
-                        } else {
-                            that.status = ConverterStatus.Success;
-                            callback.onFinish(that.getStaticPpt(info), info);
-                        }
+                        that.status = ConverterStatus.Success;
+                        callback.onFinish(that.getPpt(info, type), info);
                     }
 
                     @Override
@@ -189,14 +171,15 @@ public class Converter {
     }
 
     private void createConvertTask(String url, ConvertType type, final Callback callback) {
-        String typeUrl = type.equals(ConvertType.Dynamic) ? "dynamic" : "static";
+        String typeUrl = type.equals(ConvertType.Dynamic) ? "dynamic_conversion" : "static_conversion";
 
         Map<String, String> roomSpec = new HashMap<>();
         roomSpec.put("sourceUrl", url);
+        roomSpec.put("serviceType", typeUrl);
         RequestBody body = RequestBody.create(JSON, gson.toJson(roomSpec));
 
         Request request = new Request.Builder()
-                .url(PPT_ORIGIN + "/services/" + typeUrl + "-conversion/tasks?roomToken=" + this.roomToken)
+                .url(PPT_ORIGIN + "/services/conversion/tasks?roomToken=" + this.roomToken)
                 .header("Content-Type", "application/json")
                 .header("Accept","application/json")
                 .post(body)
@@ -271,10 +254,10 @@ public class Converter {
 
     private void checkProgress(String taskId, ConvertType type, final CheckCallback checkCallback) {
 
-        String typeUrl = type.equals(ConvertType.Dynamic) ? "dynamic" : "static";
+        String typeUrl = type.equals(ConvertType.Dynamic) ? "dynamic_conversion" : "static_conversion";
 
         Request request = new Request.Builder()
-                .url(PPT_ORIGIN + "/services/" + typeUrl + "-conversion/tasks/" + taskId +"/progress?roomToken=" + this.roomToken)
+                .url(PPT_ORIGIN + "/services/conversion/tasks/" + taskId +"/progress?roomToken=" + this.roomToken + "&serviceType=" + typeUrl)
                 .header("Content-Type", "application/json")
                 .header("Accept","application/json")
                 .build();
@@ -314,68 +297,7 @@ public class Converter {
         }
     }
 
-    private interface DynamicPptCallbacks {
-        void onSuccess(ConvertedFiles ppt);
-        void onFailure(Exception e);
-    }
-
-    private void getDynamicPpt(String taskId, final DynamicPptCallbacks dynamicPptCallbacks) {
-        final String prefix = PPT_ASSETS_ORIGIN + "/" + taskId;
-        Request request = new Request.Builder()
-                .url(prefix + "/info.json")
-                .header("Content-Type", "application/json")
-                .header("Accept","application/json")
-                .build();
-        Call call = client.newCall(request);
-
-        final Converter that = this;
-
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                dynamicPptCallbacks.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.code() == 200) {
-                    ConvertedFiles ppt = that.getDynamicPpt(response);
-                    dynamicPptCallbacks.onSuccess(ppt);
-                } else {
-                    ConvertException e = new ConvertException(ConvertErrorCode.GetDynamicFail);
-                    dynamicPptCallbacks.onFailure(e);
-                }
-
-            }
-        });
-    }
-
-    private ConvertedFiles getDynamicPpt(Response response) throws IOException {
-        JsonObject json = gson.fromJson(response.body().string(), JsonObject.class);
-        Integer count = json.get("totalPageSize").getAsInt();
-
-        String[] sliderURLs = new String[count];
-        Scene[] scenes = new Scene[count];
-
-        ConvertedFiles files = new ConvertedFiles();
-        files.setTaskId(this.taskId);
-        files.setType(ConvertType.Dynamic);
-
-        final String prefix = PPT_ASSETS_ORIGIN + "/" + taskId;
-
-        for (int i = 0; i < count; i++) {
-            PptPage pptPage = new PptPage(String.valueOf(i+1), json.get("width").getAsDouble(), json.get("height").getAsDouble());
-            pptPage.setSrc(prefix + "/slide/slide" + (i+1) + ".xml");
-            sliderURLs[i] = pptPage.getSrc();
-            scenes[i] = new Scene(String.valueOf(i+1), pptPage);
-        }
-
-        files.setSlideURLs(sliderURLs);
-        files.setScenes(scenes);
-        return files;
-    }
-
-    private ConvertedFiles getStaticPpt(ConversionInfo info) {
+    private ConvertedFiles getPpt(ConversionInfo info, ConvertType type) {
 
         int fileLength = info.getStaticConversionFileList().length;
         String[] sliderURLs = new String[fileLength];
@@ -383,7 +305,7 @@ public class Converter {
 
         ConvertedFiles files = new ConvertedFiles();
         files.setTaskId(taskId);
-        files.setType(ConvertType.Static);
+        files.setType(type);
 
         for (int i = 0; i < fileLength; i++) {
             PptPage pptPage = info.getStaticConversionFileList()[i];
