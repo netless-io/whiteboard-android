@@ -299,7 +299,7 @@ public class Converter {
 
     private ConvertedFiles getPpt(ConversionInfo info, ConvertType type) {
 
-        int fileLength = info.getStaticConversionFileList().length;
+        int fileLength = info.getConversionFileList().length;
         String[] sliderURLs = new String[fileLength];
         Scene[] scenes = new Scene[fileLength];
 
@@ -308,7 +308,7 @@ public class Converter {
         files.setType(type);
 
         for (int i = 0; i < fileLength; i++) {
-            PptPage pptPage = info.getStaticConversionFileList()[i];
+            PptPage pptPage = info.getConversionFileList()[i];
             pptPage.setSrc(info.getPrefix() + pptPage.getSrc());
             sliderURLs[i] = pptPage.getSrc();
             scenes[i] = new Scene(String.valueOf(i+1), pptPage);
