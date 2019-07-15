@@ -10,8 +10,8 @@ public class ConversionInfo extends WhiteObject {
         Fail
     }
 
-    public PptPage[] getStaticConversionFileList() {
-        return staticConversionFileList;
+    public PptPage[] getConvertedFileList() {
+        return convertedFileList;
     }
 
     public String getReason() {
@@ -38,7 +38,7 @@ public class ConversionInfo extends WhiteObject {
         return convertedPercentage;
     }
 
-    private PptPage[] staticConversionFileList;
+    private PptPage[] convertedFileList;
     private String reason;
     private ServerConversionStatus convertStatus;
     private String prefix;
