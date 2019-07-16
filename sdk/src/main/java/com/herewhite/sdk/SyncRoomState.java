@@ -15,14 +15,60 @@ public class SyncRoomState {
     private final static Gson gson = new Gson();
     private final static JsonParser parser = new JsonParser();
 
-    private JsonObject stateJSON;
+    private final boolean disableCallbackWhilePutting;
 
-    public SyncRoomState(String stateJSON) {
-        this.syncRoomStateAndCompareModifyStateJSON(stateJSON);
+    private JsonObject stateJSON;
+    private Listener listener;
+
+    public SyncRoomState(String stateJSON, boolean disableCallbackWhilePutting) {
+        this.disableCallbackWhilePutting = disableCallbackWhilePutting;
+        this.syncRoomState(stateJSON);
     }
 
-    public JsonObject syncRoomStateAndCompareModifyStateJSON(String stateJSON) {
-        JsonObject modifyStateJSON = parser.parse(stateJSON).getAsJsonObject();
+    public interface Listener {
+        void onRoomStateChanged(RoomState modifyState);
+    }
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
+    public void syncRoomState(String stateJSON) {
+        JsonObject modifyStateJSON = this.putRoomStateAndCompareModifyStateJSON(parser.parse(stateJSON).getAsJsonObject());
+        if (modifyStateJSON != null && this.listener != null) {
+            RoomState modifyState = gson.fromJson(modifyStateJSON, RoomState.class);
+            this.listener.onRoomStateChanged(modifyState);
+        }
+    }
+
+    public void putRoomStateProperty(String key, Object value) {
+        JsonElement originalValue = this.stateJSON.get(key);
+
+        if (originalValue != null) {
+            JsonElement newValue = gson.toJsonTree(value);
+
+            if (!compareJson(originalValue, newValue)) {
+                JsonObject newStateJSON = new JsonObject();
+                for (String otherKey: this.stateJSON.keySet()) {
+                    if (otherKey.equals(key)) {
+                        newStateJSON.add(otherKey, newValue);
+                    } else {
+                        newStateJSON.add(otherKey, this.stateJSON.get(otherKey));
+                    }
+                }
+                this.stateJSON = newStateJSON;
+
+                if (!this.disableCallbackWhilePutting) {
+                    JsonObject modifyStateJSON = new JsonObject();
+                    modifyStateJSON.add(key, newValue);
+                    RoomState modifyState = gson.fromJson(modifyStateJSON, RoomState.class);
+                    this.listener.onRoomStateChanged(modifyState);
+                }
+            }
+        }
+    }
+
+    private JsonObject putRoomStateAndCompareModifyStateJSON(JsonObject modifyStateJSON) {
 
         if (this.stateJSON == null) {
             this.stateJSON = modifyStateJSON;

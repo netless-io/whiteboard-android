@@ -13,7 +13,7 @@ import com.herewhite.sdk.domain.RoomState;
  * Created by buhe on 2018/8/12.
  */
 
-public class RoomCallbacksImplement {
+public class RoomCallbacksImplement implements SyncRoomState.Listener {
 
     private final static Gson gson = new Gson();
     private RoomCallbacks listener;
@@ -29,6 +29,14 @@ public class RoomCallbacksImplement {
 
     public void setRoom(Room room) {
         this.room = room;
+        this.room.getSyncRoomState().setListener(this);
+    }
+
+    @Override
+    public void onRoomStateChanged(RoomState modifyState) {
+        if (listener != null) {
+            listener.onRoomStateChanged(modifyState);
+        }
     }
 
     @JavascriptInterface
@@ -85,21 +93,7 @@ public class RoomCallbacksImplement {
 
     @JavascriptInterface
     public void fireRoomStateChanged(Object args) {
-        // 获取事件,反序列化然后发送通知给监听者
-        SyncRoomState syncRoomState = this.room.getSyncRoomState();
-        JsonObject modifyStateJSON = syncRoomState.syncRoomStateAndCompareModifyStateJSON(String.valueOf(args));
-
-        if (modifyStateJSON != null && listener != null) {
-            RoomState modifyState = gson.fromJson(modifyStateJSON, RoomState.class);
-
-            try {
-                listener.onRoomStateChanged(modifyState);
-            } catch (AssertionError a) {
-                throw a;
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onRoomStateChanged method", e);
-            }
-        }
+        this.room.getSyncRoomState().syncRoomState(String.valueOf(args));
     }
 
     @JavascriptInterface

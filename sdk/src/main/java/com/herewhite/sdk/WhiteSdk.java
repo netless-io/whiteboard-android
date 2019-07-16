@@ -108,7 +108,7 @@ public class WhiteSdk {
             @Override
             public void onValue(Object o) {
                 try {
-                    SyncRoomState syncRoomState = new SyncRoomState(String.valueOf(o));
+                    SyncRoomState syncRoomState = new SyncRoomState(String.valueOf(o), false);
                     Room room = new Room(uuid, bridge, context, WhiteSdk.this, syncRoomState);
 
                     roomConcurrentHashMap.put(uuid, room);
