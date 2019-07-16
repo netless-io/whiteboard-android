@@ -28,6 +28,7 @@ public class WhiteSdk {
     private final Context context;
     private final RoomCallbacksImplement roomCallbacksImplement;
     private final PlayerCallbacksImplement playerCallbacksImplement;
+    private final boolean onlyCallbackRemoteStateModify;
     private UrlInterrupter urlInterrupter;
 
     private final ConcurrentHashMap<String, Room> roomConcurrentHashMap = new ConcurrentHashMap<>(); // uuid ,Room
@@ -47,10 +48,20 @@ public class WhiteSdk {
         this.urlInterrupter = urlInterrupter;
         this.roomCallbacksImplement = new RoomCallbacksImplement();
         this.playerCallbacksImplement = new PlayerCallbacksImplement();
+        this.onlyCallbackRemoteStateModify = whiteSdkConfiguration.isOnlyCallbackRemoteStateModify();
+
         bridge.addJavascriptObject(this, "sdk");
         bridge.addJavascriptObject(this.roomCallbacksImplement, "room");
         bridge.addJavascriptObject(this.playerCallbacksImplement, "player");
+
+        if (whiteSdkConfiguration.isOnlyCallbackRemoteStateModify()) {
+            // JavaScript 必须将所有 state 变化回调提供给 native。
+            // 该属性的实现在 native 代码中体现。
+            whiteSdkConfiguration.setOnlyCallbackRemoteStateModify(false);
+        }
         bridge.callHandler("sdk.newWhiteSdk", new Object[]{whiteSdkConfiguration});
+
+        whiteSdkConfiguration.setOnlyCallbackRemoteStateModify(this.onlyCallbackRemoteStateModify);
     }
 
     public void joinRoom(final RoomParams roomParams, final Promise<Room> roomPromise) {
@@ -108,7 +119,8 @@ public class WhiteSdk {
             @Override
             public void onValue(Object o) {
                 try {
-                    SyncRoomState syncRoomState = new SyncRoomState(String.valueOf(o), false);
+                    boolean disableCallbackWhilePutting = onlyCallbackRemoteStateModify;
+                    SyncRoomState syncRoomState = new SyncRoomState(String.valueOf(o), disableCallbackWhilePutting);
                     Room room = new Room(uuid, bridge, context, WhiteSdk.this, syncRoomState);
 
                     roomConcurrentHashMap.put(uuid, room);
