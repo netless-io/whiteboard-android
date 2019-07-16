@@ -6,49 +6,50 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.herewhite.sdk.domain.RoomPhase;
-import com.herewhite.sdk.domain.RoomState;
 
 import java.util.Map;
 import java.util.Set;
 
-public class SyncRoomState {
+public class SyncDisplayerState<T> {
 
     private final static Gson gson = new Gson();
     private final static JsonParser parser = new JsonParser();
 
+    private final Class<T> clazz;
     private final boolean disableCallbackWhilePutting;
 
     private JsonObject stateJSON;
     private RoomPhase phase;
-    private Listener listener;
+    private Listener<T> listener;
 
-    public SyncRoomState(String stateJSON, RoomPhase phase, boolean disableCallbackWhilePutting) {
+    public SyncDisplayerState(Class<T> clazz, String stateJSON, RoomPhase phase, boolean disableCallbackWhilePutting) {
+        this.clazz = clazz;
         this.phase = phase;
         this.disableCallbackWhilePutting = disableCallbackWhilePutting;
-        this.syncRoomState(stateJSON);
+        this.syncDisplayerState(stateJSON);
     }
 
-    public interface Listener {
-        void onRoomStateChanged(RoomState modifyState);
+    public interface Listener<T> {
+        void onDisplayerStateChanged(T modifyState);
     }
 
-    public RoomState getRoomState() {
-        return gson.fromJson(this.stateJSON, RoomState.class);
+    public T getDisplayerState() {
+        return gson.fromJson(this.stateJSON, this.clazz);
     }
 
     public RoomPhase getPhase() {
         return phase;
     }
 
-    public void setListener(Listener listener) {
+    public void setListener(Listener<T> listener) {
         this.listener = listener;
     }
 
-    public void syncRoomState(String stateJSON) {
-        JsonObject modifyStateJSON = this.putRoomStateAndCompareModifyStateJSON(parser.parse(stateJSON).getAsJsonObject());
+    public void syncDisplayerState(String stateJSON) {
+        JsonObject modifyStateJSON = this.putDisplayerStateAndCompareModifyStateJSON(parser.parse(stateJSON).getAsJsonObject());
         if (modifyStateJSON != null && this.listener != null) {
-            RoomState modifyState = gson.fromJson(modifyStateJSON, RoomState.class);
-            this.listener.onRoomStateChanged(modifyState);
+            T modifyState = gson.fromJson(modifyStateJSON, this.clazz);
+            this.listener.onDisplayerStateChanged(modifyState);
         }
     }
 
@@ -56,7 +57,7 @@ public class SyncRoomState {
         this.phase = phase;
     }
 
-    public void putRoomStateProperty(String key, Object value) {
+    public void putDisplayerStateProperty(String key, Object value) {
         JsonElement originalValue = this.stateJSON.get(key);
 
         if (originalValue != null) {
@@ -76,14 +77,14 @@ public class SyncRoomState {
                 if (!this.disableCallbackWhilePutting) {
                     JsonObject modifyStateJSON = new JsonObject();
                     modifyStateJSON.add(key, newValue);
-                    RoomState modifyState = gson.fromJson(modifyStateJSON, RoomState.class);
-                    this.listener.onRoomStateChanged(modifyState);
+                    T modifyState = gson.fromJson(modifyStateJSON, this.clazz);
+                    this.listener.onDisplayerStateChanged(modifyState);
                 }
             }
         }
     }
 
-    private JsonObject putRoomStateAndCompareModifyStateJSON(JsonObject modifyStateJSON) {
+    private JsonObject putDisplayerStateAndCompareModifyStateJSON(JsonObject modifyStateJSON) {
 
         if (this.stateJSON == null) {
             this.stateJSON = modifyStateJSON;

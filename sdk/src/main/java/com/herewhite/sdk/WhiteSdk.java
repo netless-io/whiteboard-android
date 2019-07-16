@@ -9,6 +9,7 @@ import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.PlayerConfiguration;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
+import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
 
@@ -117,7 +118,9 @@ public class WhiteSdk {
             public void onValue(Object o) {
                 try {
                     boolean disableCallbackWhilePutting = onlyCallbackRemoteStateModify;
-                    SyncRoomState syncRoomState = new SyncRoomState(String.valueOf(o), RoomPhase.connected, disableCallbackWhilePutting);
+                    SyncDisplayerState<RoomState> syncRoomState = new SyncDisplayerState<>(
+                            RoomState.class, String.valueOf(o), RoomPhase.connected, disableCallbackWhilePutting
+                    );
                     Room room = new Room(uuid, bridge, context, WhiteSdk.this, syncRoomState);
 
                     roomConcurrentHashMap.put(uuid, room);
@@ -134,10 +137,10 @@ public class WhiteSdk {
                 } catch (AssertionError a) {
                     throw a;
                 } catch (JsonSyntaxException e) {
-                    Logger.error("An JsonSyntaxException occurred while parse json from getRoomState", e);
+                    Logger.error("An JsonSyntaxException occurred while parse json from getDisplayerState", e);
                     roomPromise.catchEx(new SDKError(e.getMessage()));
                 } catch (Throwable e) {
-                    Logger.error("An exception occurred in getRoomState promise then method", e);
+                    Logger.error("An exception occurred in getDisplayerState promise then method", e);
                     roomPromise.catchEx(new SDKError(e.getMessage()));
                 }
             }
