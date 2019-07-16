@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.PlayerConfiguration;
 import com.herewhite.sdk.domain.PlayerState;
+import com.herewhite.sdk.domain.PlayerTimeInfo;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
@@ -187,24 +188,30 @@ public class WhiteSdk {
     }
 
     private void initializePlayer(final String uuid, final Promise<Player> playerPromise) {
-        bridge.callHandler("player.state.playerState", new Object[]{}, new OnReturnValue<Object>() {
+        bridge.callHandler("player.state.timeInfo", new Object[]{}, new OnReturnValue<Object>() {
             @Override
             public void onValue(Object o) {
+                final PlayerTimeInfo playerTimeInfo = gson.fromJson(String.valueOf(o), PlayerTimeInfo.class);
+                bridge.callHandler("player.state.playerState", new Object[]{}, new OnReturnValue<Object>() {
+                    @Override
+                    public void onValue(Object o) {
 
-                SyncDisplayerState<PlayerState> syncPlayerState = new SyncDisplayerState<>(PlayerState.class, String.valueOf(o), true);
-                Player player = new Player(uuid, bridge, context, WhiteSdk.this, syncPlayerState);
+                        SyncDisplayerState<PlayerState> syncPlayerState = new SyncDisplayerState<>(PlayerState.class, String.valueOf(o), true);
+                        Player player = new Player(uuid, bridge, context, WhiteSdk.this, playerTimeInfo, syncPlayerState);
 
-                playerCallbacksImplement.setPlayer(player);
-                playerConcurrentHashMap.put(uuid, player);
+                        playerCallbacksImplement.setPlayer(player);
+                        playerConcurrentHashMap.put(uuid, player);
 
-                try {
-                    playerPromise.then(player);
+                        try {
+                            playerPromise.then(player);
 
-                } catch (AssertionError a) {
-                    throw a;
-                } catch (Throwable e) {
-                    Logger.error("An exception occurred while resolve createPlayer method promise", e);
-                }
+                        } catch (AssertionError a) {
+                            throw a;
+                        } catch (Throwable e) {
+                            Logger.error("An exception occurred while resolve createPlayer method promise", e);
+                        }
+                    }
+                });
             }
         });
     }

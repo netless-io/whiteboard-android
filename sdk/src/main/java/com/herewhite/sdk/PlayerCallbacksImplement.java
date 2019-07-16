@@ -137,10 +137,15 @@ public class PlayerCallbacksImplement implements SyncDisplayerState.Listener<Pla
 
     @JavascriptInterface
     public void onScheduleTimeChanged(Object args) {
+        long scheduleTime = Long.parseLong(String.valueOf(args));
+
+        if (this.player != null) {
+            this.player.setScheduleTime(scheduleTime);
+        }
         // 获取事件,反序列化然后发送通知给监听者
         if (listener != null) {
             try {
-                listener.onScheduleTimeChanged(Long.parseLong(String.valueOf(args)));
+                listener.onScheduleTimeChanged(scheduleTime);
             } catch (AssertionError a) {
                 throw a;
             } catch (Throwable e) {

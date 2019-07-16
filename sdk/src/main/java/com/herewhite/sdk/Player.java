@@ -2,7 +2,6 @@ package com.herewhite.sdk;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.EventListener;
@@ -21,11 +20,21 @@ public class Player extends Displayer {
 
     private final ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
     private final SyncDisplayerState<PlayerState> syncPlayerState;
+
+    private final long timeDuration;
+    private final int framesCount;
+    private final long beginTimestamp;
+
+    private long scheduleTime = 0;
+
     private PlayerPhase playerPhase = PlayerPhase.waitingFirstFrame;
 
-    public Player(String room, WhiteBroadView bridge, Context context, WhiteSdk whiteSdk, SyncDisplayerState<PlayerState> syncPlayerState) {
+    public Player(String room, WhiteBroadView bridge, Context context, WhiteSdk whiteSdk, PlayerTimeInfo playerTimeInfo, SyncDisplayerState<PlayerState> syncPlayerState) {
         super(room, bridge, context, whiteSdk);
         this.syncPlayerState = syncPlayerState;
+        this.timeDuration = playerTimeInfo.getTimeDuration();
+        this.framesCount = playerTimeInfo.getFramesCount();
+        this.beginTimestamp = playerTimeInfo.getBeginTimestamp();
     }
 
     SyncDisplayerState<PlayerState> getSyncPlayerState() {
@@ -34,6 +43,10 @@ public class Player extends Displayer {
 
     void setPlayerPhase(PlayerPhase playerPhase) {
         this.playerPhase = playerPhase;
+    }
+
+    void setScheduleTime(long scheduleTime) {
+        this.scheduleTime = scheduleTime;
     }
 
     public void play() {
@@ -84,10 +97,16 @@ public class Player extends Displayer {
     }
 
     //region Get API
+
     /**
      * 获取房间状态
      * 目前：初始状态为 WhitePlayerPhaseWaitingFirstFrame
      */
+    public PlayerPhase getPlayerPhase() {
+        return this.playerPhase;
+    }
+
+    @Deprecated
     public void getPhase(final Promise<PlayerPhase> promise) {
         bridge.callHandler("player.getBroadcastState", new Object[]{}, new OnReturnValue<Object>() {
             @Override
@@ -111,6 +130,11 @@ public class Player extends Displayer {
      * 当 phase 状态为 WhitePlayerPhaseWaitingFirstFrame
      * 回调得到的数据是空的
      */
+    public PlayerState getPlayerState() {
+        return this.syncPlayerState.getDisplayerState();
+    }
+
+    @Deprecated
     public void getPlayerState(final Promise<PlayerState> promise) {
         bridge.callHandler("player.state.playerState", new Object[]{}, new OnReturnValue<Object>() {
             @Override
@@ -132,22 +156,15 @@ public class Player extends Displayer {
     }
 
     /** 获取播放器信息（当前时长，总时长，开始 UTC 时间戳）单位：毫秒 */
+    public PlayerTimeInfo getPlayerTimeInfo() {
+        return new PlayerTimeInfo(this.scheduleTime, this.timeDuration, this.framesCount, this.beginTimestamp);
+    }
+
     public void getPlayerTimeInfo(final Promise<PlayerTimeInfo> promise) {
         bridge.callHandler("player.state.timeInfo", new Object[]{}, new OnReturnValue<Object>() {
             @Override
             public void onValue(Object o) {
-                try {
-                    PlayerTimeInfo playerState = gson.fromJson(String.valueOf(o), PlayerTimeInfo.class);
-                    promise.then(playerState);
-                } catch (AssertionError a) {
-                    throw a;
-                } catch (JsonSyntaxException e) {
-                    Logger.error("An JsonSyntaxException occurred while parse json from getPlayerTimeInfo", e);
-                    promise.catchEx(new SDKError(e.getMessage()));
-                } catch (Throwable e) {
-                    Logger.error("An exception occurred in getPlayerTimeInfo promise then method", e);
-                    promise.catchEx(new SDKError(e.getMessage()));
-                }
+                promise.then(getPlayerTimeInfo());
             }
         });
     }
