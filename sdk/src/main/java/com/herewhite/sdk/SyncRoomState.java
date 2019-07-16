@@ -60,7 +60,7 @@ public class SyncRoomState {
         JsonElement originalValue = this.stateJSON.get(key);
 
         if (originalValue != null) {
-            JsonElement newValue = gson.toJsonTree(value);
+            JsonElement newValue = assignObject(this.stateJSON.get(key), gson.toJsonTree(value));
 
             if (!compareJson(originalValue, newValue)) {
                 JsonObject newStateJSON = new JsonObject();
@@ -113,6 +113,30 @@ public class SyncRoomState {
             this.stateJSON = jsonObject;
 
             return checkedModifyStateJSON;
+        }
+    }
+
+    private static JsonElement assignObject(JsonElement value1, JsonElement value2) {
+        if (!value1.isJsonObject() || !value2.isJsonObject()) {
+            return value2;
+        } else {
+            JsonObject object1 = (JsonObject) value1;
+            JsonObject object2 = (JsonObject) value2;
+            JsonObject newObject = new JsonObject();
+
+            for (String key: object1.keySet()) {
+                if (object2.has(key)) {
+                    newObject.add(key, object2.get(key));
+                } else {
+                    newObject.add(key, object1.get(key));
+                }
+            }
+            for (String key: object2.keySet()) {
+                if (!newObject.has(key)) {
+                    newObject.add(key, object2.get(key));
+                }
+            }
+            return newObject;
         }
     }
 
