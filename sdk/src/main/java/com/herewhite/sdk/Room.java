@@ -33,6 +33,7 @@ import wendu.dsbridge.OnReturnValue;
 public class Room extends Displayer {
 
     private final SyncDisplayerState<RoomState> syncRoomState;
+    private RoomPhase roomPhase = RoomPhase.connected;
 
     private Integer timeDelay;
     private ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
@@ -45,6 +46,10 @@ public class Room extends Displayer {
 
     SyncDisplayerState<RoomState> getSyncRoomState() {
         return syncRoomState;
+    }
+
+    void setRoomPhase(RoomPhase roomPhase) {
+        this.roomPhase = roomPhase;
     }
 
     //region Set API
@@ -299,7 +304,7 @@ public class Room extends Displayer {
     }
 
     public RoomPhase getRoomPhase() {
-        return syncRoomState.getPhase();
+        return this.roomPhase;
     }
 
     @Deprecated

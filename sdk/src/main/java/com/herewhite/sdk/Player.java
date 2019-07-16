@@ -19,10 +19,21 @@ import wendu.dsbridge.OnReturnValue;
 
 public class Player extends Displayer {
 
-    private ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
+    private final SyncDisplayerState<PlayerState> syncPlayerState;
+    private PlayerPhase playerPhase = PlayerPhase.waitingFirstFrame;
 
-    public Player(String room, WhiteBroadView bridge, Context context, WhiteSdk whiteSdk) {
+    public Player(String room, WhiteBroadView bridge, Context context, WhiteSdk whiteSdk, SyncDisplayerState<PlayerState> syncPlayerState) {
         super(room, bridge, context, whiteSdk);
+        this.syncPlayerState = syncPlayerState;
+    }
+
+    SyncDisplayerState<PlayerState> getSyncPlayerState() {
+        return syncPlayerState;
+    }
+
+    void setPlayerPhase(PlayerPhase playerPhase) {
+        this.playerPhase = playerPhase;
     }
 
     public void play() {

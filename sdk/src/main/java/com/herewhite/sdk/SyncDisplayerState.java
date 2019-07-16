@@ -5,7 +5,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.herewhite.sdk.domain.RoomPhase;
 
 import java.util.Map;
 import java.util.Set;
@@ -19,12 +18,10 @@ public class SyncDisplayerState<T> {
     private final boolean disableCallbackWhilePutting;
 
     private JsonObject stateJSON;
-    private RoomPhase phase;
     private Listener<T> listener;
 
-    public SyncDisplayerState(Class<T> clazz, String stateJSON, RoomPhase phase, boolean disableCallbackWhilePutting) {
+    public SyncDisplayerState(Class<T> clazz, String stateJSON, boolean disableCallbackWhilePutting) {
         this.clazz = clazz;
-        this.phase = phase;
         this.disableCallbackWhilePutting = disableCallbackWhilePutting;
         this.syncDisplayerState(stateJSON);
     }
@@ -37,10 +34,6 @@ public class SyncDisplayerState<T> {
         return gson.fromJson(this.stateJSON, this.clazz);
     }
 
-    public RoomPhase getPhase() {
-        return phase;
-    }
-
     public void setListener(Listener<T> listener) {
         this.listener = listener;
     }
@@ -51,10 +44,6 @@ public class SyncDisplayerState<T> {
             T modifyState = gson.fromJson(modifyStateJSON, this.clazz);
             this.listener.onDisplayerStateChanged(modifyState);
         }
-    }
-
-    public void syncRoomPhase(RoomPhase phase) {
-        this.phase = phase;
     }
 
     public void putDisplayerStateProperty(String key, Object value) {

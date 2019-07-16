@@ -64,7 +64,7 @@ public class RoomCallbacksImplement implements SyncDisplayerState.Listener<RoomS
         RoomPhase phase = RoomPhase.valueOf(String.valueOf(args));
 
         if (this.room != null) {
-            this.room.getSyncRoomState().syncRoomPhase(phase);
+            this.room.setRoomPhase(phase);
         }
         if (listener != null) {
             try {

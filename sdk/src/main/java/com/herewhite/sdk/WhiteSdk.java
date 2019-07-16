@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.PlayerConfiguration;
+import com.herewhite.sdk.domain.PlayerState;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
@@ -116,32 +117,19 @@ public class WhiteSdk {
         bridge.callHandler("room.state.getRoomState", new OnReturnValue<Object>() {
             @Override
             public void onValue(Object o) {
+                boolean disableCallbackWhilePutting = onlyCallbackRemoteStateModify;
+                SyncDisplayerState<RoomState> syncRoomState = new SyncDisplayerState<>(RoomState.class, String.valueOf(o), disableCallbackWhilePutting);
+                Room room = new Room(uuid, bridge, context, WhiteSdk.this, syncRoomState);
+
+                roomConcurrentHashMap.put(uuid, room);
+                roomCallbacksImplement.setRoom(room);
+
                 try {
-                    boolean disableCallbackWhilePutting = onlyCallbackRemoteStateModify;
-                    SyncDisplayerState<RoomState> syncRoomState = new SyncDisplayerState<>(
-                            RoomState.class, String.valueOf(o), RoomPhase.connected, disableCallbackWhilePutting
-                    );
-                    Room room = new Room(uuid, bridge, context, WhiteSdk.this, syncRoomState);
-
-                    roomConcurrentHashMap.put(uuid, room);
-                    roomCallbacksImplement.setRoom(room);
-
-                    try {
-                        roomPromise.then(room);
-                    } catch (AssertionError a) {
-                        throw a;
-                    } catch (Throwable e) {
-                        Logger.error("An exception occurred while resolve joinRoom method promise", e);
-                    }
-
+                    roomPromise.then(room);
                 } catch (AssertionError a) {
                     throw a;
-                } catch (JsonSyntaxException e) {
-                    Logger.error("An JsonSyntaxException occurred while parse json from getDisplayerState", e);
-                    roomPromise.catchEx(new SDKError(e.getMessage()));
                 } catch (Throwable e) {
-                    Logger.error("An exception occurred in getDisplayerState promise then method", e);
-                    roomPromise.catchEx(new SDKError(e.getMessage()));
+                    Logger.error("An exception occurred while resolve joinRoom method promise", e);
                 }
             }
         });
@@ -187,16 +175,7 @@ public class WhiteSdk {
                             Logger.error("An exception occurred while catch createPlayer method exception", e);
                         }
                     } else {
-                        Player player = new Player(playerConfiguration.getRoom(), bridge, context, WhiteSdk.this);
-                        playerCallbacksImplement.setPlayer(player);
-                        playerConcurrentHashMap.put(playerConfiguration.getRoom(), player);
-                        try {
-                            playerPromise.then(player);
-                        } catch (AssertionError a) {
-                            throw a;
-                        } catch (Throwable e) {
-                            Logger.error("An exception occurred while resolve joinRoom method promise", e);
-                        }
+                        initializePlayer(playerConfiguration.getRoom(), playerPromise);
                     }
                 }
             });
@@ -205,6 +184,29 @@ public class WhiteSdk {
         } catch (Exception e) {
             playerPromise.catchEx(new SDKError(e.getMessage()));
         }
+    }
+
+    private void initializePlayer(final String uuid, final Promise<Player> playerPromise) {
+        bridge.callHandler("player.state.playerState", new Object[]{}, new OnReturnValue<Object>() {
+            @Override
+            public void onValue(Object o) {
+
+                SyncDisplayerState<PlayerState> syncPlayerState = new SyncDisplayerState<>(PlayerState.class, String.valueOf(o), true);
+                Player player = new Player(uuid, bridge, context, WhiteSdk.this, syncPlayerState);
+
+                playerCallbacksImplement.setPlayer(player);
+                playerConcurrentHashMap.put(uuid, player);
+
+                try {
+                    playerPromise.then(player);
+
+                } catch (AssertionError a) {
+                    throw a;
+                } catch (Throwable e) {
+                    Logger.error("An exception occurred while resolve createPlayer method promise", e);
+                }
+            }
+        });
     }
 
     @JavascriptInterface

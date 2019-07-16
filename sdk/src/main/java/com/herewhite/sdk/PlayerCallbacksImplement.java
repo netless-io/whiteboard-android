@@ -14,11 +14,12 @@ import com.herewhite.sdk.domain.SDKError;
  * Created by buhe on 2018/8/12.
  */
 
-public class PlayerCallbacksImplement {
+public class PlayerCallbacksImplement implements SyncDisplayerState.Listener<PlayerState> {
+
     private final static Gson gson = new Gson();
+
     private PlayerEventListener listener;
     private Player player;
-
 
     public PlayerEventListener getListener() {
         return listener;
@@ -26,6 +27,7 @@ public class PlayerCallbacksImplement {
 
     public void setPlayer(Player player) {
         this.player = player;
+        this.player.getSyncPlayerState().setListener(this);
     }
 
     public Player getPlayer() {
@@ -34,6 +36,19 @@ public class PlayerCallbacksImplement {
 
     public void setListener(PlayerEventListener listener) {
         this.listener = listener;
+    }
+
+    @Override
+    public void onDisplayerStateChanged(PlayerState modifyState) {
+        if (listener != null) {
+            try {
+                listener.onPlayerStateChanged(modifyState);
+            } catch (AssertionError a) {
+                throw a;
+            } catch (Throwable e) {
+                Logger.error("An exception occurred while invoke onPlayerStateChanged method", e);
+            }
+        }
     }
 
     @JavascriptInterface
@@ -46,10 +61,14 @@ public class PlayerCallbacksImplement {
 
     @JavascriptInterface
     public void onPhaseChanged(Object args) {
-//         获取事件,反序列化然后发送通知给监听者
+        PlayerPhase phase = PlayerPhase.valueOf(String.valueOf(args));
+
+        if (this.player != null) {
+            this.player.setPlayerPhase(phase);
+        }
         if (listener != null) {
             try {
-                listener.onPhaseChanged(PlayerPhase.valueOf(String.valueOf(args)));
+                listener.onPhaseChanged(phase);
             } catch (AssertionError a) {
                 throw a;
             } catch (Throwable e) {
@@ -90,17 +109,7 @@ public class PlayerCallbacksImplement {
     @JavascriptInterface
     public void onPlayerStateChanged(Object args) {
         // 获取事件,反序列化然后发送通知给监听者
-        if (listener != null) {
-            try {
-                PlayerState playerState = gson.fromJson(String.valueOf(args), PlayerState.class);
-                listener.onPlayerStateChanged(playerState);
-            } catch (AssertionError a) {
-                throw a;
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onPlayerStateChanged method", e);
-            }
-
-        }
+        this.player.getSyncPlayerState().syncDisplayerState(String.valueOf(args));
     }
 
     @JavascriptInterface
