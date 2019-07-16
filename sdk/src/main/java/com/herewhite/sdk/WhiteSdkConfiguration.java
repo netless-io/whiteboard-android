@@ -17,6 +17,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private boolean hasUrlInterrupterAPI = false;
     private boolean userCursor = false;
     private boolean customCursor = false;
+    private boolean onlyCallbackRemoteStateModify = false;
     private HashMap<String, String> font;
 
     public HashMap<String, String> getFont() {
@@ -48,6 +49,14 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
     public void setCustomCursor(boolean customCursor) { this.customCursor = customCursor; }
     public boolean isCustomCursor() { return customCursor; }
+
+    public boolean isOnlyCallbackRemoteStateModify() {
+        return onlyCallbackRemoteStateModify;
+    }
+
+    public void setOnlyCallbackRemoteStateModify(boolean onlyCallbackRemoteStateModify) {
+        this.onlyCallbackRemoteStateModify = onlyCallbackRemoteStateModify;
+    }
 
     public void setDeviceType(DeviceType deviceType) {
         this.deviceType = deviceType;

@@ -1,10 +1,6 @@
 package com.herewhite.sdk;
 
 import android.content.Context;
-import android.view.MotionEvent;
-import android.view.View;
-
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.AkkoEvent;
@@ -18,7 +14,6 @@ import com.herewhite.sdk.domain.MemberState;
 import com.herewhite.sdk.domain.Point;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomMember;
-import com.herewhite.sdk.domain.RoomMouseEvent;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.SDKError;
@@ -35,23 +30,31 @@ import wendu.dsbridge.OnReturnValue;
 /**
  * Created by buhe on 2018/8/10.
  */
-
 public class Room extends Displayer {
+
+    private final SyncRoomState syncRoomState;
 
     private Integer timeDelay;
     private ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
 
-    public Room(String uuid, WhiteBroadView bridge, Context context, WhiteSdk sdk) {
+    public Room(String uuid, WhiteBroadView bridge, Context context, WhiteSdk sdk, SyncRoomState syncRoomState) {
         super(uuid, bridge, context, sdk);
         this.timeDelay = 0;
+        this.syncRoomState = syncRoomState;
+    }
+
+    SyncRoomState getSyncRoomState() {
+        return syncRoomState;
     }
 
     //region Set API
     public void setGlobalState(GlobalState globalState) {
+        syncRoomState.putRoomStateProperty("globalState", globalState);
         bridge.callHandler("room.setGlobalState", new Object[]{globalState});
     }
 
     public void setMemberState(MemberState memberState) {
+        syncRoomState.putRoomStateProperty("memberState", memberState);
         bridge.callHandler("room.setMemberState", new Object[]{memberState});
     }
 
@@ -121,8 +124,11 @@ public class Room extends Displayer {
         this.completeImageUpload(uuid, imageInformationWithUrl.getUrl());
     }
 
+    public GlobalState getGlobalState() {
+        return syncRoomState.getRoomState().getGlobalState();
+    }
 
-    //region Get API
+    @Deprecated
     public void getGlobalState(final Promise<GlobalState> promise) {
         bridge.callHandler("room.getGlobalState", new Object[]{}, new OnReturnValue<Object>() {
             @Override
@@ -142,6 +148,11 @@ public class Room extends Displayer {
         });
     }
 
+    public MemberState getMemberState() {
+        return syncRoomState.getRoomState().getMemberState();
+    }
+
+    @Deprecated
     public void getMemberState(final Promise<MemberState> promise) {
         bridge.callHandler("room.getMemberState", new OnReturnValue<String>() {
             @Override
@@ -161,6 +172,11 @@ public class Room extends Displayer {
         });
     }
 
+    public RoomMember[] getRoomMembers() {
+        return syncRoomState.getRoomState().getRoomMembers();
+    }
+
+    @Deprecated
     public void getRoomMembers(final Promise<RoomMember[]> promise) {
         bridge.callHandler("room.getRoomMembers", new Object[]{}, new OnReturnValue<Object>() {
             @Override
@@ -180,6 +196,11 @@ public class Room extends Displayer {
         });
     }
 
+    public BroadcastState getBroadcastState() {
+        return syncRoomState.getRoomState().getBroadcastState();
+    }
+
+    @Deprecated
     public void getBroadcastState(final Promise<BroadcastState> promise) {
         bridge.callHandler("room.getBroadcastState", new Object[]{}, new OnReturnValue<Object>() {
             @Override
@@ -201,9 +222,12 @@ public class Room extends Displayer {
 
     /**
      * 获取当前场景状态
-     *
-     * @param promise
      */
+    public SceneState getSceneState() {
+        return syncRoomState.getRoomState().getSceneState();
+    }
+
+    @Deprecated
     public void getSceneState(final Promise<SceneState> promise) {
         bridge.callHandler("room.getSceneState", new Object[]{}, new OnReturnValue<Object>() {
             @Override
@@ -225,9 +249,12 @@ public class Room extends Displayer {
 
     /**
      * 获取当前目录下，所有页面的信息
-     *
-     * @param promise
      */
+    public Scene[] getScenes() {
+        return this.getSceneState().getScenes();
+    }
+
+    @Deprecated
     public void getScenes(final Promise<Scene[]> promise) {
         bridge.callHandler("room.getScenes", new Object[]{}, new OnReturnValue<Object>() {
             @Override
@@ -247,6 +274,11 @@ public class Room extends Displayer {
         });
     }
 
+    public double getZoomScale() {
+        return syncRoomState.getRoomState().getZoomScale();
+    }
+
+    @Deprecated
     public void getZoomScale(final Promise<Number> promise) {
         bridge.callHandler("room.getZoomScale", new OnReturnValue<Object>() {
             @Override
@@ -266,6 +298,11 @@ public class Room extends Displayer {
         });
     }
 
+    public RoomPhase getRoomPhase() {
+        return syncRoomState.getPhase();
+    }
+
+    @Deprecated
     public void getRoomPhase(final Promise<RoomPhase> promise) {
         bridge.callHandler("room.getRoomPhase", new OnReturnValue<Object>() {
             @Override
@@ -285,6 +322,11 @@ public class Room extends Displayer {
         });
     }
 
+    public RoomState getRoomState() {
+        return syncRoomState.getRoomState();
+    }
+
+    @Deprecated
     public void getRoomState(final Promise<RoomState> promise) {
         bridge.callHandler("room.state.getRoomState", new OnReturnValue<Object>() {
             @Override

@@ -1,5 +1,7 @@
 package com.herewhite.sdk;
 
+import android.content.Context;
+import android.os.Handler;
 import android.webkit.JavascriptInterface;
 
 import com.google.gson.Gson;
@@ -12,13 +14,15 @@ import com.herewhite.sdk.domain.RoomState;
  * Created by buhe on 2018/8/12.
  */
 
-public class RoomCallbacksImplement {
+public class RoomCallbacksImplement implements SyncRoomState.Listener {
+
     private final static Gson gson = new Gson();
+    private final Handler handler;
     private RoomCallbacks listener;
     private Room room;
 
-    public RoomCallbacksImplement() {
-
+    RoomCallbacksImplement(Context context) {
+        this.handler = new Handler(context.getMainLooper());
     }
 
     public RoomCallbacks getListener() {
@@ -29,12 +33,21 @@ public class RoomCallbacksImplement {
         this.listener = listener;
     }
 
-    public Room getRoom() {
-        return room;
-    }
-
     public void setRoom(Room room) {
         this.room = room;
+        this.room.getSyncRoomState().setListener(this);
+    }
+
+    @Override
+    public void onRoomStateChanged(final RoomState modifyState) {
+        if (listener != null) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    listener.onRoomStateChanged(modifyState);
+                }
+            });
+        }
     }
 
     @JavascriptInterface
@@ -48,10 +61,14 @@ public class RoomCallbacksImplement {
 
     @JavascriptInterface
     public void firePhaseChanged(Object args) {
-//         获取事件,反序列化然后发送通知给监听者
+        RoomPhase phase = RoomPhase.valueOf(String.valueOf(args));
+
+        if (this.room != null) {
+            this.room.getSyncRoomState().syncRoomPhase(phase);
+        }
         if (listener != null) {
             try {
-                listener.onPhaseChanged(RoomPhase.valueOf(String.valueOf(args)));
+                listener.onPhaseChanged(phase);
             } catch (AssertionError a) {
                 throw a;
             } catch (Throwable e) {
@@ -91,18 +108,7 @@ public class RoomCallbacksImplement {
 
     @JavascriptInterface
     public void fireRoomStateChanged(Object args) {
-        // 获取事件,反序列化然后发送通知给监听者
-        RoomState roomState = gson.fromJson(String.valueOf(args), RoomState.class);
-        if (listener != null) {
-            try {
-                listener.onRoomStateChanged(roomState);
-            } catch (AssertionError a) {
-                throw a;
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onRoomStateChanged method", e);
-            }
-
-        }
+        this.room.getSyncRoomState().syncRoomState(String.valueOf(args));
     }
 
     @JavascriptInterface
