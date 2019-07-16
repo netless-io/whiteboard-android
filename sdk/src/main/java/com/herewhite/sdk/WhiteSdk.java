@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.PlayerConfiguration;
 import com.herewhite.sdk.domain.Promise;
+import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
 
@@ -46,7 +47,7 @@ public class WhiteSdk {
         this.bridge = bridge;
         this.context = context;
         this.urlInterrupter = urlInterrupter;
-        this.roomCallbacksImplement = new RoomCallbacksImplement();
+        this.roomCallbacksImplement = new RoomCallbacksImplement(context);
         this.playerCallbacksImplement = new PlayerCallbacksImplement();
         this.onlyCallbackRemoteStateModify = whiteSdkConfiguration.isOnlyCallbackRemoteStateModify();
 
@@ -120,7 +121,7 @@ public class WhiteSdk {
             public void onValue(Object o) {
                 try {
                     boolean disableCallbackWhilePutting = onlyCallbackRemoteStateModify;
-                    SyncRoomState syncRoomState = new SyncRoomState(String.valueOf(o), disableCallbackWhilePutting);
+                    SyncRoomState syncRoomState = new SyncRoomState(String.valueOf(o), RoomPhase.connected, disableCallbackWhilePutting);
                     Room room = new Room(uuid, bridge, context, WhiteSdk.this, syncRoomState);
 
                     roomConcurrentHashMap.put(uuid, room);

@@ -1,9 +1,10 @@
 package com.herewhite.sdk;
 
+import android.content.Context;
+import android.os.Handler;
 import android.webkit.JavascriptInterface;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.FrameError;
 import com.herewhite.sdk.domain.RoomPhase;
@@ -16,8 +17,13 @@ import com.herewhite.sdk.domain.RoomState;
 public class RoomCallbacksImplement implements SyncRoomState.Listener {
 
     private final static Gson gson = new Gson();
+    private final Handler handler;
     private RoomCallbacks listener;
     private Room room;
+
+    RoomCallbacksImplement(Context context) {
+        this.handler = new Handler(context.getMainLooper());
+    }
 
     public RoomCallbacks getListener() {
         return listener;
@@ -33,9 +39,14 @@ public class RoomCallbacksImplement implements SyncRoomState.Listener {
     }
 
     @Override
-    public void onRoomStateChanged(RoomState modifyState) {
+    public void onRoomStateChanged(final RoomState modifyState) {
         if (listener != null) {
-            listener.onRoomStateChanged(modifyState);
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    listener.onRoomStateChanged(modifyState);
+                }
+            });
         }
     }
 
@@ -50,10 +61,14 @@ public class RoomCallbacksImplement implements SyncRoomState.Listener {
 
     @JavascriptInterface
     public void firePhaseChanged(Object args) {
-//         获取事件,反序列化然后发送通知给监听者
+        RoomPhase phase = RoomPhase.valueOf(String.valueOf(args));
+
+        if (this.room != null) {
+            this.room.getSyncRoomState().syncRoomPhase(phase);
+        }
         if (listener != null) {
             try {
-                listener.onPhaseChanged(RoomPhase.valueOf(String.valueOf(args)));
+                listener.onPhaseChanged(phase);
             } catch (AssertionError a) {
                 throw a;
             } catch (Throwable e) {

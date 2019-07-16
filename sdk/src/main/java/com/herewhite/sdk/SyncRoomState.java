@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
 
 import java.util.Map;
@@ -18,15 +19,25 @@ public class SyncRoomState {
     private final boolean disableCallbackWhilePutting;
 
     private JsonObject stateJSON;
+    private RoomPhase phase;
     private Listener listener;
 
-    public SyncRoomState(String stateJSON, boolean disableCallbackWhilePutting) {
+    public SyncRoomState(String stateJSON, RoomPhase phase, boolean disableCallbackWhilePutting) {
+        this.phase = phase;
         this.disableCallbackWhilePutting = disableCallbackWhilePutting;
         this.syncRoomState(stateJSON);
     }
 
     public interface Listener {
         void onRoomStateChanged(RoomState modifyState);
+    }
+
+    public RoomState getRoomState() {
+        return gson.fromJson(this.stateJSON, RoomState.class);
+    }
+
+    public RoomPhase getPhase() {
+        return phase;
     }
 
     public void setListener(Listener listener) {
@@ -39,6 +50,10 @@ public class SyncRoomState {
             RoomState modifyState = gson.fromJson(modifyStateJSON, RoomState.class);
             this.listener.onRoomStateChanged(modifyState);
         }
+    }
+
+    public void syncRoomPhase(RoomPhase phase) {
+        this.phase = phase;
     }
 
     public void putRoomStateProperty(String key, Object value) {
@@ -99,10 +114,6 @@ public class SyncRoomState {
 
             return checkedModifyStateJSON;
         }
-    }
-
-    public RoomState getRoomState() {
-        return gson.fromJson(this.stateJSON, RoomState.class);
     }
 
     private static boolean compareJson(JsonElement json1, JsonElement json2) {
