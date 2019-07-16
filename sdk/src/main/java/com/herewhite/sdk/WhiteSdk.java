@@ -17,10 +17,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import wendu.dsbridge.OnReturnValue;
 
-/**
- *
- */
-
 public class WhiteSdk {
 
     private final static Gson gson = new Gson();

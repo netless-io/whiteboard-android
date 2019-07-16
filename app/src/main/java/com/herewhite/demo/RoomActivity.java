@@ -210,20 +210,11 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     public void nextScene(MenuItem item) {
-        room.getSceneState(new Promise<SceneState>() {
+        int nextIndex = room.getSceneState().getIndex() + 1;
+        room.setSceneIndex(nextIndex, new Promise() {
             @Override
-            public void then(SceneState sceneState) {
-                room.setSceneIndex(sceneState.getIndex() + 1, new Promise<Boolean>() {
-                    @Override
-                    public void then(Boolean aBoolean) {
+            public void then(Object o) {
 
-                    }
-
-                    @Override
-                    public void catchEx(SDKError t) {
-
-                    }
-                });
             }
 
             @Override
@@ -312,18 +303,9 @@ public class RoomActivity extends AppCompatActivity {
 
     public void getBroadcastState(MenuItem item) {
         logAction();
-        room.getBroadcastState(new Promise<BroadcastState>() {
-            @Override
-            public void then(BroadcastState broadcastState) {
-                showToast(broadcastState.getMode());
-                logRoomInfo(gson.toJson(broadcastState));
-            }
-
-            @Override
-            public void catchEx(SDKError t) {
-
-            }
-        });
+        BroadcastState broadcastState = room.getBroadcastState();
+        showToast(broadcastState.getMode());
+        logRoomInfo(gson.toJson(broadcastState));
     }
 
     public void moveCamera(MenuItem item) {
@@ -388,34 +370,13 @@ public class RoomActivity extends AppCompatActivity {
 
     public void getRoomPhase(MenuItem item) {
         logAction();
-        room.getRoomPhase(new Promise<RoomPhase>() {
-            @Override
-            public void then(RoomPhase roomPhase) {
-                logRoomInfo("RoomPhase: " + gson.toJson(roomPhase));
-
-            }
-
-            @Override
-            public void catchEx(SDKError t) {
-
-            }
-        });
+        logRoomInfo("RoomPhase: " + gson.toJson(room.getRoomPhase()));
     }
 
     public void getRoomState(MenuItem item) {
         logAction();
         //获取房间状态，包含很多信息
-        room.getRoomState(new Promise<RoomState>() {
-            @Override
-            public void then(RoomState roomState) {
-                logRoomInfo("roomState: " + gson.toJson(roomState));
-            }
-
-            @Override
-            public void catchEx(SDKError t) {
-
-            }
-        });
+        logRoomInfo("roomState: " + gson.toJson(room.getRoomState()));
     }
 
     public void disconnect(MenuItem item) {
@@ -507,21 +468,11 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     public void zoomChange(MenuItem item) {
-        room.getZoomScale(new Promise<Number>() {
-            @Override
-            public void then(Number number) {
-                if (number.intValue() != 1) {
-                    room.zoomChange(1);
-                } else {
-                    room.zoomChange(5);
-                }
-            }
-
-            @Override
-            public void catchEx(SDKError t) {
-
-            }
-        });
+        if (room.getZoomScale() != 1) {
+            room.zoomChange(1);
+        } else {
+            room.zoomChange(5);
+        }
     }
 
     void logRoomInfo(String str) {

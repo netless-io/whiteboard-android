@@ -43,7 +43,7 @@ public class Room extends Displayer {
         this.syncRoomState = syncRoomState;
     }
 
-    public SyncRoomState getSyncRoomState() {
+    SyncRoomState getSyncRoomState() {
         return syncRoomState;
     }
 
