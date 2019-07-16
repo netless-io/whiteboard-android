@@ -38,12 +38,15 @@ import wendu.dsbridge.OnReturnValue;
 
 public class Room extends Displayer {
 
+    private final SyncRoomState syncRoomState;
+
     private Integer timeDelay;
     private ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
 
-    public Room(String uuid, WhiteBroadView bridge, Context context, WhiteSdk sdk) {
+    public Room(String uuid, WhiteBroadView bridge, Context context, WhiteSdk sdk, SyncRoomState syncRoomState) {
         super(uuid, bridge, context, sdk);
         this.timeDelay = 0;
+        this.syncRoomState = syncRoomState;
     }
 
     //region Set API
@@ -57,6 +60,10 @@ public class Room extends Displayer {
 
     public void setViewMode(ViewMode viewMode) {
         bridge.callHandler("room.setViewMode", new Object[]{viewMode.name()});
+    }
+
+    public SyncRoomState getSyncRoomState() {
+        return syncRoomState;
     }
 
     /**

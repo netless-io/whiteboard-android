@@ -5,6 +5,7 @@ import android.webkit.JavascriptInterface;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.PlayerConfiguration;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.SDKError;
@@ -91,18 +92,8 @@ public class WhiteSdk {
                             Logger.error("An exception occurred while catch joinRoom method exception", e);
                         }
                     } else {
-                        Room room = new Room(roomParams.getUuid(), bridge, context, WhiteSdk.this);
-                        roomConcurrentHashMap.put(roomParams.getUuid(), room);
-                        roomCallbacksImplement.setRoom(room);
-                        try {
-                            roomPromise.then(room);
-                        } catch (AssertionError a) {
-                            throw a;
-                        } catch (Throwable e) {
-                            Logger.error("An exception occurred while resolve joinRoom method promise", e);
-                        }
+                        initializeRoom(roomParams.getUuid(), roomPromise);
                     }
-
                 }
             });
         } catch (AssertionError a) {
@@ -110,6 +101,38 @@ public class WhiteSdk {
         } catch (Exception e) {
             roomPromise.catchEx(new SDKError(e.getMessage()));
         }
+    }
+
+    private void initializeRoom(final String uuid, final Promise<Room> roomPromise) {
+        bridge.callHandler("room.state.getRoomState", new OnReturnValue<Object>() {
+            @Override
+            public void onValue(Object o) {
+                try {
+                    SyncRoomState syncRoomState = new SyncRoomState(String.valueOf(o));
+                    Room room = new Room(uuid, bridge, context, WhiteSdk.this, syncRoomState);
+
+                    roomConcurrentHashMap.put(uuid, room);
+                    roomCallbacksImplement.setRoom(room);
+
+                    try {
+                        roomPromise.then(room);
+                    } catch (AssertionError a) {
+                        throw a;
+                    } catch (Throwable e) {
+                        Logger.error("An exception occurred while resolve joinRoom method promise", e);
+                    }
+
+                } catch (AssertionError a) {
+                    throw a;
+                } catch (JsonSyntaxException e) {
+                    Logger.error("An JsonSyntaxException occurred while parse json from getRoomState", e);
+                    roomPromise.catchEx(new SDKError(e.getMessage()));
+                } catch (Throwable e) {
+                    Logger.error("An exception occurred in getRoomState promise then method", e);
+                    roomPromise.catchEx(new SDKError(e.getMessage()));
+                }
+            }
+        });
     }
 
     public void releaseRoom(String uuid) {

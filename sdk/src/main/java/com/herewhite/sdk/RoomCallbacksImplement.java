@@ -3,6 +3,7 @@ package com.herewhite.sdk;
 import android.webkit.JavascriptInterface;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.FrameError;
 import com.herewhite.sdk.domain.RoomPhase;
@@ -13,13 +14,10 @@ import com.herewhite.sdk.domain.RoomState;
  */
 
 public class RoomCallbacksImplement {
+
     private final static Gson gson = new Gson();
     private RoomCallbacks listener;
     private Room room;
-
-    public RoomCallbacksImplement() {
-
-    }
 
     public RoomCallbacks getListener() {
         return listener;
@@ -27,10 +25,6 @@ public class RoomCallbacksImplement {
 
     public void setListener(RoomCallbacks listener) {
         this.listener = listener;
-    }
-
-    public Room getRoom() {
-        return room;
     }
 
     public void setRoom(Room room) {
@@ -92,16 +86,19 @@ public class RoomCallbacksImplement {
     @JavascriptInterface
     public void fireRoomStateChanged(Object args) {
         // 获取事件,反序列化然后发送通知给监听者
-        RoomState roomState = gson.fromJson(String.valueOf(args), RoomState.class);
-        if (listener != null) {
+        SyncRoomState syncRoomState = this.room.getSyncRoomState();
+        JsonObject modifyStateJSON = syncRoomState.syncRoomStateAndCompareModifyStateJSON(String.valueOf(args));
+
+        if (modifyStateJSON != null && listener != null) {
+            RoomState modifyState = gson.fromJson(modifyStateJSON, RoomState.class);
+
             try {
-                listener.onRoomStateChanged(roomState);
+                listener.onRoomStateChanged(modifyState);
             } catch (AssertionError a) {
                 throw a;
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onRoomStateChanged method", e);
             }
-
         }
     }
 
