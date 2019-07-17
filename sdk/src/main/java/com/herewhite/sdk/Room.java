@@ -32,29 +32,34 @@ import wendu.dsbridge.OnReturnValue;
  */
 public class Room extends Displayer {
 
-    private final SyncRoomState syncRoomState;
+    private final SyncDisplayerState<RoomState> syncRoomState;
+    private RoomPhase roomPhase = RoomPhase.connected;
 
     private Integer timeDelay;
     private ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
 
-    public Room(String uuid, WhiteBroadView bridge, Context context, WhiteSdk sdk, SyncRoomState syncRoomState) {
+    public Room(String uuid, WhiteBroadView bridge, Context context, WhiteSdk sdk, SyncDisplayerState<RoomState> syncRoomState) {
         super(uuid, bridge, context, sdk);
         this.timeDelay = 0;
         this.syncRoomState = syncRoomState;
     }
 
-    SyncRoomState getSyncRoomState() {
+    SyncDisplayerState<RoomState> getSyncRoomState() {
         return syncRoomState;
+    }
+
+    void setRoomPhase(RoomPhase roomPhase) {
+        this.roomPhase = roomPhase;
     }
 
     //region Set API
     public void setGlobalState(GlobalState globalState) {
-        syncRoomState.putRoomStateProperty("globalState", globalState);
+        syncRoomState.putDisplayerStateProperty("globalState", globalState);
         bridge.callHandler("room.setGlobalState", new Object[]{globalState});
     }
 
     public void setMemberState(MemberState memberState) {
-        syncRoomState.putRoomStateProperty("memberState", memberState);
+        syncRoomState.putDisplayerStateProperty("memberState", memberState);
         bridge.callHandler("room.setMemberState", new Object[]{memberState});
     }
 
@@ -125,7 +130,7 @@ public class Room extends Displayer {
     }
 
     public GlobalState getGlobalState() {
-        return syncRoomState.getRoomState().getGlobalState();
+        return syncRoomState.getDisplayerState().getGlobalState();
     }
 
     @Deprecated
@@ -149,7 +154,7 @@ public class Room extends Displayer {
     }
 
     public MemberState getMemberState() {
-        return syncRoomState.getRoomState().getMemberState();
+        return syncRoomState.getDisplayerState().getMemberState();
     }
 
     @Deprecated
@@ -173,7 +178,7 @@ public class Room extends Displayer {
     }
 
     public RoomMember[] getRoomMembers() {
-        return syncRoomState.getRoomState().getRoomMembers();
+        return syncRoomState.getDisplayerState().getRoomMembers();
     }
 
     @Deprecated
@@ -197,7 +202,7 @@ public class Room extends Displayer {
     }
 
     public BroadcastState getBroadcastState() {
-        return syncRoomState.getRoomState().getBroadcastState();
+        return syncRoomState.getDisplayerState().getBroadcastState();
     }
 
     @Deprecated
@@ -224,7 +229,7 @@ public class Room extends Displayer {
      * 获取当前场景状态
      */
     public SceneState getSceneState() {
-        return syncRoomState.getRoomState().getSceneState();
+        return syncRoomState.getDisplayerState().getSceneState();
     }
 
     @Deprecated
@@ -275,7 +280,7 @@ public class Room extends Displayer {
     }
 
     public double getZoomScale() {
-        return syncRoomState.getRoomState().getZoomScale();
+        return syncRoomState.getDisplayerState().getZoomScale();
     }
 
     @Deprecated
@@ -299,7 +304,7 @@ public class Room extends Displayer {
     }
 
     public RoomPhase getRoomPhase() {
-        return syncRoomState.getPhase();
+        return this.roomPhase;
     }
 
     @Deprecated
@@ -323,12 +328,12 @@ public class Room extends Displayer {
     }
 
     public RoomState getRoomState() {
-        return syncRoomState.getRoomState();
+        return syncRoomState.getDisplayerState();
     }
 
     @Deprecated
     public void getRoomState(final Promise<RoomState> promise) {
-        bridge.callHandler("room.state.getRoomState", new OnReturnValue<Object>() {
+        bridge.callHandler("room.state.getDisplayerState", new OnReturnValue<Object>() {
             @Override
             public void onValue(Object o) {
                 try {
@@ -336,10 +341,10 @@ public class Room extends Displayer {
                 } catch (AssertionError a) {
                     throw a;
                 } catch (JsonSyntaxException e) {
-                    Logger.error("An JsonSyntaxException occurred while parse json from getRoomState", e);
+                    Logger.error("An JsonSyntaxException occurred while parse json from getDisplayerState", e);
                     promise.catchEx(new SDKError(e.getMessage()));
                 } catch (Throwable e) {
-                    Logger.error("An exception occurred in getRoomState promise then method", e);
+                    Logger.error("An exception occurred in getDisplayerState promise then method", e);
                     promise.catchEx(new SDKError(e.getMessage()));
                 }
             }

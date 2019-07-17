@@ -14,7 +14,7 @@ import com.herewhite.sdk.domain.RoomState;
  * Created by buhe on 2018/8/12.
  */
 
-public class RoomCallbacksImplement implements SyncRoomState.Listener {
+public class RoomCallbacksImplement implements SyncDisplayerState.Listener<RoomState> {
 
     private final static Gson gson = new Gson();
     private final Handler handler;
@@ -39,7 +39,7 @@ public class RoomCallbacksImplement implements SyncRoomState.Listener {
     }
 
     @Override
-    public void onRoomStateChanged(final RoomState modifyState) {
+    public void onDisplayerStateChanged(final RoomState modifyState) {
         if (listener != null) {
             handler.post(new Runnable() {
                 @Override
@@ -64,7 +64,7 @@ public class RoomCallbacksImplement implements SyncRoomState.Listener {
         RoomPhase phase = RoomPhase.valueOf(String.valueOf(args));
 
         if (this.room != null) {
-            this.room.getSyncRoomState().syncRoomPhase(phase);
+            this.room.setRoomPhase(phase);
         }
         if (listener != null) {
             try {
@@ -108,7 +108,7 @@ public class RoomCallbacksImplement implements SyncRoomState.Listener {
 
     @JavascriptInterface
     public void fireRoomStateChanged(Object args) {
-        this.room.getSyncRoomState().syncRoomState(String.valueOf(args));
+        this.room.getSyncRoomState().syncDisplayerState(String.valueOf(args));
     }
 
     @JavascriptInterface
