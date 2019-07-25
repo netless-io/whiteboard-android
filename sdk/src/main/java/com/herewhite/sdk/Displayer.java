@@ -1,10 +1,10 @@
 package com.herewhite.sdk;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.support.annotation.ColorInt;
 import android.util.Base64;
-
 import com.google.gson.Gson;
 import com.herewhite.sdk.domain.CameraConfig;
 import com.herewhite.sdk.domain.Promise;
@@ -15,6 +15,8 @@ import wendu.dsbridge.OnReturnValue;
 
 public class Displayer {
 
+    @ColorInt
+    private int backgroudColor = Color.WHITE;
     protected final WhiteBroadView bridge;
     protected String uuid;
     protected final Context context;
@@ -26,6 +28,23 @@ public class Displayer {
         this.bridge = bridge;
         this.context = context;
         this.sdk = sdk;
+    }
+
+    public void setBackgroudColor(int intColor) {
+        if ((intColor & 0xFF000000) == 0xFF000000) {
+            this.bridge.callHandler("displayer.background", new Object[]{Displayer.toHexString(intColor)});
+            backgroudColor = intColor;
+        } else {
+            throw new AssertionError("alpha is not support to change");
+        }
+    }
+
+    public int getBackgroudColor() {
+        return backgroudColor;
+    }
+
+    private final static String toHexString(int intColor) {
+        return String.format("#%06X", (0xFFFFFF & intColor));
     }
 
     public void getScenePreviewImage(String scenePath, final Promise<Bitmap>promise) {
