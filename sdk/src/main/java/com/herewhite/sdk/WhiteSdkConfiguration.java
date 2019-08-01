@@ -1,6 +1,7 @@
 package com.herewhite.sdk;
 
 import com.herewhite.sdk.domain.DeviceType;
+import com.herewhite.sdk.domain.LoggerOptions;
 import com.herewhite.sdk.domain.WhiteObject;
 
 import java.util.HashMap;
@@ -19,6 +20,16 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private boolean customCursor = false;
     private boolean onlyCallbackRemoteStateModify = false;
     private HashMap<String, String> font;
+
+    public LoggerOptions getLoggerOptions() {
+        return loggerOptions;
+    }
+
+    public void setLoggerOptions(LoggerOptions loggerOptions) {
+        this.loggerOptions = loggerOptions;
+    }
+
+    private LoggerOptions loggerOptions;
 
     public HashMap<String, String> getFont() {
         return font;
