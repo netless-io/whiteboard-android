@@ -418,7 +418,7 @@ public class Room extends Displayer {
     }
 
     public void disableCameraTransform(final boolean disableOperations) {
-        bridge.callHandler("room.disableCamera", new Object[]{disableOperations});
+        bridge.callHandler("room.disableCameraTransform", new Object[]{disableOperations});
     }
 
     public void disableDeviceInputs(final boolean disableOperations) {
