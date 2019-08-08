@@ -10,6 +10,8 @@ import com.herewhite.sdk.domain.FrameError;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
 
+import org.json.JSONObject;
+
 /**
  * Created by buhe on 2018/8/12.
  */
@@ -19,6 +21,16 @@ public class RoomCallbacksImplement implements SyncDisplayerState.Listener<RoomS
     private final static Gson gson = new Gson();
     private final Handler handler;
     private RoomCallbacks listener;
+    private RoomCallbacks.JSONCallbacks jsonListener;
+
+    public RoomCallbacks.JSONCallbacks getJsonListener() {
+        return jsonListener;
+    }
+
+    public void setJsonListener(RoomCallbacks.JSONCallbacks jsonListener) {
+        this.jsonListener = jsonListener;
+    }
+
     private Room room;
 
     RoomCallbacksImplement(Context context) {
@@ -45,6 +57,18 @@ public class RoomCallbacksImplement implements SyncDisplayerState.Listener<RoomS
                 @Override
                 public void run() {
                     listener.onRoomStateChanged(modifyState);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onJSONDisplayerStateChanged(final JSONObject jsonObject) {
+        if (jsonListener != null) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    jsonListener.onRoomStateChanged(jsonObject);
                 }
             });
         }

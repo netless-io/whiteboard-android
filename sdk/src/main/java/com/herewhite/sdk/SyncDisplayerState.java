@@ -6,6 +6,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -28,6 +31,7 @@ public class SyncDisplayerState<T> {
 
     public interface Listener<T> {
         void onDisplayerStateChanged(T modifyState);
+        void onJSONDisplayerStateChanged(JSONObject jsonObject);
     }
 
     public T getDisplayerState() {
@@ -40,9 +44,16 @@ public class SyncDisplayerState<T> {
 
     public void syncDisplayerState(String stateJSON) {
         JsonObject modifyStateJSON = this.putDisplayerStateAndCompareModifyStateJSON(parser.parse(stateJSON).getAsJsonObject());
-        if (modifyStateJSON != null && this.listener != null) {
-            T modifyState = gson.fromJson(modifyStateJSON, this.clazz);
-            this.listener.onDisplayerStateChanged(modifyState);
+        if (listener != null) {
+            try {
+                listener.onJSONDisplayerStateChanged(new JSONObject(stateJSON));
+            } catch (JSONException e) {
+
+            }
+            if (modifyStateJSON != null) {
+                T modifyState = gson.fromJson(modifyStateJSON, this.clazz);
+                this.listener.onDisplayerStateChanged(modifyState);
+            }
         }
     }
 

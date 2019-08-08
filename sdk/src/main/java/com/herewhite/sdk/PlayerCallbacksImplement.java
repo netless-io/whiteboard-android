@@ -10,6 +10,8 @@ import com.herewhite.sdk.domain.PlayerPhase;
 import com.herewhite.sdk.domain.PlayerState;
 import com.herewhite.sdk.domain.SDKError;
 
+import org.json.JSONObject;
+
 /**
  * Created by buhe on 2018/8/12.
  */
@@ -19,6 +21,16 @@ public class PlayerCallbacksImplement implements SyncDisplayerState.Listener<Pla
     private final static Gson gson = new Gson();
 
     private PlayerEventListener listener;
+    private PlayerEventListener.JSONListener jsonListener;
+
+    public PlayerEventListener.JSONListener getJsonListener() {
+        return jsonListener;
+    }
+
+    public void setJsonListener(PlayerEventListener.JSONListener jsonListener) {
+        this.jsonListener = jsonListener;
+    }
+
     private Player player;
 
     public PlayerEventListener getListener() {
@@ -48,6 +60,13 @@ public class PlayerCallbacksImplement implements SyncDisplayerState.Listener<Pla
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onPlayerStateChanged method", e);
             }
+        }
+    }
+
+    @Override
+    public void onJSONDisplayerStateChanged(JSONObject jsonObject) {
+        if (jsonListener != null) {
+            jsonListener.onPlayerStateChanged(jsonObject);
         }
     }
 
