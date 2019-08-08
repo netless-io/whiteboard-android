@@ -29,9 +29,6 @@ public class WhiteSdk {
     private final boolean onlyCallbackRemoteStateModify;
     private UrlInterrupter urlInterrupter;
 
-    private final ConcurrentHashMap<String, Room> roomConcurrentHashMap = new ConcurrentHashMap<>(); // uuid ,Room
-    private final ConcurrentHashMap<String, Player> playerConcurrentHashMap = new ConcurrentHashMap<>(); // uuid ,Player
-
     public static String Version() {
         return "2.4.7";
     }
@@ -117,14 +114,6 @@ public class WhiteSdk {
         }
     }
 
-    public void releaseRoom(String uuid) {
-        this.roomConcurrentHashMap.remove(uuid);
-    }
-
-    public void releasePlayer(String uuid) {
-        this.playerConcurrentHashMap.remove(uuid);
-    }
-
     public void createPlayer(final PlayerConfiguration playerConfiguration, final Promise<Player> playerPromise) {
         this.createPlayer(playerConfiguration, null, playerPromise);
     }
@@ -163,7 +152,6 @@ public class WhiteSdk {
                         Player player = new Player(playerConfiguration.getRoom(), bridge, context, WhiteSdk.this, playerTimeInfo, syncPlayerState);
 
                         playerCallbacksImplement.setPlayer(player);
-                        playerConcurrentHashMap.put(playerConfiguration.getRoom(), player);
                         playerPromise.then(player);
                     }
                 }
