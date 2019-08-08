@@ -22,7 +22,6 @@ public interface RoomCallbacks {
 
     /**
      房间中RoomState属性，发生变化时，会触发该回调。
-     注意：主动设置的 RoomState，不会触发该回调。
      @param modifyState 发生变化的 RoomState 内容
      */
     void onRoomStateChanged(RoomState modifyState);
