@@ -33,7 +33,7 @@ public class WhiteSdk {
     private final ConcurrentHashMap<String, Player> playerConcurrentHashMap = new ConcurrentHashMap<>(); // uuid ,Player
 
     public static String Version() {
-        return "2.3.5";
+        return "2.4.7";
     }
 
     public WhiteSdk(WhiteBroadView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration) {
