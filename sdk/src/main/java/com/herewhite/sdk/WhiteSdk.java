@@ -172,6 +172,17 @@ public class WhiteSdk {
         }
     }
 
+    public void releaseRoom(String uuid) {
+        roomCallbacksImplement.setListener(null);
+        roomCallbacksImplement.setJsonListener(null);
+    }
+
+    public void releasePlayer(String uuid) {
+        playerCallbacksImplement.setListener(null);
+        playerCallbacksImplement.setJsonListener(null);
+    }
+
+
     @JavascriptInterface
     public String urlInterrupter(Object args) {
         if (this.urlInterrupter == null) {
