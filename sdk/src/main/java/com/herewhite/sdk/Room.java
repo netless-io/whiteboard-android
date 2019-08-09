@@ -186,7 +186,7 @@ public class Room extends Displayer {
     /**
      * 同步 获取房间全局状态，只有 sdk 已有的字段。
      *
-     * @// TODO: 2019-08-09 支持自定义字段
+     * TODO: 支持自定义字段
      * @see GlobalState
      */
     public GlobalState getGlobalState() {
@@ -195,7 +195,7 @@ public class Room extends Displayer {
 
     /**
      * 异步 获取房间全局状态，只有 sdk 已有的字段。
-     * @// TODO: 2019-08-09 支持自定义字段
+     * TODO: 支持自定义字段
      * @param promise 完成回调
      */
     public void getGlobalState(final Promise<GlobalState> promise) {
