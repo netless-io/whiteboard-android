@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import wendu.dsbridge.OnReturnValue;
 
 /**
- * Created by buhe on 2018/8/10.
+ * 实时房间操作类
  */
 public class Room extends Displayer {
 
