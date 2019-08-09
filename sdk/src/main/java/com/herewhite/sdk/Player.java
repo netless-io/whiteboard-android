@@ -69,7 +69,7 @@ public class Player extends Displayer {
     }
 
     //region Event API
-    public void fireMagixEvent(EventEntry eventEntry) {
+    void fireMagixEvent(EventEntry eventEntry) {
         EventListener eventListener = eventListenerConcurrentHashMap.get(eventEntry.getEventName());
         if (eventListener != null) {
             try {
