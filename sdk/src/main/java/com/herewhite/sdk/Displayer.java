@@ -13,6 +13,9 @@ import com.herewhite.sdk.domain.SDKError;
 
 import wendu.dsbridge.OnReturnValue;
 
+/**
+ * 白板房间基类
+ */
 public class Displayer {
 
     @ColorInt
@@ -30,6 +33,11 @@ public class Displayer {
         this.sdk = sdk;
     }
 
+    /**
+     * 设置白板背景色（本地操作，不会同步）
+     *
+     * @param intColor 16 进制 aRGB 色值
+     */
     public void setBackgroudColor(int intColor) {
         if ((intColor & 0xFF000000) == 0xFF000000) {
             this.bridge.callHandler("displayer.background", new Object[]{Displayer.toHexString(intColor)});
@@ -39,6 +47,11 @@ public class Displayer {
         }
     }
 
+    /**
+     * 获取白板房间，本地背景色
+     *
+     * @return 16进制 aRGB 色值
+     */
     public int getBackgroudColor() {
         return backgroudColor;
     }
@@ -47,6 +60,12 @@ public class Displayer {
         return String.format("#%06X", (0xFFFFFF & intColor));
     }
 
+    /**
+     * 获取特定场景的全量截图
+     *
+     * @param scenePath 场景路径
+     * @param promise   完成回调
+     */
     public void getScenePreviewImage(String scenePath, final Promise<Bitmap>promise) {
         this.bridge.callHandler("displayerAsync.scenePreview", new Object[]{scenePath}, new OnReturnValue<String>() {
             @Override
@@ -64,6 +83,12 @@ public class Displayer {
         });
     }
 
+    /**
+     * 获取特定场景的预览图（用户切换到对应场景时，能看到的内容）
+     *
+     * @param scenePath 场景路径
+     * @param promise   完成回调
+     */
     public void getSceneSnapshotImage(String scenePath, final Promise<Bitmap>promise) {
         this.bridge.callHandler("displayerAsync.sceneSnapshot", new Object[]{scenePath}, new OnReturnValue<String>() {
             @Override
@@ -89,11 +114,23 @@ public class Displayer {
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length, opts);
     }
 
+    /**
+     * 移动视角：移动，缩放白板
+     *
+     * @param camera 视角参数
+     * @see CameraConfig 只需要传入，需要改动的值
+     */
     public void moveCamera(CameraConfig camera) {
         this.bridge.callHandler("displayer.moveCamera", new Object[]{camera});
     }
 
-    public void moveCameraToContainer(RectangleConfig rectange) {
-        this.bridge.callHandler("displayer.moveCameraToContain", new Object[]{rectange});
+    /**
+     * 调整用户视野
+     *
+     * @param rectangle 视野参数
+     * @see RectangleConfig 需要传入完整的视野参数
+     */
+    public void moveCameraToContainer(RectangleConfig rectangle) {
+        this.bridge.callHandler("displayer.moveCameraToContain", new Object[]{rectangle});
     }
 }
