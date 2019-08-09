@@ -1,7 +1,6 @@
 package com.herewhite.sdk.domain;
 
 public class EventEntry extends WhiteObject {
-    private String uuid;
     private String eventName;
     private Object payload;
     private String scope;
@@ -13,10 +12,6 @@ public class EventEntry extends WhiteObject {
 
     public long getAuthorId() {
         return authorId;
-    }
-
-    public String getUuid() {
-        return uuid;
     }
 
     public String getEventName() {
