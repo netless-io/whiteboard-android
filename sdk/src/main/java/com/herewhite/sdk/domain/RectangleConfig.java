@@ -7,26 +7,26 @@ public class RectangleConfig extends WhiteObject {
     private Double height;
 
     public RectangleConfig(Double width, Double height, AnimationMode mode) {
-        this(width, height);
-        this.animationMode = mode;
-    }
-
-    public RectangleConfig(Double width, Double height) {
         this.width = width;
         this.height = height;
         this.originX = - width / 2.0d;
         this.originY = - height / 2.0d;
+        this.animationMode = mode;
+    }
+
+    public RectangleConfig(Double width, Double height) {
+        this(width, height, AnimationMode.Continuous);
     }
 
     public RectangleConfig(Double originX, Double originY, Double width, Double height) {
+        this(originX, originY, width, height, AnimationMode.Continuous);
+    }
+
+    public RectangleConfig(Double originX, Double originY, Double width, Double height, AnimationMode mode) {
         this.originX = originX;
         this.originY = originY;
         this.width = width;
         this.height = height;
-    }
-
-    public RectangleConfig(Double originX, Double originY, Double width, Double height, AnimationMode mode) {
-        this(originX, originY, width, height);
         this.animationMode = mode;
     }
 
