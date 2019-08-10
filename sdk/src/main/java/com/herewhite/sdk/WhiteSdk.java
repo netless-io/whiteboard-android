@@ -14,7 +14,6 @@ import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import wendu.dsbridge.OnReturnValue;
 
