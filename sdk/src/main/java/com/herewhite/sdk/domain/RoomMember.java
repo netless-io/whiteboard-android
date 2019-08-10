@@ -6,7 +6,6 @@ package com.herewhite.sdk.domain;
 
 public class RoomMember {
     private Long memberId;
-    private Boolean isRtcConnected;
     private String currentApplianceName;
     private MemberInformation information;
 
@@ -16,14 +15,6 @@ public class RoomMember {
 
     public void setMemberId(long memberId) {
         this.memberId = memberId;
-    }
-
-    public boolean isRtcConnected() {
-        return isRtcConnected;
-    }
-
-    public void setRtcConnected(boolean rtcConnected) {
-        isRtcConnected = rtcConnected;
     }
 
     public String getCurrentApplianceName() {
