@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.AkkoEvent;
 import com.herewhite.sdk.domain.BroadcastState;
+import com.herewhite.sdk.domain.CameraConfig;
 import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.EventListener;
 import com.herewhite.sdk.domain.GlobalState;
@@ -623,7 +624,7 @@ public class Room extends Displayer {
 
     /**
      * 改变房间缩放比例
-     * @deprecated 使用 moveCamera API
+     * @deprecated 使用 {@link #moveCamera(CameraConfig)} 调整缩放比例。同时支持动画选项
      * @param scale 缩放比例，2x 表示内容放大两倍。
      */
     @Deprecated

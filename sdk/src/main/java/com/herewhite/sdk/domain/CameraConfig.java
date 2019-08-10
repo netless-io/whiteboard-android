@@ -1,11 +1,27 @@
 package com.herewhite.sdk.domain;
 
+/**
+ * 视角调整配置类
+ * @since 2.2.0
+ */
 public class CameraConfig extends WhiteObject {
 
+    /**
+     * 获取动画类型
+     *
+     * @return {@link AnimationMode}
+     * @since 2.3.2
+     */
     public AnimationMode getAnimationMode() {
         return animationMode;
     }
 
+    /**
+     * 设置动画类型
+     *
+     * @param animationMode {@link AnimationMode}
+     * @since 2.3.2
+     */
     public void setAnimationMode(AnimationMode animationMode) {
         this.animationMode = animationMode;
     }
