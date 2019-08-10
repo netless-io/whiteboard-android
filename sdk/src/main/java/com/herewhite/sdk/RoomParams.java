@@ -13,8 +13,6 @@ public class RoomParams extends WhiteObject {
 
     private String uuid;
     private String roomToken;
-    private String sessionToken;
-    private String userToken;
     private MemberInformation memberInfo;
 
     public Object getUserPayload() {
@@ -73,19 +71,4 @@ public class RoomParams extends WhiteObject {
         this.roomToken = roomToken;
     }
 
-    public String getSessionToken() {
-        return sessionToken;
-    }
-
-    public void setSessionToken(String sessionToken) {
-        this.sessionToken = sessionToken;
-    }
-
-    public String getUserToken() {
-        return userToken;
-    }
-
-    public void setUserToken(String userToken) {
-        this.userToken = userToken;
-    }
 }
