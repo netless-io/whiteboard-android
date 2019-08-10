@@ -23,6 +23,8 @@ import com.herewhite.sdk.domain.SceneState;
 import com.herewhite.sdk.domain.TextareaBox;
 import com.herewhite.sdk.domain.ViewMode;
 
+import org.json.JSONObject;
+
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -185,9 +187,8 @@ public class Room extends Displayer {
     }
 
     /**
-     * 同步 获取房间全局状态，只有 sdk 已有的字段。
+     * 同步 获取房间全局状态，只支持 sdk 已有的字段。
      *
-     * TODO: 支持自定义字段
      * @see GlobalState
      */
     public GlobalState getGlobalState() {
@@ -195,16 +196,20 @@ public class Room extends Displayer {
     }
 
     /**
-     * 异步 获取房间全局状态，只有 sdk 已有的字段。
-     * TODO: 支持自定义字段
+     * 异步 获取房间全局状态，只返回 sdk 的 GlobalState 类。
+     * @deprecated 获取 sdk 的全局状态，请使用 {@link #getGlobalState()} API。如果需要获取自定义的全局状态，请使用 {@link #getGlobalState(Class, Promise)}
      * @param promise 完成回调
      */
     public void getGlobalState(final Promise<GlobalState> promise) {
+        getGlobalState(GlobalState.class, promise);
+    }
+
+    public <T>void getGlobalState(final Class<T> classOfT, final Promise<T> promise) {
         bridge.callHandler("room.getGlobalState", new Object[]{}, new OnReturnValue<Object>() {
             @Override
             public void onValue(Object o) {
                 try {
-                    promise.then(gson.fromJson(String.valueOf(o), GlobalState.class));
+                    promise.then(gson.fromJson(String.valueOf(o), classOfT));
                 } catch (AssertionError a) {
                     throw a;
                 } catch (JsonSyntaxException e) {
