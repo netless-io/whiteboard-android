@@ -21,7 +21,7 @@ public class WhiteSdk {
 
     private final static Gson gson = new Gson();
 
-    private final WhiteBroadView bridge;
+    private final WhiteboardView bridge;
     private final Context context;
     private final RoomCallbacksImplement roomCallbacksImplement;
     private final PlayerCallbacksImplement playerCallbacksImplement;
@@ -32,11 +32,11 @@ public class WhiteSdk {
         return "2.4.7";
     }
 
-    public WhiteSdk(WhiteBroadView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration) {
+    public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration) {
         this(bridge, context, whiteSdkConfiguration, null);
     }
 
-    public WhiteSdk(WhiteBroadView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, UrlInterrupter urlInterrupter) {
+    public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, UrlInterrupter urlInterrupter) {
         this.bridge = bridge;
         this.context = context;
         this.urlInterrupter = urlInterrupter;

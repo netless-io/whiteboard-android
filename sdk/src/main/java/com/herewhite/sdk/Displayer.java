@@ -20,13 +20,13 @@ public class Displayer {
 
     @ColorInt
     private int backgroudColor = Color.WHITE;
-    protected final WhiteBroadView bridge;
+    protected final WhiteboardView bridge;
     protected String uuid;
     protected final Context context;
     protected WhiteSdk sdk;
     protected final static Gson gson = new Gson();
 
-    public Displayer(String uuid, WhiteBroadView bridge, Context context, WhiteSdk sdk) {
+    public Displayer(String uuid, WhiteboardView bridge, Context context, WhiteSdk sdk) {
         this.uuid = uuid;
         this.bridge = bridge;
         this.context = context;

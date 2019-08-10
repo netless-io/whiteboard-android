@@ -39,7 +39,7 @@ public class Room extends Displayer {
     private Integer timeDelay;
     private ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
 
-    public Room(String uuid, WhiteBroadView bridge, Context context, WhiteSdk sdk, SyncDisplayerState<RoomState> syncRoomState) {
+    public Room(String uuid, WhiteboardView bridge, Context context, WhiteSdk sdk, SyncDisplayerState<RoomState> syncRoomState) {
         super(uuid, bridge, context, sdk);
         this.timeDelay = 0;
         this.syncRoomState = syncRoomState;

@@ -42,7 +42,7 @@ public class Player extends Displayer {
      * @param playerTimeInfo  the player time info
      * @param syncPlayerState the sync player state
      */
-    public Player(String room, WhiteBroadView bridge, Context context, WhiteSdk whiteSdk, PlayerTimeInfo playerTimeInfo, SyncDisplayerState<PlayerState> syncPlayerState) {
+    public Player(String room, WhiteboardView bridge, Context context, WhiteSdk whiteSdk, PlayerTimeInfo playerTimeInfo, SyncDisplayerState<PlayerState> syncPlayerState) {
         super(room, bridge, context, whiteSdk);
         this.syncPlayerState = syncPlayerState;
         this.timeDuration = playerTimeInfo.getTimeDuration();

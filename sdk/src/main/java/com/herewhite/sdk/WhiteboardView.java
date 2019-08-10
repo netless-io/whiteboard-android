@@ -19,17 +19,17 @@ import wendu.dsbridge.OnReturnValue;
  * white on 2018/8/10.
  */
 
-public class WhiteBroadView extends DWebView {
+public class WhiteboardView extends DWebView {
 
 
     private Environment environment = Environment.cloud;
 
-    public WhiteBroadView(Context context) {
+    public WhiteboardView(Context context) {
         super(context);
         init();
     }
 
-    public WhiteBroadView(Context context, AttributeSet attrs) {
+    public WhiteboardView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
