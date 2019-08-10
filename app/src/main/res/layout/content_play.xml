@@ -8,7 +8,7 @@
     tools:context=".PlayActivity"
     tools:showIn="@layout/activity_play">
 
-    <com.herewhite.sdk.WhiteBroadView
+    <com.herewhite.sdk.WhiteboardView
         android:id="@+id/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

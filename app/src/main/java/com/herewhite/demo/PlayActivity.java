@@ -21,7 +21,7 @@ import okhttp3.Response;
 
 public class PlayActivity extends AppCompatActivity {
 
-    private WhiteBroadView whiteBroadView;
+    private WhiteboardView whiteboardView;
     Player player;
     Gson gson = new Gson();
 
@@ -32,7 +32,7 @@ public class PlayActivity extends AppCompatActivity {
         Intent intent = getIntent();
         final String uuid = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
         if (uuid != null) {
-            whiteBroadView = findViewById(R.id.white);
+            whiteboardView = findViewById(R.id.white);
 
             new DemoAPI().getRoomToken(uuid, new Callback() {
                 @Override
@@ -79,7 +79,7 @@ public class PlayActivity extends AppCompatActivity {
 
     private void player(String uuid, String roomToken) {
         WhiteSdk whiteSdk = new WhiteSdk(
-                whiteBroadView,
+                whiteboardView,
                 PlayActivity.this,
                 new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1, true),
                 new UrlInterrupter() {

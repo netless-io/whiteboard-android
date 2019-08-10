@@ -12,7 +12,7 @@ import android.view.View;
 import com.google.gson.Gson;
 import com.herewhite.sdk.Room;
 import com.herewhite.sdk.RoomParams;
-import com.herewhite.sdk.WhiteBroadView;
+import com.herewhite.sdk.WhiteboardView;
 import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
 import com.herewhite.sdk.domain.AkkoEvent;
@@ -77,7 +77,7 @@ public class SDKRoomTest {
                 onView(withId(R.id.white)).perform(new SDKViewAction() {
                     @Override
                     public void perform(UiController uiController, View view) {
-                        whiteSdk = new WhiteSdk((WhiteBroadView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
+                        whiteSdk = new WhiteSdk((WhiteboardView) view, view.getContext(), new WhiteSdkConfiguration(DeviceType.touch, 10d, 0.1d));
                         whiteSdk.joinRoom(new RoomParams(uuid, roomToken), new Promise<Room>() {
                             @Override
                             public void then(Room room) {
