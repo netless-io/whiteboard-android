@@ -37,6 +37,7 @@ public class Displayer {
      * 设置白板背景色（本地操作，不会同步）
      *
      * @param intColor 16 进制 aRGB 色值
+     * @since 2.4.0
      */
     public void setBackgroudColor(int intColor) {
         if ((intColor & 0xFF000000) == 0xFF000000) {
@@ -51,6 +52,7 @@ public class Displayer {
      * 获取白板房间，本地背景色
      *
      * @return 16进制 aRGB 色值
+     * @since 2.4.0
      */
     public int getBackgroudColor() {
         return backgroudColor;
@@ -119,6 +121,7 @@ public class Displayer {
      *
      * @param camera 视角参数
      * @see CameraConfig 只需要传入，需要改动的值
+     * @since 2.2.0
      */
     public void moveCamera(CameraConfig camera) {
         this.bridge.callHandler("displayer.moveCamera", new Object[]{camera});
@@ -129,6 +132,7 @@ public class Displayer {
      *
      * @param rectangle 视野参数
      * @see RectangleConfig 需要传入完整的视野参数
+     * @since 2.2.0
      */
     public void moveCameraToContainer(RectangleConfig rectangle) {
         this.bridge.callHandler("displayer.moveCameraToContain", new Object[]{rectangle});

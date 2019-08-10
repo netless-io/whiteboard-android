@@ -653,6 +653,7 @@ public class Room extends Displayer {
      * 禁止用户教具操作
      *
      * @param disableOperations true:禁止用户教具操作；false:响应用户教具输入操作。默认:false。
+     * @since 2.2.0
      */
     public void disableDeviceInputs(final boolean disableOperations) {
         bridge.callHandler("room.disableDeviceInputs", new Object[]{disableOperations});
