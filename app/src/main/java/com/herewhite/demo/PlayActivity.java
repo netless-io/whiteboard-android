@@ -185,6 +185,7 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     void showToast(Object o) {
+        Log.i("showToast", o.toString());
         Toast.makeText(this, o.toString(), Toast.LENGTH_SHORT).show();
     }
 }
