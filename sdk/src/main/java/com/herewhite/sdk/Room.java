@@ -208,8 +208,20 @@ public class Room extends Displayer {
         bridge.callHandler("room.getGlobalState", new Object[]{}, new OnReturnValue<Object>() {
             @Override
             public void onValue(Object o) {
+                T customState = null;
                 try {
-                    promise.then(gson.fromJson(String.valueOf(o), classOfT));
+                    customState = gson.fromJson(String.valueOf(o), classOfT);
+                } catch (AssertionError a) {
+                    throw a;
+                } catch (Throwable e) {
+                    Logger.error("An exception occurred while parse json from getGlobalState for customState", e);
+                    promise.catchEx(new SDKError((e.getMessage())));
+                }
+                if (customState == null) {
+                    return;
+                }
+                try {
+                    promise.then(customState);
                 } catch (AssertionError a) {
                     throw a;
                 } catch (JsonSyntaxException e) {
