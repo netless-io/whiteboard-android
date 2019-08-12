@@ -13,8 +13,7 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".PlayActivity"
-            android:label="@string/title_activity_play"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:label="@string/title_activity_play"></activity>
         <activity
             android:name=".StartActivity"
             android:label="@string/title_activity_start"
