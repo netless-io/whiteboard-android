@@ -64,10 +64,6 @@ public class RoomActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.broadcast:
-                break;
-        }
         return true;
     }
 
