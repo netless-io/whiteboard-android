@@ -22,7 +22,7 @@ public class RoomMember {
     private MemberState memberState;
 
     /**
-     * 在加入房间时，带入的用户信息，可以为任意内容,建议各端传入字典。
+     * 在加入房间时，带入的用户信息，可以为任意内容,建议各端传入字典。key-value 形式的 payload 会由 Gson 自动转成Map
      *
      * @return 用户 payload
      * @since 2.4.7
