@@ -211,9 +211,9 @@ public class RoomActivity extends AppCompatActivity {
 
     public void nextScene(MenuItem item) {
         int nextIndex = room.getSceneState().getIndex() + 1;
-        room.setSceneIndex(nextIndex, new Promise() {
+        room.setSceneIndex(nextIndex, new Promise<Boolean>() {
             @Override
-            public void then(Object o) {
+            public void then(Boolean result) {
 
             }
 
