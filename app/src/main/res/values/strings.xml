@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WhiteSDKDemo</string>
+    <string name="app_name">whiteboard-demo</string>
     <string name="title_activity_start">首页</string>
     <string name="uuid">uuid</string>
     <string name="join">加入房间</string>
