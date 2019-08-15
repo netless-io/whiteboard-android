@@ -207,7 +207,7 @@ public class Room extends Displayer {
     /**
      * 异步 获取房间全局状态，根据传入的 Class 类型，在回调中返回对应的 实例
      *
-     * @param <T>      泛型 T
+     * @param <T>      globalState 反序列化的类
      * @param classOfT 泛型 T 的 class 类型
      * @param promise  完成回调，其中返回值传入的 class 的实例
      */
