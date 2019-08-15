@@ -31,7 +31,6 @@ public class SyncDisplayerState<T> {
 
     public interface Listener<T> {
         void onDisplayerStateChanged(T modifyState);
-        void onJSONDisplayerStateChanged(JSONObject jsonObject);
     }
 
     public T getDisplayerState() {
@@ -45,11 +44,6 @@ public class SyncDisplayerState<T> {
     public void syncDisplayerState(String stateJSON) {
         JsonObject modifyStateJSON = this.putDisplayerStateAndCompareModifyStateJSON(parser.parse(stateJSON).getAsJsonObject());
         if (listener != null) {
-            try {
-                listener.onJSONDisplayerStateChanged(new JSONObject(stateJSON));
-            } catch (JSONException e) {
-
-            }
             if (modifyStateJSON != null) {
                 T modifyState = gson.fromJson(modifyStateJSON, this.clazz);
                 this.listener.onDisplayerStateChanged(modifyState);

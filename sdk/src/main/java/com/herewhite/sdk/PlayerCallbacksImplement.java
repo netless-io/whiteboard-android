@@ -21,15 +21,6 @@ public class PlayerCallbacksImplement implements SyncDisplayerState.Listener<Pla
     private final static Gson gson = new Gson();
 
     private PlayerEventListener listener;
-    private PlayerEventListener.JSONListener jsonListener;
-
-    public PlayerEventListener.JSONListener getJsonListener() {
-        return jsonListener;
-    }
-
-    public void setJsonListener(PlayerEventListener.JSONListener jsonListener) {
-        this.jsonListener = jsonListener;
-    }
 
     private Player player;
 
@@ -60,13 +51,6 @@ public class PlayerCallbacksImplement implements SyncDisplayerState.Listener<Pla
             } catch (Throwable e) {
                 Logger.error("An exception occurred while invoke onPlayerStateChanged method", e);
             }
-        }
-    }
-
-    @Override
-    public void onJSONDisplayerStateChanged(JSONObject jsonObject) {
-        if (jsonListener != null) {
-            jsonListener.onPlayerStateChanged(jsonObject);
         }
     }
 
