@@ -20,7 +20,6 @@ import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.SceneState;
-import com.herewhite.sdk.domain.TextareaBox;
 import com.herewhite.sdk.domain.ViewMode;
 
 import java.util.UUID;
@@ -138,10 +137,6 @@ public class Room extends Displayer {
             }
         });
         this.sdk.releaseRoom(this.uuid);
-    }
-
-    public void updateTextarea(TextareaBox textareaBox) {
-        bridge.callHandler("room.updateTextarea", new Object[]{textareaBox});
     }
 
     /**
