@@ -13,7 +13,7 @@ public class BroadcastState extends WhiteObject {
     public ViewMode getMode() {
         return mode;
     }
-    public long getBroadcasterId() {
+    public Long getBroadcasterId() {
         return broadcasterId;
     }
     public MemberInformation getBroadcasterInformation() {
