@@ -176,7 +176,6 @@ public class PlayerCallbacksImplement implements SyncDisplayerState.Listener<Pla
         // 获取事件,反序列化然后发送通知给监听者
         if (listener != null) {
             try {
-                FrameError frameError = gson.fromJson(String.valueOf(args), FrameError.class);
                 listener.onCatchErrorWhenRender(resolverSDKError(args));
             } catch (AssertionError a) {
                 throw a;
