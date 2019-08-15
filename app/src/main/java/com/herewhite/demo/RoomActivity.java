@@ -41,6 +41,21 @@ public class RoomActivity extends AppCompatActivity {
     Gson gson = new Gson();
     DemoAPI demoAPI = new DemoAPI();
 
+    /**
+     * 自定义 GlobalState 示例
+     */
+    class MyGlobalState extends GlobalState {
+        public String getOne() {
+            return one;
+        }
+
+        public void setOne(String one) {
+            this.one = one;
+        }
+
+        String one;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -169,6 +184,8 @@ public class RoomActivity extends AppCompatActivity {
                         return sourceUrl;
                     }
                 });
+        /** 设置自定义全局状态，在后续回调中 GlobalState 直接进行类型转换即可 */
+        WhiteDisplayerState.setCustomGlobalStateClass(MyGlobalState.class);
 
         whiteSdk.joinRoom(new RoomParams(uuid, roomToken), new AbstractRoomCallbacks() {
             @Override
