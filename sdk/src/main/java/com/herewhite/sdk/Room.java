@@ -23,8 +23,6 @@ import com.herewhite.sdk.domain.SceneState;
 import com.herewhite.sdk.domain.TextareaBox;
 import com.herewhite.sdk.domain.ViewMode;
 
-import org.json.JSONObject;
-
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
