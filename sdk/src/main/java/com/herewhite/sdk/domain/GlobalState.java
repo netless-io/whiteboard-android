@@ -5,13 +5,5 @@ package com.herewhite.sdk.domain;
  */
 
 public class GlobalState extends WhiteObject {
-    private Integer currentSceneIndex;
 
-    public int getCurrentSceneIndex() {
-        return currentSceneIndex;
-    }
-
-    public void setCurrentSceneIndex(int currentSceneIndex) {
-        this.currentSceneIndex = currentSceneIndex;
-    }
 }
