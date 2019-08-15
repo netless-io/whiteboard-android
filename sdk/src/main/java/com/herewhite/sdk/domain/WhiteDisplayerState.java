@@ -1,23 +1,27 @@
 package com.herewhite.sdk.domain;
 
+import com.google.gson.Gson;
+
 public class WhiteDisplayerState extends WhiteObject {
 
+    static Gson gson = new Gson();
+    static Class customClass = GlobalState.class;
+    public static <T extends GlobalState> void setCustomGlobalStateClass(Class<T> classOfT) {
+        customClass = classOfT;
+    }
+
+    public static <T extends GlobalState>Class<T> getCustomGlobalStateClass() {
+        return customClass;
+    }
     /**
      * 全局状态，所有用户可见，实时房间时，可读可写；回放房间只读。返回内容为 sdk 默认全局状态
      *
      * @return 全局状态
      */
     public GlobalState getGlobalState() {
-        return globalState;
-    }
-
-    /**
-     * 设置全局状态，可以传入自定义 GlobalState 子类，其中字段会加入到房间全局状态中
-     *
-     * @param globalState the global state
-     */
-    public void setGlobalState(GlobalState globalState) {
-        this.globalState = globalState;
+        String str = gson.toJson(globalState);
+        Object customInstance = gson.fromJson(str, customClass);
+        return ((GlobalState) customInstance);
     }
 
     /**
@@ -40,7 +44,7 @@ public class WhiteDisplayerState extends WhiteObject {
         return sceneState;
     }
 
-    private GlobalState globalState;
+    private Object globalState;
     private RoomMember[] roomMembers;
     private SceneState sceneState;
 
