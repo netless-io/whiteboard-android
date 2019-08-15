@@ -1,9 +1,10 @@
 package com.herewhite.sdk.domain;
 
 /**
- * Created by buhe on 2018/8/13.
+ * @deprecated {@link com.herewhite.sdk.RoomParams#setUserPayload(Object)} Payload 已支持自定义格式内容
+ * 上传
  */
-
+@Deprecated
 public class MemberInformation extends WhiteObject {
     private Long id;
     private String nickName;
