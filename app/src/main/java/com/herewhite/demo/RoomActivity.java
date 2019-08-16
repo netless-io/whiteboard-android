@@ -368,17 +368,7 @@ public class RoomActivity extends AppCompatActivity {
 
     public void getScene(MenuItem item) {
         logAction();
-        room.getScenes(new Promise<Scene[]>() {
-            @Override
-            public void then(Scene[] scenes) {
-                logRoomInfo(gson.toJson(scenes));
-            }
-
-            @Override
-            public void catchEx(SDKError t) {
-
-            }
-        });
+        logAction(room.getScenes().toString());
     }
 
     public void getRoomPhase(MenuItem item) {
@@ -481,11 +471,13 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     public void zoomChange(MenuItem item) {
+        CameraConfig cameraConfig = new CameraConfig();
         if (room.getZoomScale() != 1) {
-            room.zoomChange(1);
+            cameraConfig.setScale(1d);
         } else {
-            room.zoomChange(5);
+            cameraConfig.setScale(5d);
         }
+        room.moveCamera(cameraConfig);
     }
 
     void logRoomInfo(String str) {
