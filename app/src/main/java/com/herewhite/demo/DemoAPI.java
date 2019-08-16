@@ -2,7 +2,6 @@ package com.herewhite.demo;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.herewhite.sdk.Environment;
 
 import java.io.IOException;
 import java.util.HashMap;
