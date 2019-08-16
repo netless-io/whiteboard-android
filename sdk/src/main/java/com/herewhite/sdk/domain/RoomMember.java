@@ -54,6 +54,13 @@ public class RoomMember {
         return memberState.getCurrentApplianceName();
     }
 
+    /**
+     *
+     * 获取用户信息（加入房间时，自带内容）
+     *
+     * @deprecated 请使用 {@link #getPayload()} 获取用户信息
+     * @return the information
+     */
     public MemberInformation getInformation() {
         return information;
     }

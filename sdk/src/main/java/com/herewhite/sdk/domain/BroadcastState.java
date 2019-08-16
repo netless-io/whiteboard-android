@@ -7,19 +7,8 @@ public class BroadcastState extends WhiteObject {
 
     private ViewMode mode;
     private Long broadcasterId;
-    private MemberInformation broadcasterInformation;
+    private RoomMember broadcasterInformation;
 
-    /**
-     * 用户透传数据,具体类型有 Gson 决定，key-value 字段会产生 Map
-     *
-     * @return 用户信息
-     * @since 2.4.7
-     */
-    public Object getPayload() {
-        return payload;
-    }
-
-    private Object payload;
     public ViewMode getMode() {
         return mode;
     }
@@ -39,10 +28,9 @@ public class BroadcastState extends WhiteObject {
     /**
      * 主播信息字段
      *
-     * @deprecated 请使用 {@link #getPayload()} 获取完全自由的用户信息
      * @return 主播信息字段
      */
-    public MemberInformation getBroadcasterInformation() {
+    public RoomMember getBroadcasterInformation() {
         return broadcasterInformation;
     }
 }
