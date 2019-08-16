@@ -3,9 +3,12 @@ package com.herewhite.sdk.domain;
 public class Scene extends WhiteObject {
 
     private String name;
-    private String componentsCount;
+    private Long componentsCount;
     private PptPage ppt;
 
+    /**
+     * sdk 插入新场景时，会随机命名
+     */
     public Scene() {
     }
 
@@ -26,12 +29,8 @@ public class Scene extends WhiteObject {
         this.name = name;
     }
 
-    public String getComponentsCount() {
+    public Long getComponentsCount() {
         return componentsCount;
-    }
-
-    public void setComponentsCount(String componentsCount) {
-        this.componentsCount = componentsCount;
     }
 
     public PptPage getPpt() {
