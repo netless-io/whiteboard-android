@@ -180,7 +180,7 @@ public class Room extends Displayer {
     }
 
     /**
-     * 同步 获取房间全局状态，只支持 sdk 已有的字段。
+     * 同步 获取房间全局状态，如果已经设置好自定义 GlobalState，获取后，可以进行类型转换
      *
      * @see GlobalState
      */
@@ -189,8 +189,8 @@ public class Room extends Displayer {
     }
 
     /**
-     * 异步 获取房间全局状态，只返回 sdk 的 GlobalState 类。
-     * @deprecated 获取 sdk 的全局状态，请使用 {@link #getGlobalState()} API。如果需要获取自定义的全局状态，请使用 {@link #getGlobalState(Class, Promise)}
+     * 异步 获取房间全局状态，如果已经设置好自定义 GlobalState，获取后，可以进行类型转换
+     * @deprecated 获取 sdk 的全局状态，请使用 {@link #getGlobalState()} API。
      * @param promise 完成回调
      */
     public void getGlobalState(final Promise<GlobalState> promise) {
@@ -205,7 +205,7 @@ public class Room extends Displayer {
      * @param promise  完成回调，其中返回值传入的 class 的实例
      * @since 2.4.7
      */
-    public <T>void getGlobalState(final Class<T> classOfT, final Promise<T> promise) {
+    private  <T>void getGlobalState(final Class<T> classOfT, final Promise<T> promise) {
         bridge.callHandler("room.getGlobalState", new Object[]{}, new OnReturnValue<Object>() {
             @Override
             public void onValue(Object o) {
