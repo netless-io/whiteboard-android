@@ -1,6 +1,9 @@
 package com.herewhite.sdk.domain;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 /**
  * 实时房间，回放房间共有State
@@ -9,7 +12,7 @@ import com.google.gson.Gson;
 public class WhiteDisplayerState extends WhiteObject {
 
     static Gson gson = new Gson();
-    static Class customClass = GlobalState.class;
+    static Class<?> customClass = GlobalState.class;
 
     /**
      * 设置自定义全局变量类型，设置后，所有 GlobalState 都会转换为该类的实例。
@@ -23,24 +26,23 @@ public class WhiteDisplayerState extends WhiteObject {
     }
 
     /**
-     * 获取当前的自定义 GlobalState Class
-     *
-     * @param <T> 泛型约束
-     * @return 自定义 GlobalState Class 类
-     * @since 2.4.7
-     */
-    public static <T extends GlobalState>Class<T> getCustomGlobalStateClass() {
-        return customClass;
-    }
-    /**
      * 全局状态，所有用户可见，实时房间时，可读可写；回放房间只读。返回内容为 sdk 默认全局状态
      *
      * @return 全局状态
      */
     public GlobalState getGlobalState() {
         String str = gson.toJson(globalState);
-        Object customInstance = gson.fromJson(str, customClass);
-        return ((GlobalState) customInstance);
+        Object customInstance = null;
+        try {
+            customInstance = gson.fromJson(str, customClass);
+        } catch (JsonSyntaxException e) {
+            Log.e("getGlobalState error", e.getMessage());
+        }
+        if (customClass.isInstance(customInstance)) {
+            return ((GlobalState) customInstance);
+        } else {
+            return null;
+        }
     }
 
     /**
