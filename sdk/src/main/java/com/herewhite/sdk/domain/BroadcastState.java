@@ -17,7 +17,7 @@ public class BroadcastState extends WhiteObject {
      * 获取主播在房间中的 memberId
      *
      * 2.4.6 前，当房间中没有主播时，错误的返回了 0。
-     * 2.4.7 修复了该问题。
+     * 2.4.8 修复了该问题。
      *
      * @return 主播 memberId
      */

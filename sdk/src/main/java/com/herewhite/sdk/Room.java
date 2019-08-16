@@ -203,7 +203,7 @@ public class Room extends Displayer {
      * @param <T>      globalState 反序列化的类
      * @param classOfT 泛型 T 的 class 类型
      * @param promise  完成回调，其中返回值传入的 class 的实例
-     * @since 2.4.7
+     * @since 2.4.8
      */
     private  <T>void getGlobalState(final Class<T> classOfT, final Promise<T> promise) {
         bridge.callHandler("room.getGlobalState", new Object[]{}, new OnReturnValue<Object>() {

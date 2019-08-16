@@ -7,7 +7,7 @@ import com.google.gson.JsonSyntaxException;
 
 /**
  * 实时房间，回放房间共有State
- * @since 2.4.7
+ * @since 2.4.8
  */
 public class WhiteDisplayerState extends WhiteObject {
 
@@ -19,7 +19,7 @@ public class WhiteDisplayerState extends WhiteObject {
      *
      * @param <T> 类型约束
      * @param classOfT 自定义 GlobalState Class
-     * @since 2.4.7
+     * @since 2.4.8
      */
     public static <T extends GlobalState> void setCustomGlobalStateClass(Class<T> classOfT) {
         customClass = classOfT;

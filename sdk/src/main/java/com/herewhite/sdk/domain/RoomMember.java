@@ -13,7 +13,7 @@ public class RoomMember {
      *
      * @return 教具信息
      * @see MemberState
-     * @since 2.4.7
+     * @since 2.4.8
      */
     public MemberState getMemberState() {
         return memberState;
@@ -25,7 +25,7 @@ public class RoomMember {
      * 在加入房间时，带入的用户信息，可以为任意内容,建议各端传入字典。key-value 形式的 payload 会由 Gson 自动转成Map
      *
      * @return 用户 payload
-     * @since 2.4.7
+     * @since 2.4.8
      */
     public Object getPayload() {
         return payload;
@@ -47,7 +47,7 @@ public class RoomMember {
      *
      * @deprecated 请使用 {@link #getMemberState()} 获取教具详细信息
      * @return 教具名称
-     * @since 2.4.7
+     * @since 2.4.8
      */
     @Deprecated
     public String getCurrentApplianceName() {
