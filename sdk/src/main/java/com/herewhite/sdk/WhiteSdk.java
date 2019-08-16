@@ -63,16 +63,9 @@ public class WhiteSdk {
     }
 
     public void joinRoom(final RoomParams roomParams, final RoomCallbacks roomCallbacks, final Promise<Room> roomPromise) {
-        joinRoom(roomParams, roomCallbacks, null, roomPromise);
-    }
-
-    public void joinRoom(final RoomParams roomParams, final RoomCallbacks roomCallbacks, final RoomCallbacks.JSONCallbacks jsonCallbacks, final Promise<Room> roomPromise) {
         try {
             if (roomCallbacks != null) {
                 this.roomCallbacksImplement.setListener(roomCallbacks);  // 覆盖
-            }
-            if (jsonCallbacks != null) {
-                this.roomCallbacksImplement.setJsonListener(jsonCallbacks);
             }
             bridge.callHandler("sdk.joinRoom", new Object[]{
                     roomParams.getUuid(),
@@ -120,16 +113,9 @@ public class WhiteSdk {
     }
 
     public void createPlayer(final PlayerConfiguration playerConfiguration, PlayerEventListener playerEventListener, final Promise<Player> playerPromise) {
-        createPlayer(playerConfiguration, playerEventListener, null, playerPromise);
-    }
-
-    public void createPlayer(final PlayerConfiguration playerConfiguration, PlayerEventListener playerEventListener, PlayerEventListener.JSONListener jsonListener, final Promise<Player> playerPromise) {
         try {
             if (playerEventListener != null) {
                 this.playerCallbacksImplement.setListener(playerEventListener);
-            }
-            if (jsonListener != null) {
-                this.playerCallbacksImplement.setJsonListener(jsonListener);
             }
             bridge.callHandler("sdk.replayRoom", new Object[]{
                     playerConfiguration
@@ -173,12 +159,10 @@ public class WhiteSdk {
 
     public void releaseRoom(String uuid) {
         roomCallbacksImplement.setListener(null);
-        roomCallbacksImplement.setJsonListener(null);
     }
 
     public void releasePlayer(String uuid) {
         playerCallbacksImplement.setListener(null);
-        playerCallbacksImplement.setJsonListener(null);
     }
 
 
