@@ -142,7 +142,7 @@ public class WhiteSdk {
                     } else {
                         JsonObject timeInfo = jsonObject.getAsJsonObject("timeInfo");
                         PlayerTimeInfo playerTimeInfo = gson.fromJson(timeInfo.toString(), PlayerTimeInfo.class);
-                        SyncDisplayerState<PlayerState> syncPlayerState = new SyncDisplayerState<>(PlayerState.class, "{}", true);
+                        SyncDisplayerState<PlayerState> syncPlayerState = new SyncDisplayerState(PlayerState.class, "{}", true);
                         Player player = new Player(playerConfiguration.getRoom(), bridge, context, WhiteSdk.this, playerTimeInfo, syncPlayerState);
 
                         playerCallbacksImplement.setPlayer(player);

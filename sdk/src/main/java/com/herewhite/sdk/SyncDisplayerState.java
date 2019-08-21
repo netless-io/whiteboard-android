@@ -9,6 +9,9 @@ import com.google.gson.JsonParser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -88,7 +91,10 @@ public class SyncDisplayerState<T> {
             JsonObject jsonObject = new JsonObject();
             JsonObject checkedModifyStateJSON = null;
 
-            for (String key: this.stateJSON.keySet()) {
+            String[] strs = this.stateJSON.keySet().toArray(new String[0]);
+            Set<String> keySet = new HashSet<>(Arrays.asList(strs));
+            keySet.addAll(modifyStateJSON.keySet());
+            for (String key: keySet) {
                 JsonElement originalValue = this.stateJSON.get(key);
                 JsonElement newValue = modifyStateJSON.get(key);
 
@@ -101,7 +107,7 @@ public class SyncDisplayerState<T> {
                     }
                     jsonObject.add(key, newValue);
 
-                } else {
+                } else if (originalValue != null){
                     jsonObject.add(key, originalValue);
                 }
             }

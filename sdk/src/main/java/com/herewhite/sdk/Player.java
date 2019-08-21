@@ -178,6 +178,9 @@ public class Player extends Displayer {
      * @return 回放房间状态 {@link PlayerState}，与 {@link com.herewhite.sdk.domain.RoomState 有接近的结构}
      */
     public PlayerState getPlayerState() {
+        if (playerPhase == PlayerPhase.waitingFirstFrame) {
+            return null;
+        }
         return this.syncPlayerState.getDisplayerState();
     }
 
