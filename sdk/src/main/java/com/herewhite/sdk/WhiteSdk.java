@@ -29,7 +29,7 @@ public class WhiteSdk {
     private UrlInterrupter urlInterrupter;
 
     public static String Version() {
-        return "2.4.8";
+        return "2.4.10";
     }
 
     public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration) {
