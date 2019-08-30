@@ -555,17 +555,9 @@ public class Room extends Displayer {
         bridge.callHandler("room.setSceneIndex", new Object[]{index}, new OnReturnValue<String>() {
             @Override
             public void onValue(String result) {
-                JsonObject jsonObject = gson.fromJson(result, JsonObject.class);
-                if (jsonObject.has("__error")) {
-                    String msg = "Unknow exception";
-                    String jsStack = "Unknow stack";
-                    if (jsonObject.getAsJsonObject("__error").has("message")) {
-                        msg = jsonObject.getAsJsonObject("__error").get("message").getAsString();
-                    }
-                    if (jsonObject.getAsJsonObject("__error").has("jsStack")) {
-                        jsStack = jsonObject.getAsJsonObject("__error").get("jsStack").getAsString();
-                    }
-                    promise.catchEx(new SDKError(msg, jsStack));
+                SDKError sdkError = SDKError.promiseError(result);
+                if (sdkError != null) {
+                    promise.catchEx(sdkError);
                 } else {
                     promise.then(true);
                 }

@@ -88,17 +88,10 @@ public class WhiteSdk {
                 @Override
                 public void onValue(String roomString) {
                     JsonObject jsonObject = gson.fromJson(roomString, JsonObject.class);
-                    if (jsonObject.has("__error")) {
-                        String msg = "Unknow exception";
-                        String jsStack = "Unknow stack";
-                        if (jsonObject.getAsJsonObject("__error").has("message")) {
-                            msg = jsonObject.getAsJsonObject("__error").get("message").getAsString();
-                        }
-                        if (jsonObject.getAsJsonObject("__error").has("jsStack")) {
-                            jsStack = jsonObject.getAsJsonObject("__error").get("jsStack").getAsString();
-                        }
+                    SDKError promiseError = SDKError.promiseError(jsonObject);
+                    if (promiseError != null) {
                         try {
-                            roomPromise.catchEx(new SDKError(msg, jsStack));
+                            roomPromise.catchEx(promiseError);
                         } catch (AssertionError a) {
                             throw a;
                         } catch (Throwable e) {
@@ -151,17 +144,10 @@ public class WhiteSdk {
                 @Override
                 public void onValue(String roomString) {
                     JsonObject jsonObject = gson.fromJson(roomString, JsonObject.class);
-                    if (jsonObject.has("__error")) {
-                        String msg = "Unknow exception";
-                        String jsStack = "Unknow stack";
-                        if (jsonObject.getAsJsonObject("__error").has("message")) {
-                            msg = jsonObject.getAsJsonObject("__error").get("message").getAsString();
-                        }
-                        if (jsonObject.getAsJsonObject("__error").has("jsStack")) {
-                            jsStack = jsonObject.getAsJsonObject("__error").get("jsStack").getAsString();
-                        }
+                    SDKError promiseError = SDKError.promiseError(jsonObject);
+                    if (promiseError != null) {
                         try {
-                            playerPromise.catchEx(new SDKError(msg, jsStack));
+                            playerPromise.catchEx(promiseError);
                         } catch (AssertionError a) {
                             throw a;
                         } catch (Throwable e) {
