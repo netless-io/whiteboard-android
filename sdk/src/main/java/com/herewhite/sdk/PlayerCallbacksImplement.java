@@ -56,8 +56,8 @@ public class PlayerCallbacksImplement implements SyncDisplayerState.Listener<Pla
 
     @JavascriptInterface
     public void fireMagixEvent(Object args) {
-        EventEntry eventEntry = gson.fromJson(String.valueOf(args), EventEntry.class);
         if (player != null) {
+            EventEntry eventEntry = gson.fromJson(String.valueOf(args), EventEntry.class);
             player.fireMagixEvent(eventEntry);
         }
     }
