@@ -543,6 +543,20 @@ public class Room extends Displayer {
         bridge.callHandler("room.setScenePath", new Object[]{path});
     }
 
+    public void setScenePath(String path, final Promise<Boolean> promise) {
+        bridge.callHandler("room.setScenePath", new Object[]{path}, new OnReturnValue<String>() {
+            @Override
+            public void onValue(String result) {
+                SDKError sdkError = SDKError.promiseError(result);
+                if (sdkError != null) {
+                    promise.catchEx(sdkError);
+                } else {
+                    promise.then(true);
+                }
+            }
+        });
+    }
+
     /**
      * 在当前场景目录中，切换当前场景。
      *
