@@ -58,10 +58,23 @@ public class WhiteSdk {
         whiteSdkConfiguration.setOnlyCallbackRemoteStateModify(this.onlyCallbackRemoteStateModify);
     }
 
+    /**
+     * 加入房间，参考 {@link #joinRoom(RoomParams, RoomCallbacks, Promise)}
+     *
+     * @param roomParams  the room params
+     * @param roomPromise the room promise
+     */
     public void joinRoom(final RoomParams roomParams, final Promise<Room> roomPromise) {
         this.joinRoom(roomParams, null, roomPromise);
     }
 
+    /**
+     * 加入房间，最终调用 API
+     *
+     * @param roomParams    房间参数，room uuid 与 room token
+     * @param roomCallbacks 房间变化回调，在重连时，如果不传 roomCallback 参数，则会回调旧的 roomCallback。如果释放 callback，可以使用 {@link #releaseRoom(String)}
+     * @param roomPromise   创建完成回调
+     */
     public void joinRoom(final RoomParams roomParams, final RoomCallbacks roomCallbacks, final Promise<Room> roomPromise) {
         try {
             if (roomCallbacks != null) {
@@ -110,10 +123,23 @@ public class WhiteSdk {
         }
     }
 
+    /**
+     * 创建回放房间，参考 {@link #createPlayer(PlayerConfiguration, PlayerEventListener, Promise)}
+     *
+     * @param playerConfiguration the player configuration
+     * @param playerPromise       the player promise
+     */
     public void createPlayer(final PlayerConfiguration playerConfiguration, final Promise<Player> playerPromise) {
         createPlayer(playerConfiguration, null, playerPromise);
     }
 
+    /**
+     * 创建回放房间
+     *
+     * @param playerConfiguration 回放参数，具体查看 {@link PlayerConfiguration}
+     * @param playerEventListener 回放房间变化回调。当使用同一个 sdk 初始化多个房间时，该参数传入 null，则新回放房间，仍然会回调旧的 playerEventListener
+     * @param playerPromise       创建完成回调
+     */
     public void createPlayer(final PlayerConfiguration playerConfiguration, PlayerEventListener playerEventListener, final Promise<Player> playerPromise) {
         try {
             if (playerEventListener != null) {
