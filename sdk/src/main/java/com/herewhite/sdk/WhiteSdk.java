@@ -96,6 +96,8 @@ public class WhiteSdk {
                         JsonObject jsonState = jsonObject.getAsJsonObject("state");
                         SyncDisplayerState<RoomState> syncRoomState = new SyncDisplayerState<>(RoomState.class, jsonState.toString(), disableCallbackWhilePutting);
                         Room room = new Room(roomParams.getUuid(), bridge, context, WhiteSdk.this, syncRoomState);
+                        Long observerId = jsonObject.get("observerId").getAsLong();
+                        room.setObserverId(observerId);
                         roomCallbacksImplement.setRoom(room);
                         roomPromise.then(room);
                     }

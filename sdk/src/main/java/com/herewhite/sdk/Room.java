@@ -36,6 +36,7 @@ public class Room extends Displayer {
     private RoomPhase roomPhase = RoomPhase.connected;
 
     private Integer timeDelay;
+    private Long observerId;
     private ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
 
     public Room(String uuid, WhiteboardView bridge, Context context, WhiteSdk sdk, SyncDisplayerState<RoomState> syncRoomState) {
@@ -50,6 +51,20 @@ public class Room extends Displayer {
 
     void setRoomPhase(RoomPhase roomPhase) {
         this.roomPhase = roomPhase;
+    }
+
+    /**
+     * 获取当前用户在白板事实房间中的 memberId，该 id 从 1 开始递增（0 为 admin）
+     *
+     * @since 2.4.10
+     * @return ObserverId
+     */
+    public Long getObserverId() {
+        return observerId;
+    }
+
+    void setObserverId(Long observerId) {
+        this.observerId = observerId;
     }
 
     //region Set API
