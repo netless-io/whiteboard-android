@@ -47,7 +47,9 @@ public class RoomCallbacksImplement implements SyncDisplayerState.Listener<RoomS
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    listener.onRoomStateChanged(modifyState);
+                    if (listener != null) {
+                        listener.onRoomStateChanged(modifyState);
+                    }
                 }
             });
         }
