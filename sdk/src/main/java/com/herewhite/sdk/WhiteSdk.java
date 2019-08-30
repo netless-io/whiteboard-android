@@ -185,12 +185,41 @@ public class WhiteSdk {
         }
     }
 
-    public void releaseRoom(String uuid) {
+    /**
+     * 释放实时房间对 RoomCallback 的持有
+     *
+     * @since 2.4.12
+     */
+    public void releaseRoom() {
         roomCallbacksImplement.setListener(null);
     }
 
-    public void releasePlayer(String uuid) {
+    /**
+     * 释放实时房间对 RoomCallback 的持有
+     *
+     * @deprecated 一个 WhiteSDK 实例，只能对应一个实时房间，所以不再需要使用 room uuid 进行定位
+     * @param uuid 任意参数，不会被使用
+     */
+    public void releaseRoom(String uuid) {
+        releaseRoom();
+    }
+
+    /**
+     * 释放回放房间对 PlayerEventListener 的持有
+     *
+     * @since 2.4.12
+     */
+    public void releasePlayer() {
         playerCallbacksImplement.setListener(null);
+    }
+
+    /**
+     * 释放回放房间对 PlayerEventListener 的持有
+     * @deprecated 由于一个 WhiteSDK 实例，只能对应一个回放房间，所以不再需要使用 player uuid 进行定位
+     * @param uuid 任意参数，不会被使用
+     */
+    public void releasePlayer(String uuid) {
+        releasePlayer();
     }
 
 
