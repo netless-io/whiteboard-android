@@ -126,7 +126,6 @@ public class Room extends Displayer {
      */
     public void disconnect() {
         bridge.callHandler("room.disconnect", new Object[]{});
-        this.sdk.releaseRoom(this.uuid);
     }
 
     /**

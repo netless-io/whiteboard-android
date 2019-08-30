@@ -75,7 +75,6 @@ public class Player extends Displayer {
      */
     public void stop() {
         bridge.callHandler("player.stop", new Object[]{});
-        this.sdk.releasePlayer(uuid);
     }
 
     /**
