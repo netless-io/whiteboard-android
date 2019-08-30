@@ -34,7 +34,7 @@ public class RoomMember {
     private Object payload;
 
     /**
-     * 在白板内部对应的用户自增 id，从 1 开始计算。（0 为 admin，已被占用）
+     * 在白板内部对应的用户自增 id，从 0 开始计算。
      *
      * @return 内部用户 id
      */

@@ -54,8 +54,8 @@ public class Room extends Displayer {
     }
 
     /**
-     * 获取当前用户在白板事实房间中的 memberId，该 id 从 1 开始递增（0 为 admin）
-     *
+     * 获取当前用户在白板事实房间中的 memberId，该 id 从 0 开始递增
+     * 可以参考 {@link RoomMember#getMemberId()}
      * @since 2.4.10
      * @return ObserverId
      */
