@@ -1,5 +1,10 @@
 package com.herewhite.sdk.domain;
 
+import android.support.annotation.Nullable;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 /**
  * Created by buhe on 2018/8/18.
  */
@@ -7,6 +12,28 @@ package com.herewhite.sdk.domain;
 public class SDKError extends Exception {
 
     private final String jsStack;
+    static Gson gson = new Gson();
+
+    public static @Nullable SDKError promiseError(String str) {
+        JsonObject jsonObject = gson.fromJson(str, JsonObject.class);
+        return SDKError.promiseError(jsonObject);
+    }
+
+    public static @Nullable SDKError promiseError(JsonObject jsonObject) {
+        if (jsonObject.has("__error")) {
+            String msg = "Unknow exception";
+            String jsStack = "Unknow stack";
+            if (jsonObject.getAsJsonObject("__error").has("message")) {
+                msg = jsonObject.getAsJsonObject("__error").get("message").getAsString();
+            }
+            if (jsonObject.getAsJsonObject("__error").has("jsStack")) {
+                jsStack = jsonObject.getAsJsonObject("__error").get("jsStack").getAsString();
+            }
+            return new SDKError(msg, jsStack);
+        } else {
+            return null;
+        }
+    }
 
     public SDKError(String message) {
         super(message);
