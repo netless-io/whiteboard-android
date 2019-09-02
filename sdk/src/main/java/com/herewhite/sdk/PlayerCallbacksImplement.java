@@ -132,8 +132,15 @@ public class PlayerCallbacksImplement implements SyncDisplayerState.Listener<Pla
 
     private SDKError resolverSDKError(Object args) {
         JsonObject jsonObject = gson.fromJson(String.valueOf(args), JsonObject.class);
-        String message = jsonObject.get("message").getAsString();
-        String jsStack = jsonObject.get("jsStack").getAsString();
+
+        String message = "";
+        if (jsonObject.get("message") != null) {
+            message = jsonObject.get("message").getAsString();
+        }
+        String jsStack = "";
+        if (jsonObject.get("jsStack") != null) {
+            jsStack = jsonObject.get("jsStack").getAsString();
+        }
         SDKError sdkError = new SDKError(message, jsStack);
         return sdkError;
     }
