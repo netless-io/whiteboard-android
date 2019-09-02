@@ -64,7 +64,7 @@ public class PlayerCallbacksImplement implements SyncDisplayerState.Listener<Pla
 
     @JavascriptInterface
     public void onPhaseChanged(Object args) {
-        PlayerPhase phase = PlayerPhase.valueOf(String.valueOf(args));
+        PlayerPhase phase = gson.fromJson(String.valueOf(args), PlayerPhase.class);
 
         if (this.player != null) {
             this.player.setPlayerPhase(phase);
