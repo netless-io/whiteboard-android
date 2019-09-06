@@ -15,6 +15,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private double zoomMaxScale;
     private double zoomMinScale;
     private boolean debug;
+    private boolean enableInterrupterAPI = false;
     private boolean hasUrlInterrupterAPI = false;
     private boolean userCursor = false;
     private boolean onlyCallbackRemoteStateModify = false;
@@ -98,6 +99,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
     public void setHasUrlInterrupterAPI(boolean hasUrlInterrupterAPI) {
+        this.enableInterrupterAPI = hasUrlInterrupterAPI;
         this.hasUrlInterrupterAPI = hasUrlInterrupterAPI;
     }
 }
