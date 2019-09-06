@@ -80,11 +80,7 @@ public class WhiteSdk {
             if (roomCallbacks != null) {
                 this.roomCallbacksImplement.setListener(roomCallbacks);  // 覆盖
             }
-            bridge.callHandler("sdk.joinRoom", new Object[]{
-                    roomParams.getUuid(),
-                    roomParams.getRoomToken(),
-                    roomParams.getUserPayload() != null ? roomParams.getUserPayload() : roomParams.getMemberInfo()
-            }, new OnReturnValue<String>() {
+            bridge.callHandler("sdk.joinRoom", new Object[]{roomParams}, new OnReturnValue<String>() {
                 @Override
                 public void onValue(String roomString) {
                     JsonObject jsonObject = gson.fromJson(roomString, JsonObject.class);
