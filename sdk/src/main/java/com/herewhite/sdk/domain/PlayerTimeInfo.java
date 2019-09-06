@@ -1,5 +1,8 @@
 package com.herewhite.sdk.domain;
 
+/**
+ * TODO: 大版本更新时，scheduleTime 这种实时数据，应该拆分独立到其他类中。当前类应该改名。
+ */
 public class PlayerTimeInfo {
 
     private long scheduleTime;

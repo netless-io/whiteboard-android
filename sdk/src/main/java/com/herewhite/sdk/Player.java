@@ -123,8 +123,7 @@ public class Player extends Displayer {
     /**
      * 设置查看模式
      *
-     * @param mode 查看模式
-     * @see PlayerObserverMode
+     * @param mode {@link PlayerObserverMode}
      */
     public void setObserverMode(PlayerObserverMode mode) {
         bridge.callHandler("player.setObserverMode", new Object[]{mode.name()});
@@ -133,22 +132,25 @@ public class Player extends Displayer {
     //region Get API
 
     /**
-     * 同步 获取回放房间播放状态
-     * 目前：初始状态为 WhitePlayerPhaseWaitingFirstFrame
+     * 同步缓存API 获取回放房间播放状态
+     * 初始状态为 WhitePlayerPhaseWaitingFirstFrame.
+     * 如果操作 {@link #stop()} {@link #play()} {@link #stop()} 等影响 playerPhase API，该 API 不会立即更新
      *
-     * @return 回放房间状态
+     * @return {@link PlayerPhase} 回放房间状态
+     * @since 2.4.0
      */
     public PlayerPhase getPlayerPhase() {
         return this.playerPhase;
     }
 
     /**
-     * 异步 获取回放房间播放状态
+     * 异步API 获取回放房间播放状态
      *
-     * @deprecated 使用 {@link #getPlayerPhase()} 同步 API，进行获取。
+     * 一般情况，可以使用 {@link #getPlayerPhase()} 同步API，进行获取。
+     * 如果操作 {@link #stop()} {@link #play()} {@link #stop()} 等影响 playerPhase API，可以使用该 API
+     *
      * @param promise the promise
      */
-    @Deprecated
     public void getPhase(final Promise<PlayerPhase> promise) {
         bridge.callHandler("player.getBroadcastState", new Object[]{}, new OnReturnValue<Object>() {
             @Override
@@ -169,12 +171,13 @@ public class Player extends Displayer {
     }
 
     /**
-     * 同步 获取回放房间中所有状态
+     * 同步API 获取回放房间中所有状态
      *
      * 当 phase 状态为 WhitePlayerPhaseWaitingFirstFrame
-     * 回调得到的数据是空的
+     * 回调得到的数据为 null
      *
-     * @return 回放房间状态 {@link PlayerState}，与 {@link com.herewhite.sdk.domain.RoomState 有接近的结构}
+     * @return 回放房间状态 {@link PlayerState}
+     * @since 2.4.0
      */
     public PlayerState getPlayerState() {
         if (playerPhase == PlayerPhase.waitingFirstFrame) {
@@ -184,12 +187,11 @@ public class Player extends Displayer {
     }
 
     /**
-     * 异步 获取回放房间中状态
+     * 异步API 获取回放房间中状态
      *
-     * @deprecated 请使用 {@link #getPlayerState()} 同步 API，进行获取。
+     * 一般情况，请使用 {@link #getPlayerState()} 同步 API，进行获取。
      * @param promise 完成回调
      */
-    @Deprecated
     public void getPlayerState(final Promise<PlayerState> promise) {
         bridge.callHandler("player.state.playerState", new Object[]{}, new OnReturnValue<Object>() {
             @Override
@@ -211,21 +213,24 @@ public class Player extends Displayer {
     }
 
     /**
-     * 同步 获取播放文件信息
-     * 包括：当前时间，总时长，开始 UTC 时间戳。单位：毫秒
+     * 同步API 获取播放文件信息
+     *
+     * 当前时间，总时长，开始 UTC 时间戳。单位：毫秒
+     * 当前时间不准确
+     *
      * @return {@link PlayerTimeInfo}
+     * @since 2.4.0
      */
     public PlayerTimeInfo getPlayerTimeInfo() {
         return new PlayerTimeInfo(this.scheduleTime, this.timeDuration, this.framesCount, this.beginTimestamp);
     }
 
     /**
-     * 异步 获取播放文件信息
+     * 异步API 获取播放文件信息
      *
-     * @deprecated 请使用 {@link #getPlayerTimeInfo()} 同步 API，进行获取。
+     * 一般情况，请使用 {@link #getPlayerTimeInfo()} 同步 API，进行获取。
      * @param promise 完成回调
      */
-    @Deprecated
     public void getPlayerTimeInfo(final Promise<PlayerTimeInfo> promise) {
         bridge.callHandler("player.state.timeInfo", new Object[]{}, new OnReturnValue<Object>() {
             @Override
