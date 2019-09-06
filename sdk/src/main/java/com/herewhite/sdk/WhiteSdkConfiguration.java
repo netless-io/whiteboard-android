@@ -58,9 +58,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
     public boolean isUserCursor() { return userCursor; }
 
-    public void setCustomCursor(boolean customCursor) { this.customCursor = customCursor; }
-    public boolean isCustomCursor() { return customCursor; }
-
     public boolean isOnlyCallbackRemoteStateModify() {
         return onlyCallbackRemoteStateModify;
     }
