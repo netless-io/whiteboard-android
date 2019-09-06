@@ -21,6 +21,17 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private boolean onlyCallbackRemoteStateModify = false;
     private HashMap<String, String> font;
 
+    public WhiteSdkConfiguration(DeviceType deviceType, double zoomMaxScale, double zoomMinScale) {
+        this(deviceType, zoomMaxScale, zoomMinScale, false);
+    }
+
+    public WhiteSdkConfiguration(DeviceType deviceType, double zoomMaxScale, double zoomMinScale, boolean debug) {
+        this.deviceType = deviceType;
+        this.zoomMaxScale = zoomMaxScale;
+        this.zoomMinScale = zoomMinScale;
+        this.debug = debug;
+    }
+
     public LoggerOptions getLoggerOptions() {
         return loggerOptions;
     }
@@ -37,17 +48,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
     public void setFont(HashMap<String, String> font) {
         this.font = font;
-    }
-
-    public WhiteSdkConfiguration(DeviceType deviceType, double zoomMaxScale, double zoomMinScale) {
-        this(deviceType, zoomMaxScale, zoomMinScale, false);
-    }
-
-    public WhiteSdkConfiguration(DeviceType deviceType, double zoomMaxScale, double zoomMinScale, boolean debug) {
-        this.deviceType = deviceType;
-        this.zoomMaxScale = zoomMaxScale;
-        this.zoomMinScale = zoomMinScale;
-        this.debug = debug;
     }
 
     public DeviceType getDeviceType() {
