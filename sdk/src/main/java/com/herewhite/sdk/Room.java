@@ -1,7 +1,6 @@
 package com.herewhite.sdk;
 
 import android.content.Context;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.AkkoEvent;
 import com.herewhite.sdk.domain.BroadcastState;
@@ -55,9 +54,9 @@ public class Room extends Displayer {
 
     /**
      * 获取当前用户在白板事实房间中的 memberId，该 id 从 0 开始递增
-     * 可以参考 {@link RoomMember#getMemberId()}
+     * 参考 {@link RoomMember#getMemberId()}
+     * @return 用户 memberId
      * @since 2.4.10
-     * @return ObserverId
      */
     public Long getObserverId() {
         return observerId;
@@ -69,7 +68,7 @@ public class Room extends Displayer {
 
     //region Set API
     /**
-     * 设置全局共享状态
+     * 设置全局共享状态，会立刻更新同步 GlobalState。 {@link #getGlobalState()} 可以立刻获取到最新状态。
      *
      * @param globalState 自定义字段，可以传入 {@link GlobalState} 子类
      */
@@ -79,7 +78,7 @@ public class Room extends Displayer {
     }
 
     /**
-     * 设置当前用户教具
+     * 设置当前用户教具，会立刻更新 MemberState。 {@link #getMemberState()} 可以立刻获取到最新设置。
      *
      * @param memberState {@link MemberState} 只需要传入需要修改的部分即可。
      */
@@ -89,23 +88,24 @@ public class Room extends Displayer {
     }
 
     /**
-     *
-     * 切换视角状态
+     * 切换视角模式
      *
      * 1. 主播模式：房间只存在一个主播。成为主播后，房间中其他用户（包括新加入用户）的视角模式，都会切换为跟随模式。
      * 2. 跟随模式：当用户进行操作时，会从跟随模式，切换成自由模式。
      *            可以通过： 禁止响应用户操作 {@link #disableOperations(boolean)} ，来保证用户保持在跟随模式。
      * 3. 自由模式：当房间中，不存在主播时，所有人默认均为自由模式。
      *
-     * @param viewMode 视角选项
-     * @see ViewMode
+     * 切换视角后，{@link #getBroadcastState()} 方法需要等待服务器更新后，才能更新。
+     * 可以使用 {@link #getBroadcastState(Promise)} 强制更新信息
+     *
+     * @param viewMode {@link ViewMode}
      */
     public void setViewMode(ViewMode viewMode) {
         bridge.callHandler("room.setViewMode", new Object[]{viewMode.name()});
     }
 
     /**
-     * @deprecated use {@link #refreshViewSize} instead.
+     * @deprecated 请使用 {@link #refreshViewSize}
      */
     @Deprecated
     public void setViewSize(int width, int height) {
@@ -122,7 +122,9 @@ public class Room extends Displayer {
     }
 
     /**
-     * 主动断连，断开后，该 room 实例将无法使用。
+     * 主动断连，断开后，当前 room 实例将无法使用。
+     * 再次使用，需要使用 {@link WhiteSdk#joinRoom(RoomParams, RoomCallbacks, Promise)} 重新创建实例
+     * 如需退出后回调，请使用 {@link #disconnect(Promise)}
      */
     public void disconnect() {
         bridge.callHandler("room.disconnect", new Object[]{});
@@ -130,6 +132,7 @@ public class Room extends Displayer {
 
     /**
      * 主动断连，断开后，该 room 实例将无法使用。
+     * 再次使用，需要使用 {@link WhiteSdk#joinRoom(RoomParams, RoomCallbacks, Promise)} 重新创建实例
      *
      * @param promise 退出后回调
      */
@@ -137,25 +140,24 @@ public class Room extends Displayer {
         bridge.callHandler("room.disconnect", new Object[]{}, new OnReturnValue<Object>() {
             @Override
             public void onValue(Object o) {
-                try {
-                    promise.then(gson.fromJson(String.valueOf(o), GlobalState.class));
-                } catch (AssertionError a) {
-                    throw a;
-                } catch (JsonSyntaxException e) {
-                    Logger.error("An JsonSyntaxException occurred while parse json from disconnect", e);
-                    promise.catchEx(new SDKError(e.getMessage()));
-                } catch (Throwable e) {
-                    Logger.error("An exception occurred in disconnect promise then method", e);
-                    promise.catchEx(new SDKError(e.getMessage()));
-                }
+            try {
+                promise.then(gson.fromJson(String.valueOf(o), GlobalState.class));
+            } catch (AssertionError a) {
+                throw a;
+            } catch (JsonSyntaxException e) {
+                Logger.error("An JsonSyntaxException occurred while parse json from disconnect", e);
+                promise.catchEx(new SDKError(e.getMessage()));
+            } catch (Throwable e) {
+                Logger.error("An exception occurred in disconnect promise then method", e);
+                promise.catchEx(new SDKError(e.getMessage()));
+            }
             }
         });
     }
 
     /**
-     * 插入图片占位区域
-     *
-     * 可以使用 {@link #insertImage(ImageInformationWithUrl)} 封装 API，插入网络图片。
+     * 插入占位区域，一般配合 {@link #completeImageUpload(String, String)} 完成插入图片功能。
+     * 如图片网络地址已知，推荐使用 {@link #insertImage(ImageInformationWithUrl)} API，插入网络图片。
      * @param imageInfo {@link ImageInformation}
      */
     public void insertImage(ImageInformation imageInfo) {
@@ -165,7 +167,7 @@ public class Room extends Displayer {
     /**
      * 将特定 uuid 的占位区域，替换成网络图片
      *
-     * @param uuid 占位 uuid，需要有唯一性。
+     * @param uuid 占位 uuid，需要有唯一性，即 {@link #insertImage(ImageInformation)} 中传入的 uuid
      * @param url  图片网络地址。
      */
     public void completeImageUpload(String uuid, String url) {
@@ -173,10 +175,9 @@ public class Room extends Displayer {
     }
 
     /**
-     * 插入网络图片。
+     * 插入网络图片
      *
-     * 该 API 封装 {@link #insertImage} 以及 {@link #completeImageUpload(String, String)} API，传入图片
-     * 信息 {@link ImageInformationWithUrl} 即可上传网络图片。
+     * 该 API 封装 {@link #insertImage} 以及 {@link #completeImageUpload(String, String)} API，上传网络图片。
      *
      * @param imageInformationWithUrl 图片信息 {@link ImageInformationWithUrl}
      */
@@ -192,18 +193,25 @@ public class Room extends Displayer {
         this.completeImageUpload(uuid, imageInformationWithUrl.getUrl());
     }
 
+    //region GET API
     /**
-     * 同步 获取房间全局状态，如果已经设置好自定义 GlobalState，获取后，可以进行类型转换
+     * 同步API 获取房间全局状态
+     * 如已通过 {@link com.herewhite.sdk.domain.WhiteDisplayerState#setCustomGlobalStateClass(Class)}
+     * 设置好自定义 GlobalState。在获取后，可以直接进行强转。
+     * 调用 {@link #setGlobalState(GlobalState)} API 后，可以立刻调用该 API
      *
      * @see GlobalState
+     * @since 2.4.0
      */
     public GlobalState getGlobalState() {
         return syncRoomState.getDisplayerState().getGlobalState();
     }
 
     /**
-     * 异步 获取房间全局状态，如果已经设置好自定义 GlobalState，获取后，可以进行类型转换
-     * @deprecated 获取 sdk 的全局状态，请使用 {@link #getGlobalState()} API。
+     * 异步API 强制获取房间全局状态。
+     * 如已通过 {@link com.herewhite.sdk.domain.WhiteDisplayerState#setCustomGlobalStateClass(Class)}
+     * 设置好自定义 GlobalState。在获取后，可以直接进行强转。
+     * @deprecated 建议使用 {@link #getGlobalState()} API。
      * @param promise 完成回调
      */
     public void getGlobalState(final Promise<GlobalState> promise) {
@@ -211,7 +219,7 @@ public class Room extends Displayer {
     }
 
     /**
-     * 异步 获取房间全局状态，根据传入的 Class 类型，在回调中返回对应的 实例
+     * 异步API 获取房间全局状态，根据传入的 Class 类型，在回调中返回对应的实例
      *
      * @param <T>      globalState 反序列化的类
      * @param classOfT 泛型 T 的 class 类型
@@ -222,50 +230,50 @@ public class Room extends Displayer {
         bridge.callHandler("room.getGlobalState", new Object[]{}, new OnReturnValue<Object>() {
             @Override
             public void onValue(Object o) {
-                T customState = null;
-                try {
-                    customState = gson.fromJson(String.valueOf(o), classOfT);
-                } catch (AssertionError a) {
-                    throw a;
-                } catch (Throwable e) {
-                    Logger.error("An exception occurred while parse json from getGlobalState for customState", e);
-                    promise.catchEx(new SDKError((e.getMessage())));
-                }
-                if (customState == null) {
-                    return;
-                }
-                try {
-                    promise.then(customState);
-                } catch (AssertionError a) {
-                    throw a;
-                } catch (JsonSyntaxException e) {
-                    Logger.error("An JsonSyntaxException occurred while parse json from getGlobalState", e);
-                    promise.catchEx(new SDKError(e.getMessage()));
-                } catch (Throwable e) {
-                    Logger.error("An exception occurred in getGlobalState promise then method", e);
-                    promise.catchEx(new SDKError(e.getMessage()));
-                }
+            T customState = null;
+            try {
+                customState = gson.fromJson(String.valueOf(o), classOfT);
+            } catch (AssertionError a) {
+                throw a;
+            } catch (Throwable e) {
+                Logger.error("An exception occurred while parse json from getGlobalState for customState", e);
+                promise.catchEx(new SDKError((e.getMessage())));
+            }
+            if (customState == null) {
+                return;
+            }
+            try {
+                promise.then(customState);
+            } catch (AssertionError a) {
+                throw a;
+            } catch (JsonSyntaxException e) {
+                Logger.error("An JsonSyntaxException occurred while parse json from getGlobalState", e);
+                promise.catchEx(new SDKError(e.getMessage()));
+            } catch (Throwable e) {
+                Logger.error("An exception occurred in getGlobalState promise then method", e);
+                promise.catchEx(new SDKError(e.getMessage()));
+            }
             }
         });
     }
 
     /**
-     * 同步 获取当前用户教具状态
+     * 同步API 获取当前用户教具状态,使用 {@link #setMemberState(MemberState)} 该 API 内容会立刻更新
      *
-     * @return 用户教具状态
-     * @see MemberState
+     * @return 用户教具状态 {@link MemberState}
+     * @since 2.4.0
      */
     public MemberState getMemberState() {
         return syncRoomState.getDisplayerState().getMemberState();
     }
 
     /**
-     * 异步 获取当前用户教具状态
+     * 异步API 获取当前用户教具状态
      *
      * @deprecated 请使用 {@link #getMemberState()} 同步 API，进行获取。
      * @param promise 完成回调
+     * @see MemberState
      */
-    @Deprecated
     public void getMemberState(final Promise<MemberState> promise) {
         bridge.callHandler("room.getMemberState", new OnReturnValue<String>() {
             @Override
@@ -286,22 +294,24 @@ public class Room extends Displayer {
     }
 
     /**
-     * 同步 获取房间中用户列表
+     * 同步API 获取房间中用户列表
+     * 当有用户加入时，会在回调中自动更新该属性。由于本地用户没有任何操作可以更新该 API，所以可以在所有代码中都直接使用
+     * 同步 API
      *
      * @return 用户列表
      * @see RoomMember
+     * @since 2.4.0
      */
     public RoomMember[] getRoomMembers() {
         return syncRoomState.getDisplayerState().getRoomMembers();
     }
 
     /**
-     * 异步 获取房间中用户列表
+     * 异步API 获取房间中用户列表
      *
      * @deprecated 请使用 {@link #getRoomMembers()} 同步 API 进行获取。
      * @param promise 完成回调
      */
-    @Deprecated
     public void getRoomMembers(final Promise<RoomMember[]> promise) {
         bridge.callHandler("room.getRoomMembers", new Object[]{}, new OnReturnValue<Object>() {
             @Override
@@ -322,21 +332,23 @@ public class Room extends Displayer {
     }
 
     /**
-     * 同步 获取用户视角状态
+     * 同步缓存API 获取用户视角状态
+     * 当调用 {@link #setViewMode(ViewMode)} 时，{@link BroadcastState} 无法立刻更新，
+     * 此时可以调用 {@link #getBroadcastState(Promise)} 异步API 获取状态。
      *
      * @see BroadcastState
+     * @since 2.4.0
      */
     public BroadcastState getBroadcastState() {
         return syncRoomState.getDisplayerState().getBroadcastState();
     }
 
     /**
-     * 异步 获取用户视角状态
+     * 异步API 获取用户视角状态
      *
      * @deprecated 请使用 {@link #getBroadcastState()} 同步 API 进行获取。
      * @param promise 完成回调
      */
-    @Deprecated
     public void getBroadcastState(final Promise<BroadcastState> promise) {
         bridge.callHandler("room.getBroadcastState", new Object[]{}, new OnReturnValue<Object>() {
             @Override
@@ -357,20 +369,22 @@ public class Room extends Displayer {
     }
 
     /**
-     * 同步 获取房间当前场景目录下场景状态。
+     * 同步缓存API 获取房间当前场景目录下场景状态。
+     *
+     * 当调用 {@link #setScenePath(String, Promise)}、{@link #setScenePath(String)}、{@link #putScenes(String, Scene[], int)}
+     * 等 API 时，该 API 不会立即更新，此时如需立即获取 SceneState，请使用 {@link #getSceneState(Promise)} 异步API。
+     *
      * @see SceneState
+     * @since 2.4.0
      */
     public SceneState getSceneState() {
         return syncRoomState.getDisplayerState().getSceneState();
     }
 
     /**
-     * 异步 获取房间当前场景目录下场景状态
-     *
-     * @deprecated 请使用 {@link #getSceneState()} 同步 API 进行获取。
+     * 异步API 获取房间当前场景目录下场景状态
      * @param promise 完成回调
      */
-    @Deprecated
     public void getSceneState(final Promise<SceneState> promise) {
         bridge.callHandler("room.getSceneState", new Object[]{}, new OnReturnValue<Object>() {
             @Override
@@ -391,19 +405,22 @@ public class Room extends Displayer {
     }
 
     /**
-     * 同步 获取房间当前场景目录下场景列表
+     * 同步缓存API 获取房间当前场景目录下场景列表。
+     *
+     * 当调用 {@link #setScenePath(String, Promise)}、{@link #setScenePath(String)}、{@link #putScenes(String, Scene[], int)}
+     * 等 API 后，该 API 不会立即更新，此时如需立即获取 SceneState，请使用 {@link #getScenes(Promise)} 异步API。
+     *
+     * @since 2.4.0
      */
     public Scene[] getScenes() {
         return this.getSceneState().getScenes();
     }
 
     /**
-     * 异步 获取房间当前场景目录下场景列表
+     * 异步API 获取房间当前场景目录下场景列表。
      *
-     * @deprecated 请使用 {@link #getScenes()} 同步 API 进行获取。
      * @param promise 完成回调
      */
-    @Deprecated
     public void getScenes(final Promise<Scene[]> promise) {
         bridge.callHandler("room.getScenes", new Object[]{}, new OnReturnValue<Object>() {
             @Override
@@ -423,18 +440,26 @@ public class Room extends Displayer {
         });
     }
 
+
+    /**
+     * 同步缓存API 获取当前用户缩放比例。
+     *
+     * 当调用 {@link #zoomChange(double)}、{@link #moveCamera(CameraConfig)} API 进行调整缩放比例后，该 API 不会立刻更新
+     * 此时请调用 {@link #getZoomScale()} 异步API
+     *
+     * @return 房间缩放比例
+     * @since 2.4.0
+     */
     public double getZoomScale() {
         return syncRoomState.getDisplayerState().getZoomScale();
     }
 
-
     /**
-     * 异步 获取房间缩放比例
+     * 异步API 获取房间缩放比例
      *
-     * @deprecated 请使用 {@link #getZoomScale()} 同步 API 进行获取。
+     * 一般情况下，请使用 {@link #getZoomScale()} 同步 API 进行获取。
      * @param promise 获取完成后回调
      */
-    @Deprecated
     public void getZoomScale(final Promise<Number> promise) {
         bridge.callHandler("room.getZoomScale", new OnReturnValue<Object>() {
             @Override
@@ -455,8 +480,10 @@ public class Room extends Displayer {
     }
 
     /**
-     * 同步 获取房间连接状态
+     * 同步缓存API 获取房间连接状态
      *
+     * 当主动调用 {@link #disconnect()} {@link #disconnect(Promise)} API 时，该 API 无法立即更新，此时可以使用
+     * {@link #getRoomPhase()} 异步 API
      * @see RoomPhase
      * @since 2.4.0
      */
@@ -467,10 +494,9 @@ public class Room extends Displayer {
     /**
      * 异步 获取房间连接状态
      *
-     * @deprecated 请使用 {@link #getRoomPhase()} 同步 API 进行获取。
+     * 普通情况下，请使用 {@link #getRoomPhase()} 同步 API 进行获取。
      * @param promise 获取所有状态后，完成回调
      */
-    @Deprecated
     public void getRoomPhase(final Promise<RoomPhase> promise) {
         bridge.callHandler("room.getRoomPhase", new OnReturnValue<Object>() {
             @Override
@@ -491,7 +517,8 @@ public class Room extends Displayer {
     }
 
     /**
-     * 同步 获取实时房间内所有状态
+     * 同步缓存API 获取实时房间内所有状态。
+     * 当调用场景 API 后，想要立即获取 sceneState 相关内容时，请使用异步 {@link #getRoomState(Promise)}
      *
      * @return RoomState
      * @see RoomState
@@ -502,9 +529,9 @@ public class Room extends Displayer {
     }
 
     /**
-     * 异步 获取实时房间内所有状态
+     * 异步API 获取实时房间内所有状态
      *
-     * @deprecated 请使用 {@link #getRoomState()} 同步 API，进行获取。
+     * 如果只是简单获取房间状态，请使用 {@link #getRoomState()} 同步 API，进行获取。
      * @param promise 获取所有状态后，完成回调
      */
     public void getRoomState(final Promise<RoomState> promise) {
@@ -555,7 +582,7 @@ public class Room extends Displayer {
      *  3. 传入的地址，是场景目录，而不是场景路径。
      *
      * @param path 想要切换的场景 的场景目录
-     * @param promise
+     * @param promise 完成回调，如果出错会进入 catchEx
      */
     public void setScenePath(String path, final Promise<Boolean> promise) {
         bridge.callHandler("room.setScenePath", new Object[]{path}, new OnReturnValue<String>() {
@@ -594,10 +621,10 @@ public class Room extends Displayer {
     }
 
     /**
-     * 插入场景
+     * 插入场景API，该 API 并不会自动切换到对应场景
      *
      * 向特定场景目录中，插入多个场景。
-     * 插入场景后，如果要将显示插入的场景，需要调用 setScenePath API，设置当前插入场景。
+     * 插入场景后，如果要将显示插入的场景，需要调用 {@link #setScenePath(String)} API，设置当前插入场景。
      *
      * <pre>
      * {@code
