@@ -19,7 +19,7 @@ import wendu.dsbridge.OnReturnValue;
 public class Displayer {
 
     @ColorInt
-    private int backgroudColor = Color.WHITE;
+    private int backgroundColor = Color.WHITE;
     protected final WhiteboardView bridge;
     protected String uuid;
     protected final Context context;
@@ -39,10 +39,10 @@ public class Displayer {
      * @param intColor 16 进制 aRGB 色值
      * @since 2.4.0
      */
-    public void setBackgroudColor(int intColor) {
+    public void setBackgroundColor(int intColor) {
         if ((intColor & 0xFF000000) == 0xFF000000) {
             this.bridge.callHandler("displayer.background", new Object[]{Displayer.toHexString(intColor)});
-            backgroudColor = intColor;
+            backgroundColor = intColor;
         } else {
             throw new AssertionError("alpha is not support to change");
         }
@@ -54,8 +54,8 @@ public class Displayer {
      * @return 16进制 aRGB 色值
      * @since 2.4.0
      */
-    public int getBackgroudColor() {
-        return backgroudColor;
+    public int getBackgroundColor() {
+        return backgroundColor;
     }
 
     private final static String toHexString(int intColor) {
