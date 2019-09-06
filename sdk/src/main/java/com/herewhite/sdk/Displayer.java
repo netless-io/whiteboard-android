@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.support.annotation.ColorInt;
 import android.util.Base64;
 import com.google.gson.Gson;
+import com.herewhite.sdk.domain.CameraBound;
 import com.herewhite.sdk.domain.CameraConfig;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RectangleConfig;
@@ -31,6 +32,15 @@ public class Displayer {
         this.bridge = bridge;
         this.context = context;
         this.sdk = sdk;
+    }
+
+    public void setCameraBound(CameraBound bound, final Promise<String> promise) {
+        this.bridge.callHandler("displayer.setCameraBound", new Object[]{bound}, new OnReturnValue<String>() {
+            @Override
+            public void onValue(String retValue) {
+                promise.then("");
+            }
+        });
     }
 
     /**

@@ -6,16 +6,26 @@ public class PlayerConfiguration extends WhiteObject {
     private String slice;
     private Long beginTimestamp;
     private Long duration;
-    /*
-    音频地址，暂不支持视频。
-    Player 会自动与音视频播放做同步，保证同时播放，当一方缓冲时，会暂停。
-    */
-    private String audioUrl;
+    private CameraBound cameraBound;
 
     public PlayerConfiguration(String room, String roomToken) {
         this.room = room;
         this.roomToken = roomToken;
     }
+
+    public CameraBound getCameraBound() {
+        return cameraBound;
+    }
+
+    public void setCameraBound(CameraBound cameraBound) {
+        this.cameraBound = cameraBound;
+    }
+
+    /*
+        音频地址，暂不支持视频。
+        Player 会自动与音视频播放做同步，保证同时播放，当一方缓冲时，会暂停。
+        */
+    private String audioUrl;
 
     public String getRoom() {
         return room;

@@ -1,5 +1,6 @@
 package com.herewhite.sdk;
 
+import com.herewhite.sdk.domain.CameraBound;
 import com.herewhite.sdk.domain.MemberInformation;
 import com.herewhite.sdk.domain.WhiteObject;
 
@@ -12,6 +13,15 @@ public class RoomParams extends WhiteObject {
     private String uuid;
     private String roomToken;
     private MemberInformation memberInfo;
+    private CameraBound cameraBound;
+
+    public CameraBound getCameraBound() {
+        return cameraBound;
+    }
+
+    public void setCameraBound(CameraBound cameraBound) {
+        this.cameraBound = cameraBound;
+    }
 
     public Object getUserPayload() {
         return userPayload;
