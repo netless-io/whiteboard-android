@@ -459,6 +459,7 @@ public class Room extends Displayer {
      * 同步 获取房间连接状态
      *
      * @see RoomPhase
+     * @since 2.4.0
      */
     public RoomPhase getRoomPhase() {
         return this.roomPhase;
@@ -495,6 +496,7 @@ public class Room extends Displayer {
      *
      * @return RoomState
      * @see RoomState
+     * @since 2.4.0
      */
     public RoomState getRoomState() {
         return syncRoomState.getDisplayerState();
@@ -528,6 +530,22 @@ public class Room extends Displayer {
 
     //region Scene API
     /**
+     * 切换至特定的场景,如需同时获取报错，或完成回调，请使用 {@link #setScenePath(String, Promise)}
+     *
+     * 所有人都会同时切换到对应场景中
+     *
+     * 切换失败的几种原因：
+     *  1. 路径不合法，请确定场景路径的定义。（以 "/" 开头）
+     *  2. 场景路径，对应的场景不存在。
+     *  3. 传入的地址，是场景目录，而不是场景路径。
+     *
+     * @param path 想要切换的场景 的场景路径(场景目录+场景名）
+     */
+    public void setScenePath(String path) {
+        bridge.callHandler("room.setScenePath", new Object[]{path});
+    }
+
+    /**
      * 切换至特定的场景
      *
      * 所有人都会同时切换到对应场景中
@@ -538,11 +556,8 @@ public class Room extends Displayer {
      *  3. 传入的地址，是场景目录，而不是场景路径。
      *
      * @param path 想要切换的场景 的场景目录
+     * @param promise
      */
-    public void setScenePath(String path) {
-        bridge.callHandler("room.setScenePath", new Object[]{path});
-    }
-
     public void setScenePath(String path, final Promise<Boolean> promise) {
         bridge.callHandler("room.setScenePath", new Object[]{path}, new OnReturnValue<String>() {
             @Override
@@ -648,6 +663,7 @@ public class Room extends Displayer {
 
     /**
      * 动态 PPT 下一步操作。当前 ppt 页面的动画已全部执行完成时，会进入下一页 ppt 页面（场景）
+     * @since 2.2.0
      */
     public void pptNextStep() {
         bridge.callHandler("ppt.nextStep", new Object[]{});
@@ -655,6 +671,7 @@ public class Room extends Displayer {
 
     /**
      * 动态 PPT 上一步操作。当前 ppt 页面的动画全部回退完成时，会回滚至上一页 ppt 页面（场景）
+     * @since 2.2.0
      */
     public void pptPreviousStep() {
         bridge.callHandler("ppt.previousStep", new Object[]{});
@@ -662,7 +679,7 @@ public class Room extends Displayer {
 
     /**
      * 改变房间缩放比例
-     * @deprecated 使用 {@link #moveCamera(CameraConfig)} 调整缩放比例。同时支持动画选项
+     * @deprecated 使用 {@link #moveCamera(CameraConfig)} 调整缩放比例，新 API 同时支持动画选项
      * @param scale 缩放比例，2x 表示内容放大两倍。
      */
     @Deprecated
@@ -683,6 +700,7 @@ public class Room extends Displayer {
      * 禁止用户视角变化（缩放，移动）。禁止后，开发者仍然可以通过 SDK API 移动视角。
      *
      * @param disableOperations true:禁止用户主动改变视角；false:允许用户主动改变视角。默认:false。
+     * @since 2.2.0
      */
     public void disableCameraTransform(final boolean disableOperations) {
         bridge.callHandler("room.disableCameraTransform", new Object[]{disableOperations});
@@ -699,11 +717,11 @@ public class Room extends Displayer {
     }
 
     /**
-     * 将以白板左上角为原点的 Android 坐标系坐标，转换为白板内部坐标系（坐标原点为白板初始化时中点位置，坐标轴方向相同）的坐标
+     * 将以白板左上角为原点的 Android 坐标系坐标，转换为白板内部坐标系（坐标原点为白板初始化时中点位置，坐标轴方向相同）坐标
      *
      * @param x       the Android 端 x 坐标
      * @param y       the Android 端 y 坐标
-     * @param promise the promise
+     * @param promise 完成回调
      */
     public void convertToPointInWorld(double x, double y, final Promise<Point> promise) {
         bridge.callHandler("room.convertToPointInWorld", new Object[]{x, y}, new OnReturnValue<Object>() {
@@ -745,8 +763,12 @@ public class Room extends Displayer {
     }
     //endregion
 
+    /**
+     * 自定义事件回调
+     *
+     * @param eventEntry {@link EventEntry} 自定义事件内容，相对于 {@link AkkoEvent} 多了发送者的 memberId
+     */
     //region Event API
-    //TODO: 支持同一个自定义事件，多个回调。（看需求）
     void fireMagixEvent(EventEntry eventEntry) {
         EventListener eventListener = eventListenerConcurrentHashMap.get(eventEntry.getEventName());
         if (eventListener != null) {
@@ -771,9 +793,9 @@ public class Room extends Displayer {
 
     /**
      * 注册自定义事件监听，接受对应名称的自定义事件通知（包括自己发送的）。
-     * TODO:目前 Android 端，同一个自定义事件（名），只支持单个回调。只有 Web 端支持一个自定义事件，调用多个回调。
+     * 目前 Android 端，同一个自定义事件（名），只支持单个回调。只有 Web 端支持一个自定义事件，调用多个回调。
      * @param eventName     需要监听自定义事件名称
-     * @param eventListener 自定义事件回调，重复调用时，后者会覆盖前者。
+     * @param eventListener 自定义事件回调；重复添加时，旧回调会被覆盖
      */
     public void addMagixEventListener(String eventName, EventListener eventListener) {
         this.eventListenerConcurrentHashMap.put(eventName, eventListener);
@@ -782,7 +804,7 @@ public class Room extends Displayer {
 
     /**
      * 移除自定义事件监听
-     * TODO:目前 Android 端同一个自定义事件（名），只支持单个回调。移除时，只需要传入自定义事件名称即可。
+     * 目前 Android 端同一个自定义事件（名），只支持单个回调。移除时，只需要传入自定义事件名称即可。
      * @param eventName 需要移除监听的自定义事件名称
      */
     public void removeMagixEventListener(String eventName) {
