@@ -17,7 +17,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private boolean debug;
     private boolean hasUrlInterrupterAPI = false;
     private boolean userCursor = false;
-    private boolean customCursor = false;
     private boolean onlyCallbackRemoteStateModify = false;
     private HashMap<String, String> font;
 
