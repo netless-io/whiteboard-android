@@ -18,7 +18,7 @@ public class RoomParams extends WhiteObject {
     }
 
     /**
-     * 配置需要透传的用户信息，推荐使用 {@link com.google.gson.JsonObject} key-value object
+     * 配置需要透传的用户信息，推荐使用 {@link WhiteObject} 子类，以保证字段结构正确
      *
      * 如果需要显示用户头像地址，请在用户信息的 avatar 字段中，添加用户头像图片地址。
      * 从 {@link MemberInformation} 迁移，只需要在 userPayload 中，传入相同字段即可。
@@ -57,7 +57,7 @@ public class RoomParams extends WhiteObject {
      *
      * @param uuid       实时房间 uuid
      * @param roomToken  实时房间 token
-     * @param userPayload 自定义用户字段，参考 {@link #setUserPayload(Object)} 说明
+     * @param userPayload 自定义用户字段，参考 {@link #setUserPayload(Object)}
      * @since 2.0.0
      */
     public RoomParams(String uuid, String roomToken, Object userPayload) {
@@ -82,7 +82,10 @@ public class RoomParams extends WhiteObject {
      * @deprecated 请使用 {@link #setUserPayload(Object)} 设置自定义用户信息。
      */
     @Deprecated
-    public void setMemberInfo(MemberInformation memberInfo) { this.memberInfo = memberInfo; }
+    public void setMemberInfo(MemberInformation memberInfo) {
+        this.memberInfo = memberInfo;
+        this.userPayload = memberInfo;
+    }
 
     public String getUuid() {
         return uuid;
