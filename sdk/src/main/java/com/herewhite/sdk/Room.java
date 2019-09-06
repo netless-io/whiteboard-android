@@ -150,7 +150,6 @@ public class Room extends Displayer {
                 }
             }
         });
-        this.sdk.releaseRoom(this.uuid);
     }
 
     /**
