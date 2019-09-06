@@ -12,14 +12,21 @@ import java.util.HashMap;
 
 public class WhiteSdkConfiguration extends WhiteObject {
     private DeviceType deviceType;
+    //TODO: 兼容字段，大版本移除。
     private double zoomMaxScale;
+    //TODO: 兼容字段，大版本移除。
     private double zoomMinScale;
     private boolean debug;
     private boolean enableInterrupterAPI = false;
+    //TODO: 兼容字段，大版本移除。
     private boolean hasUrlInterrupterAPI = false;
     private boolean userCursor = false;
     private boolean onlyCallbackRemoteStateModify = false;
     private HashMap<String, String> font;
+
+    public WhiteSdkConfiguration() {
+        this.deviceType = DeviceType.touch;
+    }
 
     public WhiteSdkConfiguration(DeviceType deviceType, double zoomMaxScale, double zoomMinScale) {
         this(deviceType, zoomMaxScale, zoomMinScale, false);
@@ -36,6 +43,11 @@ public class WhiteSdkConfiguration extends WhiteObject {
         return loggerOptions;
     }
 
+    /**
+     * 日志上报系统设置项
+     *
+     * @param loggerOptions {@link LoggerOptions}
+     */
     public void setLoggerOptions(LoggerOptions loggerOptions) {
         this.loggerOptions = loggerOptions;
     }
@@ -46,6 +58,11 @@ public class WhiteSdkConfiguration extends WhiteObject {
         return font;
     }
 
+    /**
+     * 文档转网页（动态 PPT）时，自定义字体地址。key-value 结构
+     *
+     * @param font
+     */
     public void setFont(HashMap<String, String> font) {
         this.font = font;
     }
@@ -54,6 +71,12 @@ public class WhiteSdkConfiguration extends WhiteObject {
         return deviceType;
     }
 
+    /**
+     * 显示用户头像
+     * 需要保证对应用户在加入房间时，传入了 userPayload，并且userPayload 中，存在 avatar 字段
+     *
+     * @param userCursor 开关，默认关闭
+     */
     public void setUserCursor(boolean userCursor) { this.userCursor = userCursor; }
 
     public boolean isUserCursor() { return userCursor; }
@@ -98,6 +121,11 @@ public class WhiteSdkConfiguration extends WhiteObject {
         return hasUrlInterrupterAPI;
     }
 
+    /**
+     * 设置图片替换 API
+     *
+     * @param hasUrlInterrupterAPI 图片替换开关，默认关闭
+     */
     public void setHasUrlInterrupterAPI(boolean hasUrlInterrupterAPI) {
         this.enableInterrupterAPI = hasUrlInterrupterAPI;
         this.hasUrlInterrupterAPI = hasUrlInterrupterAPI;
