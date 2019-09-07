@@ -187,7 +187,10 @@ public class RoomActivity extends AppCompatActivity {
         /** 设置自定义全局状态，在后续回调中 GlobalState 直接进行类型转换即可 */
         WhiteDisplayerState.setCustomGlobalStateClass(MyGlobalState.class);
 
-        whiteSdk.joinRoom(new RoomParams(uuid, roomToken), new AbstractRoomCallbacks() {
+        RoomParams roomParams = new RoomParams(uuid, roomToken);
+        roomParams.setCameraBound(customBound(1.0));
+
+        whiteSdk.joinRoom(roomParams, new AbstractRoomCallbacks() {
             @Override
             public void onPhaseChanged(RoomPhase phase) {
                 showToast(phase.name());
@@ -212,6 +215,19 @@ public class RoomActivity extends AppCompatActivity {
         });
     }
 
+    private CameraBound customBound(double scale) {
+        CameraBound bound = new CameraBound();
+        bound.setCenterX(0d);
+        bound.setCenterY(0d);
+        bound.setHeight(Double.valueOf(whiteboardView.getHeight() / this.getResources().getDisplayMetrics().density));
+        bound.setWidth(Double.valueOf(whiteboardView.getWidth() / this.getResources().getDisplayMetrics().density));
+        ContentModeConfig contentModeConfig = new ContentModeConfig();
+        contentModeConfig.setScale(scale);
+        contentModeConfig.setMode(ContentModeConfig.ScaleMode.CENTER_INSIDE_SCALE);
+        bound.setMaxContentMode(contentModeConfig);
+        return bound;
+    }
+
     private void addCustomEventListener() {
         room.addMagixEventListener(EVENT_NAME, new EventListener() {
             @Override
@@ -223,17 +239,7 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     public void setBound(MenuItem item) {
-        CameraBound bound = new CameraBound();
-        bound.setCenterX(0d);
-        bound.setCenterY(0d);
-        bound.setHeight(Double.valueOf(whiteboardView.getHeight()));
-        bound.setWidth(Double.valueOf(whiteboardView.getWidth()));
-        ContentModeConfig contentModeConfig = new ContentModeConfig();
-        contentModeConfig.setScale(2.0);
-        contentModeConfig.setMode(ContentModeConfig.ScaleMode.CENTER_INSIDE_SCALE);
-        bound.setMaxContentMode(contentModeConfig);
-
-        room.setCameraBound(bound, new Promise<String>() {
+        room.setCameraBound(customBound(2.0), new Promise<String>() {
             @Override
             public void then(String s) {
                 logAction("bound" + s);
