@@ -3,6 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <!-- Settings, should always be in the overflow -->
+    <item android:id="@+id/bound"
+        android:onClick="setBound"
+        android:title="@string/set_bound" />
     <item android:id="@+id/broadcast"
         android:onClick="broadcast"
         android:title="@string/broadcast_command"/>

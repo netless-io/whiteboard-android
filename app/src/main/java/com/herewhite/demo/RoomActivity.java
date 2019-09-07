@@ -222,6 +222,30 @@ public class RoomActivity extends AppCompatActivity {
         });
     }
 
+    public void setBound(MenuItem item) {
+        CameraBound bound = new CameraBound();
+        bound.setCenterX(0d);
+        bound.setCenterY(0d);
+        bound.setHeight(Double.valueOf(whiteboardView.getHeight()));
+        bound.setWidth(Double.valueOf(whiteboardView.getWidth()));
+        ContentModeConfig contentModeConfig = new ContentModeConfig();
+        contentModeConfig.setScale(2.0);
+        contentModeConfig.setMode(ContentModeConfig.ScaleMode.AspectFit);
+        bound.setMaxContentMode(contentModeConfig);
+
+        room.setCameraBound(bound, new Promise<String>() {
+            @Override
+            public void then(String s) {
+                logAction("bound" + s);
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+
+            }
+        });
+    }
+
     public void nextScene(MenuItem item) {
         int nextIndex = room.getSceneState().getIndex() + 1;
         room.setSceneIndex(nextIndex, new Promise<Boolean>() {

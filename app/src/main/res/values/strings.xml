@@ -35,4 +35,5 @@
     <string name="next_scene">下一页</string>
     <string name="getPreview_command">获取预览截图</string>
     <string name="getSceneImage_command">获取场景封面</string>
+    <string name="set_bound">设置视野范围</string>
 </resources>
