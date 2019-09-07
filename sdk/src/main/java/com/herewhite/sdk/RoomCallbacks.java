@@ -3,8 +3,6 @@ package com.herewhite.sdk;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
 
-import org.json.JSONObject;
-
 /**
  * Created by buhe on 2018/8/12.
  */

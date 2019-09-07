@@ -1,6 +1,7 @@
 package com.herewhite.sdk;
 
 import android.content.Context;
+
 import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.AkkoEvent;
 import com.herewhite.sdk.domain.BroadcastState;

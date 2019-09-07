@@ -5,12 +5,9 @@ import android.webkit.JavascriptInterface;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.herewhite.sdk.domain.EventEntry;
-import com.herewhite.sdk.domain.FrameError;
 import com.herewhite.sdk.domain.PlayerPhase;
 import com.herewhite.sdk.domain.PlayerState;
 import com.herewhite.sdk.domain.SDKError;
-
-import org.json.JSONObject;
 
 /**
  * Created by buhe on 2018/8/12.

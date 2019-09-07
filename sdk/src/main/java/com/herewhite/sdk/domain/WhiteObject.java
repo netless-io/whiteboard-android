@@ -1,5 +1,7 @@
 package com.herewhite.sdk.domain;
+
 import com.google.gson.Gson;
+
 import org.json.JSONObject;
 
 public class WhiteObject {

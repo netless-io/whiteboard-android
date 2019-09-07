@@ -1,8 +1,8 @@
 package com.herewhite.sdk;
 
+import com.herewhite.sdk.domain.ConversionInfo;
 import com.herewhite.sdk.domain.ConvertException;
 import com.herewhite.sdk.domain.ConvertedFiles;
-import com.herewhite.sdk.domain.ConversionInfo;
 
 public class AbstractConverterCallbacks implements ConverterCallbacks {
     @Override

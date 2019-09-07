@@ -4,8 +4,6 @@ import com.herewhite.sdk.domain.PlayerPhase;
 import com.herewhite.sdk.domain.PlayerState;
 import com.herewhite.sdk.domain.SDKError;
 
-import org.json.JSONObject;
-
 public interface PlayerEventListener {
     /**
      * 播放状态切换回调

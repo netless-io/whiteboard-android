@@ -2,10 +2,10 @@ package com.herewhite.sdk;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.herewhite.sdk.domain.ConversionInfo;
 import com.herewhite.sdk.domain.ConvertErrorCode;
 import com.herewhite.sdk.domain.ConvertException;
 import com.herewhite.sdk.domain.ConvertedFiles;
-import com.herewhite.sdk.domain.ConversionInfo;
 import com.herewhite.sdk.domain.ConverterStatus;
 import com.herewhite.sdk.domain.PptPage;
 import com.herewhite.sdk.domain.Scene;

@@ -1,10 +1,12 @@
 package com.herewhite.sdk;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.annotation.ColorInt;
 import android.util.Base64;
+
 import com.google.gson.Gson;
 import com.herewhite.sdk.domain.CameraBound;
 import com.herewhite.sdk.domain.CameraConfig;
