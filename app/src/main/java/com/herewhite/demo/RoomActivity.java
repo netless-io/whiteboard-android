@@ -230,7 +230,7 @@ public class RoomActivity extends AppCompatActivity {
         bound.setWidth(Double.valueOf(whiteboardView.getWidth()));
         ContentModeConfig contentModeConfig = new ContentModeConfig();
         contentModeConfig.setScale(2.0);
-        contentModeConfig.setMode(ContentModeConfig.ScaleMode.AspectFit);
+        contentModeConfig.setMode(ContentModeConfig.ScaleMode.CENTER_INSIDE_SCALE);
         bound.setMaxContentMode(contentModeConfig);
 
         room.setCameraBound(bound, new Promise<String>() {
