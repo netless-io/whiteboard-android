@@ -12,13 +12,88 @@ public class RoomParams extends WhiteObject {
 
     private String uuid;
     private String roomToken;
-    private MemberInformation memberInfo;
     private CameraBound cameraBound;
 
+    /**
+     * Is disable device inputs boolean.
+     *
+     * @return the boolean
+     * @since 2.5.0
+     */
+    public boolean isDisableDeviceInputs() {
+        return disableDeviceInputs;
+    }
+
+    /**
+     * 禁止教具响应用户输入
+     *
+     * @param disableDeviceInputs 是否禁止响应用户输入。默认 false，即响应用户输入。
+     * @since 2.5.0
+     */
+    public void setDisableDeviceInputs(boolean disableDeviceInputs) {
+        this.disableDeviceInputs = disableDeviceInputs;
+    }
+
+    /**
+     * Is disable operations boolean.
+     *
+     * @return the boolean
+     * @since 2.5.0
+     */
+    public boolean isDisableOperations() {
+        return disableOperations;
+    }
+
+    /**
+     * 只读，禁止响应用户任何操作。
+     *
+     * @param disableOperations 禁止响应用户操作。默认 false，即响应用户任何操作。
+     * @since 2.5.0
+     */
+    public void setDisableOperations(boolean disableOperations) {
+        this.disableOperations = disableOperations;
+    }
+
+    /**
+     * Is disable bezier boolean.
+     *
+     * @return the boolean
+     * @since 2.5.0
+     */
+    public boolean isDisableBezier() {
+        return disableBezier;
+    }
+
+    /**
+     * 关闭贝塞尔曲线优化
+     *
+     * @param disableBezier 关闭贝塞尔曲线优化。默认 false，即开启贝塞尔曲线优化。
+     * @since 2.5.0
+     */
+    public void setDisableBezier(boolean disableBezier) {
+        this.disableBezier = disableBezier;
+    }
+
+    private boolean disableDeviceInputs = false;
+    private boolean disableOperations = false;
+    private boolean disableBezier = false;
+
+    /**
+     * Gets camera bound.
+     *
+     * @return the camera bound
+     * @since 2.5.0
+     */
     public CameraBound getCameraBound() {
         return cameraBound;
     }
 
+    /**
+     * 锁定画布范围
+     *
+     * @param cameraBound 画布范围 {@link CameraBound}
+     * @since 2.5.0
+     */
     public void setCameraBound(CameraBound cameraBound) {
         this.cameraBound = cameraBound;
     }
@@ -59,7 +134,7 @@ public class RoomParams extends WhiteObject {
     public RoomParams(String uuid, String roomToken, MemberInformation memberInfo) {
         this.uuid = uuid;
         this.roomToken = roomToken;
-        this.memberInfo = memberInfo;
+        this.userPayload = memberInfo;
     }
 
     /**
@@ -67,7 +142,7 @@ public class RoomParams extends WhiteObject {
      *
      * @param uuid       实时房间 uuid
      * @param roomToken  实时房间 token
-     * @param userPayload 自定义用户字段，参考 {@link #setUserPayload(Object)}
+     * @param userPayload 自定义用户字段，参考 {@link #setUserPayload(Object)} key-value 结构，请使用自定义后的 {@link WhiteObject} 子类
      * @since 2.0.0
      */
     public RoomParams(String uuid, String roomToken, Object userPayload) {
@@ -83,7 +158,12 @@ public class RoomParams extends WhiteObject {
      * @deprecated 请使用 {@link #getUserPayload()}
      */
     @Deprecated
-    public MemberInformation getMemberInfo() { return memberInfo; }
+    public MemberInformation getMemberInfo() {
+        if (userPayload instanceof MemberInformation) {
+            return (MemberInformation)userPayload;
+        }
+        return null;
+    }
 
     /**
      * 设置用户信息
@@ -93,7 +173,6 @@ public class RoomParams extends WhiteObject {
      */
     @Deprecated
     public void setMemberInfo(MemberInformation memberInfo) {
-        this.memberInfo = memberInfo;
         this.userPayload = memberInfo;
     }
 

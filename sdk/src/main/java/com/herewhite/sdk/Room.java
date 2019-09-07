@@ -57,7 +57,7 @@ public class Room extends Displayer {
      * 获取当前用户在白板事实房间中的 memberId，该 id 从 0 开始递增
      * 参考 {@link RoomMember#getMemberId()}
      * @return 用户 memberId
-     * @since 2.4.10
+     * @since 2.4.11
      */
     public Long getObserverId() {
         return observerId;

@@ -36,10 +36,23 @@ public class Displayer {
         this.sdk = sdk;
     }
 
+    /**
+     * 锁定视野范围
+     *
+     * @param bound  视野范围描述类 {@link CameraBound}
+     * @since 2.5.0
+     */
     public void setCameraBound(CameraBound bound) {
         this.bridge.callHandler("displayerAsync.setCameraBound", new Object[]{bound});
     }
 
+    /**
+     * 锁定视野范围
+     *
+     * @param bound  视野范围描述类 {@link CameraBound}
+     * @param promise 设置完成回调
+     * @since 2.5.0
+     */
     public void setCameraBound(CameraBound bound, final Promise<String> promise) {
         this.bridge.callHandler("displayerAsync.setCameraBound", new Object[]{bound}, new OnReturnValue<String>() {
             @Override
@@ -83,6 +96,7 @@ public class Displayer {
      *
      * @param scenePath 场景路径
      * @param promise   完成回调
+     * @since 2.3.0
      */
     public void getScenePreviewImage(String scenePath, final Promise<Bitmap>promise) {
         this.bridge.callHandler("displayerAsync.scenePreview", new Object[]{scenePath}, new OnReturnValue<String>() {
@@ -106,6 +120,7 @@ public class Displayer {
      *
      * @param scenePath 场景路径
      * @param promise   完成回调
+     * @since 2.3.0
      */
     public void getSceneSnapshotImage(String scenePath, final Promise<Bitmap>promise) {
         this.bridge.callHandler("displayerAsync.sceneSnapshot", new Object[]{scenePath}, new OnReturnValue<String>() {

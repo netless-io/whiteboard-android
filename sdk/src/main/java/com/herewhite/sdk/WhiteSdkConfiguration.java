@@ -47,6 +47,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
      * 日志上报系统设置项
      *
      * @param loggerOptions {@link LoggerOptions}
+     * @since 2.4.2
      */
     public void setLoggerOptions(LoggerOptions loggerOptions) {
         this.loggerOptions = loggerOptions;
@@ -62,6 +63,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
      * 文档转网页（动态 PPT）时，自定义字体地址。key-value 结构
      *
      * @param font
+     * @since 2.2.0
      */
     public void setFont(HashMap<String, String> font) {
         this.font = font;
@@ -73,9 +75,9 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
     /**
      * 显示用户头像
-     * 需要保证对应用户在加入房间时，传入了 userPayload，并且userPayload 中，存在 avatar 字段
+     * 需要保证对应用户在加入房间时，传入了 userPayload，并且 userPayload key-value 结构中，存在 avatar 字段
      *
-     * @param userCursor 开关，默认关闭
+     * @param userCursor 开关，默认关闭,即不显示用户头像
      */
     public void setUserCursor(boolean userCursor) { this.userCursor = userCursor; }
 
@@ -113,6 +115,11 @@ public class WhiteSdkConfiguration extends WhiteObject {
         return debug;
     }
 
+    /**
+     * 打印 debug 日志
+     *
+     * @param debug 默认关闭
+     */
     public void setDebug(boolean debug) {
         this.debug = debug;
     }

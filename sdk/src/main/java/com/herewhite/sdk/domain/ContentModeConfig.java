@@ -1,7 +1,10 @@
 package com.herewhite.sdk.domain;
 
 
-
+/**
+ * 视野缩放比例描述类
+ * @since 2.5.0
+ */
 public class ContentModeConfig {
 
     public ContentModeConfig() {
