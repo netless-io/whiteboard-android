@@ -6,7 +6,7 @@ public class ContentModeConfig {
 
     public ContentModeConfig() {
         scale = 1d;
-        scaleMode = ScaleMode.Scale;
+        mode = ScaleMode.Scale;
     }
 
     public enum ScaleMode {
@@ -41,15 +41,15 @@ public class ContentModeConfig {
         this.space = space;
     }
 
-    public ScaleMode getScaleMode() {
-        return scaleMode;
+    public ScaleMode getMode() {
+        return mode;
     }
 
-    public void setScaleMode(ScaleMode scaleMode) {
-        this.scaleMode = scaleMode;
+    public void setMode(ScaleMode mode) {
+        this.mode = mode;
     }
 
     private Double scale;
     private Double space;
-    private ScaleMode scaleMode;
+    private ScaleMode mode;
 }

@@ -37,7 +37,7 @@ public class Displayer {
     }
 
     public void setCameraBound(CameraBound bound, final Promise<String> promise) {
-        this.bridge.callHandler("displayer.setCameraBound", new Object[]{bound}, new OnReturnValue<String>() {
+        this.bridge.callHandler("displayerAsync.setCameraBound", new Object[]{bound}, new OnReturnValue<String>() {
             @Override
             public void onValue(String retValue) {
                 promise.then("");
