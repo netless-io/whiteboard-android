@@ -89,6 +89,25 @@ public class CameraBound extends WhiteObject {
         this.minContentMode = minContentMode;
     }
 
+    public Double getDamping() {
+        return damping;
+    }
+
+    /**
+     *
+     * 阻力参数
+     *
+     * 越出边界时手势的阻力（范围 0.0 ~ 1.0）
+     * 使用多指触碰改变视角时，如果越出边界。该值越大，感受到的阻力越大。
+     * 当取 0.0 时，完全感受不到阻力；当取 1.0 时，则无法移出便捷。
+     * 取中间值，则感受介乎两者之间。
+     * @param damping the damping
+     */
+    public void setDamping(Double damping) {
+        this.damping = damping;
+    }
+
+    private Double damping;
     private Double centerX;
     private Double centerY;
     private Double width;
