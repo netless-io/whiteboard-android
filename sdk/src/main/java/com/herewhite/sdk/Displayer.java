@@ -43,23 +43,7 @@ public class Displayer {
      * @since 2.5.0
      */
     public void setCameraBound(CameraBound bound) {
-        this.bridge.callHandler("displayerAsync.setCameraBound", new Object[]{bound});
-    }
-
-    /**
-     * 锁定视野范围
-     *
-     * @param bound  视野范围描述类 {@link CameraBound}
-     * @param promise 设置完成回调
-     * @since 2.5.0
-     */
-    public void setCameraBound(CameraBound bound, final Promise<String> promise) {
-        this.bridge.callHandler("displayerAsync.setCameraBound", new Object[]{bound}, new OnReturnValue<String>() {
-            @Override
-            public void onValue(String retValue) {
-                promise.then("");
-            }
-        });
+        this.bridge.callHandler("displayer.setCameraBound", new Object[]{bound});
     }
 
     /**
