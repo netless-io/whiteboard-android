@@ -188,6 +188,7 @@ public class RoomActivity extends AppCompatActivity {
         WhiteDisplayerState.setCustomGlobalStateClass(MyGlobalState.class);
 
         RoomParams roomParams = new RoomParams(uuid, roomToken);
+        /** 2.5.0 新增 API，锁定视野范围 */
         roomParams.setCameraBound(customBound(1.0));
 
         whiteSdk.joinRoom(roomParams, new AbstractRoomCallbacks() {
