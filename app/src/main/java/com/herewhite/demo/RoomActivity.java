@@ -388,7 +388,7 @@ public class RoomActivity extends AppCompatActivity {
 
     public void getScene(MenuItem item) {
         logAction();
-        logAction(room.getScenes().toString());
+        logAction(gson.toJson(room.getScenes()));
     }
 
     public void getRoomPhase(MenuItem item) {
