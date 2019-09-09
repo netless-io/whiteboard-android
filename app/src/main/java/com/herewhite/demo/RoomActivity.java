@@ -239,17 +239,7 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     public void setBound(MenuItem item) {
-        room.setCameraBound(customBound(2.0), new Promise<String>() {
-            @Override
-            public void then(String s) {
-                logAction("bound" + s);
-            }
-
-            @Override
-            public void catchEx(SDKError t) {
-
-            }
-        });
+        room.setCameraBound(customBound(2.0));
     }
 
     public void nextScene(MenuItem item) {
