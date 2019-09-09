@@ -24,6 +24,23 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private boolean onlyCallbackRemoteStateModify = false;
     private HashMap<String, String> font;
 
+    public boolean isPreloadDynamicPPT() {
+        return preloadDynamicPPT;
+    }
+
+    /**
+     * 动态 PPT 预加载选项
+     *
+     * 在使用动态 PPT 的同时，加载动态 PPT 中所需要的图片资源
+     *
+     * @param preloadDynamicPPT 默认关闭，不进行预加载
+     */
+    public void setPreloadDynamicPPT(boolean preloadDynamicPPT) {
+        this.preloadDynamicPPT = preloadDynamicPPT;
+    }
+
+    private boolean preloadDynamicPPT = false;
+
     public WhiteSdkConfiguration() {
         this.deviceType = DeviceType.touch;
     }
