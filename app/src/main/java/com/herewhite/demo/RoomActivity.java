@@ -188,8 +188,6 @@ public class RoomActivity extends AppCompatActivity {
         WhiteDisplayerState.setCustomGlobalStateClass(MyGlobalState.class);
 
         RoomParams roomParams = new RoomParams(uuid, roomToken);
-        /** 2.5.0 新增 API，锁定视野范围 */
-        roomParams.setCameraBound(customBound(1.0));
 
         whiteSdk.joinRoom(roomParams, new AbstractRoomCallbacks() {
             @Override
@@ -216,14 +214,14 @@ public class RoomActivity extends AppCompatActivity {
         });
     }
 
-    private CameraBound customBound(double scale) {
+    private CameraBound customBound(double maxScale) {
         CameraBound bound = new CameraBound();
         bound.setCenterX(0d);
         bound.setCenterY(0d);
         bound.setHeight(Double.valueOf(whiteboardView.getHeight() / this.getResources().getDisplayMetrics().density));
         bound.setWidth(Double.valueOf(whiteboardView.getWidth() / this.getResources().getDisplayMetrics().density));
         ContentModeConfig contentModeConfig = new ContentModeConfig();
-        contentModeConfig.setScale(scale);
+        contentModeConfig.setScale(maxScale);
         contentModeConfig.setMode(ContentModeConfig.ScaleMode.CENTER_INSIDE_SCALE);
         bound.setMaxContentMode(contentModeConfig);
         return bound;
@@ -240,7 +238,8 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     public void setBound(MenuItem item) {
-        room.setCameraBound(customBound(2.0));
+        CameraBound bound = customBound(3);
+        room.setCameraBound(bound);
     }
 
     public void nextScene(MenuItem item) {
