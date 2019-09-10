@@ -49,16 +49,21 @@ public class Displayer {
     /**
      * 设置白板背景色（本地操作，不会同步）
      *
-     * @param intColor 16 进制 aRGB 色值
-     * @since 2.4.0
+     * @param intColor 16 进制 aRGB,a 属性并不能达到使白板透明的效果
+     * @since 2.4.14
      */
-    public void setBackgroundColor(int intColor) {
-        if ((intColor & 0xFF000000) == 0xFF000000) {
-            this.bridge.callHandler("displayer.background", new Object[]{Displayer.toHexString(intColor)});
-            backgroundColor = intColor;
-        } else {
-            throw new AssertionError("alpha is not support to change");
-        }
+    public void setBackgroundColor(@ColorInt int intColor) {
+        Float[] rgba = hexSplit(intColor);
+        this.bridge.callHandler("displayer.setBackgroundColor", rgba);
+        backgroundColor = intColor;
+    }
+
+    public static Float[] hexSplit(@ColorInt int color) {
+        Float r = Float.valueOf((color >> 16) & 0xff);
+        Float g = Float.valueOf((color >>  8) & 0xff);
+        Float b = Float.valueOf((color      ) & 0xff);
+        Float a = Float.valueOf(((color >> 24) & 0xff) / 255.0f);
+        return new Float[]{r, g, b, a};
     }
 
     /**
@@ -69,10 +74,6 @@ public class Displayer {
      */
     public int getBackgroundColor() {
         return backgroundColor;
-    }
-
-    private final static String toHexString(int intColor) {
-        return String.format("#%06X", (0xFFFFFF & intColor));
     }
 
     /**
