@@ -50,8 +50,10 @@ public class Displayer {
      * 设置白板背景色（本地操作，不会同步）
      *
      * @param intColor 16 进制 aRGB,a 属性并不能达到使白板透明的效果
+     * @deprecated Android 端直接使用 {@link WhiteboardView#setBackgroundColor(int)} 即可
      * @since 2.4.14
      */
+    @Deprecated
     public void setBackgroundColor(@ColorInt int intColor) {
         Float[] rgba = hexSplit(intColor);
         this.bridge.callHandler("displayer.setBackgroundColor", rgba);
