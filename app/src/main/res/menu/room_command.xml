@@ -6,6 +6,9 @@
     <!--<item android:id="@+id/bound"-->
         <!--android:onClick="setBound"-->
         <!--android:title="@string/set_bound" />-->
+    <item android:id="@+id/orientation"
+        android:onClick="orientation"
+        android:title="@string/orientation" />
     <item android:id="@+id/broadcast"
         android:onClick="broadcast"
         android:title="@string/broadcast_command"/>

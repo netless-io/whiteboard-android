@@ -3,13 +3,17 @@ package com.herewhite.demo;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.herewhite.sdk.*;
@@ -235,6 +239,28 @@ public class RoomActivity extends AppCompatActivity {
                 showToast(gson.toJson(eventEntry.getPayload()));
             }
         });
+    }
+
+    public void orientation(MenuItem item) {
+        if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            RoomActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        } else {
+            RoomActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+    }
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        logRoomInfo( "width:" + whiteboardView.getWidth() / getResources().getDisplayMetrics().density + " height: " + whiteboardView.getHeight() / getResources().getDisplayMetrics().density);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                room.refreshViewSize();
+                logRoomInfo( "width:" + whiteboardView.getWidth() / getResources().getDisplayMetrics().density + " height: " + whiteboardView.getHeight() / getResources().getDisplayMetrics().density);
+            }
+        }, 1000);
     }
 
     public void setBound(MenuItem item) {
