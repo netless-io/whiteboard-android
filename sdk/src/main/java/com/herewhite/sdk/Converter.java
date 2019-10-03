@@ -87,7 +87,7 @@ public class Converter {
     private static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
     static ExecutorService poolExecutor = Executors.newSingleThreadExecutor();
-    static final String PPT_ORIGIN = "https://cloudcapiv4.herewhite.com";
+    static final String PPT_ORIGIN = "https://scdncloudcapiv4.herewhite.com";
 
     OkHttpClient client = new OkHttpClient();
 
