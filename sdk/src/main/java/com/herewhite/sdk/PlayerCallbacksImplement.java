@@ -60,6 +60,14 @@ public class PlayerCallbacksImplement implements SyncDisplayerState.Listener<Pla
     }
 
     @JavascriptInterface
+    public void fireHighFrequencyEvent(Object args) {
+        EventEntry[] events = gson.fromJson(String.valueOf(args), EventEntry[].class);
+        if (player != null) {
+            player.fireHighFrequencyEvent(events);
+        }
+    }
+
+    @JavascriptInterface
     public void onPhaseChanged(Object args) {
         PlayerPhase phase = gson.fromJson(String.valueOf(args), PlayerPhase.class);
 

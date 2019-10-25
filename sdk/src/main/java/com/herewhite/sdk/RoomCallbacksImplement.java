@@ -61,6 +61,13 @@ public class RoomCallbacksImplement implements SyncDisplayerState.Listener<RoomS
         }
     }
 
+    @JavascriptInterface
+    public void fireHighFrequencyEvent(Object args) {
+        EventEntry[] events = gson.fromJson(String.valueOf(args), EventEntry[].class);
+        if (room != null) {
+            room.fireHighFrequencyEvent(events);
+        }
+    }
 
     @JavascriptInterface
     public void firePhaseChanged(Object args) {

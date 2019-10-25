@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.EventListener;
+import com.herewhite.sdk.domain.FrequencyEventListener;
 import com.herewhite.sdk.domain.PlayerObserverMode;
 import com.herewhite.sdk.domain.PlayerPhase;
 import com.herewhite.sdk.domain.PlayerState;
@@ -22,6 +23,8 @@ import wendu.dsbridge.OnReturnValue;
 public class Player extends Displayer {
 
     private final ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, FrequencyEventListener> frequencyEventListenerConcurrentHashMap = new ConcurrentHashMap<>();
+
     private final SyncDisplayerState<PlayerState> syncPlayerState;
 
     private final long timeDuration;
@@ -98,6 +101,19 @@ public class Player extends Displayer {
         }
     }
 
+    void fireHighFrequencyEvent(EventEntry[] eventEntries) {
+        FrequencyEventListener eventListener = frequencyEventListenerConcurrentHashMap.get(eventEntries[0].getEventName());
+        if (eventListener != null) {
+            try {
+                eventListener.onEvent(eventEntries);
+            } catch (AssertionError a) {
+                throw a;
+            } catch (Throwable e) {
+                Logger.error("An exception occurred while sending the event", e);
+            }
+        }
+    }
+
     /**
      * 移除特定自定义事件监听
      *
@@ -105,6 +121,7 @@ public class Player extends Displayer {
      */
     public void removeMagixEventListener(String eventName) {
         this.eventListenerConcurrentHashMap.remove(eventName);
+        this.frequencyEventListenerConcurrentHashMap.remove(eventName);
         bridge.callHandler("player.removeMagixEventListener", new Object[]{eventName});
     }
 
@@ -117,6 +134,21 @@ public class Player extends Displayer {
     public void addMagixEventListener(String eventName, EventListener eventListener) {
         this.eventListenerConcurrentHashMap.put(eventName, eventListener);
         bridge.callHandler("player.addMagixEventListener", new Object[]{eventName});
+    }
+
+    /**
+     * 添加高频自定义事件监听
+     *
+     * @param eventName 自定义事件名称
+     * @param eventListener 自定义事件回调 @see EventListener
+     * @param fireInterval 调用频率, 单位：毫秒，最低 500ms，传入任何低于该值的数字，都会重置为 500ms
+     */
+    public void addHighFrequencyEventListener(String eventName, FrequencyEventListener eventListener, Integer fireInterval) {
+        if (fireInterval < 500) {
+            fireInterval = 500;
+        }
+        this.frequencyEventListenerConcurrentHashMap.put(eventName, eventListener);
+        bridge.callHandler("player.addHighFrequencyEventListener", new Object[]{eventName, fireInterval});
     }
     //endregion
 
