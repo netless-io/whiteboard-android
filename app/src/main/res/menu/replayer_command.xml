@@ -3,6 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <!-- Settings, should always be in the overflow -->
+    <item android:id="@+id/orientation"
+        android:onClick="orientation"
+        android:title="@string/orientation" />
     <item android:id="@+id/timeinfo"
         android:onClick="getTimeInfo"
         android:title="@string/getTimeInfo_command"/>
