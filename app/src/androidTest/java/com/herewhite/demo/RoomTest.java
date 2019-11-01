@@ -48,7 +48,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
  */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class SDKRoomTest {
+public class RoomTest {
 
     @Rule
     public ActivityTestRule<TestActivity> mActivityRule = new ActivityTestRule<>(
