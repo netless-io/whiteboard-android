@@ -37,6 +37,14 @@ public class Displayer {
     }
 
     /**
+     * 刷新当前白板的视觉矩形。
+     * 当 WhiteboardView 大小出现改变时，需要手动调用该方法。
+     */
+    public void refreshViewSize() {
+        bridge.callHandler("displayer.refreshViewSize", new Object[]{});
+    }
+
+    /**
      * 锁定视野范围
      *
      * @param bound  视野范围描述类 {@link CameraBound}

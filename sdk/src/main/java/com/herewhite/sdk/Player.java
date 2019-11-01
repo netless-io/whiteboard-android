@@ -65,10 +65,6 @@ public class Player extends Displayer {
         this.scheduleTime = scheduleTime;
     }
 
-    public void refreshViewSize() {
-        bridge.callHandler("player.refreshViewSize", new Object[]{});
-    }
-
     public void play() {
         bridge.callHandler("player.play", new Object[]{});
     }

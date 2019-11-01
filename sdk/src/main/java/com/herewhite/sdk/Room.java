@@ -117,14 +117,6 @@ public class Room extends Displayer {
     //endregion
 
     /**
-     * 刷新当前白板的视觉矩形。
-     * 当 WhiteboardView 大小出现改变时，需要手动调用该方法。
-     */
-    public void refreshViewSize() {
-        bridge.callHandler("room.refreshViewSize", new Object[]{});
-    }
-
-    /**
      * 主动断连，断开后，当前 room 实例将无法使用。
      * 再次使用，需要使用 {@link WhiteSdk#joinRoom(RoomParams, RoomCallbacks, Promise)} 重新创建实例
      * 如需退出后回调，请使用 {@link #disconnect(Promise)}
