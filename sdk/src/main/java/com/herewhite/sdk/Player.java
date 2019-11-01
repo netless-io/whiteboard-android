@@ -114,42 +114,6 @@ public class Player extends Displayer {
         }
     }
 
-    /**
-     * 移除特定自定义事件监听
-     *
-     * @param eventName 自定义事件名称
-     */
-    public void removeMagixEventListener(String eventName) {
-        this.eventListenerConcurrentHashMap.remove(eventName);
-        this.frequencyEventListenerConcurrentHashMap.remove(eventName);
-        bridge.callHandler("player.removeMagixEventListener", new Object[]{eventName});
-    }
-
-    /**
-     * 添加自定义事件监听
-     *
-     * @param eventName 自定义事件名称
-     * @param eventListener 自定义事件回调实现 @see EventListener
-     */
-    public void addMagixEventListener(String eventName, EventListener eventListener) {
-        this.eventListenerConcurrentHashMap.put(eventName, eventListener);
-        bridge.callHandler("player.addMagixEventListener", new Object[]{eventName});
-    }
-
-    /**
-     * 添加高频自定义事件监听
-     *
-     * @param eventName 自定义事件名称
-     * @param eventListener 自定义事件回调 @see EventListener
-     * @param fireInterval 调用频率, 单位：毫秒，最低 500ms，传入任何低于该值的数字，都会重置为 500ms
-     */
-    public void addHighFrequencyEventListener(String eventName, FrequencyEventListener eventListener, Integer fireInterval) {
-        if (fireInterval < 500) {
-            fireInterval = 500;
-        }
-        this.frequencyEventListenerConcurrentHashMap.put(eventName, eventListener);
-        bridge.callHandler("player.addHighFrequencyEventListener", new Object[]{eventName, fireInterval});
-    }
     //endregion
 
     /**

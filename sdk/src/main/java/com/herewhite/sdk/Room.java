@@ -38,8 +38,6 @@ public class Room extends Displayer {
 
     private Integer timeDelay;
     private Long observerId;
-    private ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<String, FrequencyEventListener> frequencyEventListenerConcurrentHashMap = new ConcurrentHashMap<>();
 
     public Room(String uuid, WhiteboardView bridge, Context context, WhiteSdk sdk, SyncDisplayerState<RoomState> syncRoomState) {
         super(uuid, bridge, context, sdk);
@@ -825,41 +823,5 @@ public class Room extends Displayer {
         bridge.callHandler("room.dispatchMagixEvent", new Object[]{eventEntry});
     }
 
-    /**
-     * 注册自定义事件监听，接受对应名称的自定义事件通知（包括自己发送的）。
-     * 目前 Android 端，同一个自定义事件（名），只支持单个回调。只有 Web 端支持一个自定义事件，调用多个回调。
-     * @param eventName     需要监听自定义事件名称
-     * @param eventListener 自定义事件回调；重复添加时，旧回调会被覆盖
-     */
-    public void addMagixEventListener(String eventName, EventListener eventListener) {
-        this.eventListenerConcurrentHashMap.put(eventName, eventListener);
-        bridge.callHandler("room.addMagixEventListener", new Object[]{eventName});
-    }
-
-    /**
-     * 注册高频自定义事件监听，接受对应名称的自定义事件通知（包括自己发送的）。
-     * 目前 Android 端，同一个自定义事件（名），只支持单个回调。只有 Web 端支持一个自定义事件，调用多个回调。
-     * @param eventName     需要监听自定义事件名称
-     * @param eventListener 自定义事件回调；重复添加时，旧回调会被覆盖
-     * @param fireInterval 调用频率, 单位：毫秒，最低 500ms，传入任何低于该值的数字，都会重置为 500ms
-     */
-    public void addHighFrequencyEventListener(String eventName, FrequencyEventListener eventListener, Integer fireInterval) {
-        if (fireInterval < 500) {
-            fireInterval = 500;
-        }
-        this.frequencyEventListenerConcurrentHashMap.put(eventName, eventListener);
-        bridge.callHandler("room.addHighFrequencyEventListener", new Object[]{eventName, fireInterval});
-    }
-
-    /**
-     * 移除自定义事件监听
-     * 目前 Android 端同一个自定义事件（名），只支持单个回调。移除时，只需要传入自定义事件名称即可。
-     * @param eventName 需要移除监听的自定义事件名称
-     */
-    public void removeMagixEventListener(String eventName) {
-        this.eventListenerConcurrentHashMap.remove(eventName);
-        this.frequencyEventListenerConcurrentHashMap.remove(eventName);
-        bridge.callHandler("room.removeMagixEventListener", new Object[]{eventName});
-    }
     //endregion
 }
