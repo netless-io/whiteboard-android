@@ -13,7 +13,6 @@ import com.herewhite.sdk.domain.GlobalState;
 import com.herewhite.sdk.domain.ImageInformation;
 import com.herewhite.sdk.domain.ImageInformationWithUrl;
 import com.herewhite.sdk.domain.MemberState;
-import com.herewhite.sdk.domain.Point;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomMember;
 import com.herewhite.sdk.domain.RoomPhase;
@@ -24,7 +23,6 @@ import com.herewhite.sdk.domain.SceneState;
 import com.herewhite.sdk.domain.ViewMode;
 
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import wendu.dsbridge.OnReturnValue;
 
@@ -733,32 +731,6 @@ public class Room extends Displayer {
      */
     public void disableDeviceInputs(final boolean disableOperations) {
         bridge.callHandler("room.disableDeviceInputs", new Object[]{disableOperations});
-    }
-
-    /**
-     * 将以白板左上角为原点的 Android 坐标系坐标，转换为白板内部坐标系（坐标原点为白板初始化时中点位置，坐标轴方向相同）坐标
-     *
-     * @param x       the Android 端 x 坐标
-     * @param y       the Android 端 y 坐标
-     * @param promise 完成回调
-     */
-    public void convertToPointInWorld(double x, double y, final Promise<Point> promise) {
-        bridge.callHandler("room.convertToPointInWorld", new Object[]{x, y}, new OnReturnValue<Object>() {
-            @Override
-            public void onValue(Object o) {
-                try {
-                    promise.then(gson.fromJson(String.valueOf(o), Point.class));
-                } catch (AssertionError a) {
-                    throw a;
-                } catch (JsonSyntaxException e) {
-                    Logger.error("An JsonSyntaxException occurred while parse json from convertToPointInWorld", e);
-                    promise.catchEx(new SDKError(e.getMessage()));
-                } catch (Throwable e) {
-                    Logger.error("An exception occurred in convertToPointInWorld promise then method", e);
-                    promise.catchEx(new SDKError(e.getMessage()));
-                }
-            }
-        });
     }
 
     /**

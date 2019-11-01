@@ -8,10 +8,12 @@ import android.support.annotation.ColorInt;
 import android.util.Base64;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.CameraBound;
 import com.herewhite.sdk.domain.CameraConfig;
 import com.herewhite.sdk.domain.EventListener;
 import com.herewhite.sdk.domain.FrequencyEventListener;
+import com.herewhite.sdk.domain.Point;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RectangleConfig;
 import com.herewhite.sdk.domain.SDKError;
@@ -86,6 +88,32 @@ public class Displayer {
         this.eventListenerConcurrentHashMap.remove(eventName);
         this.frequencyEventListenerConcurrentHashMap.remove(eventName);
         bridge.callHandler("displayer.removeMagixEventListener", new Object[]{eventName});
+    }
+
+    /**
+     * 将以白板左上角为原点的 Android 坐标系坐标，转换为白板内部坐标系（坐标原点为白板初始化时中点位置，坐标轴方向相同）坐标
+     *
+     * @param x       the Android 端 x 坐标
+     * @param y       the Android 端 y 坐标
+     * @param promise 完成回调
+     */
+    public void convertToPointInWorld(double x, double y, final Promise<Point> promise) {
+        bridge.callHandler("displayer.convertToPointInWorld", new Object[]{x, y}, new OnReturnValue<Object>() {
+            @Override
+            public void onValue(Object o) {
+                try {
+                    promise.then(gson.fromJson(String.valueOf(o), Point.class));
+                } catch (AssertionError a) {
+                    throw a;
+                } catch (JsonSyntaxException e) {
+                    Logger.error("An JsonSyntaxException occurred while parse json from convertToPointInWorld", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
+                } catch (Throwable e) {
+                    Logger.error("An exception occurred in convertToPointInWorld promise then method", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
+                }
+            }
+        });
     }
 
     /**
