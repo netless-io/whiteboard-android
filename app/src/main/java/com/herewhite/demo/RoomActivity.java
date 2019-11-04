@@ -177,7 +177,7 @@ public class RoomActivity extends AppCompatActivity {
         map.put("Calibri", "https://your-cdn.com/Calibri.ttf");
         map.put("宋体","https://your-cdn.com/Songti.ttf");
         map.put("楷体",  "https://your-cdn.com/Kaiti.ttf");
-        sdkConfiguration.setFont(map);
+        sdkConfiguration.setFonts(map);
         WhiteSdk whiteSdk = new WhiteSdk(
                 whiteboardView,
                 RoomActivity.this,

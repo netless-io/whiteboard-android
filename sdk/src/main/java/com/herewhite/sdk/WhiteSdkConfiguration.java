@@ -22,7 +22,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private boolean hasUrlInterrupterAPI = false;
     private boolean userCursor = false;
     private boolean onlyCallbackRemoteStateModify = false;
-    private HashMap<String, String> font;
+    private HashMap<String, String> fonts;
 
     public boolean isPreloadDynamicPPT() {
         return preloadDynamicPPT;
@@ -72,18 +72,18 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
     private LoggerOptions loggerOptions;
 
-    public HashMap<String, String> getFont() {
-        return font;
+    public HashMap<String, String> getFonts() {
+        return fonts;
     }
 
     /**
      * 文档转网页（动态 PPT）时，自定义字体地址。key-value 结构
      *
-     * @param font
+     * @param fonts
      * @since 2.2.0
      */
-    public void setFont(HashMap<String, String> font) {
-        this.font = font;
+    public void setFonts(HashMap<String, String> fonts) {
+        this.fonts = fonts;
     }
 
     public DeviceType getDeviceType() {
