@@ -17,10 +17,21 @@ public class WhiteSdkConfiguration extends WhiteObject {
     //TODO: 兼容字段，大版本移除。
     private double zoomMinScale;
     private boolean debug;
+    //TODO: 真实使用字段，大版本对外暴露
     private boolean enableInterrupterAPI = false;
     //TODO: 兼容字段，大版本移除。
     private boolean hasUrlInterrupterAPI = false;
     private boolean userCursor = false;
+
+    public boolean isDisableEraseImage() {
+        return disableEraseImage;
+    }
+
+    public void setDisableEraseImage(boolean disableEraseImage) {
+        this.disableEraseImage = disableEraseImage;
+    }
+
+    private boolean disableEraseImage = false;
     private boolean onlyCallbackRemoteStateModify = false;
     private HashMap<String, String> fonts;
 
