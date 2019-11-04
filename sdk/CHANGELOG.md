@@ -1,4 +1,12 @@
 # 版本更新记录
+## [2.4.17] - 2019-11-04
+- 橡皮擦教具，增加禁止擦除图片选项（初始化房间参数配置）
+- 修复 SDK 初始化时，部分传入参数不生效的问题
+- 提取 Player 与 Room 共有方法，迁移进 Displayer 作为父类实例方法（refreshViewSize, convertToPointInWorld, addMagixEventListener, addHighFrequencyEventListener, removeMagixEventListener）
+## [2.4.16] - 2019-10-29
+- 回放增加 refreshViewSize API
+- 修复了回放时首帧存在快进的问题
+- 修复了文字教具在不同端使用不同字体时，造成的文字截断问题
 ## [2.4.15] - 2019-10-25
 - 增加高频自定义事件 API（Room,以及 Player 的 addHighFrequencyEventListener API）
 ## [2.4.14] - 2019-09-20
