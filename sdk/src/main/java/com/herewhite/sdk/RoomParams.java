@@ -14,6 +14,16 @@ public class RoomParams extends WhiteObject {
     private String roomToken;
     private CameraBound cameraBound;
 
+    public boolean getDisableEraseImage() {
+        return disableEraseImage;
+    }
+
+    public void setDisableEraseImage(boolean disableEraseImage) {
+        this.disableEraseImage = disableEraseImage;
+    }
+
+    private boolean disableEraseImage = false;
+
     /**
      * Is disable device inputs boolean.
      *

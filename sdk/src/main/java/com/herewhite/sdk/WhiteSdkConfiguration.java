@@ -23,15 +23,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private boolean hasUrlInterrupterAPI = false;
     private boolean userCursor = false;
 
-    public boolean isDisableEraseImage() {
-        return disableEraseImage;
-    }
-
-    public void setDisableEraseImage(boolean disableEraseImage) {
-        this.disableEraseImage = disableEraseImage;
-    }
-
-    private boolean disableEraseImage = false;
     private boolean onlyCallbackRemoteStateModify = false;
     private HashMap<String, String> fonts;
 
