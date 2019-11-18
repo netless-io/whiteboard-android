@@ -6,6 +6,9 @@
     <!--<item android:id="@+id/bound"-->
         <!--android:onClick="setBound"-->
         <!--android:title="@string/set_bound" />-->
+    <item android:id="@+id/reconnect"
+        android:onClick="reconnect"
+        android:title="@string/reconnect" />
     <item android:id="@+id/orientation"
         android:onClick="orientation"
         android:title="@string/orientation" />

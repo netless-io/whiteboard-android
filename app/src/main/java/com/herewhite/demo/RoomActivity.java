@@ -38,6 +38,7 @@ public class RoomActivity extends AppCompatActivity {
     final String SCENE_DIR = "/dir";
     final String ROOM_INFO = "room info";
     final String ROOM_ACTION = "room action";
+    private String uuid;
     private String roomToken;
 
     WhiteboardView whiteboardView;
@@ -167,9 +168,9 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     private void joinRoom(String uuid, String roomToken) {
-
         logRoomInfo("room uuid: " + uuid + "\nroomToken: " + roomToken);
-
+        this.uuid = uuid;
+        this.roomToken = roomToken;
         WhiteSdkConfiguration sdkConfiguration = new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1, true);
         /*显示用户头像*/
         sdkConfiguration.setUserCursor(true);
@@ -192,11 +193,11 @@ public class RoomActivity extends AppCompatActivity {
         WhiteDisplayerState.setCustomGlobalStateClass(MyGlobalState.class);
 
         RoomParams roomParams = new RoomParams(uuid, roomToken);
-
+        logRoomInfo("开始加入房间");
         whiteSdk.joinRoom(roomParams, new AbstractRoomCallbacks() {
             @Override
             public void onPhaseChanged(RoomPhase phase) {
-                showToast(phase.name());
+                logRoomInfo(phase.name());
             }
 
             @Override
@@ -231,12 +232,29 @@ public class RoomActivity extends AppCompatActivity {
         return bound;
     }
 
+
+
     private void addCustomEventListener() {
         room.addMagixEventListener(EVENT_NAME, new EventListener() {
             @Override
             public void onEvent(EventEntry eventEntry) {
                 logRoomInfo("customEvent payload: " + eventEntry.getPayload().toString());
                 showToast(gson.toJson(eventEntry.getPayload()));
+            }
+        });
+    }
+
+    public void reconnect(MenuItem item) {
+        final RoomActivity that = this;
+        room.disconnect(new Promise<Object>() {
+            @Override
+            public void then(Object b) {
+                joinRoom(that.uuid, that.roomToken);
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+
             }
         });
     }
