@@ -1,4 +1,4 @@
 - name: white-native-bridge
   repoPath: ../white-native-sdk
   repoURL: 'git@github.com:duty-os/white-native-sdk.git'
-  commit: e6a193f
+  commit: 200e5e8
