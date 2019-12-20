@@ -140,7 +140,7 @@ public class Displayer {
         backgroundColor = intColor;
     }
 
-    public static Float[] hexSplit(@ColorInt int color) {
+    private static Float[] hexSplit(@ColorInt int color) {
         Float r = Float.valueOf((color >> 16) & 0xff);
         Float g = Float.valueOf((color >>  8) & 0xff);
         Float b = Float.valueOf((color      ) & 0xff);
