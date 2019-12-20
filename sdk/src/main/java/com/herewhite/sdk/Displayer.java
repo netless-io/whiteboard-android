@@ -9,6 +9,7 @@ import android.util.Base64;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.herewhite.sdk.domain.AnimationMode;
 import com.herewhite.sdk.domain.CameraBound;
 import com.herewhite.sdk.domain.CameraConfig;
 import com.herewhite.sdk.domain.EventListener;
@@ -51,6 +52,21 @@ public class Displayer {
      */
     public void refreshViewSize() {
         bridge.callHandler("displayer.refreshViewSize", new Object[]{});
+    }
+
+    /**
+     * 以连续动画的形式，等比例缩放ppt，保证ppt所有内容都在容器内。
+     */
+    public void scalePptToFit() {
+        bridge.callHandler("displayer.scalePptToFit", new Object[]{});
+    }
+
+    /**
+     * 等比例缩放ppt，保证ppt所有内容都在容器内。
+     * @param mode 缩放时，动画行为
+     */
+    public void scalePptToFit(AnimationMode mode) {
+        bridge.callHandler("displayer.scalePptToFit", new Object[]{gson.toJson(mode)});
     }
 
     /**
