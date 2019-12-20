@@ -36,7 +36,7 @@ public class WhiteboardView extends DWebView {
 
     private void init() {
         this.getSettings().setMediaPlaybackRequiresUserGesture(false);
-        this.loadUrl("file:///android_asset/cloud/index.html");
+        this.loadUrl("file:///android_asset/index.html");
     }
 
     public void switchEnv(Environment environment) {
