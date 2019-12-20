@@ -1,4 +1,4 @@
-- name: white-native-bridge
-  repoPath: ../white-native-sdk
-  repoURL: 'git@github.com:duty-os/white-native-sdk.git'
+- name: whiteboard-bridge
+  repoPath: ../whiteboard-bridge
+  repoURL: 'git@github.com:netless-io/whiteboard-bridge.git'
   commit: 200e5e8
