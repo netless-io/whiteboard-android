@@ -7,7 +7,8 @@ package com.herewhite.sdk.CombinePlayer;
 public interface NativePlayer {
 
     /**
-     * play 方法，由 PlayerSyncManager 调用，请勿主动调用
+     * play 方法，由 PlayerSyncManager 调用，请勿主动调用。
+     * 在该方法里，如果 NativePlayerPhase 发生了，需要调动 {@link PlayerSyncManager#updateNativePhase(NativePlayerPhase)} 方法
      * */
     void play();
 
