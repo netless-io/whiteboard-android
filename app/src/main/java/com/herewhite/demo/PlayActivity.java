@@ -22,6 +22,7 @@ import com.herewhite.sdk.CombinePlayer.PlayerSyncManager;
 import com.herewhite.sdk.domain.*;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -101,11 +102,20 @@ public class PlayActivity extends AppCompatActivity {
         Log.i("getPhase", gson.toJson(player.getPlayerPhase()));
     }
 
+    public void play(MenuItem item) {
+        playerSyncManager.play();
+    }
+
+    public void pause(MenuItem item) {
+        playerSyncManager.pause();
+    }
+
     public void seek(MenuItem item) {
         if (player.getPlayerPhase().equals(PlayerPhase.waitingFirstFrame)) {
             return;
         } else {
-            player.seekToScheduleTime(3 * 1000);
+            //12秒的视频画面，区别明显；白板画面，看不出来，要看 scheduleTime 变化
+            nativePlayer.seek(12, TimeUnit.SECONDS);
         }
     }
 
@@ -175,7 +185,7 @@ public class PlayActivity extends AppCompatActivity {
 
             @Override
             public void onScheduleTimeChanged(long time) {
-//                Log.i("onScheduleTimeChanged", String.valueOf(time));
+                Log.i("onScheduleTimeChanged", String.valueOf(time));
             }
 
             @Override

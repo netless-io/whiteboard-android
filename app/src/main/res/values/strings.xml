@@ -38,4 +38,6 @@
     <string name="set_bound">设置视野范围</string>
     <string name="orientation">横竖屏</string>
     <string name="reconnect">重连</string>
+    <string name="play">播放</string>
+    <string name="pause">暂停</string>
 </resources>
