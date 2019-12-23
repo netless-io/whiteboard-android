@@ -248,7 +248,7 @@ public class NativePlayerImplement implements NativePlayer, SurfaceHolder.Callba
     }
 
     private void updateSize() {
-
+        // TODO:可以根据 video 更新视频画面布局
     }
 
     // SurfaceHolder.Callback
@@ -261,7 +261,6 @@ public class NativePlayerImplement implements NativePlayer, SurfaceHolder.Callba
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         setSurface(holder);
-        updateSize();
     }
 
     @Override
