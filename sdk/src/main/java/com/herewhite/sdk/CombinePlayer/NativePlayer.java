@@ -2,7 +2,7 @@ package com.herewhite.sdk.CombinePlayer;
 
 /**
  * NativePlayer 接口
- * @since 2.4.22
+ * @since 2.4.23
  */
 public interface NativePlayer {
 
