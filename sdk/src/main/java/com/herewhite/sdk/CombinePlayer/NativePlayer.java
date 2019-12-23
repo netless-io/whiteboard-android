@@ -17,13 +17,6 @@ public interface NativePlayer {
     void pause();
 
     /**
-     * 返回是否处于播放状态（play但是由于缺少数据，而正在缓冲，也算）
-     *
-     * @return 是否正在处于播放状态
-     */
-    boolean isPlaying();
-
-    /**
      * 是否能够不经过缓冲，而直接播放
      * @return 是否有足够的缓冲
      */
