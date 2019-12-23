@@ -67,6 +67,7 @@ public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, 
         mMediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
+                //TODO:onError 的处理另外做，或者使用第三方库来操作
                 Log.e(PLAYER_INFO, "onError: " + what + " extra: " + extra);
                 mState = STATE_ERROR;
                 return false;
