@@ -5,10 +5,21 @@ import com.herewhite.sdk.domain.PlayerPhase;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 同步 nativePlayer 与 whitePlayer 播放状态
+ * @since 2.4.23
+ */
 public class CombinePlayer {
 
     public interface Callbacks {
+        /**
+         * 开始缓冲
+         */
         void startBuffering();
+
+        /**
+         * 结束缓冲
+         */
         void endBuffering();
     }
 
@@ -88,12 +99,22 @@ public class CombinePlayer {
         whitePlayer.pause();
     }
 
+    /**
+     * nativePlayer seek 完成后，调用此方法，将 whiteCombinePlayer 也 seek 到对应位置。
+     * @param time 时间长度
+     * @param timeUnit 时间单位
+     */
     public void seek(long time, TimeUnit timeUnit) {
-        // Android 端比较适合由用户进行 seek，然后 seek 回调完成后，再调用 CombineSeek 完成的 API
+        // Android 端比较适合由 NativePlayer 进行 seek。 seek 完成后，再调用 CombinePlayer 的 seek 方法，
+        // 将 whitePlayer seek 到对应位置
         Long milliseconds = TimeUnit.MILLISECONDS.convert(time, timeUnit);
         whitePlayer.seekToScheduleTime(milliseconds.intValue());
     }
 
+    /**
+     * 更新 CombinePlayer 的播放状态，buffering 以及 idle 状态，会保证 whitePlayer 等待 nativePlayer 可以播放
+     * @param phase {@link com.herewhite.sdk.CombinePlayer.NativePlayer.NativePlayerPhase}
+     */
     public void updateNativePhase(NativePlayer.NativePlayerPhase phase) {
         if (phase == NativePlayer.NativePlayerPhase.Buffering || phase == NativePlayer.NativePlayerPhase.Idle) {
             nativeStartBuffering();
@@ -127,6 +148,10 @@ public class CombinePlayer {
         }
     }
 
+    /**
+     * 更新 WhitePlayer 的播放状态
+     * @param phase {@link PlayerPhase} whitePlayer 的播放状态
+     */
     public void updateWhitePlayerPhase(PlayerPhase phase) {
         if (phase == PlayerPhase.buffering || phase == PlayerPhase.waitingFirstFrame) {
             whitePlayerStartBuffering();
