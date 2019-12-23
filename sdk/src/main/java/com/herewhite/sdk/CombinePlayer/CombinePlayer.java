@@ -75,7 +75,7 @@ public class CombinePlayer {
         pauseReason = pauseReason.removeFlag(PauseReason.Pause);
 
         nativePlayer.play();
-        if (nativePlayer.hasEnoughNativeBuffer()) {
+        if (nativePlayer.hasEnoughBuffer()) {
             whitePlayer.play();
         }
     }
@@ -89,11 +89,13 @@ public class CombinePlayer {
     }
 
     public void seek(long time, TimeUnit timeUnit) {
-        nativePlayer.seek(time, timeUnit);
+        // Android 端比较适合由用户进行 seek，然后 seek 回调完成后，再调用 CombineSeek 完成的 API
+        Long milliseconds = TimeUnit.MILLISECONDS.convert(time, timeUnit);
+        whitePlayer.seekToScheduleTime(milliseconds.intValue());
     }
 
     public void updateNativePhase(NativePlayer.NativePlayerPhase phase) {
-        if (phase == NativePlayer.NativePlayerPhase.Buffering) {
+        if (phase == NativePlayer.NativePlayerPhase.Buffering || phase == NativePlayer.NativePlayerPhase.Idle) {
             nativeStartBuffering();
         } else {
             nativeEndBuffering();
