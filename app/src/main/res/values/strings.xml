@@ -40,4 +40,5 @@
     <string name="reconnect">重连</string>
     <string name="play">播放</string>
     <string name="pause">暂停</string>
+    <string name="rest">重置</string>
 </resources>

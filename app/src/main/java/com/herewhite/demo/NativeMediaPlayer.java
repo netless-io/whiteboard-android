@@ -18,9 +18,10 @@ import java.util.concurrent.TimeUnit;
  * NativePlayer 实现类
  * MediaPlayer 部分调用，参考自 https://github.com/android/media-samples/tree/master/MediaRouter
  */
-public class NativePlayerImplement implements NativePlayer, SurfaceHolder.Callback, MediaPlayer.OnPreparedListener,
+public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, MediaPlayer.OnPreparedListener,
         MediaPlayer.OnSeekCompleteListener,
-        MediaPlayer.OnInfoListener
+        MediaPlayer.OnInfoListener,
+        MediaPlayer.OnCompletionListener
 {
     private MediaPlayer mMediaPlayer;
     private SurfaceHolder mSurfaceHolder;
@@ -38,6 +39,7 @@ public class NativePlayerImplement implements NativePlayer, SurfaceHolder.Callba
     private static final int STATE_READY = 2;
     private static final int STATE_PLAYING = 3;
     private static final int STATE_PAUSED = 4;
+    private static final int STATE_ERROR = 5;
     /**
      * mediaPlayer 没有提供可以状态 API，需要开发者手动进行维护
      */
@@ -50,7 +52,7 @@ public class NativePlayerImplement implements NativePlayer, SurfaceHolder.Callba
     final String PLAYER_INFO = "nativePlayer info";
 
 
-    public NativePlayerImplement(Context context, String uri) throws IOException {
+    public NativeMediaPlayer(Context context, String uri) throws IOException {
         mMediaPlayer = new MediaPlayer();
 
         Uri mp4 = Uri.parse(uri);
@@ -60,13 +62,23 @@ public class NativePlayerImplement implements NativePlayer, SurfaceHolder.Callba
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnSeekCompleteListener(this);
         mMediaPlayer.setOnInfoListener(this);
+        mMediaPlayer.setOnCompletionListener(this);
+
+        mMediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                Log.e(PLAYER_INFO, "onError: " + what + " extra: " + extra);
+                mState = STATE_ERROR;
+                return false;
+            }
+        });
 
         phase = NativePlayerPhase.Buffering;
         mMediaPlayer.prepareAsync();
     }
 
     /**
-     * 绑定 playerSyncManager
+     * 绑定 playerSyncManager，设置的同时，需要将当前实例的 NativePlayerPhase 也更新
      * @param player PlayerSyncManager 实例
      */
     public void setPlayerSyncManager(PlayerSyncManager player) {
@@ -138,6 +150,8 @@ public class NativePlayerImplement implements NativePlayer, SurfaceHolder.Callba
             mSeekToPos = milliseconds.intValue();
         } else if (mState == STATE_IDLE || mState == STATE_PLAY_PENDING) {
             mSeekToPos = milliseconds.intValue();
+        } else {
+            Log.e(PLAYER_INFO, "seek fail: " + mState);
         }
     }
 
@@ -151,6 +165,19 @@ public class NativePlayerImplement implements NativePlayer, SurfaceHolder.Callba
         } else {
             return true;
         }
+    }
+
+    //public methods
+    public int getCurrentPosition() {
+        return mMediaPlayer.getCurrentPosition();
+    }
+
+    public int getDuration() {
+        return mMediaPlayer.getDuration();
+    }
+
+    public boolean isNormalState() {
+        return mState != STATE_IDLE && mState != STATE_PLAY_PENDING && mState != STATE_ERROR;
     }
 
     //MediaPlayer Listeners
@@ -220,6 +247,10 @@ public class NativePlayerImplement implements NativePlayer, SurfaceHolder.Callba
         });
     }
 
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        Log.d(PLAYER_INFO, "onCompletion: " + mp);
+    }
 
     private void updateSurface() {
         Log.e(PLAYER_INFO, "updateSurface mSurfaceHolder: " + mSurfaceHolder);

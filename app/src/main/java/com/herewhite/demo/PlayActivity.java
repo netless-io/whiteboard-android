@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.webkit.WebView;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -32,20 +33,40 @@ public class PlayActivity extends AppCompatActivity {
 
     private WhiteboardView whiteboardView;
     Player player;
-    NativePlayerImplement nativePlayer;
+    NativeMediaPlayer nativePlayer;
+    /**
+     * 如果有不需要音视频混合播放，可以直接操作 Player
+     */
     PlayerSyncManager playerSyncManager;
     Gson gson = new Gson();
+    private boolean mUserIsSeeking = false;
+    private SeekBar mSeekBar;
+
+    private Handler mSeekBarUpdateHandler = new Handler();
+    private Runnable mUpdateSeekBar = new Runnable() {
+        @Override
+        public void run() {
+            if (!nativePlayer.isNormalState() || mUserIsSeeking) {
+                return;
+            }
+            Float progress = Float.valueOf(nativePlayer.getCurrentPosition()) / nativePlayer.getDuration() * 100;
+            Log.i("nativePlayer", "progress: " + progress );
+            mSeekBar.setProgress(progress.intValue());
+            mSeekBarUpdateHandler.postDelayed(this, 100);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
+        mSeekBar = findViewById(R.id.player_seek_bar);
 
         Intent intent = getIntent();
         final String uuid = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
 
         try {
-            nativePlayer = new NativePlayerImplement(this, "http://archive.org/download/BigBuckBunny_328/BigBuckBunny_512kb.mp4");
+            nativePlayer = new NativeMediaPlayer(this, "http://archive.org/download/BigBuckBunny_328/BigBuckBunny_512kb.mp4");
             Log.e("nativePlayer", "create success");
         } catch (Throwable e) {
             Log.e("nativePlayer", "create fail");
@@ -79,6 +100,7 @@ public class PlayActivity extends AppCompatActivity {
         }
     }
 
+    //region Menu Item
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.replayer_command, menu);
@@ -102,12 +124,17 @@ public class PlayActivity extends AppCompatActivity {
         Log.i("getPhase", gson.toJson(player.getPlayerPhase()));
     }
 
+
     public void play(MenuItem item) {
-        playerSyncManager.play();
+        if (playerSyncManager != null) {
+            playerSyncManager.play();
+        }
     }
 
     public void pause(MenuItem item) {
-        playerSyncManager.pause();
+        if (playerSyncManager != null) {
+            playerSyncManager.pause();
+        }
     }
 
     public void seek(MenuItem item) {
@@ -118,6 +145,70 @@ public class PlayActivity extends AppCompatActivity {
             nativePlayer.seek(12, TimeUnit.SECONDS);
         }
     }
+
+    //endregion
+
+    //region private
+    public void play() {
+        if (playerSyncManager != null) {
+            playerSyncManager.play();
+            mSeekBarUpdateHandler.removeCallbacks(mUpdateSeekBar);
+            mSeekBarUpdateHandler.postDelayed(mUpdateSeekBar, 100);
+        }
+    }
+
+    public void pause() {
+        if (playerSyncManager != null) {
+            playerSyncManager.pause();
+            mSeekBarUpdateHandler.removeCallbacks(mUpdateSeekBar);
+        }
+    }
+
+    //region action
+
+    public void play(android.view.View button) {
+        play();
+    }
+
+    public void pause(android.view.View button) {
+        pause();
+    }
+
+    public void rest(android.view.View button) {
+        if (nativePlayer != null) {
+            nativePlayer.seek(0, TimeUnit.SECONDS);
+        }
+    }
+
+    private void setupSeekBar() {
+        SeekBar seekBar = findViewById(R.id.player_seek_bar);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int userSelectedPosition = 0;
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                mUserIsSeeking = true;
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    userSelectedPosition = progress;
+                }
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                mUserIsSeeking = false;
+                if (nativePlayer != null && nativePlayer.isNormalState()) {
+                    Float progress = userSelectedPosition / 100.f * nativePlayer.getDuration();
+                    nativePlayer.seek(progress.intValue(), TimeUnit.SECONDS);
+                }
+            }
+        });
+    }
+
+    //endregion
 
     public void alert(final String title, final String detail) {
 
@@ -185,7 +276,7 @@ public class PlayActivity extends AppCompatActivity {
 
             @Override
             public void onScheduleTimeChanged(long time) {
-                Log.i("onScheduleTimeChanged", String.valueOf(time));
+//                Log.i("onScheduleTimeChanged", String.valueOf(time));
             }
 
             @Override
@@ -200,7 +291,6 @@ public class PlayActivity extends AppCompatActivity {
         }, new Promise<Player>() {
             @Override
             public void then(Player wPlayer) {
-//                wPlayer.play();
                 player = wPlayer;
                 playerSyncManager = new PlayerSyncManager(player, nativePlayer, new PlayerSyncManager.Callbacks() {
                     @Override
@@ -213,10 +303,12 @@ public class PlayActivity extends AppCompatActivity {
                         showToast("endBuffering");
                     }
                 });
+                setupSeekBar();
                 SurfaceView surfaceView = findViewById(R.id.surfaceView);
                 nativePlayer.setSurfaceView(surfaceView);
                 nativePlayer.setPlayerSyncManager(playerSyncManager);
                 playerSyncManager.play();
+                mSeekBarUpdateHandler.postDelayed(mUpdateSeekBar, 0);
             }
 
             @Override

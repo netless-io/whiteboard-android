@@ -10,13 +10,54 @@
     <SurfaceView
         android:id="@+id/surfaceView"
         android:layout_width="match_parent"
-        android:visibility="visible"
-        android:layout_height="220dp" />
+        android:layout_height="200dp"
+        android:visibility="visible" />
 
     <com.herewhite.sdk.WhiteboardView
         android:id="@+id/white"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:visibility="visible" />
+
+    <SeekBar
+        android:id="@+id/player_seek_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_play"
+            android:onClick="play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:text="@string/play" />
+
+        <Button
+            android:id="@+id/button_pause"
+            android:onClick="pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/pause" />
+
+        <Button
+            android:id="@+id/button_reset"
+            android:onClick="rest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/rest" />
+
+    </LinearLayout>
 
 </LinearLayout>
