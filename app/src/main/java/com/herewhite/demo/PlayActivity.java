@@ -11,11 +11,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SurfaceView;
+import android.webkit.WebView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.herewhite.sdk.*;
+import com.herewhite.sdk.CombinePlayer.CombinePlayer;
+import com.herewhite.sdk.CombinePlayer.NativePlayer;
 import com.herewhite.sdk.domain.*;
 
 import java.io.IOException;
@@ -28,6 +32,8 @@ public class PlayActivity extends AppCompatActivity {
 
     private WhiteboardView whiteboardView;
     Player player;
+    NativePlayerImplement nativePlayer;
+    CombinePlayer combinePlayer;
     Gson gson = new Gson();
 
     @Override
@@ -37,8 +43,17 @@ public class PlayActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         final String uuid = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
+
+        try {
+            nativePlayer = new NativePlayerImplement(this, "http://archive.org/download/BigBuckBunny_328/BigBuckBunny_512kb.mp4");
+            Log.e("nativePlayer", "create success");
+        } catch (Throwable e) {
+            Log.e("nativePlayer", "create fail");
+        }
+
         if (uuid != null) {
             whiteboardView = findViewById(R.id.white);
+            WebView.setWebContentsDebuggingEnabled(true);
 
             new DemoAPI().getRoomToken(uuid, new Callback() {
                 @Override
@@ -127,14 +142,15 @@ public class PlayActivity extends AppCompatActivity {
                 });
 
         PlayerConfiguration playerConfiguration = new PlayerConfiguration(uuid, roomToken);
-        //TODO:提供更正式的 m3u8
-//        playerConfiguration.setAudioUrl("https://ohuuyffq2.qnssl.com/98398e2c5a43d74321214984294c157e_60def9bac25e4a378235f6249cae63c1.m3u8");
 
         whiteSdk.createPlayer(playerConfiguration, new AbstractPlayerEventListener() {
             @Override
             public void onPhaseChanged(PlayerPhase phase) {
                 Log.i("player info", "onPhaseChanged: " + phase);
                 showToast(gson.toJson(phase));
+                if (combinePlayer != null) {
+                    combinePlayer.updateWhitePlayerPhase(phase);
+                }
             }
 
             @Override
@@ -160,7 +176,7 @@ public class PlayActivity extends AppCompatActivity {
 
             @Override
             public void onScheduleTimeChanged(long time) {
-                Log.i("onScheduleTimeChanged", String.valueOf(time));
+//                Log.i("onScheduleTimeChanged", String.valueOf(time));
             }
 
             @Override
@@ -175,8 +191,23 @@ public class PlayActivity extends AppCompatActivity {
         }, new Promise<Player>() {
             @Override
             public void then(Player wPlayer) {
-                wPlayer.play();
+//                wPlayer.play();
                 player = wPlayer;
+                combinePlayer = new CombinePlayer(player, nativePlayer, new CombinePlayer.Callbacks() {
+                    @Override
+                    public void startBuffering() {
+                        showToast("startBuffering");
+                    }
+
+                    @Override
+                    public void endBuffering() {
+                        showToast("endBuffering");
+                    }
+                });
+                SurfaceView surfaceView = findViewById(R.id.surfaceView);
+                nativePlayer.setSurfaceView(surfaceView);
+                nativePlayer.setCombinePlayer(combinePlayer);
+                combinePlayer.play();
             }
 
             @Override
