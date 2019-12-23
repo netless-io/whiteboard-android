@@ -7,6 +7,12 @@
     android:orientation="vertical"
     tools:context=".PlayActivity">
 
+    <SurfaceView
+        android:id="@+id/surfaceView"
+        android:layout_width="match_parent"
+        android:visibility="visible"
+        android:layout_height="220dp" />
+
     <com.herewhite.sdk.WhiteboardView
         android:id="@+id/white"
         android:layout_width="match_parent"
