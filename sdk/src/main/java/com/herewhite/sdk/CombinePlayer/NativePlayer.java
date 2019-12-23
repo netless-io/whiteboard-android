@@ -7,12 +7,12 @@ package com.herewhite.sdk.CombinePlayer;
 public interface NativePlayer {
 
     /**
-     * play 方法，由 CombinePlayer 调用，请勿主动调用
+     * play 方法，由 PlayerSyncManager 调用，请勿主动调用
      * */
     void play();
 
     /**
-     * pause 方法，由 CombinePlayer 调用，请勿主动调用
+     * pause 方法，由 PlayerSyncManager 调用，请勿主动调用
      */
     void pause();
 

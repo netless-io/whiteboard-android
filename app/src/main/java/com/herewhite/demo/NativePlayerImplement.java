@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.herewhite.sdk.CombinePlayer.CombinePlayer;
+import com.herewhite.sdk.CombinePlayer.PlayerSyncManager;
 import com.herewhite.sdk.CombinePlayer.NativePlayer;
 
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class NativePlayerImplement implements NativePlayer, SurfaceHolder.Callba
     private MediaPlayer mMediaPlayer;
     private SurfaceHolder mSurfaceHolder;
     private final Handler mHandler = new Handler();
-    private CombinePlayer combinePlayer;
+    private PlayerSyncManager playerSyncManager;
     /**
      * NativePlayerPhase 状态，与 mediaPlayer State 并不一致，需要进行一些转换
      * https://developer.android.google.cn/reference/android/media/MediaPlayer.html#state-diagram
@@ -65,12 +65,12 @@ public class NativePlayerImplement implements NativePlayer, SurfaceHolder.Callba
     }
 
     /**
-     * 绑定 combinePlayer
-     * @param player CombinePlayer 实例
+     * 绑定 playerSyncManager
+     * @param player PlayerSyncManager 实例
      */
-    public void setCombinePlayer(CombinePlayer player) {
-        combinePlayer = player;
-        combinePlayer.updateNativePhase(phase);
+    public void setPlayerSyncManager(PlayerSyncManager player) {
+        playerSyncManager = player;
+        playerSyncManager.updateNativePhase(phase);
     }
 
     /**
@@ -103,8 +103,8 @@ public class NativePlayerImplement implements NativePlayer, SurfaceHolder.Callba
             mState = STATE_PLAY_PENDING;
             phase = NativePlayerPhase.Buffering;
         }
-        //将结果更新给 combinePlayer
-        combinePlayer.updateNativePhase(phase);
+        //将结果更新给 playerSyncManager
+        playerSyncManager.updateNativePhase(phase);
     }
 
     /**
@@ -118,11 +118,11 @@ public class NativePlayerImplement implements NativePlayer, SurfaceHolder.Callba
             phase = NativePlayerPhase.Pause;
             mState = STATE_PAUSED;
         }
-        combinePlayer.updateNativePhase(phase);
+        playerSyncManager.updateNativePhase(phase);
     }
 
     /**
-     * 由 nativePlayer 进行主动 seek，然后在 seek 完成后，再调用 {@link CombinePlayer} 同步
+     * 由 nativePlayer 进行主动 seek，然后在 seek 完成后，再调用 {@link PlayerSyncManager} 同步
      * @param time
      * @param unit
      */
@@ -171,8 +171,8 @@ public class NativePlayerImplement implements NativePlayer, SurfaceHolder.Callba
                     phase = NativePlayerPhase.Pause;
                 }
 
-                if (combinePlayer != null) {
-                    combinePlayer.updateNativePhase(NativePlayerPhase.Pause);
+                if (playerSyncManager != null) {
+                    playerSyncManager.updateNativePhase(NativePlayerPhase.Pause);
                 }
             }
         });
@@ -185,15 +185,15 @@ public class NativePlayerImplement implements NativePlayer, SurfaceHolder.Callba
         switch (what) {
             case MediaPlayer.MEDIA_INFO_BUFFERING_START: {
                 phase = NativePlayerPhase.Buffering;
-                if (combinePlayer != null) {
-                    combinePlayer.updateNativePhase(phase);
+                if (playerSyncManager != null) {
+                    playerSyncManager.updateNativePhase(phase);
                 }
                 break;
             }
             case MediaPlayer.MEDIA_INFO_BUFFERING_END: {
                 phase = mp.isPlaying() ? NativePlayerPhase.Playing : NativePlayerPhase.Pause;
-                if (combinePlayer != null) {
-                    combinePlayer.updateNativePhase(phase);
+                if (playerSyncManager != null) {
+                    playerSyncManager.updateNativePhase(phase);
                 }
 
                 break;
@@ -212,7 +212,7 @@ public class NativePlayerImplement implements NativePlayer, SurfaceHolder.Callba
                 Log.d(PLAYER_INFO, "seek complete");
                 mSeekToPos = 0;
                 long pos = mp.getCurrentPosition();
-                combinePlayer.seek(pos, TimeUnit.MILLISECONDS);
+                playerSyncManager.seek(pos, TimeUnit.MILLISECONDS);
             }
         });
     }

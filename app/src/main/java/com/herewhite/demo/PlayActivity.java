@@ -18,8 +18,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.herewhite.sdk.*;
-import com.herewhite.sdk.CombinePlayer.CombinePlayer;
-import com.herewhite.sdk.CombinePlayer.NativePlayer;
+import com.herewhite.sdk.CombinePlayer.PlayerSyncManager;
 import com.herewhite.sdk.domain.*;
 
 import java.io.IOException;
@@ -33,7 +32,7 @@ public class PlayActivity extends AppCompatActivity {
     private WhiteboardView whiteboardView;
     Player player;
     NativePlayerImplement nativePlayer;
-    CombinePlayer combinePlayer;
+    PlayerSyncManager playerSyncManager;
     Gson gson = new Gson();
 
     @Override
@@ -148,8 +147,8 @@ public class PlayActivity extends AppCompatActivity {
             public void onPhaseChanged(PlayerPhase phase) {
                 Log.i("player info", "onPhaseChanged: " + phase);
                 showToast(gson.toJson(phase));
-                if (combinePlayer != null) {
-                    combinePlayer.updateWhitePlayerPhase(phase);
+                if (playerSyncManager != null) {
+                    playerSyncManager.updateWhitePlayerPhase(phase);
                 }
             }
 
@@ -193,7 +192,7 @@ public class PlayActivity extends AppCompatActivity {
             public void then(Player wPlayer) {
 //                wPlayer.play();
                 player = wPlayer;
-                combinePlayer = new CombinePlayer(player, nativePlayer, new CombinePlayer.Callbacks() {
+                playerSyncManager = new PlayerSyncManager(player, nativePlayer, new PlayerSyncManager.Callbacks() {
                     @Override
                     public void startBuffering() {
                         showToast("startBuffering");
@@ -206,8 +205,8 @@ public class PlayActivity extends AppCompatActivity {
                 });
                 SurfaceView surfaceView = findViewById(R.id.surfaceView);
                 nativePlayer.setSurfaceView(surfaceView);
-                nativePlayer.setCombinePlayer(combinePlayer);
-                combinePlayer.play();
+                nativePlayer.setPlayerSyncManager(playerSyncManager);
+                playerSyncManager.play();
             }
 
             @Override

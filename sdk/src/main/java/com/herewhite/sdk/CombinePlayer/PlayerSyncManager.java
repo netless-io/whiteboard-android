@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
  * 同步 nativePlayer 与 whitePlayer 播放状态
  * @since 2.4.23
  */
-public class CombinePlayer {
+public class PlayerSyncManager {
 
     public interface Callbacks {
         /**
@@ -75,7 +75,7 @@ public class CombinePlayer {
     private NativePlayer nativePlayer;
     private Callbacks callbacks;
 
-    public CombinePlayer(Player whitePlayer, NativePlayer nativePlayer, Callbacks callbacks) {
+    public PlayerSyncManager(Player whitePlayer, NativePlayer nativePlayer, Callbacks callbacks) {
         this.whitePlayer = whitePlayer;
         this.nativePlayer = nativePlayer;
         this.callbacks = callbacks;
@@ -105,14 +105,14 @@ public class CombinePlayer {
      * @param timeUnit 时间单位
      */
     public void seek(long time, TimeUnit timeUnit) {
-        // Android 端比较适合由 NativePlayer 进行 seek。 seek 完成后，再调用 CombinePlayer 的 seek 方法，
+        // Android 端比较适合由 NativePlayer 进行 seek。 seek 完成后，再调用 PlayerSyncManager 的 seek 方法，
         // 将 whitePlayer seek 到对应位置
         Long milliseconds = TimeUnit.MILLISECONDS.convert(time, timeUnit);
         whitePlayer.seekToScheduleTime(milliseconds.intValue());
     }
 
     /**
-     * 更新 CombinePlayer 的播放状态，buffering 以及 idle 状态，会保证 whitePlayer 等待 nativePlayer 可以播放
+     * 更新 PlayerSyncManager 的播放状态，buffering 以及 idle 状态，会保证 whitePlayer 等待 nativePlayer 可以播放
      * @param phase {@link com.herewhite.sdk.CombinePlayer.NativePlayer.NativePlayerPhase}
      */
     public void updateNativePhase(NativePlayer.NativePlayerPhase phase) {
