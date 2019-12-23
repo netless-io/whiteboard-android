@@ -27,10 +27,11 @@ public class NativePlayerImplement implements NativePlayer, SurfaceHolder.Callba
     private final Handler mHandler = new Handler();
     private PlayerSyncManager playerSyncManager;
     /**
-     * NativePlayerPhase 状态，与 mediaPlayer State 并不一致，需要进行一些转换
+     * NativePlayerPhase 状态，与 mediaPlayer State 并不一致，需要进行一些转换。
+     * MediaPlayer 状态图：
      * https://developer.android.google.cn/reference/android/media/MediaPlayer.html#state-diagram
      */
-    private NativePlayerPhase phase = NativePlayerPhase.Idle;
+    private NativePlayerPhase phase;
 
     private static final int STATE_IDLE = 0;
     private static final int STATE_PLAY_PENDING = 1;
@@ -69,6 +70,7 @@ public class NativePlayerImplement implements NativePlayer, SurfaceHolder.Callba
      * @param player PlayerSyncManager 实例
      */
     public void setPlayerSyncManager(PlayerSyncManager player) {
+        Log.d(PLAYER_INFO, "setPlayerSyncManager: " + phase);
         playerSyncManager = player;
         playerSyncManager.updateNativePhase(phase);
     }
@@ -92,19 +94,21 @@ public class NativePlayerImplement implements NativePlayer, SurfaceHolder.Callba
     @Override
     public void play() {
 
-        Log.e(PLAYER_INFO, "play: " + mState);
+        Log.e(PLAYER_INFO, "before play: " + mState);
 
         if (mState == STATE_READY || mState == STATE_PAUSED) {
             phase = NativePlayerPhase.Playing;
             mMediaPlayer.start();
             mState = STATE_PLAYING;
-        //如果处于准备状态，无法立即调用 mediaPlayer 进行播放，此时 NativePlayerNative 应该处于缓冲状态
+        //如果处于准备状态，无法立即调用 mediaPlayer 进行播放，此时 NativePlayerNative 应该处于缓冲状态，需要手动更新
         } else if (mState == STATE_IDLE) {
             mState = STATE_PLAY_PENDING;
             phase = NativePlayerPhase.Buffering;
+            //如果处于缓冲状态，需要更新 playerSyncManager
+            playerSyncManager.updateNativePhase(phase);
         }
-        //将结果更新给 playerSyncManager
-        playerSyncManager.updateNativePhase(phase);
+
+        Log.e(PLAYER_INFO, "after play: " + mState);
     }
 
     /**
@@ -118,7 +122,6 @@ public class NativePlayerImplement implements NativePlayer, SurfaceHolder.Callba
             phase = NativePlayerPhase.Pause;
             mState = STATE_PAUSED;
         }
-        playerSyncManager.updateNativePhase(phase);
     }
 
     /**
@@ -219,7 +222,7 @@ public class NativePlayerImplement implements NativePlayer, SurfaceHolder.Callba
 
 
     private void updateSurface() {
-        Log.e(PLAYER_INFO, "updateSurface" + "mSurfaceHolder: " + mSurfaceHolder);
+        Log.e(PLAYER_INFO, "updateSurface mSurfaceHolder: " + mSurfaceHolder);
         if (mSurfaceHolder != null) {
             mMediaPlayer.setDisplay(mSurfaceHolder);
         } else {
