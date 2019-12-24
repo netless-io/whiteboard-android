@@ -14,12 +14,50 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.alibaba.sdk.android.httpdns.HttpDns;
+import com.alibaba.sdk.android.httpdns.HttpDnsService;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.herewhite.sdk.*;
-import com.herewhite.sdk.domain.*;
+import com.herewhite.sdk.domain.Scene;
+import com.herewhite.sdk.AbstractRoomCallbacks;
+import com.herewhite.sdk.Converter;
+import com.herewhite.sdk.ConverterCallbacks;
+import com.herewhite.sdk.Environment;
+import com.herewhite.sdk.Logger;
+import com.herewhite.sdk.Room;
+import com.herewhite.sdk.RoomParams;
+import com.herewhite.sdk.WhiteSdk;
+import com.herewhite.sdk.WhiteSdkConfiguration;
+import com.herewhite.sdk.WhiteboardView;
+import com.herewhite.sdk.domain.Point;
+import com.herewhite.sdk.domain.EventListener;
+import com.herewhite.sdk.domain.AkkoEvent;
+import com.herewhite.sdk.domain.Appliance;
+import com.herewhite.sdk.domain.BroadcastState;
+import com.herewhite.sdk.domain.CameraBound;
+import com.herewhite.sdk.domain.CameraConfig;
+import com.herewhite.sdk.domain.ContentModeConfig;
+import com.herewhite.sdk.domain.ConversionInfo;
+import com.herewhite.sdk.domain.ConvertException;
+import com.herewhite.sdk.domain.ConvertedFiles;
+import com.herewhite.sdk.domain.DeviceType;
+import com.herewhite.sdk.domain.EventEntry;
+import com.herewhite.sdk.domain.GlobalState;
+import com.herewhite.sdk.domain.ImageInformationWithUrl;
+import com.herewhite.sdk.domain.MemberState;
+import com.herewhite.sdk.domain.PptPage;
+import com.herewhite.sdk.domain.Promise;
+import com.herewhite.sdk.domain.RectangleConfig;
+import com.herewhite.sdk.domain.RoomPhase;
+import com.herewhite.sdk.domain.RoomState;
+import com.herewhite.sdk.domain.SDKError;
+import com.herewhite.sdk.domain.UrlInterrupter;
+import com.herewhite.sdk.domain.ViewMode;
+import com.herewhite.sdk.domain.WhiteDisplayerState;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import okhttp3.Call;
@@ -40,6 +78,7 @@ public class RoomActivity extends AppCompatActivity {
     final String ROOM_ACTION = "room action";
     private String uuid;
     private String roomToken;
+    private static HttpDnsService httpdns;
 
     WhiteboardView whiteboardView;
     Room room;
@@ -66,6 +105,11 @@ public class RoomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
         whiteboardView = findViewById(R.id.white);
+
+        // 阿里云 httpdns 替换
+        httpdns = HttpDns.getService(getApplicationContext(), "188301");
+        httpdns.setPreResolveHosts(new ArrayList<>(Arrays.asList("expresscloudharestoragev2.herewhite.com", "cloudharev2.herewhite.com", "scdncloudharestoragev3.herewhite.com", "cloudcapiv4.herewhite.com")));
+        whiteboardView.setWebViewClient(new WhiteWebviewClient(httpdns));
         DWebView.setWebContentsDebuggingEnabled(true);
         Intent intent = getIntent();
         String uuid = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
@@ -193,11 +237,11 @@ public class RoomActivity extends AppCompatActivity {
         WhiteDisplayerState.setCustomGlobalStateClass(MyGlobalState.class);
 
         RoomParams roomParams = new RoomParams(uuid, roomToken);
-        logRoomInfo("开始加入房间");
+
         whiteSdk.joinRoom(roomParams, new AbstractRoomCallbacks() {
             @Override
             public void onPhaseChanged(RoomPhase phase) {
-                logRoomInfo(phase.name());
+                showToast(phase.name());
             }
 
             @Override

@@ -18,9 +18,20 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.herewhite.sdk.*;
+import com.herewhite.sdk.AbstractPlayerEventListener;
 import com.herewhite.sdk.CombinePlayer.PlayerSyncManager;
-import com.herewhite.sdk.domain.*;
+import com.herewhite.sdk.Logger;
+import com.herewhite.sdk.Player;
+import com.herewhite.sdk.WhiteSdk;
+import com.herewhite.sdk.WhiteSdkConfiguration;
+import com.herewhite.sdk.WhiteboardView;
+import com.herewhite.sdk.domain.DeviceType;
+import com.herewhite.sdk.domain.PlayerConfiguration;
+import com.herewhite.sdk.domain.PlayerPhase;
+import com.herewhite.sdk.domain.PlayerState;
+import com.herewhite.sdk.domain.Promise;
+import com.herewhite.sdk.domain.SDKError;
+import com.herewhite.sdk.domain.UrlInterrupter;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
