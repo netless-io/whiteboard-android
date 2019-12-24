@@ -15,6 +15,8 @@ import android.view.SurfaceView;
 import android.webkit.WebView;
 import android.widget.SeekBar;
 import android.widget.Toast;
+import com.alibaba.sdk.android.httpdns.HttpDns;
+import com.alibaba.sdk.android.httpdns.HttpDnsService;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -34,6 +36,8 @@ import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -50,6 +54,7 @@ public class PlayActivity extends AppCompatActivity {
      */
     PlayerSyncManager playerSyncManager;
     Gson gson = new Gson();
+    private static HttpDnsService httpdns;
     private boolean mUserIsSeeking = false;
     private SeekBar mSeekBar;
 
@@ -85,6 +90,10 @@ public class PlayActivity extends AppCompatActivity {
 
         if (uuid != null) {
             whiteboardView = findViewById(R.id.white);
+// 阿里云 httpdns 替换
+            httpdns = HttpDns.getService(getApplicationContext(), "188301");
+            httpdns.setPreResolveHosts(new ArrayList<>(Arrays.asList("expresscloudharestoragev2.herewhite.com", "cloudharev2.herewhite.com", "scdncloudharestoragev3.herewhite.com", "cloudcapiv4.herewhite.com")));
+            whiteboardView.setWebViewClient(new WhiteWebviewClient(httpdns));
             WebView.setWebContentsDebuggingEnabled(true);
 
             new DemoAPI().getRoomToken(uuid, new Callback() {
