@@ -317,8 +317,8 @@ public class PlayActivity extends AppCompatActivity {
                 SurfaceView surfaceView = findViewById(R.id.surfaceView);
                 nativePlayer.setSurfaceView(surfaceView);
                 nativePlayer.setPlayerSyncManager(playerSyncManager);
-                playerSyncManager.play();
-                mSeekBarUpdateHandler.postDelayed(mUpdateSeekBar, 0);
+                // seek 一次才能主动触发
+                wPlayer.seekToScheduleTime(0);
             }
 
             @Override
