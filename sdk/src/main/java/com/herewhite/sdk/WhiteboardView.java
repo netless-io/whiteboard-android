@@ -52,7 +52,6 @@ public class WhiteboardView extends DWebView {
         return environment;
     }
 
-
     private final static Gson gson = new Gson();
 
 

@@ -11,14 +11,18 @@ import java.util.HashMap;
  */
 
 public class WhiteSdkConfiguration extends WhiteObject {
+
     private DeviceType deviceType;
     //TODO: 兼容字段，大版本移除。
     private double zoomMaxScale;
     //TODO: 兼容字段，大版本移除。
     private double zoomMinScale;
+    //会在调用时，直接在 webview 中打印一遍，并回传给 native
     private boolean debug;
+
     //TODO: 真实使用字段，大版本对外暴露
     private boolean enableInterrupterAPI = false;
+
     //TODO: 兼容字段，大版本移除。
     private boolean hasUrlInterrupterAPI = false;
     private boolean userCursor = false;
