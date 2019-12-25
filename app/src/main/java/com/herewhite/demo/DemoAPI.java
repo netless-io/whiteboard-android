@@ -64,24 +64,32 @@ public class DemoAPI {
     }
 
     public void createRoom(String name, int limit, Callback callback) {
+
         Map<String, Object> roomSpec = new HashMap<>();
         roomSpec.put("name", name);
         roomSpec.put("limit", limit);
         roomSpec.put("mode", "historied");
+
         RequestBody body = RequestBody.create(JSON, gson.toJson(roomSpec));
+
         Request request = new Request.Builder()
-                .url(host + "/room?token=" + sdkToken)
+                .url(host + "/room")
+                .addHeader("token", sdkToken)
                 .post(body)
                 .build();
+
         Call call = client.newCall(request);
         call.enqueue(callback);
     }
 
     public void getRoomToken(String uuid, Callback callback) {
+
         Map<String, Object> roomSpec = new HashMap<>();
+
         RequestBody body = RequestBody.create(JSON, gson.toJson(roomSpec));
         Request request = new Request.Builder()
-                .url(host + "/room/join?uuid=" + uuid + "&token=" + sdkToken)
+                .url(host + "/room/join?uuid=" + uuid)
+                .addHeader("token", sdkToken)
                 .post(body)
                 .build();
         Call call = client.newCall(request);
