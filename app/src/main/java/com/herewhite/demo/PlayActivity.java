@@ -21,7 +21,7 @@ import com.alibaba.sdk.android.httpdns.HttpDnsService;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.herewhite.sdk.AbstractPlayerEventListener;
-import com.herewhite.sdk.CombinePlayer.PlayerSyncManager;
+import com.herewhite.sdk.combinePlayer.PlayerSyncManager;
 import com.herewhite.sdk.Logger;
 import com.herewhite.sdk.Player;
 import com.herewhite.sdk.WhiteSdk;

@@ -8,8 +8,8 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.herewhite.sdk.CombinePlayer.PlayerSyncManager;
-import com.herewhite.sdk.CombinePlayer.NativePlayer;
+import com.herewhite.sdk.combinePlayer.PlayerSyncManager;
+import com.herewhite.sdk.combinePlayer.NativePlayer;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
