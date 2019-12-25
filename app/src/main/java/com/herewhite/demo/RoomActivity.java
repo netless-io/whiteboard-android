@@ -17,12 +17,10 @@ import android.widget.Toast;
 import com.alibaba.sdk.android.httpdns.HttpDns;
 import com.alibaba.sdk.android.httpdns.HttpDnsService;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.AbstractRoomCallbacks;
 import com.herewhite.sdk.Converter;
 import com.herewhite.sdk.ConverterCallbacks;
-import com.herewhite.sdk.Environment;
 import com.herewhite.sdk.Logger;
 import com.herewhite.sdk.Room;
 import com.herewhite.sdk.RoomParams;
@@ -55,38 +53,34 @@ import com.herewhite.sdk.domain.UrlInterrupter;
 import com.herewhite.sdk.domain.ViewMode;
 import com.herewhite.sdk.domain.WhiteDisplayerState;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 import wendu.dsbridge.DWebView;
-
-import static com.herewhite.demo.DemoAPI.TEST_ROOM_TOKEN;
-import static com.herewhite.demo.DemoAPI.TEST_UUID;
 
 public class RoomActivity extends AppCompatActivity {
 
-    /*和 iOS 名字一致*/
+    /** 和 iOS 名字一致 */
     final String EVENT_NAME = "WhiteCommandCustomEvent";
 
     final String SCENE_DIR = "/dir";
     final String ROOM_INFO = "room info";
     final String ROOM_ACTION = "room action";
+    final Gson gson = new Gson();
+    final DemoAPI demoAPI = new DemoAPI();
+
     private String uuid;
     private String roomToken;
-    private static HttpDnsService httpdns;
+    private static HttpDnsService httpDnsService;
 
     WhiteboardView whiteboardView;
     Room room;
-    Gson gson = new Gson();
-    DemoAPI demoAPI = new DemoAPI();
 
     /**
      * 自定义 GlobalState 示例
+     * 继承自 GlobalState 的子类，然后调用 {@link WhiteDisplayerState#setCustomGlobalStateClass(Class)}
      */
     class MyGlobalState extends GlobalState {
         public String getOne() {
@@ -102,15 +96,18 @@ public class RoomActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
-        whiteboardView = findViewById(R.id.white);
 
-        // 阿里云 httpdns 替换
-        httpdns = HttpDns.getService(getApplicationContext(), "188301");
-        httpdns.setPreResolveHosts(new ArrayList<>(Arrays.asList("expresscloudharestoragev2.herewhite.com", "cloudharev2.herewhite.com", "scdncloudharestoragev3.herewhite.com", "cloudcapiv4.herewhite.com")));
-        whiteboardView.setWebViewClient(new WhiteWebviewClient(httpdns));
+        whiteboardView = findViewById(R.id.white);
         DWebView.setWebContentsDebuggingEnabled(true);
+
+        /**
+         * 使用阿里云的 HttpDns，避免 DNS 污染等问题
+         */
+        useHttpDnsService(false);
+
         Intent intent = getIntent();
         String uuid = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
         if (uuid == null) {
@@ -120,18 +117,99 @@ public class RoomActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.room_command, menu);
-        return true;
+    //region room
+    private void createRoom() {
+        demoAPI.getNewRoom(new DemoAPI.Result() {
+            @Override
+            public void success(String uuid, String roomToken) {
+                joinRoom(uuid, roomToken);
+            }
+
+            @Override
+            public void fail(String message) {
+                alert("创建房间失败", message);
+            }
+        });
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return true;
+    private void getRoomToken(final String uuid) {
+        demoAPI.getRoomToken(uuid, new DemoAPI.Result() {
+            @Override
+            public void success(String uuid, String roomToken) {
+                joinRoom(uuid, roomToken);
+            }
+
+            @Override
+            public void fail(String message) {
+                alert("获取房间 token 失败", message);
+            }
+        });
     }
 
-    public void alert(final String title, final String detail) {
+    private void joinRoom(String uuid, String roomToken) {
+        logRoomInfo("room uuid: " + uuid + "\nroomToken: " + roomToken);
+
+        //存档一下，方便重连
+        this.uuid = uuid;
+        this.roomToken = roomToken;
+
+        WhiteSdkConfiguration sdkConfiguration = new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1, true);
+
+        /*显示用户头像*/
+        sdkConfiguration.setUserCursor(true);
+
+        //动态 ppt 需要的自定义字体，如果没有使用，无需调用
+        HashMap<String, String> map = new HashMap<>();
+        map.put("宋体","https://your-cdn.com/Songti.ttf");
+        sdkConfiguration.setFonts(map);
+
+        //图片替换 API，需要在 whiteSDKConfig 中先行调用 setHasUrlInterrupterAPI，进行设置，否则不会被回调。
+        WhiteSdk whiteSdk = new WhiteSdk(whiteboardView, RoomActivity.this, sdkConfiguration,
+                new UrlInterrupter() {
+                    @Override
+                    public String urlInterrupter(String sourceUrl) {
+                        return sourceUrl;
+                    }
+                });
+
+        /** 设置自定义全局状态，在后续回调中 GlobalState 直接进行类型转换即可 */
+        WhiteDisplayerState.setCustomGlobalStateClass(MyGlobalState.class);
+
+        //如需支持用户头像，请在设置 WhiteSdkConfiguration 后，再调用 setUserPayload 方法，传入符合用户信息
+        RoomParams roomParams = new RoomParams(uuid, roomToken);
+
+        final Date joinDate = new Date();
+        logRoomInfo("native join " + joinDate);
+        whiteSdk.joinRoom(roomParams, new AbstractRoomCallbacks() {
+            @Override
+            public void onPhaseChanged(RoomPhase phase) {
+                //在此处可以处理断连后的重连逻辑
+                showToast(phase.name());
+            }
+
+            @Override
+            public void onRoomStateChanged(RoomState modifyState) {
+                logRoomInfo(gson.toJson(modifyState));
+            }
+        }, new Promise<Room>() {
+            @Override
+            public void then(Room wRoom) {
+                //记录加入房间消耗的时长
+                logRoomInfo("native join in room duration: " + (new Date().getTime() - joinDate.getTime()) / 1000f + "s");
+                room = wRoom;
+                addCustomEventListener();
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+                showToast(t.getMessage());
+            }
+        });
+    }
+    //endregion
+
+    //region private
+    private void alert(final String title, final String detail) {
 
         runOnUiThread(new Runnable() {
             public void run() {
@@ -150,117 +228,51 @@ public class RoomActivity extends AppCompatActivity {
         });
     }
 
-    private void createRoom() {
-        final RoomActivity that = this;
-        demoAPI.createRoom("sdk demo", 100, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                alert("网络请求错误", e.toString());
-            }
+    private void useHttpDnsService(boolean use) {
+        if (use) {
+            /** 直接使用此 id 即可，sdk 已经在阿里云 HttpDns 后台做过配置 */
+            httpDnsService = HttpDns.getService(getApplicationContext(), "188301");
+            httpDnsService.setPreResolveHosts(new ArrayList<>(Arrays.asList("expresscloudharestoragev2.herewhite.com", "cloudharev2.herewhite.com", "scdncloudharestoragev3.herewhite.com", "cloudcapiv4.herewhite.com")));
+            whiteboardView.setWebViewClient(new WhiteWebViewClient(httpDnsService));
+        }
+    }
 
+    private void addCustomEventListener() {
+        room.addMagixEventListener(EVENT_NAME, new EventListener() {
             @Override
-            public void onResponse(Call call, Response response) {
-                try {
-                    if (response.code() == 200) {
-                        JsonObject room = gson.fromJson(response.body().string(), JsonObject.class);
-                        String uuid = room.getAsJsonObject("msg").getAsJsonObject("room").get("uuid").getAsString();
-                        String roomToken = room.getAsJsonObject("msg").get("roomToken").getAsString();
-                        that.roomToken = roomToken;
-                        if (whiteboardView.getEnv() == Environment.dev) {
-                            joinRoom(TEST_UUID, TEST_ROOM_TOKEN);
-                        } else {
-                            joinRoom(uuid, roomToken);
-                        }
-                    } else {
-                        alert("网络请求错误", response.body().string());
-                    }
-                } catch (Throwable e) {
-                    alert("创建房间失败", e.toString());
-                }
+            public void onEvent(EventEntry eventEntry) {
+                logRoomInfo("customEvent payload: " + eventEntry.getPayload().toString());
+                showToast(gson.toJson(eventEntry.getPayload()));
             }
         });
     }
 
-    private void getRoomToken(final String uuid) {
-        final RoomActivity that = this;
-        demoAPI.getRoomToken(uuid, new Callback() {
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        logRoomInfo( "width:" + whiteboardView.getWidth() / getResources().getDisplayMetrics().density + " height: " + whiteboardView.getHeight() / getResources().getDisplayMetrics().density);
+        // onConfigurationChanged 调用时，横竖屏切换并没有完成，需要延迟调用
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                alert("获取房间 token 请求失败", e.toString());
+            public void run() {
+                room.refreshViewSize();
+                logRoomInfo( "width:" + whiteboardView.getWidth() / getResources().getDisplayMetrics().density + " height: " + whiteboardView.getHeight() / getResources().getDisplayMetrics().density);
             }
-
-            @Override
-            public void onResponse(Call call, Response response) {
-                try {
-                    if (response.code() == 200) {
-                        JsonObject room = gson.fromJson(response.body().string(), JsonObject.class);
-                        String roomToken = room.getAsJsonObject("msg").get("roomToken").getAsString();
-                        that.roomToken = roomToken;
-                        if (whiteboardView.getEnv() == Environment.dev) {
-                            joinRoom(TEST_UUID, TEST_ROOM_TOKEN);
-                        } else {
-                            joinRoom(uuid, roomToken);
-                        }
-                    } else {
-                        alert("获取房间 token 失败", response.body().string());
-                    }
-                } catch (Throwable e) {
-                    alert("获取房间 token 失败", e.toString());
-                }
-            }
-        });
+        }, 1000);
     }
 
-    private void joinRoom(String uuid, String roomToken) {
-        logRoomInfo("room uuid: " + uuid + "\nroomToken: " + roomToken);
-        this.uuid = uuid;
-        this.roomToken = roomToken;
-        WhiteSdkConfiguration sdkConfiguration = new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1, true);
-        /*显示用户头像*/
-        sdkConfiguration.setUserCursor(true);
-        HashMap<String, String> map = new HashMap<>();
-        map.put("Calibri", "https://your-cdn.com/Calibri.ttf");
-        map.put("宋体","https://your-cdn.com/Songti.ttf");
-        map.put("楷体",  "https://your-cdn.com/Kaiti.ttf");
-        sdkConfiguration.setFonts(map);
-        WhiteSdk whiteSdk = new WhiteSdk(
-                whiteboardView,
-                RoomActivity.this,
-                sdkConfiguration,
-                new UrlInterrupter() {
-                    @Override
-                    public String urlInterrupter(String sourceUrl) {
-                        return sourceUrl;
-                    }
-                });
-        /** 设置自定义全局状态，在后续回调中 GlobalState 直接进行类型转换即可 */
-        WhiteDisplayerState.setCustomGlobalStateClass(MyGlobalState.class);
+    //endregion
 
-        RoomParams roomParams = new RoomParams(uuid, roomToken);
+    //region menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.room_command, menu);
+        return true;
+    }
 
-        whiteSdk.joinRoom(roomParams, new AbstractRoomCallbacks() {
-            @Override
-            public void onPhaseChanged(RoomPhase phase) {
-                showToast(phase.name());
-            }
-
-            @Override
-            public void onRoomStateChanged(RoomState modifyState) {
-                logRoomInfo(gson.toJson(modifyState));
-            }
-        }, new Promise<Room>() {
-            @Override
-            public void then(Room wRoom) {
-                logRoomInfo("join in room success");
-                room = wRoom;
-                addCustomEventListener();
-            }
-
-            @Override
-            public void catchEx(SDKError t) {
-                showToast(t.getMessage());
-            }
-        });
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return true;
     }
 
     private CameraBound customBound(double maxScale) {
@@ -274,18 +286,6 @@ public class RoomActivity extends AppCompatActivity {
         contentModeConfig.setMode(ContentModeConfig.ScaleMode.CENTER_INSIDE_SCALE);
         bound.setMaxContentMode(contentModeConfig);
         return bound;
-    }
-
-
-
-    private void addCustomEventListener() {
-        room.addMagixEventListener(EVENT_NAME, new EventListener() {
-            @Override
-            public void onEvent(EventEntry eventEntry) {
-                logRoomInfo("customEvent payload: " + eventEntry.getPayload().toString());
-                showToast(gson.toJson(eventEntry.getPayload()));
-            }
-        });
     }
 
     public void reconnect(MenuItem item) {
@@ -309,20 +309,6 @@ public class RoomActivity extends AppCompatActivity {
         } else {
             RoomActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
-    }
-
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        logRoomInfo( "width:" + whiteboardView.getWidth() / getResources().getDisplayMetrics().density + " height: " + whiteboardView.getHeight() / getResources().getDisplayMetrics().density);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                room.refreshViewSize();
-                logRoomInfo( "width:" + whiteboardView.getWidth() / getResources().getDisplayMetrics().density + " height: " + whiteboardView.getHeight() / getResources().getDisplayMetrics().density);
-            }
-        }, 1000);
     }
 
     public void setBound(MenuItem item) {
@@ -519,7 +505,7 @@ public class RoomActivity extends AppCompatActivity {
         room.disableOperations(false);
     }
 
-    public void textarea(MenuItem item) {
+    public void textArea(MenuItem item) {
         logAction();
         MemberState memberState = new MemberState();
         memberState.setStrokeColor(new int[]{99, 99, 99});
@@ -588,6 +574,9 @@ public class RoomActivity extends AppCompatActivity {
         room.moveCamera(cameraConfig);
     }
 
+    //endregion
+
+    //region log
     void logRoomInfo(String str) {
         Log.i(ROOM_INFO, Thread.currentThread().getStackTrace()[3].getMethodName() + " " + str);
     }
@@ -604,4 +593,6 @@ public class RoomActivity extends AppCompatActivity {
         Log.i("showToast", o.toString());
         Toast.makeText(this, o.toString(), Toast.LENGTH_SHORT).show();
     }
+
+    //endregion
 }

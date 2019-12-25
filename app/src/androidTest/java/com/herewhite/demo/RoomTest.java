@@ -65,7 +65,7 @@ public class RoomTest {
         logTestAction("setup");
         final CountDownLatch latch = new CountDownLatch(1);
 
-        demoAPI.getRoom(new DemoAPI.Result() {
+        demoAPI.getNewRoom(new DemoAPI.Result() {
             @Override
             public void fail(String message) {
                 Assert.fail(message);

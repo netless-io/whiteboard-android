@@ -75,7 +75,7 @@
         android:onClick="disableReadonly"
         android:title="@string/disableReadonly_command"/>
     <item android:id="@+id/text"
-        android:onClick="textarea"
+        android:onClick="textArea"
         android:title="@string/textarea_command"/>
     <item android:id="@+id/pencil"
         android:onClick="pencil"

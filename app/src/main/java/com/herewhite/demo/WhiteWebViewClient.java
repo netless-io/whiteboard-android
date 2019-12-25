@@ -24,12 +24,12 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
 
-public class WhiteWebviewClient extends WebViewClient {
+public class WhiteWebViewClient extends WebViewClient {
 
     private static final String TAG = "WebClient";
     private HttpDnsService httpDns;
 
-    public WhiteWebviewClient(HttpDnsService httpDns) {
+    public WhiteWebViewClient(HttpDnsService httpDns) {
         this.httpDns = httpDns;
     }
 

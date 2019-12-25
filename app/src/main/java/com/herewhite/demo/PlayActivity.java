@@ -19,7 +19,6 @@ import com.alibaba.sdk.android.httpdns.HttpDns;
 import com.alibaba.sdk.android.httpdns.HttpDnsService;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.herewhite.sdk.AbstractPlayerEventListener;
 import com.herewhite.sdk.combinePlayer.PlayerSyncManager;
 import com.herewhite.sdk.Logger;
@@ -35,14 +34,9 @@ import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 public class PlayActivity extends AppCompatActivity {
 
@@ -83,40 +77,36 @@ public class PlayActivity extends AppCompatActivity {
 
         try {
             nativePlayer = new NativeMediaPlayer(this, "http://archive.org/download/BigBuckBunny_328/BigBuckBunny_512kb.mp4");
-            Log.e("nativePlayer", "create success");
+            Log.d("nativePlayer", "create success");
         } catch (Throwable e) {
             Log.e("nativePlayer", "create fail");
         }
 
         if (uuid != null) {
             whiteboardView = findViewById(R.id.white);
-// 阿里云 httpdns 替换
-            httpdns = HttpDns.getService(getApplicationContext(), "188301");
-            httpdns.setPreResolveHosts(new ArrayList<>(Arrays.asList("expresscloudharestoragev2.herewhite.com", "cloudharev2.herewhite.com", "scdncloudharestoragev3.herewhite.com", "cloudcapiv4.herewhite.com")));
-            whiteboardView.setWebViewClient(new WhiteWebviewClient(httpdns));
+            useHttpDnsService(false);
             WebView.setWebContentsDebuggingEnabled(true);
 
-            new DemoAPI().getRoomToken(uuid, new Callback() {
+            new DemoAPI().getRoomToken(uuid, new DemoAPI.Result() {
                 @Override
-                public void onFailure(Call call, IOException e) {
-
+                public void success(String uuid, String roomToken) {
+                    player(uuid, roomToken);
                 }
 
                 @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    try {
-                        if (response.code() == 200) {
-                            JsonObject room = gson.fromJson(response.body().string(), JsonObject.class);
-                            String roomToken = room.getAsJsonObject("msg").get("roomToken").getAsString();
-                            player(uuid, roomToken);
-                        } else {
-                            alert("获取房间 token 失败", response.body().string());
-                        }
-                    } catch (Throwable e) {
-                        alert("获取房间 token 失败", e.toString());
-                    }
+                public void fail(String message) {
+                    alert("创建回放失败", message);
                 }
             });
+        }
+    }
+
+    private void useHttpDnsService(boolean use) {
+        if (use) {
+            //// 阿里云 httpdns 替换
+            httpdns = HttpDns.getService(getApplicationContext(), "188301");
+            httpdns.setPreResolveHosts(new ArrayList<>(Arrays.asList("expresscloudharestoragev2.herewhite.com", "cloudharev2.herewhite.com", "scdncloudharestoragev3.herewhite.com", "cloudcapiv4.herewhite.com")));
+            whiteboardView.setWebViewClient(new WhiteWebViewClient(httpdns));
         }
     }
 

@@ -38,11 +38,11 @@ public class DemoAPI {
         void fail(String message);
     }
 
-    public void getRoom(final Result result) {
-        createRoom("test room", 100, new Callback() {
+    public void getNewRoom(final Result result) {
+        createRoom("Android test room", 100, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                result.fail("网络请求错误: " + e.toString());
+                result.fail("网络请求错误：" + e.toString());
             }
 
             @Override
@@ -54,16 +54,16 @@ public class DemoAPI {
                         String roomToken = room.getAsJsonObject("msg").get("roomToken").getAsString();
                         result.success(uuid, roomToken);
                     } else {
-                        result.fail("网络请求错误" + response.body().string());
+                        result.fail("创建房间失败：" + response.body().string());
                     }
                 } catch (Throwable e) {
-                    result.fail("创建房间失败" + e.toString());
+                    result.fail("网络请求错误：" + e.toString());
                 }
             }
         });
     }
 
-    public void createRoom(String name, int limit, Callback callback) {
+    private void createRoom(String name, int limit, Callback callback) {
 
         Map<String, Object> roomSpec = new HashMap<>();
         roomSpec.put("name", name);
@@ -82,7 +82,7 @@ public class DemoAPI {
         call.enqueue(callback);
     }
 
-    public void getRoomToken(String uuid, Callback callback) {
+    public void getRoomToken(final String uuid, final Result result) {
 
         Map<String, Object> roomSpec = new HashMap<>();
 
@@ -93,7 +93,27 @@ public class DemoAPI {
                 .post(body)
                 .build();
         Call call = client.newCall(request);
-        call.enqueue(callback);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                result.fail("网络请求错误：" + e.toString());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
+                try {
+                    if (response.code() == 200) {
+                        JsonObject room = gson.fromJson(response.body().string(), JsonObject.class);
+                        String roomToken = room.getAsJsonObject("msg").get("roomToken").getAsString();
+                        result.success(uuid, roomToken);
+                    } else {
+                        result.fail("获取房间 token 失败：" + response.body().string());
+                    }
+                } catch (Throwable e) {
+                    result.fail("网络请求错误：" + e.toString());
+                }
+            }
+        });
     }
 
     static String TEST_UUID = "test";
