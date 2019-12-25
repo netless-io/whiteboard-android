@@ -1,4 +1,4 @@
-package com.herewhite.sdk.CombinePlayer;
+package com.herewhite.sdk.combinePlayer;
 
 import com.herewhite.sdk.Player;
 import com.herewhite.sdk.domain.PlayerPhase;
@@ -72,10 +72,10 @@ public class PlayerSyncManager {
 
     private final Player whitePlayer;
     private PauseReason pauseReason = PauseReason.Init;
-    private NativePlayer nativePlayer;
+    private com.herewhite.sdk.CombinePlayer.NativePlayer nativePlayer;
     private Callbacks callbacks;
 
-    public PlayerSyncManager(Player whitePlayer, NativePlayer nativePlayer, Callbacks callbacks) {
+    public PlayerSyncManager(Player whitePlayer, com.herewhite.sdk.CombinePlayer.NativePlayer nativePlayer, Callbacks callbacks) {
         this.whitePlayer = whitePlayer;
         this.nativePlayer = nativePlayer;
         this.callbacks = callbacks;
@@ -115,8 +115,8 @@ public class PlayerSyncManager {
      * 更新 PlayerSyncManager 的播放状态，buffering 以及 idle 状态，会保证 whitePlayer 等待 nativePlayer 可以播放
      * @param phase {@link com.herewhite.sdk.CombinePlayer.NativePlayer.NativePlayerPhase}
      */
-    public void updateNativePhase(NativePlayer.NativePlayerPhase phase) {
-        if (phase == NativePlayer.NativePlayerPhase.Buffering || phase == NativePlayer.NativePlayerPhase.Idle) {
+    public void updateNativePhase(com.herewhite.sdk.CombinePlayer.NativePlayer.NativePlayerPhase phase) {
+        if (phase == com.herewhite.sdk.CombinePlayer.NativePlayer.NativePlayerPhase.Buffering || phase == com.herewhite.sdk.CombinePlayer.NativePlayer.NativePlayerPhase.Idle) {
             nativeStartBuffering();
         } else {
             nativeEndBuffering();

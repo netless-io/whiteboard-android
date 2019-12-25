@@ -1,4 +1,4 @@
-package com.herewhite.sdk.CombinePlayer;
+package com.herewhite.sdk.combinePlayer;
 
 /**
  * NativePlayer 接口
