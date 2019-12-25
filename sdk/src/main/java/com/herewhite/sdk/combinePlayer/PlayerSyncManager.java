@@ -138,11 +138,12 @@ public class PlayerSyncManager {
 
     private void nativeEndBuffering() {
 
+        boolean isBuffering = pauseReason.hasFlag(PauseReason.WaitingWhitePlayerBuffering) || pauseReason.hasFlag(PauseReason.WaitingNativePlayerBuffering);
         pauseReason = pauseReason.removeFlag(PauseReason.WaitingNativePlayerBuffering);
 
         if (pauseReason.hasFlag(PauseReason.WaitingWhitePlayerBuffering)) {
             nativePlayer.pause();
-        } else {
+        } else if (isBuffering) {
             callbacks.endBuffering();
         }
 
@@ -174,11 +175,13 @@ public class PlayerSyncManager {
     }
 
     private void whitePlayerEndBuffering() {
+
+        boolean isBuffering = pauseReason.hasFlag(PauseReason.WaitingWhitePlayerBuffering) || pauseReason.hasFlag(PauseReason.WaitingNativePlayerBuffering);
         pauseReason = pauseReason.removeFlag(PauseReason.WaitingWhitePlayerBuffering);
 
         if (pauseReason.hasFlag(PauseReason.WaitingNativePlayerBuffering)) {
             whitePlayer.pause();
-        } else {
+        } else if (isBuffering) {
             callbacks.endBuffering();
         }
 
