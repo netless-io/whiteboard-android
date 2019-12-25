@@ -27,7 +27,11 @@ public class PlayerSyncManager {
         None(0),
         WaitingWhitePlayerBuffering(1),
         WaitingNativePlayerBuffering(1 << 1),
+        WaitingBothBuffering(1 << 1 | 1),
         Pause(1 << 2),
+        PauseAndWhiteBuffering(1 << 2 | 1),
+        PauseAndNativeBuffering(1 << 2 | 1<< 1),
+        PauseAndBothBuffering(1 << 2 | 1<< 1 | 1),
         Init(1 | 1 << 1 | 1 << 2);
 
         private int flag;
@@ -137,7 +141,7 @@ public class PlayerSyncManager {
         pauseReason = pauseReason.removeFlag(PauseReason.WaitingNativePlayerBuffering);
 
         if (pauseReason.hasFlag(PauseReason.WaitingWhitePlayerBuffering)) {
-            whitePlayer.pause();
+            nativePlayer.pause();
         } else {
             callbacks.endBuffering();
         }
