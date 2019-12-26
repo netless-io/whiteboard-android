@@ -23,6 +23,8 @@ public interface NativePlayer {
      */
     boolean hasEnoughBuffer();
 
+    NativePlayerPhase getPhase();
+
     enum NativePlayerPhase {
         /**
          * 初始化状态，没有任何信息

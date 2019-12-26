@@ -74,7 +74,7 @@ public class PlayerSyncManager {
         }
     }
 
-    private final Player whitePlayer;
+    private Player whitePlayer;
     private PauseReason pauseReason = PauseReason.Init;
     private NativePlayer nativePlayer;
     private Callbacks callbacks;
@@ -83,6 +83,19 @@ public class PlayerSyncManager {
         this.whitePlayer = whitePlayer;
         this.nativePlayer = nativePlayer;
         this.callbacks = callbacks;
+        this.updateNativePhase(nativePlayer.getPhase());
+        this.updateWhitePlayerPhase(whitePlayer.getPlayerPhase());
+    }
+
+    public PlayerSyncManager(NativePlayer nativePlayer, Callbacks callbacks) {
+        this.nativePlayer = nativePlayer;
+        this.callbacks = callbacks;
+        this.updateNativePhase(nativePlayer.getPhase());
+    }
+
+    public void setWhitePlayer(Player whitePlayer) {
+        this.whitePlayer = whitePlayer;
+        this.updateWhitePlayerPhase(whitePlayer.getPlayerPhase());
     }
 
     public void play() {
