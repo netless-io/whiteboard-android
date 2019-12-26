@@ -52,7 +52,7 @@ public class DemoAPI {
                         JsonObject room = gson.fromJson(response.body().string(), JsonObject.class);
                         String uuid = room.getAsJsonObject("msg").getAsJsonObject("room").get("uuid").getAsString();
                         String roomToken = room.getAsJsonObject("msg").get("roomToken").getAsString();
-                        result.success(uuid, roomToken);
+                        result.success("c518178bcca441ccbe967424ca6e25da", "WHITEcGFydG5lcl9pZD0zZHlaZ1BwWUtwWVN2VDVmNGQ4UGI2M2djVGhncENIOXBBeTcmc2lnPWZiZDU1M2NkMjBjMjIzNDkyMWZkMjQ5ZGQ0MGI1NDQ5MDI1M2RlZTY6YWRtaW5JZD0xNTgmcm9vbUlkPWM1MTgxNzhiY2NhNDQxY2NiZTk2NzQyNGNhNmUyNWRhJnRlYW1JZD0yODMmcm9sZT1yb29tJmV4cGlyZV90aW1lPTE2MDg5MTk1NTUmYWs9M2R5WmdQcFlLcFlTdlQ1ZjRkOFBiNjNnY1RoZ3BDSDlwQXk3JmNyZWF0ZV90aW1lPTE1NzczNjI2MDMmbm9uY2U9MTU3NzM2MjYwMjg1OTAw");
                     } else {
                         result.fail("创建房间失败：" + response.body().string());
                     }
