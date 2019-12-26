@@ -115,7 +115,4 @@ public class DemoAPI {
             }
         });
     }
-
-    static String TEST_UUID = "test";
-    static String TEST_ROOM_TOKEN = "test";
 }

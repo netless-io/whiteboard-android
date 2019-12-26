@@ -59,8 +59,11 @@ public class StartActivity extends AppCompatActivity {
             return;
         }
         Intent intent = new Intent(this, RoomActivity.class);
-        if (getUuid().length() > 0) {
-            intent.putExtra(EXTRA_MESSAGE, getUuid());
+
+//        String uuid = "fb4b7e680fcf46cf8aa02988908f2531";
+        String uuid = getUuid();
+        if (uuid.length() > 0) {
+            intent.putExtra(EXTRA_MESSAGE, "fb4b7e680fcf46cf8aa02988908f2531");
         }
         startActivity(intent);
     }
@@ -71,9 +74,11 @@ public class StartActivity extends AppCompatActivity {
             return;
         }
 
-//        fb4b7e680fcf46cf8aa02988908f2531
         Intent intent = new Intent(this, PlayActivity.class);
-        if (getUuid().length() > 0) {
+        
+//        String uuid = "fb4b7e680fcf46cf8aa02988908f2531";
+        String uuid = getUuid();
+        if (uuid.length() > 0) {
             intent.putExtra(EXTRA_MESSAGE, getUuid());
             startActivity(intent);
         } else {

@@ -48,7 +48,7 @@ public class PlayActivity extends AppCompatActivity {
      */
     PlayerSyncManager playerSyncManager;
     Gson gson = new Gson();
-    private static HttpDnsService httpdns;
+    private static HttpDnsService httpDns;
     private boolean mUserIsSeeking = false;
     private SeekBar mSeekBar;
 
@@ -103,10 +103,10 @@ public class PlayActivity extends AppCompatActivity {
 
     private void useHttpDnsService(boolean use) {
         if (use) {
-            //// 阿里云 httpdns 替换
-            httpdns = HttpDns.getService(getApplicationContext(), "188301");
-            httpdns.setPreResolveHosts(new ArrayList<>(Arrays.asList("expresscloudharestoragev2.herewhite.com", "cloudharev2.herewhite.com", "scdncloudharestoragev3.herewhite.com", "cloudcapiv4.herewhite.com")));
-            whiteboardView.setWebViewClient(new WhiteWebViewClient(httpdns));
+            //// 阿里云 httpns 替换
+            httpDns = HttpDns.getService(getApplicationContext(), "188301");
+            httpDns.setPreResolveHosts(new ArrayList<>(Arrays.asList("expresscloudharestoragev2.herewhite.com", "cloudharev2.herewhite.com", "scdncloudharestoragev3.herewhite.com", "cloudcapiv4.herewhite.com")));
+            whiteboardView.setWebViewClient(new WhiteWebViewClient(httpDns));
         }
     }
 
