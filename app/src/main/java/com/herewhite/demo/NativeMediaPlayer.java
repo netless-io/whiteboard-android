@@ -78,6 +78,10 @@ public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, 
         mMediaPlayer.prepareAsync();
     }
 
+    public NativePlayerPhase getPhase() {
+        return phase;
+    }
+
     /**
      * 绑定 playerSyncManager，设置的同时，需要将当前实例的 NativePlayerPhase 也更新
      * @param player PlayerSyncManager 实例

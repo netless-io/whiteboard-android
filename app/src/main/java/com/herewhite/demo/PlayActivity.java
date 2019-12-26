@@ -77,6 +77,18 @@ public class PlayActivity extends AppCompatActivity {
 
         try {
             nativePlayer = new NativeMediaPlayer(this, "http://archive.org/download/BigBuckBunny_328/BigBuckBunny_512kb.mp4");
+            playerSyncManager = new PlayerSyncManager(nativePlayer, new PlayerSyncManager.Callbacks() {
+                @Override
+                public void startBuffering() {
+                    Log.d("playerSyncManager", "startBuffering: ");
+                }
+
+                @Override
+                public void endBuffering() {
+                    Log.d("playerSyncManager", "endBuffering: ");
+
+                }
+            });
             Log.d("nativePlayer", "create success");
         } catch (Throwable e) {
             Log.e("nativePlayer", "create fail");
@@ -302,19 +314,9 @@ public class PlayActivity extends AppCompatActivity {
             @Override
             public void then(Player wPlayer) {
                 player = wPlayer;
-                playerSyncManager = new PlayerSyncManager(player, nativePlayer, new PlayerSyncManager.Callbacks() {
-                    @Override
-                    public void startBuffering() {
-                        showToast("startBuffering");
-                    }
-
-                    @Override
-                    public void endBuffering() {
-                        showToast("endBuffering");
-                    }
-                });
                 setupSeekBar();
                 SurfaceView surfaceView = findViewById(R.id.surfaceView);
+                playerSyncManager.setWhitePlayer(player);
                 nativePlayer.setSurfaceView(surfaceView);
                 nativePlayer.setPlayerSyncManager(playerSyncManager);
                 // seek 一次才能主动触发
