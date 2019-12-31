@@ -63,7 +63,7 @@ public class StartActivity extends AppCompatActivity {
 //        String uuid = "fb4b7e680fcf46cf8aa02988908f2531";
         String uuid = getUuid();
         if (uuid.length() > 0) {
-            intent.putExtra(EXTRA_MESSAGE, "fb4b7e680fcf46cf8aa02988908f2531");
+            intent.putExtra(EXTRA_MESSAGE, uuid);
         }
         startActivity(intent);
     }
@@ -79,7 +79,7 @@ public class StartActivity extends AppCompatActivity {
 //        String uuid = "fb4b7e680fcf46cf8aa02988908f2531";
         String uuid = getUuid();
         if (uuid.length() > 0) {
-            intent.putExtra(EXTRA_MESSAGE, getUuid());
+            intent.putExtra(EXTRA_MESSAGE, uuid);
             startActivity(intent);
         } else {
             tokenAlert("uuid", "请填入回放用 uuid");
