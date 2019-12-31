@@ -66,7 +66,8 @@ public class Displayer {
      * @param mode 缩放时，动画行为
      */
     public void scalePptToFit(AnimationMode mode) {
-        bridge.callHandler("displayer.scalePptToFit", new Object[]{gson.toJson(mode)});
+        String modeString = gson.fromJson(gson.toJson(mode), String.class);
+        bridge.callHandler("displayer.scalePptToFit", new Object[]{modeString});
     }
 
     /**
