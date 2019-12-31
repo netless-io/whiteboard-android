@@ -15,6 +15,9 @@
     <item android:id="@+id/broadcast"
         android:onClick="broadcast"
         android:title="@string/broadcast_command"/>
+    <item android:id="@+id/scalePptToFit"
+        android:onClick="scalePptToFit"
+        android:title="铺满 ppt"/>
     <item android:id="@+id/getBroadcastState"
         android:onClick="getBroadcastState"
         android:title="@string/getBroadcastState_command"/>

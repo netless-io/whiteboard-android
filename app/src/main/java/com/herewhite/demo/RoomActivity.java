@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.alibaba.sdk.android.httpdns.HttpDns;
 import com.alibaba.sdk.android.httpdns.HttpDnsService;
 import com.google.gson.Gson;
+import com.herewhite.sdk.domain.AnimationMode;
 import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.AbstractRoomCallbacks;
 import com.herewhite.sdk.Converter;
@@ -286,6 +287,10 @@ public class RoomActivity extends AppCompatActivity {
         contentModeConfig.setMode(ContentModeConfig.ScaleMode.CENTER_INSIDE_SCALE);
         bound.setMaxContentMode(contentModeConfig);
         return bound;
+    }
+
+    public void scalePptToFit(MenuItem item) {
+        room.scalePptToFit(AnimationMode.Continuous);
     }
 
     public void reconnect(MenuItem item) {
