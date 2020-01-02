@@ -102,18 +102,17 @@ public class PlayerSyncManager {
 
         pauseReason = pauseReason.removeFlag(PauseReason.Pause);
 
-        nativePlayer.play();
-        if (nativePlayer.hasEnoughBuffer()) {
-            whitePlayer.play();
+        playNativePlayer();
+        if (nativePlayer != null && nativePlayer.hasEnoughBuffer()) {
+            playWhitePlayer();
         }
     }
 
     public void pause() {
 
         pauseReason = pauseReason.addFlag(PauseReason.Pause);
-
-        nativePlayer.pause();
-        whitePlayer.pause();
+        pauseNativePlayer();
+        pauseWhitePlayer();
     }
 
     /**
@@ -125,7 +124,9 @@ public class PlayerSyncManager {
         // Android 端比较适合由 NativePlayer 进行 seek。 seek 完成后，再调用 PlayerSyncManager 的 seek 方法，
         // 将 whitePlayer seek 到对应位置
         Long milliseconds = TimeUnit.MILLISECONDS.convert(time, timeUnit);
-        whitePlayer.seekToScheduleTime(milliseconds.intValue());
+        if (whitePlayer != null) {
+            whitePlayer.seekToScheduleTime(milliseconds.intValue());
+        }
     }
 
     /**
@@ -140,13 +141,37 @@ public class PlayerSyncManager {
         }
     }
 
+    private void playNativePlayer() {
+        if (nativePlayer != null) {
+            nativePlayer.play();
+        }
+    }
+
+    private void pauseNativePlayer() {
+        if (nativePlayer != null) {
+            nativePlayer.pause();
+        }
+    }
+
+    private void playWhitePlayer() {
+        if (whitePlayer != null) {
+            whitePlayer.play();
+        }
+    }
+
+    private void pauseWhitePlayer() {
+        if (whitePlayer != null) {
+            whitePlayer.pause();
+        }
+    }
+
     private void nativeStartBuffering() {
 
         pauseReason = pauseReason.addFlag(PauseReason.WaitingNativePlayerBuffering);
 
         callbacks.startBuffering();
 
-        whitePlayer.pause();
+        pauseWhitePlayer();
     }
 
     private void nativeEndBuffering() {
@@ -155,14 +180,14 @@ public class PlayerSyncManager {
         pauseReason = pauseReason.removeFlag(PauseReason.WaitingNativePlayerBuffering);
 
         if (pauseReason.hasFlag(PauseReason.WaitingWhitePlayerBuffering)) {
-            nativePlayer.pause();
+            pauseNativePlayer();
         } else if (isBuffering) {
             callbacks.endBuffering();
         }
 
         if (pauseReason.equals(PauseReason.None)) {
-            nativePlayer.play();
-            whitePlayer.play();
+            playNativePlayer();
+            playWhitePlayer();
         }
     }
 
@@ -182,7 +207,7 @@ public class PlayerSyncManager {
 
         pauseReason = pauseReason.addFlag(PauseReason.WaitingWhitePlayerBuffering);
 
-        nativePlayer.pause();
+        pauseNativePlayer();
 
         callbacks.startBuffering();
     }
@@ -193,17 +218,17 @@ public class PlayerSyncManager {
         pauseReason = pauseReason.removeFlag(PauseReason.WaitingWhitePlayerBuffering);
 
         if (pauseReason.hasFlag(PauseReason.WaitingNativePlayerBuffering)) {
-            whitePlayer.pause();
+            pauseWhitePlayer();
         } else if (isBuffering) {
             callbacks.endBuffering();
         }
 
         if (pauseReason.equals(PauseReason.None)) {
-            nativePlayer.play();
-            whitePlayer.play();
+            playNativePlayer();
+            playWhitePlayer();
         } else if (pauseReason.hasFlag(PauseReason.Pause)) {
-            nativePlayer.pause();
-            whitePlayer.pause();
+            pauseWhitePlayer();
+            pauseNativePlayer();
         }
     }
 
