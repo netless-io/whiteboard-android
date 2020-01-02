@@ -76,6 +76,21 @@ public class WhiteSdkConfiguration extends WhiteObject {
         this.loggerOptions = loggerOptions;
     }
 
+
+    public boolean isRouteBackup() {
+        return routeBackup;
+    }
+
+    /**
+     * 是否启用双路由功能，同时像两个网址请求数据，选择最快的应答。会造成一定的额外开销。默认关闭
+     * @param routeBackup
+     */
+    public void setRouteBackup(boolean routeBackup) {
+        this.routeBackup = routeBackup;
+    }
+
+    private boolean routeBackup;
+
     private LoggerOptions loggerOptions;
 
     public HashMap<String, String> getFonts() {
