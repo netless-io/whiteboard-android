@@ -56,6 +56,7 @@ public class Displayer {
 
     /**
      * 以连续动画的形式，等比例缩放ppt，保证ppt所有内容都在容器内。
+     * @since 2.4.22
      */
     public void scalePptToFit() {
         bridge.callHandler("displayer.scalePptToFit", new Object[]{});
@@ -64,6 +65,7 @@ public class Displayer {
     /**
      * 等比例缩放ppt，保证ppt所有内容都在容器内。
      * @param mode 缩放时，动画行为
+     * @since 2.4.28
      */
     public void scalePptToFit(AnimationMode mode) {
         String modeString = gson.fromJson(gson.toJson(mode), String.class);
