@@ -25,12 +25,18 @@ public class DemoAPI {
             = MediaType.parse("application/json; charset=utf-8");
     private static final String sdkToken = "WHITEcGFydG5lcl9pZD1OZ3pwQWNBdlhiemJERW9NY0E0Z0V3RTUwbVZxM0NIbDJYV0Ymc2lnPWNiZWExOTMwNzc1NmQyNmU3N2U3M2Q0NWZjNTZiOGIwMWE2ZjU4NDI6YWRtaW5JZD0yMTYmcm9sZT1hZG1pbiZleHBpcmVfdGltZT0xNTg5ODMzNTQxJmFrPU5nenBBY0F2WGJ6YkRFb01jQTRnRXdFNTBtVnEzQ0hsMlhXRiZjcmVhdGVfdGltZT0xNTU4Mjc2NTg5Jm5vbmNlPTE1NTgyNzY1ODg4NDQwMA";
     private static final String host = "https://cloudcapiv4.herewhite.com";
+    private final String demoUUID = "";
+    private final String demoRoomToken = "";
 
     OkHttpClient client = new OkHttpClient();
     Gson gson = new Gson();
 
+    private boolean hasDemoInfo() {
+        return demoUUID.length() > 0 && demoRoomToken.length() > 0;
+    }
+
     public boolean validateToken() {
-        return sdkToken.length() > 200;
+        return hasDemoInfo() || sdkToken.length() > 200;
     }
 
     public interface Result {
@@ -39,6 +45,12 @@ public class DemoAPI {
     }
 
     public void getNewRoom(final Result result) {
+
+        if (hasDemoInfo()) {
+            result.success(demoUUID, demoRoomToken);
+            return;
+        }
+
         createRoom("Android test room", 100, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -53,7 +65,6 @@ public class DemoAPI {
                         String uuid = room.getAsJsonObject("msg").getAsJsonObject("room").get("uuid").getAsString();
                         String roomToken = room.getAsJsonObject("msg").get("roomToken").getAsString();
                         result.success(uuid, roomToken);
-//                        result.success("c518178bcca441ccbe967424ca6e25da", "WHITEcGFydG5lcl9pZD0zZHlaZ1BwWUtwWVN2VDVmNGQ4UGI2M2djVGhncENIOXBBeTcmc2lnPWZiZDU1M2NkMjBjMjIzNDkyMWZkMjQ5ZGQ0MGI1NDQ5MDI1M2RlZTY6YWRtaW5JZD0xNTgmcm9vbUlkPWM1MTgxNzhiY2NhNDQxY2NiZTk2NzQyNGNhNmUyNWRhJnRlYW1JZD0yODMmcm9sZT1yb29tJmV4cGlyZV90aW1lPTE2MDg5MTk1NTUmYWs9M2R5WmdQcFlLcFlTdlQ1ZjRkOFBiNjNnY1RoZ3BDSDlwQXk3JmNyZWF0ZV90aW1lPTE1NzczNjI2MDMmbm9uY2U9MTU3NzM2MjYwMjg1OTAw");
                     } else {
                         result.fail("创建房间失败：" + response.body().string());
                     }
