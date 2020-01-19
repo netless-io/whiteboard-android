@@ -1,7 +1,9 @@
 package com.herewhite.sdk;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.AttributeSet;
+import android.webkit.WebChromeClient;
 
 import com.google.gson.Gson;
 import com.herewhite.sdk.domain.WhiteObject;
@@ -37,6 +39,7 @@ public class WhiteboardView extends DWebView {
     private void init() {
         this.getSettings().setMediaPlaybackRequiresUserGesture(false);
         this.loadUrl("file:///android_asset/whiteboard/index.html");
+        this.setWebChromeClient(new FixWebChromeClient());
     }
 
     public void switchEnv(Environment environment) {
@@ -108,6 +111,20 @@ public class WhiteboardView extends DWebView {
             return list;
         } else {
             return gson.toJson(object);
+        }
+    }
+
+    class FixWebChromeClient extends WebChromeClient {
+        @Override
+        public Bitmap getDefaultVideoPoster() {
+            try{
+                int width = 100;
+                int height = 50;
+                // fix https://bugs.chromium.org/p/chromium/issues/detail?id=521753#c8
+                return Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            }catch(Exception e){
+                return super.getDefaultVideoPoster();
+            }
         }
     }
 }
