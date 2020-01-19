@@ -60,7 +60,6 @@ public class StartActivity extends AppCompatActivity {
         }
         Intent intent = new Intent(this, RoomActivity.class);
 
-//        String uuid = "fb4b7e680fcf46cf8aa02988908f2531";
         String uuid = getUuid();
         if (uuid.length() > 0) {
             intent.putExtra(EXTRA_MESSAGE, uuid);
@@ -76,7 +75,6 @@ public class StartActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, PlayActivity.class);
         
-//        String uuid = "fb4b7e680fcf46cf8aa02988908f2531";
         String uuid = getUuid();
         if (uuid.length() > 0) {
             intent.putExtra(EXTRA_MESSAGE, uuid);
