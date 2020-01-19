@@ -31,6 +31,42 @@ public class Player extends Displayer {
     private final int framesCount;
     private final long beginTimestamp;
 
+    /**
+     * 获取播放时的播放速率
+     * @return 播放速率
+     * @since 2.5.2
+     */
+    public double getPlaybackSpeed() {
+        return playbackSpeed;
+    }
+
+    /**
+     * 设置播放时的播放速率
+     * @param playbackSpeed
+     * @since 2.5.2
+     */
+    public void setPlaybackSpeed(double playbackSpeed) {
+        this.playbackSpeed = playbackSpeed;
+        bridge.callHandler("player.setPlaybackSpeed", new Object[]{playbackSpeed});
+    }
+
+    /**
+     * 异步从 player 中获取播放时的播放速率，暂停时不会变为 0。
+     * 正常情况下，不需要使用该 API，仅做 Debug 与测试用
+     * @param promise
+     * @since 2.5.2
+     */
+    public void getPlaybackSpeed(final Promise<Double> promise) {
+        bridge.callHandler("player.state.playbackSpeed", new OnReturnValue<Double>() {
+            @Override
+            public void onValue(Double retValue) {
+                promise.then(retValue);
+            }
+        });
+    }
+
+    private double playbackSpeed;
+
     private long scheduleTime = 0;
 
     private PlayerPhase playerPhase = PlayerPhase.waitingFirstFrame;
