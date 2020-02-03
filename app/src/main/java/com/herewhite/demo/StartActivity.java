@@ -102,6 +102,9 @@ public class StartActivity extends AppCompatActivity {
         if (uuid.length() > 0) {
             intent.putExtra(EXTRA_MESSAGE, uuid);
             startActivity(intent);
+        } else if (demoAPI.getDemoUUID().length() > 0) {
+            intent.putExtra(EXTRA_MESSAGE, demoAPI.getDemoUUID());
+            startActivity(intent);
         } else {
             tokenAlert("uuid", "请填入回放用 uuid");
         }

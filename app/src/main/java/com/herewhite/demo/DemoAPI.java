@@ -21,15 +21,19 @@ import okhttp3.Response;
 
 public class DemoAPI {
 
-    public static final MediaType JSON
+    static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
     private static final String sdkToken = "WHITEcGFydG5lcl9pZD1OZ3pwQWNBdlhiemJERW9NY0E0Z0V3RTUwbVZxM0NIbDJYV0Ymc2lnPWNiZWExOTMwNzc1NmQyNmU3N2U3M2Q0NWZjNTZiOGIwMWE2ZjU4NDI6YWRtaW5JZD0yMTYmcm9sZT1hZG1pbiZleHBpcmVfdGltZT0xNTg5ODMzNTQxJmFrPU5nenBBY0F2WGJ6YkRFb01jQTRnRXdFNTBtVnEzQ0hsMlhXRiZjcmVhdGVfdGltZT0xNTU4Mjc2NTg5Jm5vbmNlPTE1NTgyNzY1ODg4NDQwMA";
     private static final String host = "https://cloudcapiv4.herewhite.com";
-    private final String demoUUID = "";
-    private final String demoRoomToken = "";
+    private String demoUUID = "";
+    private String demoRoomToken = "";
 
-    OkHttpClient client = new OkHttpClient();
-    Gson gson = new Gson();
+    String getDemoUUID() {
+        return demoUUID;
+    }
+
+    private OkHttpClient client = new OkHttpClient();
+    private Gson gson = new Gson();
 
     private boolean hasDemoInfo() {
         return demoUUID.length() > 0 && demoRoomToken.length() > 0;
@@ -44,14 +48,14 @@ public class DemoAPI {
         void fail(String message);
     }
 
-    public void getNewRoom(final Result result) {
+    void getNewRoom(final Result result) {
 
         if (hasDemoInfo()) {
             result.success(demoUUID, demoRoomToken);
             return;
         }
 
-        createRoom("Android test room", 100, new Callback() {
+        createRoom(100, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 result.fail("网络请求错误：" + e.toString());
@@ -66,6 +70,7 @@ public class DemoAPI {
                         String roomToken = room.getAsJsonObject("msg").get("roomToken").getAsString();
                         result.success(uuid, roomToken);
                     } else {
+                        assert response.body() != null;
                         result.fail("创建房间失败：" + response.body().string());
                     }
                 } catch (Throwable e) {
@@ -75,10 +80,10 @@ public class DemoAPI {
         });
     }
 
-    private void createRoom(String name, int limit, Callback callback) {
+    private void createRoom(int limit, Callback callback) {
 
         Map<String, Object> roomSpec = new HashMap<>();
-        roomSpec.put("name", name);
+        roomSpec.put("name", "Android test room");
         roomSpec.put("limit", limit);
         roomSpec.put("mode", "historied");
 
@@ -94,7 +99,12 @@ public class DemoAPI {
         call.enqueue(callback);
     }
 
-    public void getRoomToken(final String uuid, final Result result) {
+    void getRoomToken(final String uuid, final Result result) {
+
+        if (uuid.equals(demoUUID)) {
+            result.success(demoUUID, demoRoomToken);
+            return;
+        }
 
         Map<String, Object> roomSpec = new HashMap<>();
 
@@ -115,10 +125,12 @@ public class DemoAPI {
             public void onResponse(Call call, Response response) {
                 try {
                     if (response.code() == 200) {
+                        assert response.body() != null;
                         JsonObject room = gson.fromJson(response.body().string(), JsonObject.class);
                         String roomToken = room.getAsJsonObject("msg").get("roomToken").getAsString();
                         result.success(uuid, roomToken);
                     } else {
+                        assert response.body() != null;
                         result.fail("获取房间 token 失败：" + response.body().string());
                     }
                 } catch (Throwable e) {
