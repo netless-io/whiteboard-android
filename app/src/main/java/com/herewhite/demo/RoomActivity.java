@@ -74,7 +74,6 @@ public class RoomActivity extends AppCompatActivity {
 
     private String uuid;
     private String roomToken;
-    private static HttpDnsService httpDnsService;
 
     WhiteboardView whiteboardView;
     Room room;
@@ -104,8 +103,8 @@ public class RoomActivity extends AppCompatActivity {
         whiteboardView = findViewById(R.id.white);
         DWebView.setWebContentsDebuggingEnabled(true);
 
-        /**
-         * 使用阿里云的 HttpDns，避免 DNS 污染等问题
+        /*
+          使用阿里云的 HttpDns，避免 DNS 污染等问题
          */
         useHttpDnsService(false);
 
@@ -232,7 +231,7 @@ public class RoomActivity extends AppCompatActivity {
     private void useHttpDnsService(boolean use) {
         if (use) {
             /** 直接使用此 id 即可，sdk 已经在阿里云 HttpDns 后台做过配置 */
-            httpDnsService = HttpDns.getService(getApplicationContext(), "188301");
+            HttpDnsService httpDnsService = HttpDns.getService(getApplicationContext(), "188301");
             httpDnsService.setPreResolveHosts(new ArrayList<>(Arrays.asList("expresscloudharestoragev2.herewhite.com", "cloudharev2.herewhite.com", "scdncloudharestoragev3.herewhite.com", "cloudcapiv4.herewhite.com")));
             whiteboardView.setWebViewClient(new WhiteWebViewClient(httpDnsService));
         }
@@ -280,8 +279,8 @@ public class RoomActivity extends AppCompatActivity {
         CameraBound bound = new CameraBound();
         bound.setCenterX(0d);
         bound.setCenterY(0d);
-        bound.setHeight(Double.valueOf(whiteboardView.getHeight() / this.getResources().getDisplayMetrics().density));
-        bound.setWidth(Double.valueOf(whiteboardView.getWidth() / this.getResources().getDisplayMetrics().density));
+        bound.setHeight((double) (whiteboardView.getHeight() / this.getResources().getDisplayMetrics().density));
+        bound.setWidth((double) (whiteboardView.getWidth() / this.getResources().getDisplayMetrics().density));
         ContentModeConfig contentModeConfig = new ContentModeConfig();
         contentModeConfig.setScale(maxScale);
         contentModeConfig.setMode(ContentModeConfig.ScaleMode.CENTER_INSIDE_SCALE);

@@ -49,10 +49,10 @@ public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, 
      */
     private int mSeekToPos = 0;
 
-    final String PLAYER_INFO = "nativePlayer info";
+    private final String TAG = "nativePlayer info";
 
 
-    public NativeMediaPlayer(Context context, String uri) throws IOException {
+    NativeMediaPlayer(Context context, String uri) throws IOException {
         mMediaPlayer = new MediaPlayer();
 
         Uri mp4 = Uri.parse(uri);
@@ -68,7 +68,7 @@ public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, 
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
                 //TODO:onError 的处理另外做，或者使用第三方库来操作
-                Log.e(PLAYER_INFO, "onError: " + what + " extra: " + extra);
+                Log.e(TAG, "onError: " + what + " extra: " + extra);
                 mState = STATE_ERROR;
                 return false;
             }
@@ -86,15 +86,15 @@ public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, 
      * 绑定 playerSyncManager，设置的同时，需要将当前实例的 NativePlayerPhase 也更新
      * @param player PlayerSyncManager 实例
      */
-    public void setPlayerSyncManager(PlayerSyncManager player) {
-        Log.d(PLAYER_INFO, "setPlayerSyncManager: " + phase);
+    void setPlayerSyncManager(PlayerSyncManager player) {
+        Log.d(TAG, "setPlayerSyncManager: " + phase);
         playerSyncManager = player;
         playerSyncManager.updateNativePhase(phase);
     }
 
     /**
      * player 的预期播放状态，为了播放而缓冲也算
-     * @return
+     * @return 播放状态
      */
     public boolean isPlaying() {
         if (mState == STATE_IDLE) {
@@ -111,7 +111,7 @@ public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, 
     @Override
     public void play() {
 
-        Log.e(PLAYER_INFO, "before play: " + mState);
+        Log.e(TAG, "before play: " + mState);
 
         if (mState == STATE_READY || mState == STATE_PAUSED) {
             phase = NativePlayerPhase.Playing;
@@ -125,7 +125,7 @@ public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, 
             playerSyncManager.updateNativePhase(phase);
         }
 
-        Log.e(PLAYER_INFO, "after play: " + mState);
+        Log.e(TAG, "after play: " + mState);
     }
 
     /**
@@ -133,7 +133,7 @@ public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, 
      */
     @Override
     public void pause() {
-        Log.e(PLAYER_INFO, "pause: " + mState);
+        Log.e(TAG, "pause: " + mState);
         if (mState == STATE_PLAYING) {
             mMediaPlayer.pause();
             phase = NativePlayerPhase.Pause;
@@ -143,20 +143,20 @@ public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, 
 
     /**
      * 由 nativePlayer 进行主动 seek，然后在 seek 完成后，再调用 {@link PlayerSyncManager} 同步
-     * @param time
-     * @param unit
+     * @param time 跳转时间戳
+     * @param unit 时间戳单位
      */
-    public void seek(long time, TimeUnit unit) {
+    void seek(long time, TimeUnit unit) {
 
-        Long milliseconds = TimeUnit.MILLISECONDS.convert(time, unit);
+        long milliseconds = TimeUnit.MILLISECONDS.convert(time, unit);
 
         if (mState == STATE_PLAYING || mState == STATE_PAUSED || mState == STATE_READY) {
-            mMediaPlayer.seekTo(milliseconds.intValue());
-            mSeekToPos = milliseconds.intValue();
+            mMediaPlayer.seekTo((int) milliseconds);
+            mSeekToPos = (int) milliseconds;
         } else if (mState == STATE_IDLE || mState == STATE_PLAY_PENDING) {
-            mSeekToPos = milliseconds.intValue();
+            mSeekToPos = (int) milliseconds;
         } else {
-            Log.e(PLAYER_INFO, "seek fail: " + mState);
+            Log.e(TAG, "seek fail: " + mState);
         }
     }
 
@@ -165,23 +165,19 @@ public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, 
     public boolean hasEnoughBuffer() {
         if (mState == STATE_IDLE || mState == STATE_PLAY_PENDING) {
             return false;
-        } else if (phase == NativePlayerPhase.Buffering) {
-            return false;
-        } else {
-            return true;
-        }
+        } else return phase != NativePlayerPhase.Buffering;
     }
 
     //public methods
-    public int getCurrentPosition() {
+    int getCurrentPosition() {
         return mMediaPlayer.getCurrentPosition();
     }
 
-    public int getDuration() {
+    int getDuration() {
         return mMediaPlayer.getDuration();
     }
 
-    public boolean isNormalState() {
+    boolean isNormalState() {
         return mState != STATE_IDLE && mState != STATE_PLAY_PENDING && mState != STATE_ERROR;
     }
 
@@ -191,7 +187,7 @@ public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, 
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                Log.d(PLAYER_INFO, "prepared");
+                Log.d(TAG, "prepared");
                 if (mState == STATE_IDLE) {
                     mState = STATE_READY;
                     phase = NativePlayerPhase.Pause;
@@ -215,7 +211,7 @@ public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, 
 
     @Override
     public boolean onInfo(MediaPlayer mp, int what, int extra) {
-        Log.d(PLAYER_INFO, "onInfo: " + what);
+        Log.d(TAG, "onInfo: " + what);
 
         switch (what) {
             case MediaPlayer.MEDIA_INFO_BUFFERING_START: {
@@ -244,7 +240,7 @@ public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, 
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                Log.d(PLAYER_INFO, "seek complete");
+                Log.d(TAG, "seek complete");
                 mSeekToPos = 0;
                 long pos = mp.getCurrentPosition();
                 playerSyncManager.seek(pos, TimeUnit.MILLISECONDS);
@@ -254,11 +250,11 @@ public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, 
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        Log.d(PLAYER_INFO, "onCompletion: " + mp);
+        Log.d(TAG, "onCompletion: " + mp);
     }
 
     private void updateSurface() {
-        Log.e(PLAYER_INFO, "updateSurface mSurfaceHolder: " + mSurfaceHolder);
+        Log.e(TAG, "updateSurface mSurfaceHolder: " + mSurfaceHolder);
         if (mSurfaceHolder != null) {
             mMediaPlayer.setDisplay(mSurfaceHolder);
         } else {
@@ -266,7 +262,7 @@ public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, 
         }
     }
 
-    public void setSurfaceView(SurfaceView surfaceView) {
+    void setSurfaceView(SurfaceView surfaceView) {
         surfaceView.getHolder().addCallback(this);
         setSurface(surfaceView.getHolder());
     }

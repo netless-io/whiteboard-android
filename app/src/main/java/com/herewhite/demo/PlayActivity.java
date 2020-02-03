@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -42,15 +43,18 @@ public class PlayActivity extends AppCompatActivity {
 
     private WhiteboardView whiteboardView;
     Player player;
+    @Nullable
     NativeMediaPlayer nativePlayer;
-    /**
-     * 如果有不需要音视频混合播放，可以直接操作 Player
+    /*
+     * 如果不需要音视频混合播放，可以直接操作 Player
      */
+    @Nullable
     PlayerSyncManager playerSyncManager;
-    Gson gson = new Gson();
-    private static HttpDnsService httpDns;
-    private boolean mUserIsSeeking = false;
+    Gson gson;
+    private boolean mUserIsSeeking;
     private SeekBar mSeekBar;
+    private final String TAG = "player";
+    private final String TAG_Native = "nativePlayer";
 
     private Handler mSeekBarUpdateHandler = new Handler();
     private Runnable mUpdateSeekBar = new Runnable() {
@@ -59,12 +63,17 @@ public class PlayActivity extends AppCompatActivity {
             if (!nativePlayer.isNormalState() || mUserIsSeeking) {
                 return;
             }
-            Float progress = Float.valueOf(nativePlayer.getCurrentPosition()) / nativePlayer.getDuration() * 100;
-            Log.i("nativePlayer", "progress: " + progress );
-            mSeekBar.setProgress(progress.intValue());
+            float progress = Float.valueOf(nativePlayer.getCurrentPosition()) / nativePlayer.getDuration() * 100;
+            Log.i(TAG_Native, "progress: " + progress );
+            mSeekBar.setProgress((int) progress);
             mSeekBarUpdateHandler.postDelayed(this, 100);
         }
     };
+
+    public PlayActivity() {
+        mUserIsSeeking = false;
+        gson = new Gson();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,18 +89,18 @@ public class PlayActivity extends AppCompatActivity {
             playerSyncManager = new PlayerSyncManager(nativePlayer, new PlayerSyncManager.Callbacks() {
                 @Override
                 public void startBuffering() {
-                    Log.d("playerSyncManager", "startBuffering: ");
+                    Log.d(TAG_Native, "startBuffering: ");
                 }
 
                 @Override
                 public void endBuffering() {
-                    Log.d("playerSyncManager", "endBuffering: ");
+                    Log.d(TAG_Native, "endBuffering: ");
 
                 }
             });
-            Log.d("nativePlayer", "create success");
+            Log.d(TAG_Native, "create success");
         } catch (Throwable e) {
-            Log.e("nativePlayer", "create fail");
+            Log.e(TAG_Native, "create fail");
         }
 
         if (uuid != null) {
@@ -116,7 +125,7 @@ public class PlayActivity extends AppCompatActivity {
     private void useHttpDnsService(boolean use) {
         if (use) {
             //// 阿里云 httpns 替换
-            httpDns = HttpDns.getService(getApplicationContext(), "188301");
+            HttpDnsService httpDns = HttpDns.getService(getApplicationContext(), "188301");
             httpDns.setPreResolveHosts(new ArrayList<>(Arrays.asList("expresscloudharestoragev2.herewhite.com", "cloudharev2.herewhite.com", "scdncloudharestoragev3.herewhite.com", "cloudcapiv4.herewhite.com")));
             whiteboardView.setWebViewClient(new WhiteWebViewClient(httpDns));
         }
@@ -135,15 +144,15 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     public void getTimeInfo(MenuItem item) {
-        Log.i("getTimeInfo", gson.toJson(player.getPlayerTimeInfo()));
+        Log.i(TAG, gson.toJson(player.getPlayerTimeInfo()));
     }
 
     public void getPlayState(MenuItem item) {
-        Log.i("getPlayState", gson.toJson(player.getPlayerState()));
+        Log.i(TAG, gson.toJson(player.getPlayerState()));
     }
 
     public void getPhase(MenuItem item) {
-        Log.i("getPhase", gson.toJson(player.getPlayerPhase()));
+        Log.i(TAG, gson.toJson(player.getPlayerPhase()));
     }
 
 
@@ -223,8 +232,8 @@ public class PlayActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 mUserIsSeeking = false;
                 if (nativePlayer != null && nativePlayer.isNormalState()) {
-                    Float progress = userSelectedPosition / 100.f * nativePlayer.getDuration();
-                    nativePlayer.seek(progress.intValue(), TimeUnit.SECONDS);
+                    float progress = userSelectedPosition / 100.f * nativePlayer.getDuration();
+                    nativePlayer.seek((int) progress, TimeUnit.SECONDS);
                 }
             }
         });
@@ -268,7 +277,7 @@ public class PlayActivity extends AppCompatActivity {
         whiteSdk.createPlayer(playerConfiguration, new AbstractPlayerEventListener() {
             @Override
             public void onPhaseChanged(PlayerPhase phase) {
-                Log.i("player info", "onPhaseChanged: " + phase);
+                Log.i(TAG, "onPhaseChanged: " + phase);
                 showToast(gson.toJson(phase));
                 if (playerSyncManager != null) {
                     playerSyncManager.updateWhitePlayerPhase(phase);
@@ -277,7 +286,7 @@ public class PlayActivity extends AppCompatActivity {
 
             @Override
             public void onLoadFirstFrame() {
-                Log.i("onLoadFirstFrame", "onLoadFirstFrame: ");
+                Log.i(TAG, "onLoadFirstFrame: ");
                 showToast("onLoadFirstFrame");
             }
 
@@ -298,7 +307,7 @@ public class PlayActivity extends AppCompatActivity {
 
             @Override
             public void onScheduleTimeChanged(long time) {
-//                Log.i("onScheduleTimeChanged", String.valueOf(time));
+                Log.d(TAG,"onScheduleTimeChanged" + String.valueOf(time));
             }
 
             @Override
@@ -341,12 +350,10 @@ public class PlayActivity extends AppCompatActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-//        logRoomInfo( "width:" + whiteboardView.getWidth() / getResources().getDisplayMetrics().density + " height: " + whiteboardView.getHeight() / getResources().getDisplayMetrics().density);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 whiteboardView.evaluateJavascript("player.refreshViewSize()");
-//                logRoomInfo( "width:" + whiteboardView.getWidth() / getResources().getDisplayMetrics().density + " height: " + whiteboardView.getHeight() / getResources().getDisplayMetrics().density);
             }
         }, 1000);
     }
