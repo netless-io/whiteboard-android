@@ -181,7 +181,7 @@ public class PlayActivity extends AppCompatActivity {
 
     //region private
     public void play() {
-        if (playerSyncManager != null) {
+        if (playerSyncManager != null && player != null) {
             playerSyncManager.play();
             mSeekBarUpdateHandler.removeCallbacks(mUpdateSeekBar);
             mSeekBarUpdateHandler.postDelayed(mUpdateSeekBar, 100);
@@ -189,7 +189,7 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     public void pause() {
-        if (playerSyncManager != null) {
+        if (playerSyncManager != null && player != null) {
             playerSyncManager.pause();
             mSeekBarUpdateHandler.removeCallbacks(mUpdateSeekBar);
         }
