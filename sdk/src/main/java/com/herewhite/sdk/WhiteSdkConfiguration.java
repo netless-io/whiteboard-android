@@ -19,17 +19,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private double zoomMinScale;
     //会在调用时，直接在 webview 中打印一遍，并回传给 native
     private boolean debug;
-
-    public boolean isDisableEraseImage() {
-        return disableEraseImage;
-    }
-
-    public void setDisableEraseImage(boolean disableEraseImage) {
-        this.disableEraseImage = disableEraseImage;
-    }
-
-    private boolean disableEraseImage = false;
-
+    
     //TODO: 真实使用字段，大版本对外暴露
     private boolean enableInterrupterAPI = false;
 
