@@ -716,11 +716,11 @@ public class Room extends Displayer {
     /**
      * 禁止用户视角变化（缩放，移动）。禁止后，开发者仍然可以通过 SDK API 移动视角。
      *
-     * @param disableOperations true:禁止用户主动改变视角；false:允许用户主动改变视角。默认:false。
+     * @param disableCameraTransform true:禁止用户主动改变视角；false:允许用户主动改变视角。默认:false。
      * @since 2.2.0
      */
-    public void disableCameraTransform(final boolean disableOperations) {
-        bridge.callHandler("room.disableCameraTransform", new Object[]{disableOperations});
+    public void disableCameraTransform(final boolean disableCameraTransform) {
+        bridge.callHandler("room.disableCameraTransform", new Object[]{disableCameraTransform});
     }
 
     /**
