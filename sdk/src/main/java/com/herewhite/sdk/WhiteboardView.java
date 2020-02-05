@@ -36,6 +36,11 @@ public class WhiteboardView extends DWebView {
         init();
     }
 
+    public WhiteboardView(Context context, AttributeSet attributeSet, int defStyle) {
+        super(context,attributeSet);
+        init();
+    }
+
     private void init() {
         this.getSettings().setMediaPlaybackRequiresUserGesture(false);
         this.loadUrl("file:///android_asset/whiteboard/index.html");
