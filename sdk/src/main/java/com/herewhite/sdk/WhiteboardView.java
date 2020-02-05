@@ -1,7 +1,9 @@
 package com.herewhite.sdk;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.webkit.WebChromeClient;
 
@@ -27,13 +29,26 @@ public class WhiteboardView extends DWebView {
     private Environment environment = Environment.cloud;
 
     public WhiteboardView(Context context) {
-        super(context);
+        super(getFixedContext(context));
         init();
     }
 
     public WhiteboardView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        super(getFixedContext(context), attrs);
         init();
+    }
+
+//    public WhiteboardView(Context context, AttributeSet attributeSet, int defStyle) {
+//        super(getFixedContext(context),attributeSet);
+//        init();
+//    }
+
+    public static Context getFixedContext(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            return context.createConfigurationContext(new Configuration());
+        } else {
+            return context;
+        }
     }
 
     private void init() {
