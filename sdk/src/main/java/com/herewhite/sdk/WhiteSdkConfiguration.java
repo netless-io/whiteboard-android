@@ -1,5 +1,7 @@
 package com.herewhite.sdk;
 
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
 import com.herewhite.sdk.domain.DeviceType;
 import com.herewhite.sdk.domain.LoggerOptions;
 import com.herewhite.sdk.domain.WhiteObject;
@@ -174,5 +176,16 @@ public class WhiteSdkConfiguration extends WhiteObject {
     public void setHasUrlInterrupterAPI(boolean hasUrlInterrupterAPI) {
         this.enableInterrupterAPI = hasUrlInterrupterAPI;
         this.hasUrlInterrupterAPI = hasUrlInterrupterAPI;
+    }
+
+    @SerializedName("initializeOriginsStates")
+    private JsonObject sdkStrategyConfig;
+
+    public void setSdkStrategyConfig(JsonObject jsonObject) {
+        this.sdkStrategyConfig = jsonObject;
+    }
+
+    public JsonObject getSdkStrategyConfig() {
+        return sdkStrategyConfig;
     }
 }
