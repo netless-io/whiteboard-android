@@ -181,6 +181,11 @@ public class WhiteSdkConfiguration extends WhiteObject {
     @SerializedName("initializeOriginsStates")
     private JsonObject sdkStrategyConfig;
 
+    /**
+     * 传入服务器连接信息
+     * @param jsonObject
+     * @since 2.5.4
+     */
     public void setSdkStrategyConfig(JsonObject jsonObject) {
         this.sdkStrategyConfig = jsonObject;
     }
