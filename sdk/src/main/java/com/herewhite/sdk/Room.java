@@ -146,7 +146,7 @@ public class Room extends Displayer {
 
             @Override
             public void then(Object o) {
-                
+
             }
         });
     }
@@ -744,6 +744,12 @@ public class Room extends Displayer {
         bridge.callHandler("room.disableOperations", new Object[]{disableOperations});
     }
 
+    /**
+     * 设置读写模式
+     * @param writable 是否可写
+     * @param promise 完成回调，并同时返回房间的读写状态
+     * @since 2.6.1
+     */
     public void setWritable(final boolean writable, final Promise<Boolean> promise) {
         bridge.callHandler("room.setWritable", new Object[]{writable}, new OnReturnValue<String>() {
             @Override
