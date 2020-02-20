@@ -35,6 +35,16 @@ public class Room extends Displayer {
     private final SyncDisplayerState<RoomState> syncRoomState;
     private RoomPhase roomPhase = RoomPhase.connected;
 
+    void setDisconnectedBySelf(Boolean disconnectedBySelf) {
+        this.disconnectedBySelf = disconnectedBySelf;
+    }
+
+    public Boolean getDisconnectedBySelf() {
+        return disconnectedBySelf;
+    }
+
+    private Boolean disconnectedBySelf = false;
+
     public Boolean getWritable() {
         return writable;
     }
@@ -128,7 +138,17 @@ public class Room extends Displayer {
      * 如需退出后回调，请使用 {@link #disconnect(Promise)}
      */
     public void disconnect() {
-        bridge.callHandler("room.disconnect", new Object[]{});
+        disconnect(new Promise<Object>() {
+            @Override
+            public void catchEx(SDKError t) {
+
+            }
+
+            @Override
+            public void then(Object o) {
+                setDisconnectedBySelf(true);
+            }
+        });
     }
 
     /**
@@ -142,6 +162,7 @@ public class Room extends Displayer {
             @Override
             public void onValue(Object o) {
             try {
+                setDisconnectedBySelf(true);
                 promise.then(gson.fromJson(String.valueOf(o), GlobalState.class));
             } catch (AssertionError a) {
                 throw a;
