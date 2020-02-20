@@ -146,7 +146,7 @@ public class Room extends Displayer {
 
             @Override
             public void then(Object o) {
-                setDisconnectedBySelf(true);
+                
             }
         });
     }
@@ -158,11 +158,11 @@ public class Room extends Displayer {
      * @param promise 退出后回调
      */
     public void disconnect(final Promise<Object> promise) {
+        setDisconnectedBySelf(true);
         bridge.callHandler("room.disconnect", new Object[]{}, new OnReturnValue<Object>() {
             @Override
             public void onValue(Object o) {
             try {
-                setDisconnectedBySelf(true);
                 promise.then(gson.fromJson(String.valueOf(o), GlobalState.class));
             } catch (AssertionError a) {
                 throw a;
