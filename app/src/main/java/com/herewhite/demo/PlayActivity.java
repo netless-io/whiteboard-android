@@ -307,7 +307,7 @@ public class PlayActivity extends AppCompatActivity {
 
             @Override
             public void onScheduleTimeChanged(long time) {
-                Log.d(TAG,"onScheduleTimeChanged" + String.valueOf(time));
+                Log.d(TAG,"onScheduleTimeChanged: " + time);
             }
 
             @Override
