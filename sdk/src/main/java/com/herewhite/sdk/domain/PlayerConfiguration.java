@@ -1,5 +1,9 @@
 package com.herewhite.sdk.domain;
 
+import android.util.Log;
+
+import java.util.concurrent.TimeUnit;
+
 public class PlayerConfiguration extends WhiteObject {
     private String room;
     private String roomToken;
@@ -7,6 +11,7 @@ public class PlayerConfiguration extends WhiteObject {
     private Long beginTimestamp;
     private Long duration;
     private CameraBound cameraBound;
+    private Long step = 500L;
 
     public PlayerConfiguration(String room, String roomToken) {
         this.room = room;
@@ -21,10 +26,14 @@ public class PlayerConfiguration extends WhiteObject {
         this.cameraBound = cameraBound;
     }
 
+    public void setStep(Long step, TimeUnit timeUnit) {
+        this.step = TimeUnit.MILLISECONDS.convert(step, timeUnit);
+    }
+
     /*
-        音频地址，暂不支持视频。
-        Player 会自动与音视频播放做同步，保证同时播放，当一方缓冲时，会暂停。
-        */
+      音频地址，暂不支持视频。
+      Player 会自动与音视频播放做同步，保证同时播放，当一方缓冲时，会暂停。
+    */
     private String audioUrl;
 
     public String getRoom() {
