@@ -99,7 +99,9 @@ public class WhiteSdk {
                         SyncDisplayerState<RoomState> syncRoomState = new SyncDisplayerState<>(RoomState.class, jsonState.toString(), disableCallbackWhilePutting);
                         Room room = new Room(roomParams.getUuid(), bridge, context, WhiteSdk.this, syncRoomState);
                         Long observerId = jsonObject.get("observerId").getAsLong();
+                        Boolean isWritable = jsonObject.get("isWritable").getAsBoolean();
                         room.setObserverId(observerId);
+                        room.setWritable(isWritable);
                         roomCallbacksImplement.setRoom(room);
                         roomPromise.then(room);
                     }

@@ -2,6 +2,7 @@ package com.herewhite.sdk;
 
 import android.content.Context;
 
+import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.AkkoEvent;
 import com.herewhite.sdk.domain.BroadcastState;
@@ -34,6 +35,15 @@ public class Room extends Displayer {
     private final SyncDisplayerState<RoomState> syncRoomState;
     private RoomPhase roomPhase = RoomPhase.connected;
 
+    public Boolean getWritable() {
+        return writable;
+    }
+
+    void setWritable(Boolean writable) {
+        this.writable = writable;
+    }
+
+    private Boolean writable;
     private Integer timeDelay;
     private Long observerId;
 
@@ -711,6 +721,23 @@ public class Room extends Displayer {
      */
     public void disableOperations(final boolean disableOperations) {
         bridge.callHandler("room.disableOperations", new Object[]{disableOperations});
+    }
+
+    public void setWritable(final boolean writable, final Promise<Boolean> promise) {
+        bridge.callHandler("room.setWritable", new Object[]{writable}, new OnReturnValue<String>() {
+            @Override
+            public void onValue(String result) {
+                SDKError sdkError = SDKError.promiseError(result);
+                if (sdkError != null) {
+                    promise.catchEx(sdkError);
+                } else {
+                    JsonObject jsonObject = gson.fromJson(result, JsonObject.class);
+                    Boolean isWritable = jsonObject.get("isWritable").getAsBoolean();
+                    setWritable(isWritable);
+                    promise.then(isWritable);
+                }
+            }
+        });
     }
 
     /**
