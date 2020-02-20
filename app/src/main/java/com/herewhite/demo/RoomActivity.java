@@ -307,6 +307,34 @@ public class RoomActivity extends AppCompatActivity {
         });
     }
 
+    public void setWritableFalse(MenuItem item) {
+        room.setWritable(false, new Promise<Boolean>() {
+            @Override
+            public void then(Boolean aBoolean) {
+                logRoomInfo("room writable: " + aBoolean);
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+
+            }
+        });
+    }
+
+    public void setWritableTrue(MenuItem item) {
+        room.setWritable(true, new Promise<Boolean>() {
+            @Override
+            public void then(Boolean aBoolean) {
+                logRoomInfo("room writable: " + aBoolean);
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+
+            }
+        });
+    }
+
     public void orientation(MenuItem item) {
         if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
             RoomActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -495,16 +523,16 @@ public class RoomActivity extends AppCompatActivity {
             }
         });
 
-        //如果不需要，则直接断开连接即可
+        //如果不需要回调，则直接断开连接即可
         //room.disconnect();
     }
 
-    public void readonly(MenuItem item) {
+    public void disableOperation(MenuItem item) {
         logAction();
         room.disableOperations(true);
     }
 
-    public void disableReadonly(MenuItem item) {
+    public void cancelDisableOperation(MenuItem item) {
         logAction();
         room.disableOperations(false);
     }
