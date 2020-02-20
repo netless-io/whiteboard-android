@@ -20,6 +20,20 @@ public class RoomParams extends WhiteObject {
      */
     private long timeout = 45000;
 
+    public boolean isWritable() {
+        return isWritable;
+    }
+
+    /**
+     * 只读模式，只读模式的房间，无法操作影响房间的 API。不在成员列表中
+     * @param writable 
+     */
+    public void setWritable(boolean writable) {
+        isWritable = writable;
+    }
+
+    private boolean isWritable = true;
+
     public boolean getDisableEraseImage() {
         return disableEraseImage;
     }
