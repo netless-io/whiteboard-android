@@ -4,6 +4,8 @@ import com.herewhite.sdk.domain.CameraBound;
 import com.herewhite.sdk.domain.MemberInformation;
 import com.herewhite.sdk.domain.WhiteObject;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Created by buhe on 2018/8/11.
  */
@@ -13,6 +15,10 @@ public class RoomParams extends WhiteObject {
     private String uuid;
     private String roomToken;
     private CameraBound cameraBound;
+    /**
+     * 重连时，最大重连尝试时间，单位：毫秒，默认 45 秒。
+     */
+    private long timeout = 45000;
 
     public boolean getDisableEraseImage() {
         return disableEraseImage;
@@ -20,6 +26,10 @@ public class RoomParams extends WhiteObject {
 
     public void setDisableEraseImage(boolean disableEraseImage) {
         this.disableEraseImage = disableEraseImage;
+    }
+
+    public void setTimeout(long timeout, TimeUnit timeUnit) {
+        this.timeout = TimeUnit.MILLISECONDS.convert(timeout, timeUnit);
     }
 
     private boolean disableEraseImage = false;
