@@ -1,5 +1,7 @@
 package com.herewhite.sdk;
 
+import android.os.Build;
+
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import com.herewhite.sdk.domain.DeviceType;
@@ -21,6 +23,8 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private double zoomMinScale;
     //会在调用时，直接在 webview 中打印一遍，并回传给 native
     private boolean debug;
+
+    private HashMap<String, String> __nativeTags = new HashMap<>();
     
     //TODO: 真实使用字段，大版本对外暴露
     private boolean enableInterrupterAPI = false;
@@ -47,10 +51,16 @@ public class WhiteSdkConfiguration extends WhiteObject {
         this.preloadDynamicPPT = preloadDynamicPPT;
     }
 
+    private void setupNativeTags() {
+        __nativeTags.put("nativeVersion", WhiteSdk.Version());
+        __nativeTags.put("platform", "android API " + Build.VERSION.SDK_INT);
+    }
+
     private boolean preloadDynamicPPT = false;
 
     public WhiteSdkConfiguration() {
         this.deviceType = DeviceType.touch;
+        setupNativeTags();
     }
 
     public WhiteSdkConfiguration(DeviceType deviceType, double zoomMaxScale, double zoomMinScale) {
@@ -62,6 +72,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
         this.zoomMaxScale = zoomMaxScale;
         this.zoomMinScale = zoomMinScale;
         this.debug = debug;
+        setupNativeTags();
     }
 
     public LoggerOptions getLoggerOptions() {
