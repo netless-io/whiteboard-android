@@ -29,6 +29,7 @@ import com.herewhite.sdk.domain.DeviceType;
 import com.herewhite.sdk.domain.PlayerConfiguration;
 import com.herewhite.sdk.domain.PlayerPhase;
 import com.herewhite.sdk.domain.PlayerState;
+import com.herewhite.sdk.domain.PlayerTimeInfo;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
@@ -53,9 +54,10 @@ public class PureReplayActivity extends AppCompatActivity {
             if (player == null || player.getPlayerPhase() != PlayerPhase.playing || mUserIsSeeking) {
                 return;
             }
-//            float progress = Float.valueOf(player.getCurrentPosition()) / nativePlayer.getDuration() * 100;
-//            Log.i(TAG_Native, "progress: " + progress );
-//            mSeekBar.setProgress((int) progress);
+            PlayerTimeInfo timeInfo = player.getPlayerTimeInfo();
+            float progress = Float.valueOf(timeInfo.getScheduleTime()) / timeInfo.getTimeDuration() * 100;
+            Log.i(TAG, "progress: " + progress );
+            mSeekBar.setProgress((int) progress);
             mSeekBarUpdateHandler.postDelayed(this, 100);
         }
     };
@@ -197,7 +199,11 @@ public class PureReplayActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 mUserIsSeeking = false;
-                //todo:
+                PlayerPhase playerPhase = player.getPlayerPhase();
+                if (player != null && playerPhase != PlayerPhase.stopped && playerPhase != PlayerPhase.waitingFirstFrame) {
+                    float progress = userSelectedPosition / 100.f * player.getPlayerTimeInfo().getTimeDuration();
+                    player.seekToScheduleTime((long) progress);
+                }
             }
         });
     }
@@ -236,7 +242,7 @@ public class PureReplayActivity extends AppCompatActivity {
                 });
 
         PlayerConfiguration playerConfiguration = new PlayerConfiguration(uuid, roomToken);
-
+        playerConfiguration.setDuration(100000l);
         whiteSdk.createPlayer(playerConfiguration, new AbstractPlayerEventListener() {
             @Override
             public void onPhaseChanged(PlayerPhase phase) {
