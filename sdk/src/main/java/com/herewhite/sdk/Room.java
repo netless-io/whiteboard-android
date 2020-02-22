@@ -23,6 +23,7 @@ import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.SceneState;
 import com.herewhite.sdk.domain.ViewMode;
 
+import org.json.JSONObject;
 import java.util.UUID;
 
 import wendu.dsbridge.OnReturnValue;
@@ -733,6 +734,20 @@ public class Room extends Displayer {
     @Deprecated
     public void zoomChange(double scale) {
         bridge.callHandler("room.zoomChange", new Object[]{scale});
+    }
+
+    /**
+     * 返回 debug 用信息
+     * @param promise
+     * @since 2.6.2
+     */
+    public void debugInfo(final Promise<JSONObject> promise) {
+        bridge.callHandler("room.state.debugInfo", new OnReturnValue<JSONObject>() {
+            @Override
+            public void onValue(JSONObject retValue) {
+                promise.then(retValue);
+            }
+        });
     }
 
     /**
