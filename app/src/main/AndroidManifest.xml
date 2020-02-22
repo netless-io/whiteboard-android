@@ -2,20 +2,26 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.herewhite.demo">
+
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:usesCleartextTraffic="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity
+            android:name=".PureReplayActivity"
+            android:label="@string/title_activity_pure_replay"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".PlayActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:label="@string/title_activity_play"></activity>
+            android:label="@string/title_activity_play" />
         <activity
             android:name=".StartActivity"
             android:label="@string/title_activity_start"
@@ -26,10 +32,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:name=".RoomActivity" />
+            android:name=".RoomActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
         <activity android:name=".TestActivity" />
     </application>
 

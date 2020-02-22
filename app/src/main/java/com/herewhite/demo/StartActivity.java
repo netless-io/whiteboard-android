@@ -109,4 +109,24 @@ public class StartActivity extends AppCompatActivity {
             tokenAlert("uuid", "请填入回放用 uuid");
         }
     }
+
+    public void pureReplay(View view) {
+        if (!demoAPI.validateToken()) {
+            tokenAlert();
+            return;
+        }
+
+        Intent intent = new Intent(this, PureReplayActivity.class);
+
+        String uuid = getUuid();
+        if (uuid.length() > 0) {
+            intent.putExtra(EXTRA_MESSAGE, uuid);
+            startActivity(intent);
+        } else if (demoAPI.getDemoUUID().length() > 0) {
+            intent.putExtra(EXTRA_MESSAGE, demoAPI.getDemoUUID());
+            startActivity(intent);
+        } else {
+            tokenAlert("uuid", "请填入回放用 uuid");
+        }
+    }
 }

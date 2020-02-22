@@ -43,4 +43,6 @@
     <string name="play">播放</string>
     <string name="pause">暂停</string>
     <string name="rest">重置</string>
+    <string name="title_activity_pure_replay">PureReplayActivity</string>
+    <string name="pureReplay">纯白板回放</string>
 </resources>
