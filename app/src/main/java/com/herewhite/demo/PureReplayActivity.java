@@ -158,7 +158,7 @@ public class PureReplayActivity extends AppCompatActivity {
 
     public void pause() {
         if (player != null) {
-            player.play();
+            player.pause();
             mSeekBarUpdateHandler.removeCallbacks(mUpdateSeekBar);
         }
     }
