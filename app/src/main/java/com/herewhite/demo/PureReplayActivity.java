@@ -72,12 +72,13 @@ public class PureReplayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pure_replay);
         mSeekBar = findViewById(R.id.player_seek_bar);
+        whiteboardView = findViewById(R.id.white);
+        WebView.setWebContentsDebuggingEnabled(true);
 
         Intent intent = getIntent();
         final String uuid = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
 
         if (uuid != null) {
-            whiteboardView = findViewById(R.id.white);
             useHttpDnsService(false);
             WebView.setWebContentsDebuggingEnabled(true);
 
@@ -291,7 +292,8 @@ public class PureReplayActivity extends AppCompatActivity {
                 player = wPlayer;
                 setupSeekBar();
                 // seek 一次才能主动触发
-                wPlayer.seekToScheduleTime(0);
+//                wPlayer.seekToScheduleTime(0);
+                wPlayer.play();
             }
 
             @Override
