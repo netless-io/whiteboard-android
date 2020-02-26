@@ -17,6 +17,7 @@
         <activity
             android:name=".PureReplayActivity"
             android:label="@string/title_activity_pure_replay"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".PlayActivity"

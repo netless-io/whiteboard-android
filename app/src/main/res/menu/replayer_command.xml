@@ -15,13 +15,4 @@
     <item android:id="@+id/getPhase"
         android:onClick="getPhase"
         android:title="@string/getPhase_command"/>
-    <item android:id="@+id/seek"
-        android:onClick="seek"
-        android:title="@string/seek_command"/>
-    <item android:id="@+id/play"
-        android:onClick="play"
-        android:title="@string/play"/>
-    <item android:id="@+id/pause"
-        android:onClick="pause"
-        android:title="@string/pause"/>
 </menu>

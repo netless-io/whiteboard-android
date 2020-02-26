@@ -43,7 +43,8 @@
         android:onClick="play"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="4"
+        android:layout_weight="1"
+        android:enabled="false"
         android:text="@string/play" />
 
     <Button
@@ -52,6 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:enabled="false"
         android:text="@string/pause" />
 
     <Button
@@ -60,6 +62,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:enabled="false"
         android:text="@string/rest" />
     </LinearLayout>
 
