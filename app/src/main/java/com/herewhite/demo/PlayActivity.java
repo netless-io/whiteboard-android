@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public class PlayActivity extends AppCompatActivity {
+public class PlayActivity extends PureReplayActivity {
 
     private WhiteboardView whiteboardView;
     Player player;
@@ -51,29 +51,8 @@ public class PlayActivity extends AppCompatActivity {
     @Nullable
     PlayerSyncManager playerSyncManager;
     Gson gson;
-    private boolean mUserIsSeeking;
-    private SeekBar mSeekBar;
     private final String TAG = "player";
     private final String TAG_Native = "nativePlayer";
-
-    private Handler mSeekBarUpdateHandler = new Handler();
-    private Runnable mUpdateSeekBar = new Runnable() {
-        @Override
-        public void run() {
-            if (!nativePlayer.isNormalState() || mUserIsSeeking) {
-                return;
-            }
-            float progress = Float.valueOf(nativePlayer.getCurrentPosition()) / nativePlayer.getDuration() * 100;
-            Log.i(TAG_Native, "progress: " + progress );
-            mSeekBar.setProgress((int) progress);
-            mSeekBarUpdateHandler.postDelayed(this, 100);
-        }
-    };
-
-    public PlayActivity() {
-        mUserIsSeeking = false;
-        gson = new Gson();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,28 +134,6 @@ public class PlayActivity extends AppCompatActivity {
         Log.i(TAG, gson.toJson(player.getPlayerPhase()));
     }
 
-
-    public void play(MenuItem item) {
-        if (playerSyncManager != null) {
-            playerSyncManager.play();
-        }
-    }
-
-    public void pause(MenuItem item) {
-        if (playerSyncManager != null) {
-            playerSyncManager.pause();
-        }
-    }
-
-    public void seek(MenuItem item) {
-        if (player.getPlayerPhase().equals(PlayerPhase.waitingFirstFrame)) {
-            return;
-        } else {
-            //12秒的视频画面，区别明显；白板画面，看不出来，要看 scheduleTime 变化
-            nativePlayer.seek(12, TimeUnit.SECONDS);
-        }
-    }
-
     //endregion
 
     //region private
@@ -195,70 +152,13 @@ public class PlayActivity extends AppCompatActivity {
         }
     }
 
+    public void reset() {
+
+    }
+
     //region action
 
-    public void play(android.view.View button) {
-        play();
-    }
-
-    public void pause(android.view.View button) {
-        pause();
-    }
-
-    public void rest(android.view.View button) {
-        if (nativePlayer != null) {
-            nativePlayer.seek(0, TimeUnit.SECONDS);
-        }
-    }
-
-    private void setupSeekBar() {
-        SeekBar seekBar = findViewById(R.id.player_seek_bar);
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int userSelectedPosition = 0;
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                mUserIsSeeking = true;
-            }
-
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser) {
-                    userSelectedPosition = progress;
-                }
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                mUserIsSeeking = false;
-                if (nativePlayer != null && nativePlayer.isNormalState()) {
-                    float progress = userSelectedPosition / 100.f * nativePlayer.getDuration();
-                    nativePlayer.seek((int) progress, TimeUnit.SECONDS);
-                }
-            }
-        });
-    }
-
     //endregion
-
-    public void alert(final String title, final String detail) {
-
-        runOnUiThread(new Runnable() {
-            public void run() {
-                AlertDialog alertDialog = new AlertDialog.Builder(PlayActivity.this).create();
-                alertDialog.setTitle(title);
-                alertDialog.setMessage(detail);
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                finish();
-                            }
-                        });
-                alertDialog.show();
-            }
-        });
-    }
 
     private void player(String uuid, String roomToken) {
         WhiteSdk whiteSdk = new WhiteSdk(
@@ -274,52 +174,7 @@ public class PlayActivity extends AppCompatActivity {
 
         PlayerConfiguration playerConfiguration = new PlayerConfiguration(uuid, roomToken);
 
-        whiteSdk.createPlayer(playerConfiguration, new AbstractPlayerEventListener() {
-            @Override
-            public void onPhaseChanged(PlayerPhase phase) {
-                Log.i(TAG, "onPhaseChanged: " + phase);
-                showToast(gson.toJson(phase));
-                if (playerSyncManager != null) {
-                    playerSyncManager.updateWhitePlayerPhase(phase);
-                }
-            }
-
-            @Override
-            public void onLoadFirstFrame() {
-                Log.i(TAG, "onLoadFirstFrame: ");
-                showToast("onLoadFirstFrame");
-            }
-
-            @Override
-            public void onSliceChanged(String slice) {
-                showToast(slice);
-            }
-
-            @Override
-            public void onPlayerStateChanged(PlayerState modifyState) {
-                showToast(gson.toJson(modifyState));
-            }
-
-            @Override
-            public void onStoppedWithError(SDKError error) {
-                showToast(error.getJsStack());
-            }
-
-            @Override
-            public void onScheduleTimeChanged(long time) {
-                Log.d(TAG,"onScheduleTimeChanged: " + time);
-            }
-
-            @Override
-            public void onCatchErrorWhenAppendFrame(SDKError error) {
-                showToast(error.getJsStack());
-            }
-
-            @Override
-            public void onCatchErrorWhenRender(SDKError error) {
-                showToast(error.getJsStack());
-            }
-        }, new Promise<Player>() {
+        whiteSdk.createPlayer(playerConfiguration, this, new Promise<Player>() {
             @Override
             public void then(Player wPlayer) {
                 player = wPlayer;
@@ -330,36 +185,13 @@ public class PlayActivity extends AppCompatActivity {
                 nativePlayer.setPlayerSyncManager(playerSyncManager);
                 // seek 一次才能主动触发
                 wPlayer.seekToScheduleTime(0);
+                nativePlayer.play();
             }
 
             @Override
             public void catchEx(SDKError t) {
-                Logger.error("create player error, ", t);
+                alert("create player error, ", t.getJsStack());
             }
         });
-    }
-
-    public void orientation(MenuItem item) {
-        if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-            PlayActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        } else {
-            PlayActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        }
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                whiteboardView.evaluateJavascript("player.refreshViewSize()");
-            }
-        }, 1000);
-    }
-
-    void showToast(Object o) {
-        Log.i("showToast", o.toString());
-        Toast.makeText(this, o.toString(), Toast.LENGTH_SHORT).show();
     }
 }

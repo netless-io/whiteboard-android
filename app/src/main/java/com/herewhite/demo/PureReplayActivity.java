@@ -43,8 +43,8 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
     @Nullable
     Player player;
     Gson gson;
-    private boolean mUserIsSeeking;
-    private SeekBar mSeekBar;
+    protected boolean mUserIsSeeking;
+    protected SeekBar mSeekBar;
     private final String TAG = "player";
 
     public PureReplayActivity() {
@@ -173,8 +173,8 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
     //endregion
 
     //region seekBar
-    private Handler mSeekBarUpdateHandler = new Handler();
-    private Runnable mUpdateSeekBar = new Runnable() {
+    protected Handler mSeekBarUpdateHandler = new Handler();
+    protected Runnable mUpdateSeekBar = new Runnable() {
         @Override
         public void run() {
             if (mUserIsSeeking) {
@@ -187,7 +187,7 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
         }
     };
 
-    private void setupSeekBar() {
+    protected void setupSeekBar() {
         SeekBar seekBar = findViewById(R.id.player_seek_bar);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int userSelectedPosition = 0;
@@ -336,5 +336,4 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
         return progress;
     }
     //endregion
-
 }
