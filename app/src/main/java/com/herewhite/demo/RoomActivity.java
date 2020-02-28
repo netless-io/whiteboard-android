@@ -1,5 +1,6 @@
 package com.herewhite.demo;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -53,6 +54,7 @@ import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
 import com.herewhite.sdk.domain.ViewMode;
 import com.herewhite.sdk.domain.WhiteDisplayerState;
+import com.herewhite.sdk.domain.WhiteScenePathType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -335,6 +337,7 @@ public class RoomActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     public void orientation(MenuItem item) {
         if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
             RoomActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
