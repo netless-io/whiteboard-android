@@ -18,6 +18,7 @@ import com.herewhite.sdk.domain.Point;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RectangleConfig;
 import com.herewhite.sdk.domain.SDKError;
+import com.herewhite.sdk.domain.WhiteScenePathType;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -44,6 +45,16 @@ public class Displayer {
         this.bridge = bridge;
         this.context = context;
         this.sdk = sdk;
+    }
+
+    public void getScenePathType(String path, final Promise<WhiteScenePathType> promise) {
+        bridge.callHandler("displayer.scenePathType", new Object[]{path},new OnReturnValue<String>() {
+            @Override
+            public void onValue(String retValue) {
+                WhiteScenePathType type = gson.fromJson(retValue, WhiteScenePathType.class);
+                promise.then(type);
+            }
+        });
     }
 
     /**
