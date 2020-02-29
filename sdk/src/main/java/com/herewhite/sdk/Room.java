@@ -775,7 +775,9 @@ public class Room extends Displayer {
                 } else {
                     JsonObject jsonObject = gson.fromJson(result, JsonObject.class);
                     Boolean isWritable = jsonObject.get("isWritable").getAsBoolean();
+                    Long ObserverId = jsonObject.get("observerId").getAsLong();
                     setWritable(isWritable);
+                    setObserverId(ObserverId);
                     promise.then(isWritable);
                 }
             }
