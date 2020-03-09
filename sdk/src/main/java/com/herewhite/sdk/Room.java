@@ -1,6 +1,7 @@
 package com.herewhite.sdk;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
@@ -139,17 +140,7 @@ public class Room extends Displayer {
      * 如需退出后回调，请使用 {@link #disconnect(Promise)}
      */
     public void disconnect() {
-        disconnect(new Promise<Object>() {
-            @Override
-            public void catchEx(SDKError t) {
-
-            }
-
-            @Override
-            public void then(Object o) {
-
-            }
-        });
+        disconnect(null);
     }
 
     /**
@@ -158,22 +149,25 @@ public class Room extends Displayer {
      *
      * @param promise 退出后回调
      */
-    public void disconnect(final Promise<Object> promise) {
+    public void disconnect(@Nullable final Promise<Object> promise) {
         setDisconnectedBySelf(true);
         bridge.callHandler("room.disconnect", new Object[]{}, new OnReturnValue<Object>() {
             @Override
             public void onValue(Object o) {
-            try {
-                promise.then(gson.fromJson(String.valueOf(o), GlobalState.class));
-            } catch (AssertionError a) {
-                throw a;
-            } catch (JsonSyntaxException e) {
-                Logger.error("An JsonSyntaxException occurred while parse json from disconnect", e);
-                promise.catchEx(new SDKError(e.getMessage()));
-            } catch (Throwable e) {
-                Logger.error("An exception occurred in disconnect promise then method", e);
-                promise.catchEx(new SDKError(e.getMessage()));
-            }
+                if (promise == null) {
+                    return;
+                }
+                try {
+                    promise.then(gson.fromJson(String.valueOf(o), GlobalState.class));
+                } catch (AssertionError a) {
+                    throw a;
+                } catch (JsonSyntaxException e) {
+                    Logger.error("An JsonSyntaxException occurred while parse json from disconnect", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
+                } catch (Throwable e) {
+                    Logger.error("An exception occurred in disconnect promise then method", e);
+                    promise.catchEx(new SDKError(e.getMessage()));
+                }
             }
         });
     }
@@ -629,10 +623,13 @@ public class Room extends Displayer {
      * @param index 目标场景在当前场景目录下的 index。
      * @param promise 设置完后回调
      */
-    public void setSceneIndex(Integer index, final Promise<Boolean> promise) {
+    public void setSceneIndex(Integer index, @Nullable final Promise<Boolean> promise) {
         bridge.callHandler("room.setSceneIndex", new Object[]{index}, new OnReturnValue<String>() {
             @Override
             public void onValue(String result) {
+                if (promise == null) {
+                    return;
+                }
                 SDKError sdkError = SDKError.promiseError(result);
                 if (sdkError != null) {
                     promise.catchEx(sdkError);
@@ -765,11 +762,15 @@ public class Room extends Displayer {
      * @param promise 完成回调，并同时返回房间的读写状态
      * @since 2.6.1
      */
-    public void setWritable(final boolean writable, final Promise<Boolean> promise) {
+    public void setWritable(final boolean writable, @Nullable final Promise<Boolean> promise) {
         bridge.callHandler("room.setWritable", new Object[]{writable}, new OnReturnValue<String>() {
             @Override
             public void onValue(String result) {
                 SDKError sdkError = SDKError.promiseError(result);
+                if (promise == null) {
+                    return;
+                }
+
                 if (sdkError != null) {
                     promise.catchEx(sdkError);
                 } else {
