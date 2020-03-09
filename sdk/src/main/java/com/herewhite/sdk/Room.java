@@ -130,7 +130,7 @@ public class Room extends Displayer {
      */
     @Deprecated
     public void setViewSize(int width, int height) {
-        bridge.callHandler("room.setViewSize", new Object[]{width, height});
+        refreshViewSize();
     }
     //endregion
 
