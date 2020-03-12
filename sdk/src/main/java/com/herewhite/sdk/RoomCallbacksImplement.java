@@ -2,6 +2,7 @@ package com.herewhite.sdk;
 
 import android.content.Context;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.webkit.JavascriptInterface;
 
 import com.google.gson.Gson;
@@ -18,9 +19,9 @@ public class RoomCallbacksImplement implements SyncDisplayerState.Listener<RoomS
 
     private final static Gson gson = new Gson();
     private final Handler handler;
-    private RoomCallbacks listener;
+    private @Nullable RoomCallbacks listener;
 
-    private Room room;
+    private @Nullable Room room;
 
     RoomCallbacksImplement(Context context) {
         this.handler = new Handler(context.getMainLooper());
@@ -73,8 +74,8 @@ public class RoomCallbacksImplement implements SyncDisplayerState.Listener<RoomS
     public void firePhaseChanged(Object args) {
         RoomPhase phase = RoomPhase.valueOf(String.valueOf(args));
 
-        if (this.room != null) {
-            this.room.setRoomPhase(phase);
+        if (room != null) {
+            room.setRoomPhase(phase);
         }
         if (listener != null) {
             try {
@@ -118,7 +119,9 @@ public class RoomCallbacksImplement implements SyncDisplayerState.Listener<RoomS
 
     @JavascriptInterface
     public void fireRoomStateChanged(Object args) {
-        this.room.getSyncRoomState().syncDisplayerState(String.valueOf(args));
+        if (room != null) {
+            room.getSyncRoomState().syncDisplayerState(String.valueOf(args));
+        }
     }
 
     @JavascriptInterface
