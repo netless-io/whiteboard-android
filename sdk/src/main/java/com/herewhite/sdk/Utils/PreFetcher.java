@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -45,7 +46,7 @@ public class PreFetcher {
 
     static ExecutorService poolExecutor = Executors.newSingleThreadExecutor();
 
-    OkHttpClient client = new OkHttpClient();
+    OkHttpClient client = new OkHttpClient().newBuilder().connectTimeout(1, TimeUnit.SECONDS).build();
     Gson gson = new Gson();
 
     HashMap<String, Number> responseSpeedMap = new HashMap<>();
@@ -107,9 +108,11 @@ public class PreFetcher {
                     final CountDownLatch latch = new CountDownLatch(1);
 
                     final Date beginDate = new Date();
+//                    Log.i(TAG, "begin fetch");
                     pingHost(origin, new Callback() {
                         @Override
                         public void onFailure(Call call, IOException e) {
+//                            Log.i(TAG, "ping " + origin + " fail");
                             latch.countDown();
                         }
 
@@ -117,10 +120,10 @@ public class PreFetcher {
                         public void onResponse(Call call, Response response) throws IOException {
                             double duration = new Date().getTime() - beginDate.getTime();
                             if (response.code() == 200) {
-                                Log.i(TAG, "onResponse: " + response.body().string());
+//                                Log.i(TAG, origin + " response time: " + duration / 1000.0f + "ms");
                                 responseSpeedMap.put(origin, duration / 1000.0f);
                             } else {
-                                Log.i(TAG, "ping fail origin: " + origin);
+//                                Log.i(TAG, "ping " + origin + " fail");
                             }
                             latch.countDown();
                         }
