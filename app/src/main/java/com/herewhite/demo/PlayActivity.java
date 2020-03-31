@@ -31,6 +31,7 @@ import com.herewhite.sdk.domain.DeviceType;
 import com.herewhite.sdk.domain.PlayerConfiguration;
 import com.herewhite.sdk.domain.PlayerPhase;
 import com.herewhite.sdk.domain.PlayerState;
+import com.herewhite.sdk.domain.PlayerTimeInfo;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
@@ -50,16 +51,23 @@ public class PlayActivity extends PureReplayActivity {
      */
     @Nullable
     PlayerSyncManager playerSyncManager;
-    Gson gson;
-    private final String TAG = "player";
     private final String TAG_Native = "nativePlayer";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
-        mSeekBar = findViewById(R.id.player_seek_bar);
+    }
 
+    //region private
+    private boolean isPlayable() {
+        return playerSyncManager != null && player != null && nativePlayer != null;
+    }
+    //endregion
+
+    //region override
+    @Override
+    protected void setupPlayer() {
         Intent intent = getIntent();
         final String uuid = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
 
@@ -82,85 +90,66 @@ public class PlayActivity extends PureReplayActivity {
             Log.e(TAG_Native, "create fail");
         }
 
+        DemoAPI demoAPI = new DemoAPI();
+
+        DemoAPI.Result result = new DemoAPI.Result() {
+            @Override
+            public void success(String uuid, String roomToken) {
+                initPlayer(uuid, roomToken);
+            }
+
+            @Override
+            public void fail(String message) {
+                alert("创建回放失败: ", message);
+            }
+        };
+
         if (uuid != null) {
-            whiteboardView = findViewById(R.id.white);
-            useHttpDnsService(false);
-            WebView.setWebContentsDebuggingEnabled(true);
-
-            new DemoAPI().getRoomToken(uuid, new DemoAPI.Result() {
-                @Override
-                public void success(String uuid, String roomToken) {
-                    player(uuid, roomToken);
-                }
-
-                @Override
-                public void fail(String message) {
-                    alert("创建回放失败", message);
-                }
-            });
+            demoAPI.getRoomToken(uuid, result);
+        } else if (demoAPI.hasDemoInfo()) {
+            demoAPI.getNewRoom(result);
+        } else {
+            alert("无数据", "没有房间 uuid");
         }
     }
 
-    private void useHttpDnsService(boolean use) {
-        if (use) {
-            //// 阿里云 httpns 替换
-            HttpDnsService httpDns = HttpDns.getService(getApplicationContext(), "188301");
-            httpDns.setPreResolveHosts(new ArrayList<>(Arrays.asList("expresscloudharestoragev2.herewhite.com", "cloudharev2.herewhite.com", "scdncloudharestoragev3.herewhite.com", "cloudcapiv4.herewhite.com")));
-            whiteboardView.setWebViewClient(new WhiteWebViewClient(httpDns));
-        }
-    }
-
-    //region Menu Item
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.replayer_command, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return true;
-    }
-
-    public void getTimeInfo(MenuItem item) {
-        Log.i(TAG, gson.toJson(player.getPlayerTimeInfo()));
-    }
-
-    public void getPlayState(MenuItem item) {
-        Log.i(TAG, gson.toJson(player.getPlayerState()));
-    }
-
-    public void getPhase(MenuItem item) {
-        Log.i(TAG, gson.toJson(player.getPlayerPhase()));
-    }
-
-    //endregion
-
-    //region private
-    public void play() {
-        if (playerSyncManager != null && player != null) {
+    protected void play() {
+        if (isPlayable()) {
             playerSyncManager.play();
             mSeekBarUpdateHandler.removeCallbacks(mUpdateSeekBar);
             mSeekBarUpdateHandler.postDelayed(mUpdateSeekBar, 100);
         }
     }
 
-    public void pause() {
-        if (playerSyncManager != null && player != null) {
+    @Override
+    protected void pause() {
+        if (isPlayable()) {
             playerSyncManager.pause();
             mSeekBarUpdateHandler.removeCallbacks(mUpdateSeekBar);
         }
     }
 
-    public void reset() {
-
+    @Override
+    protected void seek(Long time, TimeUnit timeUnit) {
+        if (isPlayable()) {
+            // nativePlayer 会调用 PlayerSync
+            nativePlayer.seek(time, timeUnit);
+        }
     }
 
-    //region action
+    @Override
+    protected void seek(float progress) {
+        if (isPlayable()) {
+            PlayerTimeInfo timeInfo = player.getPlayerTimeInfo();
+            long time = (long) progress * timeInfo.getTimeDuration();
+            seek(time, TimeUnit.MILLISECONDS);
+            mSeekBar.setProgress((int) playerProgress());
+        }
+    }
 
-    //endregion
-
-    private void player(String uuid, String roomToken) {
+    @Override
+    protected void initPlayer(String uuid, String roomToken) {
         WhiteSdk whiteSdk = new WhiteSdk(
                 whiteboardView,
                 PlayActivity.this,
@@ -173,6 +162,9 @@ public class PlayActivity extends PureReplayActivity {
                 });
 
         PlayerConfiguration playerConfiguration = new PlayerConfiguration(uuid, roomToken);
+        // 只回放 60 秒。如果时间太长，seek bar 进度条移动不明显。
+        // 实际播放时，需要对齐原始音视频和白板
+        playerConfiguration.setDuration(60000l);
 
         whiteSdk.createPlayer(playerConfiguration, this, new Promise<Player>() {
             @Override
@@ -185,7 +177,7 @@ public class PlayActivity extends PureReplayActivity {
                 nativePlayer.setPlayerSyncManager(playerSyncManager);
                 // seek 一次才能主动触发
                 wPlayer.seekToScheduleTime(0);
-                nativePlayer.play();
+                play();
             }
 
             @Override
@@ -194,4 +186,5 @@ public class PlayActivity extends PureReplayActivity {
             }
         });
     }
+    //endregion
 }
