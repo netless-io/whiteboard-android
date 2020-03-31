@@ -45,16 +45,16 @@ public class StartActivity extends AppCompatActivity {
         prefetcher.fetchOriginConfigs();
     }
 
-    public String getUuid() {
+    String getUuid() {
         EditText text = findViewById(R.id.editText);
         return text.getText().toString();
     }
 
-    public void tokenAlert() {
+    void tokenAlert() {
         tokenAlert("token", "请在 https://console.herewhite.com 中注册，并获取 sdk token，再进行使用");
     }
 
-    public void tokenAlert(String title, String message) {
+    void tokenAlert(String title, String message) {
         AlertDialog alertDialog = new AlertDialog.Builder(StartActivity.this).create();
         alertDialog.setTitle(title);
         alertDialog.setMessage(message);
@@ -67,7 +67,7 @@ public class StartActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    public void createRoom(View view) {
+    public void joinNewRoom(View view) {
         if (!demoAPI.validateToken()) {
             tokenAlert();
             return;

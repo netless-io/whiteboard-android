@@ -35,15 +35,15 @@ public class DemoAPI {
     private OkHttpClient client = new OkHttpClient();
     private Gson gson = new Gson();
 
-    private boolean hasDemoInfo() {
+    boolean hasDemoInfo() {
         return demoUUID.length() > 0 && demoRoomToken.length() > 0;
     }
 
-    public boolean validateToken() {
+    boolean validateToken() {
         return hasDemoInfo() || sdkToken.length() > 200;
     }
 
-    public interface Result {
+    interface Result {
         void success(String uuid, String roomToken);
         void fail(String message);
     }
