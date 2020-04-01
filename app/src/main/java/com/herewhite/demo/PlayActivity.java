@@ -21,6 +21,7 @@ import com.alibaba.sdk.android.httpdns.HttpDnsService;
 
 import com.google.gson.Gson;
 import com.herewhite.sdk.AbstractPlayerEventListener;
+import com.herewhite.sdk.PlayerEventListener;
 import com.herewhite.sdk.combinePlayer.PlayerSyncManager;
 import com.herewhite.sdk.Logger;
 import com.herewhite.sdk.Player;
@@ -40,8 +41,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public class PlayActivity extends PureReplayActivity {
+public class PlayActivity extends AppCompatActivity implements PlayerEventListener {
 
+    protected WhiteboardView whiteboardView;
+    @Nullable
+    protected Player player;
+    Gson gson;
+    protected boolean mUserIsSeeking;
+    protected SeekBar mSeekBar;
     @Nullable
     NativeMediaPlayer nativePlayer;
     /*
@@ -49,13 +56,19 @@ public class PlayActivity extends PureReplayActivity {
      */
     @Nullable
     PlayerSyncManager playerSyncManager;
+    private final String TAG = "player";
     private final String TAG_Native = "nativePlayer";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
+
         mSeekBar = findViewById(R.id.player_seek_bar);
+        whiteboardView = findViewById(R.id.white);
+
+        WebView.setWebContentsDebuggingEnabled(true);
+        setupPlayer();
     }
 
     //region private
@@ -77,7 +90,6 @@ public class PlayActivity extends PureReplayActivity {
     //endregion
 
     //region override
-    @Override
     protected void setupPlayer() {
         Intent intent = getIntent();
         final String uuid = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
@@ -124,7 +136,12 @@ public class PlayActivity extends PureReplayActivity {
         }
     }
 
-    @Override
+    void enableBtn() {
+        findViewById(R.id.button_play).setEnabled(true);
+        findViewById(R.id.button_pause).setEnabled(true);
+        findViewById(R.id.button_reset).setEnabled(true);
+    }
+
     protected void play() {
         if (isPlayable()) {
             playerSyncManager.play();
@@ -133,7 +150,6 @@ public class PlayActivity extends PureReplayActivity {
         }
     }
 
-    @Override
     protected void pause() {
         if (isPlayable()) {
             playerSyncManager.pause();
@@ -141,7 +157,6 @@ public class PlayActivity extends PureReplayActivity {
         }
     }
 
-    @Override
     protected void seek(Long time, TimeUnit timeUnit) {
         if (isPlayable()) {
             // nativePlayer 会调用 PlayerSync
@@ -149,7 +164,6 @@ public class PlayActivity extends PureReplayActivity {
         }
     }
 
-    @Override
     protected void seek(float progress) {
         if (isPlayable()) {
             PlayerTimeInfo timeInfo = player.getPlayerTimeInfo();
@@ -159,7 +173,90 @@ public class PlayActivity extends PureReplayActivity {
         }
     }
 
+    //region seekBar
+    protected Handler mSeekBarUpdateHandler = new Handler();
+    protected Runnable mUpdateSeekBar = new Runnable() {
+        @Override
+        public void run() {
+            if (mUserIsSeeking) {
+                return;
+            }
+            float progress = playerProgress();
+            Log.v(TAG, "progress: " + progress);
+            mSeekBar.setProgress((int) progress);
+            mSeekBarUpdateHandler.postDelayed(this, 100);
+        }
+    };
+
+    protected void setupSeekBar() {
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int userSelectedPosition = 0;
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                mUserIsSeeking = true;
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    userSelectedPosition = progress;
+                }
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                mUserIsSeeking = false;
+                seek(userSelectedPosition / 100f);
+            }
+        });
+    }
+
+    //endregion
+
     @Override
+    public void onPhaseChanged(PlayerPhase phase) {
+        playerSyncManager.updateWhitePlayerPhase(phase);
+    }
+
+    @Override
+    public void onLoadFirstFrame() {
+        Log.i(TAG, "onLoadFirstFrame: ");
+        showToast("onLoadFirstFrame");
+    }
+
+    @Override
+    public void onSliceChanged(String slice) {
+        //一般不需要实现
+    }
+
+    @Override
+    public void onPlayerStateChanged(PlayerState modifyState) {
+        Log.i(TAG, "onPlayerStateChanged: " + gson.toJson(modifyState));
+    }
+
+    @Override
+    public void onStoppedWithError(SDKError error) {
+        Log.d(TAG, "onStoppedWithError: " + error.getJsStack());
+        showToast(error.getJsStack());
+    }
+
+    @Override
+    public void onScheduleTimeChanged(long time) {
+        Log.v(TAG, "onScheduleTimeChanged: " + time);
+    }
+
+    @Override
+    public void onCatchErrorWhenAppendFrame(SDKError error) {
+        showToast(error.getJsStack());
+    }
+
+    @Override
+    public void onCatchErrorWhenRender(SDKError error) {
+        showToast(error.getJsStack());
+    }
+    //endregion
+
     protected void initPlayer(String uuid, String roomToken) {
         WhiteSdk whiteSdk = new WhiteSdk(
                 whiteboardView,
@@ -175,7 +272,7 @@ public class PlayActivity extends PureReplayActivity {
         PlayerConfiguration playerConfiguration = new PlayerConfiguration(uuid, roomToken);
         // 只回放 60 秒。如果时间太长，seek bar 进度条移动不明显。
         // 实际播放时，需要对齐原始音视频和白板
-        playerConfiguration.setDuration(60000l);
+        playerConfiguration.setDuration(60000L);
 
         whiteSdk.createPlayer(playerConfiguration, this, new Promise<Player>() {
             @Override
@@ -200,4 +297,35 @@ public class PlayActivity extends PureReplayActivity {
         });
     }
     //endregion
+
+    void showToast(Object o) {
+        Toast.makeText(this, o.toString(), Toast.LENGTH_SHORT).show();
+    }
+
+    public void alert(final String title, final String detail) {
+
+        runOnUiThread(new Runnable() {
+            public void run() {
+                AlertDialog alertDialog = new AlertDialog.Builder(PlayActivity.this).create();
+                alertDialog.setTitle(title);
+                alertDialog.setMessage(detail);
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        finish();
+                    }
+                });
+                alertDialog.show();
+            }
+        });
+    }
+
+    float playerProgress() {
+        if (player == null || player.getPlayerPhase() == PlayerPhase.waitingFirstFrame) {
+            return 0;
+        }
+        PlayerTimeInfo timeInfo = player.getPlayerTimeInfo();
+        float progress = Float.valueOf(timeInfo.getScheduleTime()) / timeInfo.getTimeDuration() * 100.f;
+        return progress;
+    }
 }
