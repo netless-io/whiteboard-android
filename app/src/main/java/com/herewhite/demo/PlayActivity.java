@@ -42,8 +42,6 @@ import java.util.concurrent.TimeUnit;
 
 public class PlayActivity extends PureReplayActivity {
 
-    private WhiteboardView whiteboardView;
-    Player player;
     @Nullable
     NativeMediaPlayer nativePlayer;
     /*
@@ -57,11 +55,24 @@ public class PlayActivity extends PureReplayActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
+        mSeekBar = findViewById(R.id.player_seek_bar);
     }
 
     //region private
     private boolean isPlayable() {
         return playerSyncManager != null && player != null && nativePlayer != null;
+    }
+
+    public void play(android.view.View button) {
+        play();
+    }
+
+    public void pause(android.view.View button) {
+        pause();
+    }
+
+    public void reset(android.view.View button) {
+        seek(0l);
     }
     //endregion
 
@@ -142,7 +153,7 @@ public class PlayActivity extends PureReplayActivity {
     protected void seek(float progress) {
         if (isPlayable()) {
             PlayerTimeInfo timeInfo = player.getPlayerTimeInfo();
-            long time = (long) progress * timeInfo.getTimeDuration();
+            long time = (long) (progress * timeInfo.getTimeDuration());
             seek(time, TimeUnit.MILLISECONDS);
             mSeekBar.setProgress((int) playerProgress());
         }
@@ -177,7 +188,9 @@ public class PlayActivity extends PureReplayActivity {
                 nativePlayer.setPlayerSyncManager(playerSyncManager);
                 // seek 一次才能主动触发
                 wPlayer.seekToScheduleTime(0);
+                enableBtn();
                 play();
+                mSeekBarUpdateHandler.postDelayed(mUpdateSeekBar, 100);
             }
 
             @Override

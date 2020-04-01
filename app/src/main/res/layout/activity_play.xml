@@ -37,6 +37,7 @@
         <Button
             android:id="@+id/button_play"
             android:onClick="play"
+            android:enabled="false"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="4"
@@ -45,6 +46,7 @@
         <Button
             android:id="@+id/button_pause"
             android:onClick="pause"
+            android:enabled="false"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -53,6 +55,7 @@
         <Button
             android:id="@+id/button_reset"
             android:onClick="reset"
+            android:enabled="false"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

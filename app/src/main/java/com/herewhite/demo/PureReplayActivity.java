@@ -43,7 +43,7 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
 
     protected WhiteboardView whiteboardView;
     @Nullable
-    Player player;
+    protected Player player;
     Gson gson;
     protected boolean mUserIsSeeking;
     protected SeekBar mSeekBar;
@@ -166,8 +166,9 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
     protected void seek(float progress) {
         if (player != null && player.getPlayerPhase() != PlayerPhase.waitingFirstFrame) {
             PlayerTimeInfo timeInfo = player.getPlayerTimeInfo();
-            long time = (long) progress * timeInfo.getTimeDuration();
+            long time = (long) (progress * timeInfo.getTimeDuration());
             seek(time, TimeUnit.MILLISECONDS);
+            Log.i(TAG, "seek: " + time + " progress: " + playerProgress());
             mSeekBar.setProgress((int) playerProgress());
         }
     }
@@ -211,8 +212,7 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
     };
 
     protected void setupSeekBar() {
-        SeekBar seekBar = findViewById(R.id.player_seek_bar);
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int userSelectedPosition = 0;
 
             @Override
@@ -230,7 +230,7 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 mUserIsSeeking = false;
-                seek(userSelectedPosition / 100l);
+                seek(userSelectedPosition / 100f);
             }
         });
     }
@@ -259,6 +259,7 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
                 setupSeekBar();
                 wPlayer.seekToScheduleTime(0);
                 wPlayer.play();
+                mSeekBarUpdateHandler.postDelayed(mUpdateSeekBar, 100);
                 enableBtn();
             }
 
@@ -320,6 +321,10 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+
+        if (player == null) {
+            return;
+        }
         // 横竖屏等，引起白板大小变化时，需要手动调用该 API
         new Handler().postDelayed(new Runnable() {
             @Override
