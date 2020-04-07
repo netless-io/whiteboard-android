@@ -46,7 +46,7 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
     protected WhiteboardView whiteboardView;
     @Nullable
     protected Player player;
-    Gson gson;
+    Gson gson = new Gson();
     protected boolean mUserIsSeeking;
     protected SeekBar mSeekBar;
     @Nullable
@@ -88,6 +88,13 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
         seek(0l);
     }
     //endregion
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        playerSyncManager.pause();
+        mSeekBarUpdateHandler.removeCallbacks(mUpdateSeekBar);
+    }
 
     //region override
     protected void setupPlayer() {
