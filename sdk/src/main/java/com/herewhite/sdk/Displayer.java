@@ -9,6 +9,7 @@ import android.util.Base64;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.herewhite.sdk.domain.AnimationMode;
 import com.herewhite.sdk.domain.CameraBound;
 import com.herewhite.sdk.domain.CameraConfig;
@@ -18,8 +19,14 @@ import com.herewhite.sdk.domain.Point;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RectangleConfig;
 import com.herewhite.sdk.domain.SDKError;
+import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.WhiteScenePathType;
 
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import wendu.dsbridge.OnReturnValue;
@@ -47,12 +54,33 @@ public class Displayer {
         this.sdk = sdk;
     }
 
+    /**
+     * 查询路径对应的内容，还是页面（场景），或者是页面（场景）目录，或者不存在任何内容。
+     * @param path 进行查询的路径
+     * @param promise 回调结果，具体内容，可以查看 {@link WhiteScenePathType}
+     */
     public void getScenePathType(String path, final Promise<WhiteScenePathType> promise) {
         bridge.callHandler("displayer.scenePathType", new Object[]{path},new OnReturnValue<String>() {
             @Override
             public void onValue(String retValue) {
                 WhiteScenePathType type = gson.fromJson(retValue, WhiteScenePathType.class);
                 promise.then(type);
+            }
+        });
+    }
+
+
+    /**
+     * 获取当前房间内所有的白板页面信息
+     * @param promise 返回 一个 map，key 为场景目录地址，value 为该目录下，所有 Scene 数组。
+     */
+    public void getEntireScenes(final Promise<Map<String, Scene[]>> promise) {
+        bridge.callHandler("displayer.entireScenes", new OnReturnValue<JSONObject>() {
+            @Override
+            public void onValue(JSONObject retValue) {
+                Type type = new TypeToken<Map<String, Scene[]>>(){}.getType();
+                Map<String, Scene[]> map = gson.fromJson(String.valueOf(retValue), type);
+                promise.then(map);
             }
         });
     }
