@@ -1,7 +1,10 @@
 package com.herewhite.sdk.combinePlayer;
 
+import android.os.Looper;
+
 import com.herewhite.sdk.Player;
 import com.herewhite.sdk.domain.PlayerPhase;
+import android.os.Handler;
 
 import java.util.concurrent.TimeUnit;
 
@@ -141,15 +144,35 @@ public class PlayerSyncManager {
         }
     }
 
+    private Handler mainHandler = new Handler(Looper.getMainLooper());
+    private void runOnMainThread(Runnable runnable) {
+        if (Looper.getMainLooper() == Looper.myLooper()) {
+            runnable.run();
+            return;
+        }
+        mainHandler.post(runnable);
+    }
+
+
     private void playNativePlayer() {
         if (nativePlayer != null) {
-            nativePlayer.play();
+            runOnMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    nativePlayer.play();
+                }
+            });
         }
     }
 
     private void pauseNativePlayer() {
         if (nativePlayer != null) {
-            nativePlayer.pause();
+            runOnMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    nativePlayer.pause();
+                }
+            });
         }
     }
 
