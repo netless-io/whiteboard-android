@@ -28,7 +28,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.duty-os:white-sdk-android:2.7.2'
+    implementation project(':sdk')
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
