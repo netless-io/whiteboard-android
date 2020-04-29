@@ -9,7 +9,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,7 +54,6 @@ import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
 import com.herewhite.sdk.domain.ViewMode;
 import com.herewhite.sdk.domain.WhiteDisplayerState;
-import com.herewhite.sdk.domain.WhiteScenePathType;
 
 import java.util.ArrayList;
 import java.util.Arrays;

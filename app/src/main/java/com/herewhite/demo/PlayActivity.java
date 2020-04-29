@@ -1,29 +1,31 @@
 package com.herewhite.demo;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SurfaceView;
+import android.view.View;
 import android.webkit.WebView;
 import android.widget.SeekBar;
 import android.widget.Toast;
-import com.alibaba.sdk.android.httpdns.HttpDns;
-import com.alibaba.sdk.android.httpdns.HttpDnsService;
 
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.util.Util;
 import com.google.gson.Gson;
-import com.herewhite.sdk.AbstractPlayerEventListener;
+import com.herewhite.demo.exo.WhiteExoPlayer;
+import com.herewhite.demo.ijk.WhiteIjkPlayer;
+import com.herewhite.demo.ijk.widget.media.IjkVideoView;
 import com.herewhite.sdk.PlayerEventListener;
+import com.herewhite.sdk.combinePlayer.NativePlayer;
 import com.herewhite.sdk.combinePlayer.PlayerSyncManager;
-import com.herewhite.sdk.Logger;
 import com.herewhite.sdk.Player;
 import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
@@ -37,25 +39,25 @@ import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public class PlayActivity extends AppCompatActivity implements PlayerEventListener {
 
-    protected WhiteboardView whiteboardView;
+    protected WhiteboardView mWhiteboardView;
     @Nullable
-    protected Player player;
+    protected Player mPlaybackPlayer;
     Gson gson = new Gson();
     protected boolean mUserIsSeeking;
     protected SeekBar mSeekBar;
     @Nullable
-    NativeMediaPlayer nativePlayer;
+    private NativePlayer mWhiteMediaPlayer;
+    // 是否使用 ExoPlayer，true 使用 EXOPlayer，false 则使用 IjkPlayer，默认为 true
+    private boolean mIsUsedExoPlayer = true;
     /*
      * 如果不需要音视频混合播放，可以直接操作 Player
      */
     @Nullable
-    PlayerSyncManager playerSyncManager;
+    PlayerSyncManager mPlayerSyncManager;
     private final String TAG = "player";
     private final String TAG_Native = "nativePlayer";
 
@@ -65,15 +67,64 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
         setContentView(R.layout.activity_play);
 
         mSeekBar = findViewById(R.id.player_seek_bar);
-        whiteboardView = findViewById(R.id.white);
+        mWhiteboardView = findViewById(R.id.white);
 
         WebView.setWebContentsDebuggingEnabled(true);
         setupPlayer();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mIsUsedExoPlayer && Util.SDK_INT > 23 && mWhiteMediaPlayer != null) {
+            ((WhiteExoPlayer) mWhiteMediaPlayer).onResume();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mIsUsedExoPlayer && Util.SDK_INT <= 23 && mWhiteMediaPlayer != null) {
+            ((WhiteExoPlayer) mWhiteMediaPlayer).onResume();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mIsUsedExoPlayer && Util.SDK_INT <= 23 && mWhiteMediaPlayer != null) {
+            ((WhiteExoPlayer) mWhiteMediaPlayer).onPause();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mIsUsedExoPlayer && Util.SDK_INT > 23 && mWhiteMediaPlayer != null) {
+            ((WhiteExoPlayer) mWhiteMediaPlayer).onPause();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mPlayerSyncManager != null) {
+            mPlayerSyncManager.pause();
+        }
+        if (mWhiteMediaPlayer != null) {
+            if (mIsUsedExoPlayer) {
+                ((WhiteExoPlayer) mWhiteMediaPlayer).release();
+            } else {
+                ((WhiteIjkPlayer) mWhiteMediaPlayer).release();
+            }
+            mWhiteMediaPlayer = null;
+        }
+        mSeekBarUpdateHandler.removeCallbacks(mUpdateSeekBar);
+    }
+
     //region private
     private boolean isPlayable() {
-        return playerSyncManager != null && player != null && nativePlayer != null;
+        return mPlayerSyncManager != null && mPlaybackPlayer != null && mWhiteMediaPlayer != null;
     }
 
     public void play(android.view.View button) {
@@ -85,15 +136,7 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
     }
 
     public void reset(android.view.View button) {
-        seek(0l);
-    }
-    //endregion
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        playerSyncManager.pause();
-        mSeekBarUpdateHandler.removeCallbacks(mUpdateSeekBar);
+        seek(0L);
     }
 
     //region override
@@ -102,8 +145,22 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
         final String uuid = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
 
         try {
-            nativePlayer = new NativeMediaPlayer(this, "http://archive.org/download/BigBuckBunny_328/BigBuckBunny_512kb.mp4");
-            playerSyncManager = new PlayerSyncManager(nativePlayer, new PlayerSyncManager.Callbacks() {
+            if (mIsUsedExoPlayer) {
+                // WhiteExoPlayer demo
+                PlayerView playerView = findViewById(R.id.exo_video_view);
+                playerView.setVisibility(View.VISIBLE);
+                mWhiteMediaPlayer = new WhiteExoPlayer(this);
+                ((WhiteExoPlayer) mWhiteMediaPlayer).setPlayerView(playerView);
+                ((WhiteExoPlayer) mWhiteMediaPlayer).setVideoPath("https://white-pan.oss-cn-shanghai.aliyuncs.com/101/oceans.mp4");
+            } else {
+                // WhiteIjkPlayer demo
+                IjkVideoView videoView = findViewById(R.id.ijk_video_view);
+                videoView.setVisibility(View.VISIBLE);
+                mWhiteMediaPlayer = new WhiteIjkPlayer(videoView);
+                ((WhiteIjkPlayer) mWhiteMediaPlayer).setVideoPath("https://white-pan.oss-cn-shanghai.aliyuncs.com/101/oceans.mp4");
+            }
+
+            mPlayerSyncManager = new PlayerSyncManager(mWhiteMediaPlayer, new PlayerSyncManager.Callbacks() {
                 @Override
                 public void startBuffering() {
                     Log.d(TAG_Native, "startBuffering: ");
@@ -149,9 +206,44 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
         findViewById(R.id.button_reset).setEnabled(true);
     }
 
+    //region menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.replayer_command, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return true;
+    }
+
+    @SuppressLint("SourceLockedOrientationActivity")
+    public void orientation(MenuItem item) {
+        if (getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            PlayActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        } else {
+            PlayActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+    }
+
+    public void getTimeInfo(MenuItem item) {
+        Log.i(TAG, gson.toJson(mPlaybackPlayer.getPlayerTimeInfo()));
+    }
+
+    public void getPlayState(MenuItem item) {
+        Log.i(TAG, gson.toJson(mPlaybackPlayer.getPlayerState()));
+    }
+
+    public void getPhase(MenuItem item) {
+        Log.i(TAG, gson.toJson(mPlaybackPlayer.getPlayerPhase()));
+    }
+
+    //endregion
+
     protected void play() {
         if (isPlayable()) {
-            playerSyncManager.play();
+            mPlayerSyncManager.play();
             mSeekBarUpdateHandler.removeCallbacks(mUpdateSeekBar);
             mSeekBarUpdateHandler.postDelayed(mUpdateSeekBar, 100);
         }
@@ -159,7 +251,7 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
 
     protected void pause() {
         if (isPlayable()) {
-            playerSyncManager.pause();
+            mPlayerSyncManager.pause();
             mSeekBarUpdateHandler.removeCallbacks(mUpdateSeekBar);
         }
     }
@@ -167,13 +259,19 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
     protected void seek(Long time, TimeUnit timeUnit) {
         if (isPlayable()) {
             // nativePlayer 会调用 PlayerSync
-            nativePlayer.seek(time, timeUnit);
+            if (mIsUsedExoPlayer) {
+                ((WhiteExoPlayer) mWhiteMediaPlayer).seek(time, timeUnit);
+            } else {
+                ((WhiteIjkPlayer) mWhiteMediaPlayer).seek(time, timeUnit);
+            }
+            mSeekBarUpdateHandler.removeCallbacks(mUpdateSeekBar);
+            mSeekBarUpdateHandler.postDelayed(mUpdateSeekBar, 100);
         }
     }
 
     protected void seek(float progress) {
         if (isPlayable()) {
-            PlayerTimeInfo timeInfo = player.getPlayerTimeInfo();
+            PlayerTimeInfo timeInfo = mPlaybackPlayer.getPlayerTimeInfo();
             long time = (long) (progress * timeInfo.getTimeDuration());
             seek(time, TimeUnit.MILLISECONDS);
             mSeekBar.setProgress((int) playerProgress());
@@ -188,6 +286,7 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
             if (mUserIsSeeking) {
                 return;
             }
+            // FIXME:正在 seek 时，progress 会被重置到旧的时间，只有 seek 完成，progress 才会恢复正确
             float progress = playerProgress();
             Log.v(TAG, "progress: " + progress);
             mSeekBar.setProgress((int) progress);
@@ -223,7 +322,7 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
 
     @Override
     public void onPhaseChanged(PlayerPhase phase) {
-        playerSyncManager.updateWhitePlayerPhase(phase);
+        mPlayerSyncManager.updateWhitePlayerPhase(phase);
     }
 
     @Override
@@ -266,7 +365,7 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
 
     protected void initPlayer(String uuid, String roomToken) {
         WhiteSdk whiteSdk = new WhiteSdk(
-                whiteboardView,
+                mWhiteboardView,
                 PlayActivity.this,
                 new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1, true),
                 new UrlInterrupter() {
@@ -284,12 +383,16 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
         whiteSdk.createPlayer(playerConfiguration, this, new Promise<Player>() {
             @Override
             public void then(Player wPlayer) {
-                player = wPlayer;
+                mPlaybackPlayer = wPlayer;
                 setupSeekBar();
-                SurfaceView surfaceView = findViewById(R.id.surfaceView);
-                playerSyncManager.setWhitePlayer(player);
-                nativePlayer.setSurfaceView(surfaceView);
-                nativePlayer.setPlayerSyncManager(playerSyncManager);
+                mPlayerSyncManager.setWhitePlayer(mPlaybackPlayer);
+                if (mWhiteMediaPlayer != null) {
+                    if (mIsUsedExoPlayer) {
+                        ((WhiteExoPlayer) mWhiteMediaPlayer).setPlayerSyncManager(mPlayerSyncManager);
+                    } else {
+                        ((WhiteIjkPlayer) mWhiteMediaPlayer).setPlayerSyncManager(mPlayerSyncManager);
+                    }
+                }
                 // seek 一次才能主动触发
                 wPlayer.seekToScheduleTime(0);
                 enableBtn();
@@ -328,11 +431,10 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
     }
 
     float playerProgress() {
-        if (player == null || player.getPlayerPhase() == PlayerPhase.waitingFirstFrame) {
+        if (mPlaybackPlayer == null || mPlaybackPlayer.getPlayerPhase() == PlayerPhase.waitingFirstFrame) {
             return 0;
         }
-        PlayerTimeInfo timeInfo = player.getPlayerTimeInfo();
-        float progress = Float.valueOf(timeInfo.getScheduleTime()) / timeInfo.getTimeDuration() * 100.f;
-        return progress;
+        PlayerTimeInfo timeInfo = mPlaybackPlayer.getPlayerTimeInfo();
+        return (float) timeInfo.getScheduleTime() / timeInfo.getTimeDuration() * 100.f;
     }
 }

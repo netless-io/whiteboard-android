@@ -8,8 +8,8 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -170,6 +170,8 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
             seek(time, TimeUnit.MILLISECONDS);
             Log.i(TAG, "seek: " + time + " progress: " + playerProgress());
             mSeekBar.setProgress((int) playerProgress());
+            mSeekBarUpdateHandler.removeCallbacks(mUpdateSeekBar);
+            mSeekBarUpdateHandler.postDelayed(mUpdateSeekBar, 100);
         }
     }
     //endregion
@@ -205,8 +207,11 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
                 return;
             }
             float progress = playerProgress();
-            Log.v(TAG, "progress: " + progress);
-            mSeekBar.setProgress((int) progress);
+            if (player.getPlayerPhase() == PlayerPhase.playing) {
+                Log.v(TAG, "progress: " + progress);
+                mSeekBar.setProgress((int) progress);
+            }
+
             mSeekBarUpdateHandler.postDelayed(this, 100);
         }
     };

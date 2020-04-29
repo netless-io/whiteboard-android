@@ -21,8 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, MediaPlayer.OnPreparedListener,
         MediaPlayer.OnSeekCompleteListener,
         MediaPlayer.OnInfoListener,
-        MediaPlayer.OnCompletionListener
-{
+        MediaPlayer.OnCompletionListener {
     private MediaPlayer mMediaPlayer;
     private SurfaceHolder mSurfaceHolder;
     private final Handler mHandler = new Handler();
