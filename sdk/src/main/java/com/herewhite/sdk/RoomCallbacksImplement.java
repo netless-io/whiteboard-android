@@ -2,7 +2,7 @@ package com.herewhite.sdk;
 
 import android.content.Context;
 import android.os.Handler;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.webkit.JavascriptInterface;
 
 import com.google.gson.Gson;
