@@ -16,6 +16,8 @@ import java.util.HashMap;
 
 public class WhiteSdkConfiguration extends WhiteObject {
 
+    private String appIdentifier;
+
     private DeviceType deviceType;
     //TODO: 兼容字段，大版本移除。
     private double zoomMaxScale;
@@ -58,22 +60,23 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
     private boolean preloadDynamicPPT = false;
 
-    public WhiteSdkConfiguration() {
-        this.deviceType = DeviceType.touch;
-        setupNativeTags();
+    public WhiteSdkConfiguration(String appIdentifier, double zoomMaxScale, double zoomMinScale) {
+        this(appIdentifier, zoomMaxScale, zoomMinScale, false);
     }
 
-    public WhiteSdkConfiguration(DeviceType deviceType, double zoomMaxScale, double zoomMinScale) {
-        this(deviceType, zoomMaxScale, zoomMinScale, false);
-    }
-
-    public WhiteSdkConfiguration(DeviceType deviceType, double zoomMaxScale, double zoomMinScale, boolean debug) {
-        this.deviceType = deviceType;
+    public WhiteSdkConfiguration(String appIdentifier, double zoomMaxScale, double zoomMinScale, boolean log) {
+        this(appIdentifier);
         this.zoomMaxScale = zoomMaxScale;
         this.zoomMinScale = zoomMinScale;
-        this.debug = debug;
+        this.debug = log;
+    }
+
+    public WhiteSdkConfiguration(String appIdentifier) {
+        this.deviceType = DeviceType.touch;
+        this.appIdentifier = appIdentifier;
         setupNativeTags();
     }
+
 
     public LoggerOptions getLoggerOptions() {
         return loggerOptions;
