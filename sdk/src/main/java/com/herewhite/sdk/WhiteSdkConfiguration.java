@@ -16,6 +16,13 @@ import java.util.HashMap;
 
 public class WhiteSdkConfiguration extends WhiteObject {
 
+    public enum RenderEngineType {
+        @SerializedName("svg")
+        svg,
+        @SerializedName("canvas")
+        canvas,
+    }
+
     private String appIdentifier;
 
     private DeviceType deviceType;
@@ -23,10 +30,25 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private double zoomMaxScale;
     //TODO: 兼容字段，大版本移除。
     private double zoomMinScale;
-    //会在调用时，直接在 webview 中打印一遍，并回传给 native
+    //会在调用时，直接在 webView 中打印一遍，并回传给 native
     private boolean debug;
 
     private HashMap<String, String> __nativeTags = new HashMap<>();
+
+    public RenderEngineType getRenderEngine() {
+        return renderEngine;
+    }
+
+    /**
+     * 设置画笔的渲染引擎模式
+     * @param renderEngine 默认为 svg，新增 canvas 模式，对于大量书写做了额外优化
+     * @since 2.8.0
+     */
+    public void setRenderEngine(RenderEngineType renderEngine) {
+        this.renderEngine = renderEngine;
+    }
+
+    private RenderEngineType renderEngine;
     
     //TODO: 真实使用字段，大版本对外暴露
     private boolean enableInterrupterAPI = false;
@@ -72,7 +94,8 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
     public WhiteSdkConfiguration(String appIdentifier) {
-        this.deviceType = DeviceType.touch;
+        deviceType = DeviceType.touch;
+        renderEngine = RenderEngineType.svg;
         this.appIdentifier = appIdentifier;
         setupNativeTags();
     }
