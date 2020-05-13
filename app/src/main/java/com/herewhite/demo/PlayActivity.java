@@ -367,7 +367,7 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
         WhiteSdk whiteSdk = new WhiteSdk(
                 mWhiteboardView,
                 PlayActivity.this,
-                new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1, true),
+                new WhiteSdkConfiguration("DeviceType.touch", 10, 0.1, true),
                 new UrlInterrupter() {
                     @Override
                     public String urlInterrupter(String sourceUrl) {

@@ -154,7 +154,7 @@ public class RoomActivity extends AppCompatActivity {
         this.uuid = uuid;
         this.roomToken = roomToken;
 
-        WhiteSdkConfiguration sdkConfiguration = new WhiteSdkConfiguration(DeviceType.touch, 10, 0.1, true);
+        WhiteSdkConfiguration sdkConfiguration = new WhiteSdkConfiguration("DeviceType.touch", 10, 0.1, true);
 
         /*显示用户头像*/
         sdkConfiguration.setUserCursor(true);
