@@ -220,6 +220,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
     /**
      * 传入服务器连接信息
+     * @deprecated 从 2.8.0 开始，sdk 采用更智能的链路选择，不再需要主动传入该参数
      * @param jsonObject
      * @since 2.5.4
      */
