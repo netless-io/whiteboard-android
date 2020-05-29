@@ -11,4 +11,6 @@ public class Appliance {
     public final static String ELLIPSE = "ellipse";
     public final static String ERASER = "eraser";
     public final static String TEXT = "text";
+    public final static String STRAIGHT = "straight";
+    public final static String ARROW = "arrow";
 }
