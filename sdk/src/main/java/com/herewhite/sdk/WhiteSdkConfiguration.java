@@ -24,6 +24,20 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
     private String appIdentifier;
+    public static class PptParams extends WhiteObject {
+        public String getScheme() {
+            return scheme;
+        }
+
+        public void setScheme(String scheme) {
+            this.scheme = scheme;
+        }
+
+        private String scheme;
+        public PptParams(String scheme) {
+            this.scheme = scheme;
+        }
+    }
 
     private DeviceType deviceType;
     //TODO: 兼容字段，大版本移除。
@@ -52,6 +66,16 @@ public class WhiteSdkConfiguration extends WhiteObject {
     
     //TODO: 真实使用字段，大版本对外暴露
     private boolean enableInterrupterAPI = false;
+
+    public PptParams getPptParams() {
+        return pptParams;
+    }
+
+    public void setPptParams(PptParams pptParams) {
+        this.pptParams = pptParams;
+    }
+
+    private PptParams pptParams;
 
     //TODO: 兼容字段，大版本移除。
     private boolean hasUrlInterrupterAPI = false;
