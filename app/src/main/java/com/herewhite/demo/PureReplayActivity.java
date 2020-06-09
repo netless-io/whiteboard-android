@@ -48,6 +48,7 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
     protected boolean mUserIsSeeking;
     protected SeekBar mSeekBar;
     private final String TAG = "player";
+    private DemoAPI demoAPI = new DemoAPI();
 
     public PureReplayActivity() {
         mUserIsSeeking = false;
@@ -71,7 +72,6 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
         Intent intent = getIntent();
         final String uuid = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
 
-        DemoAPI demoAPI = new DemoAPI();
 
         DemoAPI.Result result = new DemoAPI.Result() {
             @Override
@@ -244,7 +244,7 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
 
     protected void initPlayer(String uuid, String roomToken) {
         WhiteSdk whiteSdk = new WhiteSdk(whiteboardView, PureReplayActivity.this,
-                new WhiteSdkConfiguration("DeviceType.touch", true),
+                new WhiteSdkConfiguration(demoAPI.getAppIdentifier(), true),
                 new UrlInterrupter() {
             @Override
             public String urlInterrupter(String sourceUrl) {

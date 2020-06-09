@@ -25,6 +25,12 @@ public class DemoAPI {
             = MediaType.parse("application/json; charset=utf-8");
     private static final String sdkToken = "WHITEcGFydG5lcl9pZD1OZ3pwQWNBdlhiemJERW9NY0E0Z0V3RTUwbVZxM0NIbDJYV0Ymc2lnPWNiZWExOTMwNzc1NmQyNmU3N2U3M2Q0NWZjNTZiOGIwMWE2ZjU4NDI6YWRtaW5JZD0yMTYmcm9sZT1hZG1pbiZleHBpcmVfdGltZT0xNTg5ODMzNTQxJmFrPU5nenBBY0F2WGJ6YkRFb01jQTRnRXdFNTBtVnEzQ0hsMlhXRiZjcmVhdGVfdGltZT0xNTU4Mjc2NTg5Jm5vbmNlPTE1NTgyNzY1ODg4NDQwMA";
     private static final String host = "https://cloudcapiv4.herewhite.com";
+
+    public String getAppIdentifier() {
+        return AppIdentifier;
+    }
+
+    private String AppIdentifier = "";
     private String demoUUID = "";
     private String demoRoomToken = "";
 

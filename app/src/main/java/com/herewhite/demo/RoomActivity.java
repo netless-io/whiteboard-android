@@ -40,7 +40,6 @@ import com.herewhite.sdk.domain.ContentModeConfig;
 import com.herewhite.sdk.domain.ConversionInfo;
 import com.herewhite.sdk.domain.ConvertException;
 import com.herewhite.sdk.domain.ConvertedFiles;
-import com.herewhite.sdk.domain.DeviceType;
 import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.GlobalState;
 import com.herewhite.sdk.domain.ImageInformationWithUrl;
@@ -154,7 +153,7 @@ public class RoomActivity extends AppCompatActivity {
         this.uuid = uuid;
         this.roomToken = roomToken;
 
-        WhiteSdkConfiguration sdkConfiguration = new WhiteSdkConfiguration("DeviceType.touch", true);
+        WhiteSdkConfiguration sdkConfiguration = new WhiteSdkConfiguration(demoAPI.getAppIdentifier(), true);
 
         /*显示用户头像*/
         sdkConfiguration.setUserCursor(true);

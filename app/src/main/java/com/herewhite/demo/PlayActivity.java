@@ -47,6 +47,7 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
     @Nullable
     protected Player mPlaybackPlayer;
     Gson gson = new Gson();
+    private DemoAPI demoAPI = new DemoAPI();
     protected boolean mUserIsSeeking;
     protected SeekBar mSeekBar;
     @Nullable
@@ -176,8 +177,6 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
         } catch (Throwable e) {
             Log.e(TAG_Native, "create fail");
         }
-
-        DemoAPI demoAPI = new DemoAPI();
 
         DemoAPI.Result result = new DemoAPI.Result() {
             @Override
@@ -367,7 +366,7 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
         WhiteSdk whiteSdk = new WhiteSdk(
                 mWhiteboardView,
                 PlayActivity.this,
-                new WhiteSdkConfiguration("DeviceType.touch", 10, 0.1, true),
+                new WhiteSdkConfiguration(demoAPI.getAppIdentifier(), true),
                 new UrlInterrupter() {
                     @Override
                     public String urlInterrupter(String sourceUrl) {
