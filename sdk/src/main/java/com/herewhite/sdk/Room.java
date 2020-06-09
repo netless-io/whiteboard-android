@@ -746,7 +746,8 @@ public class Room extends Displayer {
      * @param disableOperations true:不响应用户操作；false:响应用户操作。默认:false。
      */
     public void disableOperations(final boolean disableOperations) {
-        bridge.callHandler("room.disableOperations", new Object[]{disableOperations});
+        disableCameraTransform(disableOperations);
+        disableDeviceInputs(disableOperations);
     }
 
     /**
