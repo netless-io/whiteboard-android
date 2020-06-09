@@ -125,13 +125,6 @@ public class Room extends Displayer {
         bridge.callHandler("room.setViewMode", new Object[]{viewMode.name()});
     }
 
-    /**
-     * @deprecated 请使用 {@link #refreshViewSize}
-     */
-    @Deprecated
-    public void setViewSize(int width, int height) {
-        refreshViewSize();
-    }
     //endregion
 
     /**
