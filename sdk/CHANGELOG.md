@@ -1,7 +1,17 @@
 # 版本更新记录
-## [2.9.0] - 2020-05-29
-- 优化底层渲染系统
-- 增加箭头直线教具，见 WhiteMemberState
+## [2.9.0] - 2020-06-09
+- 优化底层渲染系统，画笔教具渲染引擎，默认为`Canvas`，`svg`为兼容模式。
+- `MemberState`新增`直线``箭头`教具，具体可以查看`com.herewhite.sdk.domain.Appliance`文件。
+- `PlayerConfiguration``audioUrl`属性更改为`mediaURL`，效果不变。
+- `WhiteSdkConfiguration`：
+    1. 删除`zoomMinScale`,`zoomMaxScale`属性。限制视野需求，请阅读`WhiteRoomConfig`,`WhiterPlayerConfig`以及`WhiteCameraBound`相关类和 API。
+    2. 删除`sdkStrategyConfig`属性内容。
+    3. `debug`属性更改为`log`属性，效果不变。
+    4. `hasUrlInterrupterAPI`字段，更改为`enableInterrupterAPI`。setter 与 getter 更改为`setEnableInterrupterAPI``isEnableInterrupterAPI`。
+- 移除`com.herewhite.sdk.Utils.PreFetcher`，SDK 采用更智能的链路选择，`PreFetcher`类的预热结果对 SDK 不再有效果。
+- `WhiteCameraBound`增加初始化方法，方便从`zoomMinScale``zoomMaxScale`迁移的用户。
+- `ImageInformation`类，预埋`locked`字段。
+- 移除 room 的`setViewSize(int width, int height)`方法
 ## [2.8.1] - 2020-05-22
 - 修复`预热器`数据造成的 sdk 连接失败问题。2.8.0 开始，不再需要预热功能。
 ## [2.8.0] - 2020-05-14
