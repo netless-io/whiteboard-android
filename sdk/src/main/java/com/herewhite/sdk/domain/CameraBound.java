@@ -68,7 +68,7 @@ public class CameraBound extends WhiteObject {
     }
 
     /**
-     * 最大缩放比例，不传则不会限制最大比例，或者跟随 {@link com.herewhite.sdk.WhiteSdkConfiguration#setZoomMaxScale(double)}
+     * 最大缩放比例，不传则不会限制最大比例
      *
      * @param maxContentMode {@link ContentModeConfig}
      */
@@ -81,7 +81,7 @@ public class CameraBound extends WhiteObject {
     }
 
     /**
-     * 最小缩放比例，不传则不会限制最小比例，或者跟随 {@link com.herewhite.sdk.WhiteSdkConfiguration#setZoomMinScale(double)}
+     * 最小缩放比例，不传则不会限制最小比例
      *
      * @param minContentMode {@link ContentModeConfig}
      */
@@ -114,4 +114,25 @@ public class CameraBound extends WhiteObject {
     private Double height;
     private ContentModeConfig maxContentMode;
     private ContentModeConfig minContentMode;
+
+    public CameraBound() {
+        super();
+    }
+
+    /**
+     * 效果类似 sdkConfig 删除的 zoomMinScale， zoomMaxScale 效果
+     * @param miniScale
+     * @param maxScale
+     */
+    public CameraBound(Double miniScale, Double maxScale) {
+        this();
+        ContentModeConfig miniConfig = new ContentModeConfig();
+        miniConfig.setScale(miniScale);
+        this.minContentMode = miniConfig;
+
+        ContentModeConfig maxConfig = new ContentModeConfig();
+        miniConfig.setScale(maxScale);
+        this.maxContentMode = maxConfig;
+
+    }
 }
