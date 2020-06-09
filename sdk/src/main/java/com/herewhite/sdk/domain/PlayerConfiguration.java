@@ -1,7 +1,5 @@
 package com.herewhite.sdk.domain;
 
-import android.util.Log;
-
 import java.util.concurrent.TimeUnit;
 
 public class PlayerConfiguration extends WhiteObject {
@@ -34,7 +32,7 @@ public class PlayerConfiguration extends WhiteObject {
       音频地址，暂不支持视频。
       Player 会自动与音视频播放做同步，保证同时播放，当一方缓冲时，会暂停。
     */
-    private String audioUrl;
+    private String mediaURL;
 
     public String getRoom() {
         return room;
@@ -72,11 +70,11 @@ public class PlayerConfiguration extends WhiteObject {
         this.duration = duration;
     }
 
-    public String getAudioUrl() {
-        return audioUrl;
+    public String getMediaURL() {
+        return mediaURL;
     }
 
-    public void setAudioUrl(String audioUrl) {
-        this.audioUrl = audioUrl;
+    public void setMediaURL(String mediaURL) {
+        this.mediaURL = mediaURL;
     }
 }
