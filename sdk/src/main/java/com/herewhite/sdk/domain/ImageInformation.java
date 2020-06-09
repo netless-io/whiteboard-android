@@ -12,6 +12,16 @@ public class ImageInformation extends WhiteObject {
     private Double width;
     private Double height;
 
+    public Boolean getLocked() {
+        return locked;
+    }
+
+    public void setLocked(Boolean locked) {
+        this.locked = locked;
+    }
+
+    private Boolean locked = false;
+
     public String getUuid() {
         return uuid;
     }
