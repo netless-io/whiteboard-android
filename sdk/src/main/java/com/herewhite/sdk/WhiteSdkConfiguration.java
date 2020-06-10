@@ -41,17 +41,34 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private DeviceType deviceType = DeviceType.touch;
     // 在 webView 中，打印日志，并回调给 native 端
     private boolean log = false;
-
     private RenderEngineType renderEngine = RenderEngineType.canvas;
-
     private boolean enableInterrupterAPI = false;
     private boolean preloadDynamicPPT = false;
     private boolean routeBackup = false;
     private boolean userCursor = false;
     private boolean onlyCallbackRemoteStateModify = false;
+    private boolean disableDeviceInputs = false;
+
+    public boolean isDisableDeviceInputs() {
+        return disableDeviceInputs;
+    }
+
+    /**
+     * 禁止教具输入
+     * @param disableDeviceInputs
+     * @since 2.9.0
+     */
+    public void setDisableDeviceInputs(boolean disableDeviceInputs) {
+        this.disableDeviceInputs = disableDeviceInputs;
+    }
+
+    private LoggerOptions loggerOptions;
 
     private String appIdentifier;
     private HashMap<String, String> __nativeTags = new HashMap<>();
+    /** pptParams 动态 ppt 专用参数 */
+    private PptParams pptParams;
+    private HashMap<String, String> fonts;
 
     /**
      * 设置画笔的渲染引擎模式
@@ -66,8 +83,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
         return renderEngine;
     }
 
-    /** pptParams 动态 ppt 专用参数 */
-    private PptParams pptParams;
     public PptParams getPptParams() {
         return pptParams;
     }
@@ -76,8 +91,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
         this.pptParams = pptParams;
     }
 
-
-    private HashMap<String, String> fonts;
     public HashMap<String, String> getFonts() {
         return fonts;
     }
@@ -135,7 +148,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
         this.loggerOptions = loggerOptions;
     }
 
-
     public boolean isRouteBackup() {
         return routeBackup;
     }
@@ -147,8 +159,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
     public void setRouteBackup(boolean routeBackup) {
         this.routeBackup = routeBackup;
     }
-
-    private LoggerOptions loggerOptions;
 
     public DeviceType getDeviceType() {
         return deviceType;
