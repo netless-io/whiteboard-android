@@ -26,8 +26,6 @@ import wendu.dsbridge.OnReturnValue;
 public class WhiteboardView extends DWebView {
 
 
-    private Environment environment = Environment.cloud;
-
     public WhiteboardView(Context context) {
         super(getFixedContext(context));
         init();
@@ -50,19 +48,6 @@ public class WhiteboardView extends DWebView {
         this.getSettings().setMediaPlaybackRequiresUserGesture(false);
         this.loadUrl("file:///android_asset/whiteboard/index.html");
         this.setWebChromeClient(new FixWebChromeClient());
-    }
-
-    public void switchEnv(Environment environment) {
-        this.environment = environment;
-        if (environment == Environment.dev) {
-            this.loadUrl("http://192.168.31.216:3100");
-        } else {
-            this.loadUrl("file:///android_asset/" + environment.name() + "/index.html");
-        }
-    }
-
-    public Environment getEnv() {
-        return environment;
     }
 
     private final static Gson gson = new Gson();
