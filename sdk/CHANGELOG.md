@@ -8,6 +8,7 @@
     2. 删除`sdkStrategyConfig`属性内容。
     3. `debug`属性更改为`log`属性，效果不变。
     4. `hasUrlInterrupterAPI`字段，更改为`enableInterrupterAPI`。setter 与 getter 更改为`setEnableInterrupterAPI``isEnableInterrupterAPI`。
+    5. 新增`disableDeviceInputs`配置。
 - 移除`com.herewhite.sdk.Utils.PreFetcher`，SDK 采用更智能的链路选择，`PreFetcher`类的预热结果对 SDK 不再有效果。
 - `WhiteCameraBound`增加初始化方法，方便从`zoomMinScale``zoomMaxScale`迁移的用户。
 - `ImageInformation`类，预埋`locked`字段。
