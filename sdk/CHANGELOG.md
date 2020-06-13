@@ -1,5 +1,7 @@
 # 版本更新记录
-## [2.9.0] - 2020-06-09
+## [2.9.1] - 2020-06-13
+- 与 web 统一用户头像与 userPayload 的显示逻辑
+## [2.9.0] - 2020-06-10
 - 优化底层渲染系统，画笔教具渲染引擎，默认为`Canvas`，`svg`为兼容模式。
 - `MemberState`新增`直线``箭头`教具，具体可以查看`com.herewhite.sdk.domain.Appliance`文件。
 - `PlayerConfiguration``audioUrl`属性更改为`mediaURL`，效果不变。
