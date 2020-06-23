@@ -1,4 +1,11 @@
 # 版本更新记录
+## [2.9.3] - 2020-06-23
+- 同步更新 white-web-sdk 至 2.9.2 版本
+- 新增`抓手``激光笔`教（见`com.herewhite.sdk.domain.Appliance`）
+- 橡皮教具`disableEraseImage`属性，支持中途切换（见Room `disableEraseImage:`API）
+- Room 新增`撤销`，`取消撤销`（开启该功能前，请先阅读`disableSerialization`介绍）
+- Room 提供`复制`，`粘贴`，`副本`，`删除` API，可以对选中的内容，执行上述操作（见`Room`执行操作 API 部分）
+- RoomParams 弃用`disableOperations`，新增`disableCameraTransform` API，与`disableDeviceInputs`搭配，可以起到同样效果。
 ## [2.9.2] - 2020-06-13
 - 修复 userPayload 显示问题，保持与 web 端一致的显示逻辑。
 ## [2.9.0] - 2020-06-10
