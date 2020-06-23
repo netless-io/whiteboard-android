@@ -23,12 +23,22 @@
         android:title="@string/getBroadcastState_command"/>
     <item android:id="@+id/moveCamera"
         android:onClick="moveCamera"
-        android:title="移动视角位置"
-        />
+        android:title="@string/move_camera" />
+    <item android:id="@+id/undoRedo"
+        android:onClick="undoRedoOperation"
+        android:title="@string/redo_undo" />
+    <item android:id="@+id/duplicate"
+        android:onClick="duplicate"
+        android:title="@string/duplicate" />
+    <item android:id="@+id/copyPaste"
+        android:onClick="copyPaste"
+        android:title="@string/copy_paste"/>
+    <item android:id="@+id/deleteOperation"
+        android:onClick="deleteOperation"
+        android:title="@string/deleteOperation"/>
     <item android:id="@+id/moveRectangle"
         android:onClick="moveRectangle"
-        android:title="调整视野位置"
-        />
+        android:title="@string/moveRectangle" />
     <item android:id="@+id/dispatchCustomEvent"
         android:onClick="dispatchCustomEvent"
         android:title="@string/dispatchCustomEvent_command"/>
@@ -86,6 +96,9 @@
     <item android:id="@+id/text"
         android:onClick="textArea"
         android:title="@string/textarea_command"/>
+    <item android:id="@+id/selector"
+        android:onClick="selector"
+        android:title="选择框"/>
     <item android:id="@+id/pencil"
         android:onClick="pencil"
         android:title="@string/pencil_command"/>

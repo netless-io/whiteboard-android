@@ -88,4 +88,10 @@
     <string name="VideoView_ar_match_parent">Free / Fill parent</string>
     <string name="VideoView_ar_16_9_fit_parent">16:9 / Fit parent</string>
     <string name="VideoView_ar_4_3_fit_parent">4:3 / Fit parent</string>
+    <string name="moveRectangle">调整视野位置</string>
+    <string name="copy_paste">复制粘贴</string>
+    <string name="redo_undo">撤销，取消撤销</string>
+    <string name="move_camera">移动视角位置</string>
+    <string name="duplicate">副本</string>
+    <string name="deleteOperation">删除</string>
 </resources>

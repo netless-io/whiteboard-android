@@ -46,7 +46,7 @@ public class DemoAPI {
     }
 
     boolean validateToken() {
-        return hasDemoInfo() || sdkToken.length() > 200;
+        return hasDemoInfo() || sdkToken.length() > 50;
     }
 
     interface Result {

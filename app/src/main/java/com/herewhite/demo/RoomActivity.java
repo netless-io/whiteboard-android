@@ -364,6 +364,36 @@ public class RoomActivity extends AppCompatActivity {
         });
     }
 
+    public void undoRedoOperation(MenuItem item) {
+        // 需要开启本地序列化，才能操作 redo undo
+        room.disableSerialization(false);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                room.undo();
+            }
+        }, 10000);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                room.redo();
+            }
+        }, 15000);
+    }
+
+    public void duplicate(MenuItem item) {
+        room.duplicate();
+    }
+
+    public void copyPaste(MenuItem item) {
+        room.copy();
+        room.paste();
+    }
+
+    public void deleteOperation(MenuItem item) {
+        room.deleteOperation();
+    }
+
     public void getPreviewImage(MenuItem item) {
         room.getScenePreviewImage("/init", new Promise<Bitmap>() {
             @Override
@@ -545,6 +575,13 @@ public class RoomActivity extends AppCompatActivity {
         memberState.setCurrentApplianceName(Appliance.TEXT);
         memberState.setStrokeWidth(10);
         memberState.setTextSize(10);
+        room.setMemberState(memberState);
+    }
+
+    public void selector(MenuItem item) {
+        logAction();
+        MemberState memberState = new MemberState();
+        memberState.setCurrentApplianceName(Appliance.SELECTOR);
         room.setMemberState(memberState);
     }
 
