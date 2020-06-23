@@ -108,6 +108,61 @@ public class Room extends Displayer {
         bridge.callHandler("room.setMemberState", new Object[]{memberState});
     }
 
+    //region operation
+
+
+    /**
+     * 复制选中内容，不会粘贴，而是存储在内存中
+     */
+    public void copy() {
+        bridge.callHandler("room.sync.copy", new Object[]{});
+    }
+
+    /**
+     * 将 copy API 的复制内容，粘贴到白板中间（用户当前视野的中间）。多次粘贴，会有随机偏移
+     */
+    public void paste() {
+        bridge.callHandler("room.sync.paste", new Object[]{});
+    }
+
+    /**
+     * copy paste 组合 API
+     */
+    public void duplicate() {
+        bridge.callHandler("room.sync.duplicate", new Object[]{});
+    }
+
+    /**
+     * 删除选中内容
+     */
+    public void deleteOperation() {
+        bridge.callHandler("room.sync.delete", new Object[]{});
+    }
+
+    /**
+     * 不兼容改动
+     * 调用了该 API 的房间，将导致 web sdk 2.9.2 以下（不包含），native 端 2.9.3 以下（不包含）的客户端，崩溃。请确认使用 sdk 版本再进行开启。
+     * @param disable 禁用本地序列化,默认 true，即禁止启动本地序列化；false 时，则打开序列化，可以对本地操作进行解析，可以执行 该 pragma mark 下的 redo undo 操作
+     */
+    public void disableSerialization(boolean disable) {
+        bridge.callHandler("room.sync.disableSerialization", new Object[]{disable});
+    }
+
+    /**
+     * 回退 undo 的效果，需要 disableSerialization 为 true
+     */
+    public void redo() {
+        bridge.callHandler("room.redo", new Object[]{});
+    }
+
+    /**
+     * 撤销上一步操作，需要 disableSerialization 为 true
+     */
+    public void undo() {
+        bridge.callHandler("room.undo", new Object[]{});
+    }
+    //endregion
+
     /**
      * 切换视角模式
      *
@@ -164,7 +219,7 @@ public class Room extends Displayer {
             }
         });
     }
-
+    //region image
     /**
      * 插入占位区域，一般配合 {@link #completeImageUpload(String, String)} 完成插入图片功能。
      * 如图片网络地址已知，推荐使用 {@link #insertImage(ImageInformationWithUrl)} API，插入网络图片。
@@ -202,6 +257,7 @@ public class Room extends Displayer {
         this.insertImage(imageInformation);
         this.completeImageUpload(uuid, imageInformationWithUrl.getUrl());
     }
+    //endregion
 
     //region GET API
     /**
@@ -700,6 +756,7 @@ public class Room extends Displayer {
     }
     //endregion
 
+    //region PPT
     /**
      * 动态 PPT 下一步操作。当前 ppt 页面的动画已全部执行完成时，会进入下一页 ppt 页面（场景）
      * @since 2.2.0
@@ -715,6 +772,7 @@ public class Room extends Displayer {
     public void pptPreviousStep() {
         bridge.callHandler("ppt.previousStep", new Object[]{});
     }
+    //endregion
 
     /**
      * 改变房间缩放比例
@@ -723,7 +781,9 @@ public class Room extends Displayer {
      */
     @Deprecated
     public void zoomChange(double scale) {
-        bridge.callHandler("room.zoomChange", new Object[]{scale});
+        CameraConfig config = new CameraConfig();
+        config.setScale(scale);
+        this.moveCamera(config);
     }
 
     /**
@@ -740,6 +800,8 @@ public class Room extends Displayer {
         });
     }
 
+
+    //region Disable
     /**
      * 禁止操作，不响应用户任何操作。
      *
@@ -780,6 +842,15 @@ public class Room extends Displayer {
     }
 
     /**
+     * 中途切换橡皮对图片擦除的逻辑
+     * @param disable true 时，禁止擦除橡皮；false 时允许擦除。
+     * @since 2.9.3
+     */
+    public void disableEraseImage(boolean disable) {
+        bridge.callHandler("room.sync.disableEraseImage", new Object[]{disable});
+    }
+
+    /**
      * 禁止用户视角变化（缩放，移动）。禁止后，开发者仍然可以通过 SDK API 移动视角。
      *
      * @param disableCameraTransform true:禁止用户主动改变视角；false:允许用户主动改变视角。默认:false。
@@ -798,13 +869,14 @@ public class Room extends Displayer {
     public void disableDeviceInputs(final boolean disableOperations) {
         bridge.callHandler("room.disableDeviceInputs", new Object[]{disableOperations});
     }
+    //endregion
 
+    //region Delay API
     /**
      * 主动延时 API，延迟播放远端白板同步画面（自己画的内容，会立即显示。防止用户感知错位）
      *
      * @param delaySec 延时秒数
      */
-    //region Delay API
     public void setTimeDelay(Integer delaySec) {
         bridge.callHandler("room.setTimeDelay", new Object[]{delaySec * 1000});
         this.timeDelay = delaySec;
@@ -820,12 +892,12 @@ public class Room extends Displayer {
     }
     //endregion
 
+    //region Event API
     /**
      * 自定义事件回调
      *
      * @param eventEntry {@link EventEntry} 自定义事件内容，相对于 {@link AkkoEvent} 多了发送者的 memberId
      */
-    //region Event API
     void fireMagixEvent(EventEntry eventEntry) {
         EventListener eventListener = eventListenerConcurrentHashMap.get(eventEntry.getEventName());
         if (eventListener != null) {

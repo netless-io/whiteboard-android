@@ -83,8 +83,11 @@ public class RoomParams extends WhiteObject {
      *
      * @param disableOperations 禁止响应用户操作。默认 false，即响应用户任何操作。
      * @since 2.5.0
+     * @deprecated 请使用 {@link #setDisableDeviceInputs(boolean)} {@link #setDisableCameraTransform(boolean)}
      */
     public void setDisableOperations(boolean disableOperations) {
+        this.disableCameraTransform = disableCameraTransform;
+        this.disableDeviceInputs = disableOperations;
         this.disableOperations = disableOperations;
     }
 
@@ -110,6 +113,16 @@ public class RoomParams extends WhiteObject {
 
     private boolean disableDeviceInputs = false;
     private boolean disableOperations = false;
+
+    public boolean isDisableCameraTransform() {
+        return disableCameraTransform;
+    }
+
+    public void setDisableCameraTransform(boolean disableCameraTransform) {
+        this.disableCameraTransform = disableCameraTransform;
+    }
+
+    private boolean disableCameraTransform = false;
     private boolean disableBezier = false;
 
     /**

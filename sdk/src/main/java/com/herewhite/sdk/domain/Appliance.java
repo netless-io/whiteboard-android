@@ -13,4 +13,6 @@ public class Appliance {
     public final static String TEXT = "text";
     public final static String STRAIGHT = "straight";
     public final static String ARROW = "arrow";
+    public final static String HAND = "hand";
+    public final static String LASER_POINTER = "laserPointer";
 }
