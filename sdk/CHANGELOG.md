@@ -1,6 +1,9 @@
 # 版本更新记录
+## [2.9.4] - 2020-06-24
+- 同步更新 white-web-sdk 至 2.9.4 版本
+- 修复`ContentModeConfig`中`scale`为 0 时，实际为 1 的问题
 ## [2.9.3] - 2020-06-23
-- 同步更新 white-web-sdk 至 2.9.2 版本
+- 同步更新 white-web-sdk 至 2.9.3 版本
 - 新增`抓手``激光笔`教（见`com.herewhite.sdk.domain.Appliance`）
 - 橡皮教具`disableEraseImage`属性，支持中途切换（见Room `disableEraseImage:`API）
 - Room 新增`撤销`，`取消撤销`（开启该功能前，请先阅读`disableSerialization`介绍）
