@@ -1,8 +1,12 @@
 package com.herewhite.demo;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +33,7 @@ public class DemoAPI {
     public String getAppIdentifier() {
         return AppIdentifier;
     }
-
+    private String TAG = "demo api";
     private String AppIdentifier = "";
     private String demoUUID = "";
     private String demoRoomToken = "";
@@ -142,6 +146,36 @@ public class DemoAPI {
                 } catch (Throwable e) {
                     result.fail("网络请求错误：" + e.toString());
                 }
+            }
+        });
+    }
+
+    void downloadZip(String zipUrl, String des) {
+        Request request = new Request.Builder().url(zipUrl).build();
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e(TAG, "download error: " + e.toString());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    throw new IOException(("下载失败: " + response));
+                }
+                String path = des + "/convertcdn.netless.link/dynamicConvert";
+                File file = new File(path);
+                if (!file.exists()) {
+                    boolean success = file.mkdirs();
+                    Log.i("LocalFile", "success: " + success + " path: " + path);
+                } else {
+                    Log.i("LocalFile", path + " is exist");
+                }
+
+                FileOutputStream fos = new FileOutputStream(path + "/1.zip", false);
+                fos.write(response.body().bytes());
+                fos.close();
             }
         });
     }
