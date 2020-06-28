@@ -30,7 +30,7 @@ public class LocalFileWebViewClient extends WebViewClient {
 
     private String pptDirectory = "";
 
-    @Nullable
+    @SuppressWarnings(value = "deprecation")
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
         WebResourceResponse response = localResponse(url);
