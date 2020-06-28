@@ -20,6 +20,7 @@ public class StartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_start);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        demoAPI.downloadZip("https://convertcdn.netless.link/dynamicConvert/e1ee27fdb0fc4b7c8f649291010c4882.zip", getCacheDir().getAbsolutePath());
     }
 
     String getUuid() {
@@ -106,4 +107,5 @@ public class StartActivity extends AppCompatActivity {
             tokenAlert("uuid", "请填入回放用 uuid");
         }
     }
+
 }
