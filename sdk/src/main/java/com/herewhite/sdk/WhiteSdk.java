@@ -224,4 +224,9 @@ public class WhiteSdk {
     public void logger(Object args) {
         Logger.info("WhiteSDK logger: " + gson.fromJson(String.valueOf(args), Map.class));
     }
+
+    @JavascriptInterface
+    public void postMessage(Object args) {
+
+    }
 }
