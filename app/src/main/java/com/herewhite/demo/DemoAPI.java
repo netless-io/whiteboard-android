@@ -176,6 +176,8 @@ public class DemoAPI {
                 FileOutputStream fos = new FileOutputStream(path + "/1.zip", false);
                 fos.write(response.body().bytes());
                 fos.close();
+                Decompressor decompressor = new Decompressor(path + "/1.zip", path);
+                decompressor.unzip();
             }
         });
     }
