@@ -131,7 +131,7 @@ public class CameraBound extends WhiteObject {
         this.minContentMode = miniConfig;
 
         ContentModeConfig maxConfig = new ContentModeConfig();
-        miniConfig.setScale(maxScale);
+        maxConfig.setScale(maxScale);
         this.maxContentMode = maxConfig;
 
     }
