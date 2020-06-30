@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.9.7] - 2020-06-30
+- 修复 CameraBound 初始化时，minScale，maxScale 配置错误问题
 ## [2.9.6] - 2020-06-30
 - 同步更新 white-web-sdk 至 2.9.7
 - 提高 canvas 引擎兼容性
