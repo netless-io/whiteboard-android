@@ -143,20 +143,23 @@ public class Room extends Displayer {
      * 不兼容改动
      * 调用了该 API 的房间，将导致 web sdk 2.9.2 以下（不包含），native 端 2.9.3 以下（不包含）的客户端，崩溃。请确认使用 sdk 版本再进行开启。
      * @param disable 禁用本地序列化,默认 true，即禁止启动本地序列化；false 时，则打开序列化，可以对本地操作进行解析，可以执行 该 pragma mark 下的 redo undo 操作
+     * @since 2.9.3
      */
     public void disableSerialization(boolean disable) {
         bridge.callHandler("room.sync.disableSerialization", new Object[]{disable});
     }
 
     /**
-     * 回退 undo 的效果，需要 disableSerialization 为 true
+     * 回退 undo 的效果，需要 disableSerialization 为 false
+     * @since 2.9.3
      */
     public void redo() {
         bridge.callHandler("room.redo", new Object[]{});
     }
 
     /**
-     * 撤销上一步操作，需要 disableSerialization 为 true
+     * 撤销上一步操作，需要 disableSerialization 为 false
+     * @since 2.9.3
      */
     public void undo() {
         bridge.callHandler("room.undo", new Object[]{});
