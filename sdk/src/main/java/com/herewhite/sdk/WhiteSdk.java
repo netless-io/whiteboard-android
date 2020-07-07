@@ -229,4 +229,14 @@ public class WhiteSdk {
     public void postMessage(Object args) {
 
     }
+
+    @JavascriptInterface
+    public void onPPTMediaPlay(Object args) {
+
+    }
+
+    @JavascriptInterface
+    public void onPPTMediaPause(Object args) {
+
+    }
 }
