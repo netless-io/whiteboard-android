@@ -25,6 +25,16 @@ public class WhiteSdk {
     private final Context context;
     private final RoomCallbacksImplement roomCallbacksImplement;
     private final PlayerCallbacksImplement playerCallbacksImplement;
+
+    public CommonCallbacks getCommonCallbacks() {
+        return commonCallbacks;
+    }
+
+    public void setCommonCallbacks(CommonCallbacks commonCallbacks) {
+        this.commonCallbacks = commonCallbacks;
+    }
+
+    private CommonCallbacks commonCallbacks;
     private final boolean onlyCallbackRemoteStateModify;
     private UrlInterrupter urlInterrupter;
 
@@ -218,6 +228,9 @@ public class WhiteSdk {
     @JavascriptInterface
     public void throwError(Object args) {
         Logger.info("WhiteSDK JS error: " + gson.fromJson(String.valueOf(args), Map.class));
+        if (this.commonCallbacks != null) {
+            this.commonCallbacks.throwError(args);
+        }
     }
 
     @JavascriptInterface
@@ -232,11 +245,15 @@ public class WhiteSdk {
 
     @JavascriptInterface
     public void onPPTMediaPlay(Object args) {
-
+        if (this.commonCallbacks != null) {
+            this.commonCallbacks.onPPTMediaPlay(args);
+        }
     }
 
     @JavascriptInterface
     public void onPPTMediaPause(Object args) {
-
+        if (this.commonCallbacks != null) {
+            this.commonCallbacks.onPPTMediaPause(args);
+        }
     }
 }
