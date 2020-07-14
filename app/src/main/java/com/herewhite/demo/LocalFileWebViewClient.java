@@ -34,7 +34,7 @@ public class LocalFileWebViewClient extends WebViewClient {
     @SuppressWarnings(value = "deprecation")
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-        WebResourceResponse response = localResponse(url);
+        WebResourceResponse response = localResponse(url, new HashMap<>());
         if (response != null) {
             return response;
         }
