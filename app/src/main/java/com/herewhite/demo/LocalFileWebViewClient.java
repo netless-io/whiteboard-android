@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class LocalFileWebViewClient extends WebViewClient {
     final private String DynamicPpTDomain = "https://convertcdn.netless.link";
@@ -43,7 +44,7 @@ public class LocalFileWebViewClient extends WebViewClient {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
         String url = request.getUrl().toString();
-        WebResourceResponse response = localResponse(url);
+        WebResourceResponse response = localResponse(url, request.getRequestHeaders());
         if (response != null) {
             return response;
         }
@@ -51,13 +52,18 @@ public class LocalFileWebViewClient extends WebViewClient {
     }
 
     @Nullable
-    WebResourceResponse localResponse(String url) {
+    WebResourceResponse localResponse(String url, Map<String, String> map) {
         if (url.startsWith(DynamicPpTDomain)) {
             Log.d(TAG, "url: " + url);
             // 最好替换规则更严谨一些，只替换出现在最开始的 https://
             String path = url.replace("https://", "/");
             File file = new File(pptDirectory + path);
             Boolean media = url.endsWith("mp4") || url.endsWith("mp3");
+
+            if (map.get("Range") != null) {
+                Log.i("shouldInterceptRequest", "header: " + map.get("Range"));
+            }
+
             try {
                 if (file.exists()) {
                     FileInputStream fis = new FileInputStream(file);
