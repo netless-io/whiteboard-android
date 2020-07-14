@@ -173,6 +173,11 @@ public class DemoAPI {
                     Log.i("LocalFile", path + " is exist");
                 }
 
+                file = new File(path + "/1.zip");
+                if (file.exists()) {
+                    return;
+                }
+
                 FileOutputStream fos = new FileOutputStream(path + "/1.zip", false);
                 fos.write(response.body().bytes());
                 fos.close();
