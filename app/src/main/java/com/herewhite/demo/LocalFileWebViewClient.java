@@ -57,18 +57,25 @@ public class LocalFileWebViewClient extends WebViewClient {
             // 最好替换规则更严谨一些，只替换出现在最开始的 https://
             String path = url.replace("https://", "/");
             File file = new File(pptDirectory + path);
+            Boolean media = url.endsWith("mp4") || url.endsWith("mp3");
             try {
                 if (file.exists()) {
                     FileInputStream fis = new FileInputStream(file);
                     WebResourceResponse response = null;
+                    String mimeTypeFromExtension = MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(url));
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                         HashMap<String, String>headers = new HashMap<>();
                         headers.put("Access-Control-Allow-Origin", "*");
                         headers.put("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
                         headers.put("Access-Control-Allow-Headers", "X-PINGOTHER, Content-Type");
-                        response = new WebResourceResponse(MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(url)), "UTF-8", 200, "ok", headers, fis);
+
+                        if (media) {
+                            response = new WebResourceResponse(mimeTypeFromExtension, "UTF-8", fis);
+                        } else {
+                            response = new WebResourceResponse(mimeTypeFromExtension, "UTF-8", 200, "ok", headers, fis);
+                        }
                     } else {
-                        response = new WebResourceResponse(MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(url)), "UTF-8", fis);
+                        response = new WebResourceResponse(mimeTypeFromExtension, "UTF-8", fis);
                     }
                     Log.d(TAG, "shouldInterceptRequest: hit " + url);
                     return response;
@@ -79,4 +86,5 @@ public class LocalFileWebViewClient extends WebViewClient {
         }
         return null;
     }
+
 }
