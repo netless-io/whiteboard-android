@@ -41,7 +41,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private DeviceType deviceType = DeviceType.touch;
     // 在 webView 中，打印日志，并回调给 native 端
     private boolean log = false;
-    private RenderEngineType renderEngine = RenderEngineType.svg;
+    private RenderEngineType renderEngine = RenderEngineType.canvas;
     private boolean enableInterrupterAPI = false;
     private boolean preloadDynamicPPT = false;
     private boolean routeBackup = false;
