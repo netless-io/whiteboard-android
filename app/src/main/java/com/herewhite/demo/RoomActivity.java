@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.alibaba.sdk.android.httpdns.HttpDns;
 import com.alibaba.sdk.android.httpdns.HttpDnsService;
 import com.google.gson.Gson;
+import com.herewhite.sdk.CommonCallbacks;
 import com.herewhite.sdk.domain.AnimationMode;
 import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.AbstractRoomCallbacks;
@@ -116,6 +117,7 @@ public class RoomActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String uuid = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
+
         if (uuid == null) {
             createRoom();
         } else {
@@ -168,6 +170,7 @@ public class RoomActivity extends AppCompatActivity {
         HashMap<String, String> map = new HashMap<>();
         map.put("宋体","https://your-cdn.com/Songti.ttf");
         sdkConfiguration.setFonts(map);
+//        sdkConfiguration.setRenderEngine(WhiteSdkConfiguration.RenderEngineType.canvas);
 
         //图片替换 API，需要在 whiteSDKConfig 中先行调用 setHasUrlInterrupterAPI，进行设置，否则不会被回调。
         WhiteSdk whiteSdk = new WhiteSdk(whiteboardView, RoomActivity.this, sdkConfiguration,
@@ -180,6 +183,23 @@ public class RoomActivity extends AppCompatActivity {
 
         /** 设置自定义全局状态，在后续回调中 GlobalState 直接进行类型转换即可 */
         WhiteDisplayerState.setCustomGlobalStateClass(MyGlobalState.class);
+
+        whiteSdk.setCommonCallbacks(new CommonCallbacks() {
+            @Override
+            public void throwError(Object args) {
+
+            }
+
+            @Override
+            public void onPPTMediaPlay() {
+                logAction();
+            }
+
+            @Override
+            public void onPPTMediaPause() {
+                logAction();
+            }
+        });
 
         //如需支持用户头像，请在设置 WhiteSdkConfiguration 后，再调用 setUserPayload 方法，传入符合用户信息
         RoomParams roomParams = new RoomParams(uuid, roomToken);
