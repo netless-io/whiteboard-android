@@ -2,6 +2,7 @@ package com.herewhite.sdk;
 
 /**
  * 部分通用回调，不管是回放房间，还是实时房间，都有该部分通知
+ * @since 2.9.13
  */
 public interface CommonCallbacks {
 
@@ -13,13 +14,11 @@ public interface CommonCallbacks {
 
     /**
      * 动态 ppt 中的音视频媒体，播放通知
-     * @param args
      */
-    void onPPTMediaPlay(Object args);
+    void onPPTMediaPlay();
 
     /**
      * 动态 ppt 中的音视频媒体，暂停通知
-     * @param args
      */
-    void onPPTMediaPause(Object args);
+    void onPPTMediaPause();
 }

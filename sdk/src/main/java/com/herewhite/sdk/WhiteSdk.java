@@ -246,14 +246,14 @@ public class WhiteSdk {
     @JavascriptInterface
     public void onPPTMediaPlay(Object args) {
         if (this.commonCallbacks != null) {
-            this.commonCallbacks.onPPTMediaPlay(args);
+            this.commonCallbacks.onPPTMediaPlay();
         }
     }
 
     @JavascriptInterface
     public void onPPTMediaPause(Object args) {
         if (this.commonCallbacks != null) {
-            this.commonCallbacks.onPPTMediaPause(args);
+            this.commonCallbacks.onPPTMediaPause();
         }
     }
 }
