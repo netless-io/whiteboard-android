@@ -5,6 +5,8 @@ import androidx.annotation.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import org.json.JSONObject;
+
 /**
  * Created by buhe on 2018/8/18.
  */
@@ -13,6 +15,16 @@ public class SDKError extends Exception {
 
     private final String jsStack;
     static Gson gson = new Gson();
+
+    public static @Nullable SDKError parseError(JSONObject object) {
+        try {
+            String msg = object.getString("message");
+            String jsStack = object.getString("jsStack");
+            return new SDKError(msg, jsStack);
+        } catch ( org.json.JSONException e) {
+            return null;
+        }
+    }
 
     public static @Nullable SDKError promiseError(String str) {
         JsonObject jsonObject = gson.fromJson(str, JsonObject.class);

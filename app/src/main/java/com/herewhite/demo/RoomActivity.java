@@ -186,6 +186,16 @@ public class RoomActivity extends AppCompatActivity {
 
         whiteSdk.setCommonCallbacks(new CommonCallbacks() {
             @Override
+            public String urlInterrupter(String sourceUrl) {
+                return sourceUrl;
+            }
+
+            @Override
+            public void sdkSetupFail(SDKError error) {
+                Log.e("ROOM_ERROR", error.toString());
+            }
+
+            @Override
             public void throwError(Object args) {
 
             }

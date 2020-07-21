@@ -13,6 +13,8 @@ import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
 
+import org.json.JSONObject;
+
 import java.util.Map;
 
 import wendu.dsbridge.OnReturnValue;
@@ -39,20 +41,16 @@ public class WhiteSdk {
     private UrlInterrupter urlInterrupter;
 
     public static String Version() {
-        return "2.9.12";
+        return "2.9.14";
     }
 
-    public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration) {
-        this(bridge, context, whiteSdkConfiguration, null);
-    }
-
-    public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, UrlInterrupter urlInterrupter) {
+    public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, CommonCallbacks commonCallbacks) {
         this.bridge = bridge;
         this.context = context;
-        this.urlInterrupter = urlInterrupter;
         this.roomCallbacksImplement = new RoomCallbacksImplement(context);
         this.playerCallbacksImplement = new PlayerCallbacksImplement();
         this.onlyCallbackRemoteStateModify = whiteSdkConfiguration.isOnlyCallbackRemoteStateModify();
+        this.commonCallbacks = commonCallbacks;
 
         bridge.addJavascriptObject(this, "sdk");
         bridge.addJavascriptObject(this.roomCallbacksImplement, "room");
@@ -66,6 +64,15 @@ public class WhiteSdk {
         bridge.callHandler("sdk.newWhiteSdk", new Object[]{whiteSdkConfiguration});
 
         whiteSdkConfiguration.setOnlyCallbackRemoteStateModify(this.onlyCallbackRemoteStateModify);
+    }
+
+    public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration) {
+        this(bridge, context, whiteSdkConfiguration, (CommonCallbacks) null);
+    }
+
+    public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, UrlInterrupter urlInterrupter) {
+        this(bridge, context, whiteSdkConfiguration);
+        this.urlInterrupter = urlInterrupter;
     }
 
     /**
@@ -216,10 +223,13 @@ public class WhiteSdk {
         releasePlayer();
     }
 
+    //region SDK Callbacks
 
     @JavascriptInterface
     public String urlInterrupter(Object args) {
-        if (this.urlInterrupter == null) {
+        if (this.commonCallbacks != null) {
+            return this.commonCallbacks.urlInterrupter(String.valueOf(args));
+        } else if (this.urlInterrupter == null) {
             return String.valueOf(args);
         }
         return this.urlInterrupter.urlInterrupter(String.valueOf(args));
@@ -256,4 +266,13 @@ public class WhiteSdk {
             this.commonCallbacks.onPPTMediaPause();
         }
     }
+
+    @JavascriptInterface
+    public void setupFail(Object object) {
+        if (this.commonCallbacks != null && object instanceof JSONObject) {
+            SDKError sdkError = SDKError.parseError((JSONObject) object);
+            this.commonCallbacks.sdkSetupFail(sdkError);
+        }
+    }
+    //endregion
 }
