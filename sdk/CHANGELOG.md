@@ -1,4 +1,12 @@
 # 版本更新记录
+## [2.9.14] - 2020-07-22
+- 同步 web SDK 至 2.9.12
+- 修复以下情况时，webView 中 SDK 初始化/启动失败，没有任何通知的问题。回调通知在 `CommonCallbacks`新增`sdkSetupFail:`方法中；更多具体内容，见源码注释。
+    1. 当传入非法 AppIdentifier
+    2. 当获取用户配置信息失败时（例如无网络）
+- 修复 webView 中 SDK 初始化失败，导致加入房间，回放房间 API 一直没有回调的问题。
+- 弃用`UrlInterrupter`拦截 API，统一迁入`CommonCallbacks`(仍支持)
+- `WhiteSdk`新增`WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, CommonCallbacks commonCallbacks)`建议使用该初始化方法，直接配置 `CommonCallbacks`，否则可能遗漏部分回调。
 ## [2.9.13] - 2020-07-16
 - 同步 web SDK 至 2.9.11
 - 增加动态 ppt 音视频播放暂停通知
