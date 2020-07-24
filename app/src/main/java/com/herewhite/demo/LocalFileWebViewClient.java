@@ -21,10 +21,6 @@ public class LocalFileWebViewClient extends WebViewClient {
     final private String DynamicPpTDomain = "https://convertcdn.netless.link";
     private static final String TAG = "LocalFile";
 
-    public String getPptDirectory() {
-        return pptDirectory;
-    }
-
     public void setPptDirectory(String pptDirectory) {
         this.pptDirectory = pptDirectory;
     }
@@ -60,10 +56,6 @@ public class LocalFileWebViewClient extends WebViewClient {
             File file = new File(pptDirectory + path);
             Boolean media = url.endsWith("mp4") || url.endsWith("mp3");
 
-            if (map.get("Range") != null) {
-                Log.i("shouldInterceptRequest", "header: " + map.get("Range"));
-            }
-
             try {
                 if (file.exists()) {
                     FileInputStream fis = new FileInputStream(file);
@@ -76,7 +68,23 @@ public class LocalFileWebViewClient extends WebViewClient {
                         headers.put("Access-Control-Allow-Headers", "X-PINGOTHER, Content-Type");
 
                         if (media) {
-                            response = new WebResourceResponse(mimeTypeFromExtension, "UTF-8", fis);
+                            Map<String, String> tempResponseHeaders = new HashMap<>();
+
+                            int totalRange = fis.available();
+                            String rangeString = map.get("Range");
+                            String[] parts = rangeString.split("=");
+                            String[] streamParts = parts[1].split("-");
+                            String fromRange = streamParts[0];
+                            int range = totalRange-1;
+                            if (streamParts.length > 1 && streamParts[1] != "") {
+                                range = Integer.parseInt(streamParts[1]);
+                            }
+                            tempResponseHeaders.put("Accept-Ranges", "bytes");
+                            tempResponseHeaders.put("Content-Range", "bytes " + fromRange + "-" + range + "/" + totalRange);
+
+                            int statusCode = fromRange == "0" ? 200 : 206;
+                            Log.i(TAG, "code: " + statusCode + tempResponseHeaders);
+                            response = new WebResourceResponse(mimeTypeFromExtension, "UTF-8", statusCode, "ok", tempResponseHeaders, fis);
                         } else {
                             response = new WebResourceResponse(mimeTypeFromExtension, "UTF-8", 200, "ok", headers, fis);
                         }

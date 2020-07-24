@@ -5,11 +5,16 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -34,9 +39,10 @@ public class DemoAPI {
         return AppIdentifier;
     }
     private String TAG = "demo api";
-    private String AppIdentifier = "";
-    private String demoUUID = "";
-    private String demoRoomToken = "";
+    private String AppIdentifier = "792/uaYcRG0I7ctP9A";
+    private String demoUUID = "daef60b584ea4892a381c410ae15fe28";
+    private String demoRoomToken = "WHITEcGFydG5lcl9pZD1ZSEpVMmoxVXAyUzdoQTluV3dvaVlSRVZ3MlI5M21ibmV6OXcmc2lnPWJkODdlOGFkZDcwZmEzN2YzNWQ3OTAyYmViMWFlMDk2YjQ1ZWI0MmM6YWRtaW5JZD02Njcmcm9vbUlkPWRhZWY2MGI1ODRlYTQ4OTJhMzgxYzQxMGFlMTVmZTI4JnRlYW1JZD03OTImcm9sZT1yb29tJmV4cGlyZV90aW1lPTE2MTIwMzU1MTgmYWs9WUhKVTJqMVVwMlM3aEE5bld3b2lZUkVWdzJSOTNtYm5lejl3JmNyZWF0ZV90aW1lPTE1ODA0Nzg1NjYmbm9uY2U9MTU4MDQ3ODU2NTczODAw";
+
 
     String getDemoUUID() {
         return demoUUID;
@@ -134,13 +140,12 @@ public class DemoAPI {
             @Override
             public void onResponse(Call call, Response response) {
                 try {
+                    assert response.body() != null;
                     if (response.code() == 200) {
-                        assert response.body() != null;
                         JsonObject room = gson.fromJson(response.body().string(), JsonObject.class);
                         String roomToken = room.getAsJsonObject("msg").get("roomToken").getAsString();
                         result.success(uuid, roomToken);
                     } else {
-                        assert response.body() != null;
                         result.fail("获取房间 token 失败：" + response.body().string());
                     }
                 } catch (Throwable e) {
@@ -173,17 +178,46 @@ public class DemoAPI {
                     Log.i("LocalFile", path + " is exist");
                 }
 
-                file = new File(path + "/1.zip");
-                if (file.exists()) {
-                    return;
-                }
-
                 FileOutputStream fos = new FileOutputStream(path + "/1.zip", false);
                 fos.write(response.body().bytes());
                 fos.close();
-                Decompressor decompressor = new Decompressor(path + "/1.zip", path);
-                decompressor.unzip();
+                unzip(new File(path + "/1.zip"), new File(path));
+                Log.i("LocalFile", "unzip");
             }
         });
     }
+
+    public static void unzip(File zipFile, File targetDirectory) throws IOException {
+        ZipInputStream zis = new ZipInputStream(
+                new BufferedInputStream(new FileInputStream(zipFile)));
+        try {
+            ZipEntry ze;
+            int count;
+            byte[] buffer = new byte[8192];
+            while ((ze = zis.getNextEntry()) != null) {
+                File file = new File(targetDirectory, ze.getName());
+                File dir = ze.isDirectory() ? file : file.getParentFile();
+                if (!dir.isDirectory() && !dir.mkdirs())
+                    throw new FileNotFoundException("Failed to ensure directory: " +
+                            dir.getAbsolutePath());
+                if (ze.isDirectory())
+                    continue;
+                FileOutputStream fout = new FileOutputStream(file);
+                try {
+                    while ((count = zis.read(buffer)) != -1)
+                        fout.write(buffer, 0, count);
+                } finally {
+                    fout.close();
+                }
+            /* if time should be restored as well
+            long time = ze.getTime();
+            if (time > 0)
+                file.setLastModified(time);
+            */
+            }
+        } finally {
+            zis.close();
+        }
+    }
+
 }
