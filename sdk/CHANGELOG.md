@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.9.15]
+- 修复 room.phase 状态错误，必须使用 `room.getPhase` 异步 API 才能获取正确状态的问题
 ## [2.9.14] - 2020-07-22
 - 同步 web SDK 至 2.9.12
 - 修复以下情况时，webView 中 SDK 初始化/启动失败，没有任何通知的问题。回调通知在 `CommonCallbacks`新增`sdkSetupFail:`方法中；更多具体内容，见源码注释。
