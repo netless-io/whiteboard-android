@@ -34,7 +34,11 @@ import wendu.dsbridge.OnReturnValue;
  */
 public class Room extends Displayer {
 
-    private final SyncDisplayerState<RoomState> syncRoomState;
+    void setSyncRoomState(SyncDisplayerState<RoomState> syncRoomState) {
+        this.syncRoomState = syncRoomState;
+    }
+
+    private SyncDisplayerState<RoomState> syncRoomState;
     private RoomPhase roomPhase = RoomPhase.connected;
 
     void setDisconnectedBySelf(Boolean disconnectedBySelf) {
@@ -56,13 +60,11 @@ public class Room extends Displayer {
     }
 
     private Boolean writable;
-    private Integer timeDelay;
+    private Integer timeDelay = 0;
     private Long observerId;
 
-    public Room(String uuid, WhiteboardView bridge, Context context, WhiteSdk sdk, SyncDisplayerState<RoomState> syncRoomState) {
+    public Room(String uuid, WhiteboardView bridge, Context context, WhiteSdk sdk) {
         super(uuid, bridge, context, sdk);
-        this.timeDelay = 0;
-        this.syncRoomState = syncRoomState;
     }
 
     SyncDisplayerState<RoomState> getSyncRoomState() {
