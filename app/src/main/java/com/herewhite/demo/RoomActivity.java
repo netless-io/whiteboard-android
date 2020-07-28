@@ -174,42 +174,35 @@ public class RoomActivity extends AppCompatActivity {
 
         //图片替换 API，需要在 whiteSDKConfig 中先行调用 setHasUrlInterrupterAPI，进行设置，否则不会被回调。
         WhiteSdk whiteSdk = new WhiteSdk(whiteboardView, RoomActivity.this, sdkConfiguration,
-                new UrlInterrupter() {
+                new CommonCallbacks() {
                     @Override
                     public String urlInterrupter(String sourceUrl) {
                         return sourceUrl;
+                    }
+
+                    @Override
+                    public void sdkSetupFail(SDKError error) {
+                        Log.e("ROOM_ERROR", error.toString());
+                    }
+
+                    @Override
+                    public void throwError(Object args) {
+
+                    }
+
+                    @Override
+                    public void onPPTMediaPlay() {
+                        logAction();
+                    }
+
+                    @Override
+                    public void onPPTMediaPause() {
+                        logAction();
                     }
                 });
 
         /** 设置自定义全局状态，在后续回调中 GlobalState 直接进行类型转换即可 */
         WhiteDisplayerState.setCustomGlobalStateClass(MyGlobalState.class);
-
-        whiteSdk.setCommonCallbacks(new CommonCallbacks() {
-            @Override
-            public String urlInterrupter(String sourceUrl) {
-                return sourceUrl;
-            }
-
-            @Override
-            public void sdkSetupFail(SDKError error) {
-                Log.e("ROOM_ERROR", error.toString());
-            }
-
-            @Override
-            public void throwError(Object args) {
-
-            }
-
-            @Override
-            public void onPPTMediaPlay() {
-                logAction();
-            }
-
-            @Override
-            public void onPPTMediaPause() {
-                logAction();
-            }
-        });
 
         //如需支持用户头像，请在设置 WhiteSdkConfiguration 后，再调用 setUserPayload 方法，传入符合用户信息
         RoomParams roomParams = new RoomParams(uuid, roomToken);
