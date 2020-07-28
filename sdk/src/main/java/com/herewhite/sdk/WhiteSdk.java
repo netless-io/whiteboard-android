@@ -97,9 +97,6 @@ public class WhiteSdk {
             if (roomCallbacks != null) {
                 this.roomCallbacksImplement.setListener(roomCallbacks);  // 覆盖
             }
-            final Room room = new Room(roomParams.getUuid(), bridge, context, WhiteSdk.this);
-            roomCallbacksImplement.setRoom(room);
-
             bridge.callHandler("sdk.joinRoom", new Object[]{roomParams}, new OnReturnValue<String>() {
                 @Override
                 public void onValue(String roomString) {
@@ -117,11 +114,12 @@ public class WhiteSdk {
                         boolean disableCallbackWhilePutting = onlyCallbackRemoteStateModify;
                         JsonObject jsonState = jsonObject.getAsJsonObject("state");
                         SyncDisplayerState<RoomState> syncRoomState = new SyncDisplayerState<>(RoomState.class, jsonState.toString(), disableCallbackWhilePutting);
-                        room.setSyncRoomState(syncRoomState);
+                        Room room = new Room(roomParams.getUuid(), bridge, context, WhiteSdk.this, syncRoomState);
                         Long observerId = jsonObject.get("observerId").getAsLong();
                         Boolean isWritable = jsonObject.get("isWritable").getAsBoolean();
                         room.setObserverId(observerId);
                         room.setWritable(isWritable);
+                        roomCallbacksImplement.setRoom(room);
                         roomPromise.then(room);
                     }
                 }
