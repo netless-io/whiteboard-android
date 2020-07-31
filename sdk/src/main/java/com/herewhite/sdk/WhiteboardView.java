@@ -51,11 +51,6 @@ public class WhiteboardView extends DWebView {
         getSettings().setMediaPlaybackRequiresUserGesture(false);
         loadUrl("file:///android_asset/whiteboard/index.html");
         setWebChromeClient(new FixWebChromeClient());
-        int version = getWebViewVersion();
-        if (version >= 55 && version < 68) {
-            // https://github.com/chartjs/Chart.js/issues/5676
-            setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        }
     }
 
     private int getWebViewVersion() {

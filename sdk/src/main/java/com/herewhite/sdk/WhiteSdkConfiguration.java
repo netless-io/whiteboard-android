@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import com.herewhite.sdk.domain.DeviceType;
 import com.herewhite.sdk.domain.LoggerOptions;
 import com.herewhite.sdk.domain.WhiteObject;
-
+import android.os.Build.VERSION;
 import java.util.HashMap;
 
 /**
@@ -131,6 +131,9 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
     public WhiteSdkConfiguration(String appIdentifier) {
         this.appIdentifier = appIdentifier;
+        if (VERSION.SDK_INT >= Build.VERSION_CODES.N && VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            renderEngine = RenderEngineType.svg;
+        }
         setupNativeTags();
     }
 
