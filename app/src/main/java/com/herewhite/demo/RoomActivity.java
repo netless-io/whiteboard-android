@@ -173,7 +173,7 @@ public class RoomActivity extends AppCompatActivity {
 //        sdkConfiguration.setRenderEngine(WhiteSdkConfiguration.RenderEngineType.canvas);
 
         //图片替换 API，需要在 whiteSDKConfig 中先行调用 setHasUrlInterrupterAPI，进行设置，否则不会被回调。
-        WhiteSdk whiteSdk = new WhiteSdk(whiteboardView, RoomActivity.this, sdkConfiguration,
+        WhiteSdk whiteSdk = new WhiteSdk(whiteboardView, this, sdkConfiguration,
                 new CommonCallbacks() {
                     @Override
                     public String urlInterrupter(String sourceUrl) {
