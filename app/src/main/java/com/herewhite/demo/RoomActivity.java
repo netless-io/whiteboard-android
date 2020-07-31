@@ -170,7 +170,6 @@ public class RoomActivity extends AppCompatActivity {
         HashMap<String, String> map = new HashMap<>();
         map.put("宋体","https://your-cdn.com/Songti.ttf");
         sdkConfiguration.setFonts(map);
-//        sdkConfiguration.setRenderEngine(WhiteSdkConfiguration.RenderEngineType.canvas);
 
         //图片替换 API，需要在 whiteSDKConfig 中先行调用 setHasUrlInterrupterAPI，进行设置，否则不会被回调。
         WhiteSdk whiteSdk = new WhiteSdk(whiteboardView, this, sdkConfiguration,
