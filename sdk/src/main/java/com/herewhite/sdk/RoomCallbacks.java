@@ -22,7 +22,7 @@ public interface RoomCallbacks {
 
     /**
      房间中RoomState属性，发生变化时，会触发该回调。
-     @param modifyState 发生变化的 RoomState 内容
+     @param modifyState 只包含发生变化的 RoomState 内容，未发生改变的内容，均为空
      */
     void onRoomStateChanged(RoomState modifyState);
 
