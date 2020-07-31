@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.View;
 import android.webkit.WebChromeClient;
 
 import com.google.gson.Gson;
@@ -15,6 +16,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import wendu.dsbridge.DWebView;
 import wendu.dsbridge.OnReturnValue;
@@ -45,9 +48,25 @@ public class WhiteboardView extends DWebView {
     }
 
     private void init() {
-        this.getSettings().setMediaPlaybackRequiresUserGesture(false);
-        this.loadUrl("file:///android_asset/whiteboard/index.html");
-        this.setWebChromeClient(new FixWebChromeClient());
+        getSettings().setMediaPlaybackRequiresUserGesture(false);
+        loadUrl("file:///android_asset/whiteboard/index.html");
+        setWebChromeClient(new FixWebChromeClient());
+        int version = getWebViewVersion();
+        if (version >= 55 && version < 68) {
+            // https://github.com/chartjs/Chart.js/issues/5676
+            setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
+    }
+
+    private int getWebViewVersion() {
+        String userAgent = getSettings().getUserAgentString();
+        Pattern pattern = Pattern.compile("Chrome/([\\d]+)", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(userAgent);
+        if (matcher.find()) {
+            String group = matcher.group(1);
+            return Integer.valueOf(group);
+        }
+        return 0;
     }
 
     private final static Gson gson = new Gson();
