@@ -3,6 +3,8 @@ package com.herewhite.sdk;
 import android.content.Context;
 import android.webkit.JavascriptInterface;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.herewhite.sdk.domain.PlayerConfiguration;
@@ -37,21 +39,39 @@ public class WhiteSdk {
         this.commonCallbacks = commonCallbacks;
     }
 
+    @Nullable
     private CommonCallbacks commonCallbacks;
     private final boolean onlyCallbackRemoteStateModify;
+    @Nullable
     private UrlInterrupter urlInterrupter;
+
+    public AudioMixerImplement getAudioMixerImplement() {
+        return audioMixerImplement;
+    }
+
+    @Nullable
+    private AudioMixerImplement audioMixerImplement;
 
     public static String Version() {
         return "2.9.16";
     }
 
-    public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, CommonCallbacks commonCallbacks) {
+    public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, @Nullable CommonCallbacks commonCallbacks) {
+        this(bridge, context, whiteSdkConfiguration, commonCallbacks, null);
+    }
+
+    public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, @Nullable CommonCallbacks commonCallbacks, @Nullable AudioMixerBridge audioMixerBridge) {
         this.bridge = bridge;
         this.context = context;
         this.roomCallbacksImplement = new RoomCallbacksImplement(context);
         this.playerCallbacksImplement = new PlayerCallbacksImplement();
         this.onlyCallbackRemoteStateModify = whiteSdkConfiguration.isOnlyCallbackRemoteStateModify();
         this.commonCallbacks = commonCallbacks;
+        if (audioMixerBridge != null) {
+            this.audioMixerImplement = new AudioMixerImplement(bridge, audioMixerBridge);
+            bridge.addJavascriptObject(this.audioMixerImplement, "rtc");
+            whiteSdkConfiguration.setEnableRtcIntercept(true);
+        }
 
         bridge.addJavascriptObject(this, "sdk");
         bridge.addJavascriptObject(this.roomCallbacksImplement, "room");

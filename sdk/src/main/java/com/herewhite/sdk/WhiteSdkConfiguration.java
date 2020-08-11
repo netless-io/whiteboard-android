@@ -49,6 +49,21 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private boolean onlyCallbackRemoteStateModify = false;
     private boolean disableDeviceInputs = false;
 
+    boolean isEnableRtcIntercept() {
+        return enableRtcIntercept;
+    }
+
+    /**
+     * 是否使用 rtc 接管动态 PPT 音视频播放（声音），默认 false。
+     * SDK 会根据 WhiteSdk 初始化时，是否传入 {@link AudioMixerBridge} 实现类，来自动配置该属性，无需开发者主动设置。
+     * @param enableRtcIntercept
+     */
+    void setEnableRtcIntercept(boolean enableRtcIntercept) {
+        this.enableRtcIntercept = enableRtcIntercept;
+    }
+
+    private boolean enableRtcIntercept = false;
+
     public boolean isDisableDeviceInputs() {
         return disableDeviceInputs;
     }
