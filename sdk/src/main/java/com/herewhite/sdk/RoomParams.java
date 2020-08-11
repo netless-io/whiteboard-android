@@ -86,7 +86,7 @@ public class RoomParams extends WhiteObject {
      * @deprecated 请使用 {@link #setDisableDeviceInputs(boolean)} {@link #setDisableCameraTransform(boolean)}
      */
     public void setDisableOperations(boolean disableOperations) {
-        this.disableCameraTransform = disableCameraTransform;
+        this.disableCameraTransform = disableOperations;
         this.disableDeviceInputs = disableOperations;
         this.disableOperations = disableOperations;
     }
