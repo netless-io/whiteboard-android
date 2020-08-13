@@ -12,7 +12,7 @@ public interface AudioMixerBridge {
      * @param replace true 则只播文件声音，不播麦克风声音，false 则是将文件和麦克风混音
      * @param cycle 循环播放文件的次数，-1 是无限循环
      */
-    void startAudioMixing(String filepath, boolean loopback, boolean replace, long cycle);
+    void startAudioMixing(String filepath, boolean loopback, boolean replace, int cycle);
 
     /**
      * 停止混音

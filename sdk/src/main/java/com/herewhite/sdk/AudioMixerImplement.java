@@ -36,7 +36,7 @@ public class AudioMixerImplement {
                 String filePath = jsonObject.getString("filePath");
                 boolean loopback = jsonObject.getBoolean("loopback");
                 boolean replace = jsonObject.getBoolean("replace");
-                long cycle = jsonObject.getLong("cycle");
+                int cycle = jsonObject.getInt("cycle");
                 this.mixerBridge.startAudioMixing(filePath, loopback, replace, cycle);
             } catch (JSONException e) {
                 e.printStackTrace();
