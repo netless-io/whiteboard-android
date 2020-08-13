@@ -20,16 +20,6 @@ public interface AudioMixerBridge {
     void stopAudioMixing();
 
     /**
-     * 暂停混音
-     */
-    void pauseAudioMixing();
-
-    /**
-     * 恢复混音
-     */
-    void resumeAudioMixing();
-
-    /**
      * 设置混音文件的播放进度，相当于对混音源文件进行 seek 操作
      * @param position 播放进度参数
      */
