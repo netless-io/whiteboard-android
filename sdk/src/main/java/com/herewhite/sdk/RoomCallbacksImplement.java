@@ -55,6 +55,20 @@ public class RoomCallbacksImplement implements SyncDisplayerState.Listener<RoomS
     }
 
     @JavascriptInterface
+    public void fireCanUndoStepsUpdate(Object args) {
+        if (listener != null) {
+            listener.onCanUndoStepsUpdate(Long.valueOf(String.valueOf(args)));
+        }
+    }
+
+    @JavascriptInterface
+    public void fireCanRedoStepsUpdate(Object args) {
+        if (listener != null) {
+            listener.onCanRedoStepsUpdate(Long.valueOf(String.valueOf(args)));
+        }
+    }
+
+    @JavascriptInterface
     public void fireMagixEvent(Object args) {
         EventEntry eventEntry = gson.fromJson(String.valueOf(args), EventEntry.class);
         if (room != null) {
@@ -121,21 +135,6 @@ public class RoomCallbacksImplement implements SyncDisplayerState.Listener<RoomS
     public void fireRoomStateChanged(Object args) {
         if (room != null) {
             room.getSyncRoomState().syncDisplayerState(String.valueOf(args));
-        }
-    }
-
-    @JavascriptInterface
-    public void fireBeingAbleToCommitChange(Object args) {
-        // 获取事件,反序列化然后发送通知给监听者
-        if (listener != null) {
-            try {
-                listener.onBeingAbleToCommitChange(Boolean.valueOf(String.valueOf(args)));
-            } catch (AssertionError a) {
-                throw a;
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onBeingAbleToCommitChange method", e);
-            }
-
         }
     }
 

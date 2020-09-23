@@ -15,7 +15,12 @@ public abstract class AbstractRoomCallbacks implements RoomCallbacks {
     }
 
     @Override
-    public void onBeingAbleToCommitChange(boolean isAbleToCommit) {
+    public void onCanUndoStepsUpdate(long canUndoSteps) {
+
+    }
+
+    @Override
+    public void onCanRedoStepsUpdate(long canRedoSteps) {
 
     }
 
