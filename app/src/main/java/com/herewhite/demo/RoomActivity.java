@@ -210,6 +210,18 @@ public class RoomActivity extends AppCompatActivity {
         logRoomInfo("native join " + joinDate);
         whiteSdk.joinRoom(roomParams, new AbstractRoomCallbacks() {
             @Override
+            public void onCanUndoStepsUpdate(long canUndoSteps) {
+                logRoomInfo("canUndoSteps: " + canUndoSteps);
+                super.onCanUndoStepsUpdate(canUndoSteps);
+            }
+
+            @Override
+            public void onCanRedoStepsUpdate(long canRedoSteps) {
+                logRoomInfo("onCanRedoStepsUpdate: " + canRedoSteps);
+                super.onCanRedoStepsUpdate(canRedoSteps);
+            }
+
+            @Override
             public void onPhaseChanged(RoomPhase phase) {
                 //在此处可以处理断连后的重连逻辑
                 showToast(phase.name());
