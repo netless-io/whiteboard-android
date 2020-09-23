@@ -1,4 +1,8 @@
 # 版本更新记录
+## [2.9.21] - 2020-09-23
+- 同步 web sdk 至 2.9.17
+- RoomCallbacks 移除 `onBeingAbleToCommitChange`，新增 `onCanUndoStepsUpdate` `onCanRedoStepsUpdate`，具体见源码注释
+- 更新头像显示组件，修复没有传入 userPayload 时，无法显示的问题
 ## [2.9.20] - 2020-09-15
 - 切换头像显示组件UI，web 端可以切换至`@netless/cursor-tool`即可保持一致，新组件支持`cursorName`，`avatar`字段。
 ## [2.9.19] - 2020-09-10
