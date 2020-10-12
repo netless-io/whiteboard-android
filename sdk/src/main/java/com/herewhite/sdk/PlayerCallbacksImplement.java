@@ -152,7 +152,15 @@ public class PlayerCallbacksImplement implements SyncDisplayerState.Listener<Pla
 
     @JavascriptInterface
     public void onScheduleTimeChanged(Object args) {
-        long scheduleTime = Long.parseLong(String.valueOf(args));
+
+        long scheduleTime = 0;
+        String valueString = String.valueOf(args);
+        //FIXME: 之前用 Long，但是实际情况是会带小数点的情况存在（修改回调速率时）
+        if (valueString.contains(".")) {
+            scheduleTime = Math.round(Double.parseDouble(String.valueOf(args)));
+        } else {
+            scheduleTime = Long.parseLong(String.valueOf(args));
+        }
 
         if (this.player != null) {
             this.player.setScheduleTime(scheduleTime);
