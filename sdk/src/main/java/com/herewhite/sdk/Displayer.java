@@ -272,6 +272,16 @@ public class Displayer {
     }
 
     /**
+     * 禁止用户移动视角
+     *
+     * @param disable 禁止视角移动
+     * @since 2.11.0
+     */
+    public void disableCameraTransform(Boolean disable) {
+        bridge.callHandler("displayer.setDisableCameraTransform", new Object[]{disable});
+    }
+
+    /**
      * 移动视角：移动，缩放白板
      *
      * @param camera 视角参数
