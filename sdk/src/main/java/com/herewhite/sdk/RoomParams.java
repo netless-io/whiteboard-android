@@ -2,6 +2,7 @@ package com.herewhite.sdk;
 
 import com.herewhite.sdk.domain.CameraBound;
 import com.herewhite.sdk.domain.MemberInformation;
+import com.herewhite.sdk.domain.Region;
 import com.herewhite.sdk.domain.WhiteObject;
 
 import java.util.concurrent.TimeUnit;
@@ -14,6 +15,16 @@ public class RoomParams extends WhiteObject {
 
     private String uuid;
     private String roomToken;
+
+    public void setRegion(Region region) {
+        this.region = region;
+    }
+
+    public Region getRegion() {
+        return region;
+    }
+
+    private Region region;
     private CameraBound cameraBound;
     /**
      * 重连时，最大重连尝试时间，单位：毫秒，默认 45 秒。

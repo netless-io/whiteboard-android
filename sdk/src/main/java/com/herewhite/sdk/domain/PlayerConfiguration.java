@@ -11,6 +11,16 @@ public class PlayerConfiguration extends WhiteObject {
     private CameraBound cameraBound;
     private Long step = 500L;
 
+    public Region getRegion() {
+        return region;
+    }
+
+    public void setRegion(Region region) {
+        this.region = region;
+    }
+
+    private Region region;
+
     public PlayerConfiguration(String room, String roomToken) {
         this.room = room;
         this.roomToken = roomToken;

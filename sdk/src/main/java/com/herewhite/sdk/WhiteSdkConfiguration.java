@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import com.herewhite.sdk.domain.DeviceType;
 import com.herewhite.sdk.domain.LoggerOptions;
 import com.herewhite.sdk.domain.WhiteObject;
+import com.herewhite.sdk.domain.Region;
 import android.os.Build.VERSION;
 import java.util.HashMap;
 
@@ -48,6 +49,16 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private boolean userCursor = false;
     private boolean onlyCallbackRemoteStateModify = false;
     private boolean disableDeviceInputs = false;
+
+    public Region getRegion() {
+        return region;
+    }
+
+    public void setRegion(Region region) {
+        this.region = region;
+    }
+
+    private Region region;
 
     boolean isEnableRtcIntercept() {
         return enableRtcIntercept;
