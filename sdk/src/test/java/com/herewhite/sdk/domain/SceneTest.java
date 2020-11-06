@@ -1,17 +1,12 @@
 package com.herewhite.sdk.domain;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 
-import org.json.JSONArray;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class SceneTest {
     private Gson gson = new Gson();
