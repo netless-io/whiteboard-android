@@ -209,6 +209,22 @@ public class WhiteSdk {
     }
 
     /**
+     * 查看房间是否有回放数据
+     *
+     * @param playerConfiguration 回放房间和时间段信息
+     * @param playablePromise 返回是否能够播放
+     * @since 2.11.0
+     */
+    public void isPlayable(final PlayerConfiguration playerConfiguration, final Promise<Boolean> playablePromise) {
+        bridge.callHandler("sdk.isPlayable", new Object[]{playerConfiguration}, new OnReturnValue<Boolean>() {
+            @Override
+            public void onValue(Boolean retValue) {
+                playablePromise.then(retValue);
+            }
+        });
+    }
+
+    /**
      * 释放实时房间对 RoomCallback 的持有
      *
      * @since 2.4.12
