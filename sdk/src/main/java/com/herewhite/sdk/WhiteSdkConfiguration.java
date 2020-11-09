@@ -50,6 +50,16 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private boolean onlyCallbackRemoteStateModify = false;
     private boolean disableDeviceInputs = false;
 
+    public boolean isEnableIFramePlugin() {
+        return enableIFramePlugin;
+    }
+
+    public void setEnableIFramePlugin(boolean enableIFramePlugin) {
+        this.enableIFramePlugin = enableIFramePlugin;
+    }
+
+    private boolean enableIFramePlugin = false;
+
     public Region getRegion() {
         return region;
     }
