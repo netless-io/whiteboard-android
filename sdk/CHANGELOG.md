@@ -1,4 +1,11 @@
 # 版本更新记录
+## [2.11.0] - 2020-11-09
+- 同步更新 web sdk 至 2.11.3
+- iframe 插件的使用，增加开关，并且默认关闭（具体见 WhiteSdkConfiguration setEnableIFramePlugin 方法）。
+- WhiteSdk 增加 isPlayable API，可以查询，对应房间，对应时间段是否存在回放数据。
+- WhiteSdk 支持多数据中心，枚举可见 com.herewhite.sdk.domain.Region，可以分别在初始化 sdk，加入实时房间，回放房间时，进行设置。默认 Region 为旧数据中心。SDK 初始化 region 参数，将会影响实时房间，回放房间默认 region。具体见`WhiteSdkConfiguration`,`RoomParams`,`PlayerConfiguration`中`setRegion`API。
+- 回放时，传入mediaURL，将由开源组件`@netless/combine-player`接管，该组件优化了音视频中有丢帧情况的播放处理。
+- 回放 Player 增加 disableCameraTransform API，该功能与实时房间 room 效果一致（具体见 com.herewhite.sdk.Displayer disableCameraTransform方法）。
 ## [2.10.1] - 2020-10-12
 - 修复回放速率为 x.y 带小数点的速率，出现的错误问题
 ## [2.10.0] - 2020-10-10
