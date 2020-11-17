@@ -1,5 +1,5 @@
 # 版本更新记录
-## [2.11.0] - 2020-11-09
+## [2.11.0] - 2020-11-17
 - 同步更新 web sdk 至 2.11.3
 - iframe 插件的使用，增加开关，并且默认关闭（具体见 WhiteSdkConfiguration setEnableIFramePlugin 方法）。
 - WhiteSdk 增加 isPlayable API，可以查询，对应房间，对应时间段是否存在回放数据。
