@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.11.1] - 2020-11-27
+- 同步更新 web sdk 至 2.11.5
+- 更新`@netless/combine-player`，优化插件逻辑
 ## [2.11.0] - 2020-11-17
 - 同步更新 web sdk 至 2.11.3
 - iframe 插件的使用，增加开关，并且默认关闭（具体见 WhiteSdkConfiguration setEnableIFramePlugin 方法）。
