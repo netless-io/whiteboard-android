@@ -20,6 +20,7 @@ import com.alibaba.sdk.android.httpdns.HttpDnsService;
 import com.google.gson.Gson;
 import com.herewhite.sdk.CommonCallbacks;
 import com.herewhite.sdk.domain.AnimationMode;
+import com.herewhite.sdk.domain.FontFace;
 import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.AbstractRoomCallbacks;
 import com.herewhite.sdk.Converter;
@@ -55,6 +56,8 @@ import com.herewhite.sdk.domain.UrlInterrupter;
 import com.herewhite.sdk.domain.ViewMode;
 import com.herewhite.sdk.domain.WhiteDisplayerState;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -77,6 +80,7 @@ public class RoomActivity extends AppCompatActivity {
     private String roomToken;
 
     WhiteboardView whiteboardView;
+    WhiteSdk whiteSdk;
     Room room;
 
     /**
@@ -172,7 +176,7 @@ public class RoomActivity extends AppCompatActivity {
         sdkConfiguration.setFonts(map);
 
         //图片替换 API，需要在 whiteSDKConfig 中先行调用 setHasUrlInterrupterAPI，进行设置，否则不会被回调。
-        WhiteSdk whiteSdk = new WhiteSdk(whiteboardView, this, sdkConfiguration,
+        whiteSdk = new WhiteSdk(whiteboardView, this, sdkConfiguration,
                 new CommonCallbacks() {
                     @Override
                     public String urlInterrupter(String sourceUrl) {
@@ -199,7 +203,19 @@ public class RoomActivity extends AppCompatActivity {
                         logAction();
                     }
                 });
+        FontFace fontFace = new FontFace("example", "url(https://white-pan.oss-cn-shanghai.aliyuncs.com/Pacifico-Regular.ttf)");
+//        whiteSdk.setupFontFaces(new FontFace[]{fontFace});
+        whiteSdk.loadFontFaces(new FontFace[]{fontFace}, new Promise<JSONObject>() {
+            @Override
+            public void then(JSONObject object) {
+                logRoomInfo("loadFontFaces");
+            }
 
+            @Override
+            public void catchEx(SDKError t) {
+
+            }
+        });
         /** 设置自定义全局状态，在后续回调中 GlobalState 直接进行类型转换即可 */
         WhiteDisplayerState.setCustomGlobalStateClass(MyGlobalState.class);
 

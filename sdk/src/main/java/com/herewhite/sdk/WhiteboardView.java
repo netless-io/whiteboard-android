@@ -107,8 +107,11 @@ public class WhiteboardView extends DWebView {
     }
 
     private Object toJSON(Object object) {
-
-        if (isPrimitiveOrStringOrNull(object)) {
+        // TODO: 当 object 内部其实也是标准的 JSON 结构时，最好不把 JSON stringify 成 string，而是保持原有结构传给 web 端
+        // 这个改动，需要确认原有 API，之前大部分 web 的 API，都是接受 string 传入的
+        if (object instanceof String[]) {
+            return object;
+        } else if (isPrimitiveOrStringOrNull(object)) {
             return object;
         } else if (object instanceof WhiteObject) {
             return ((WhiteObject) object).toJSON();
