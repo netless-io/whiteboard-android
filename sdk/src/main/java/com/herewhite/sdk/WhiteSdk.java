@@ -232,7 +232,7 @@ public class WhiteSdk {
      *      3. FontFace，可能会影响部分设备的渲染逻辑，部分设备，可能会在完成字体加载后，才渲染文字。
      *      4. 该 API 插入的字体，为一个整体，重复调用该 API，会覆盖之前的字体内容。
      *      5. 该 API 与 loadFontFaces 重复使用，无法预期行为，请尽量避免。
-     * @since 2.11.3
+     * @since 2.11.2
      */
     public void setupFontFaces(FontFace[] fontFaces) {
         bridge.callHandler("sdk.updateNativeFontFaceCSS", new Object[]{fontFaces});
@@ -245,7 +245,7 @@ public class WhiteSdk {
      *      2. FontFace，可能会影响部分设备的渲染逻辑，部分设备，可能会在完成字体加载后，才渲染文字。
      *      3. 该 API 插入的字体，无法删除；每次都是增加新字体。
      *      4. 该 API 与 setupFontFaces 重复使用，无法预期行为，请尽量避免。
-     * @since 2.11.3
+     * @since 2.11.2
      */
     public void loadFontFaces(FontFace[] fontFaces, final Promise<JSONObject>loadPromise) {
         bridge.callHandler("sdk.asyncInsertFontFaces", new Object[]{fontFaces}, new OnReturnValue<JSONObject>() {
@@ -259,7 +259,7 @@ public class WhiteSdk {
     /**
      * @param names 定义文字教具，在本地使用的字体。
      * 注意：该修改只在本地有效，不会对远端造成影响。
-     * @since 2.11.3
+     * @since 2.11.2
      */
     public void updateTextFont(String[] names) {
         bridge.callHandler("sdk.updateNativeTextareaFont", new Object[]{names});
