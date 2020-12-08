@@ -1,4 +1,8 @@
 # 版本更新记录
+## [2.11.4] - 2020-12-08
+- 新增 iframe 插件消息通道 API：
+    1. 接受 iframe 消息通道：见 `CommonCallbacks` 中 `onMessage`方法
+    2. 向 iframe 发送消息：见 `WhiteDisplayer` 中 `postMessage`方法
 ## [2.11.3] - 2020-12-04
 - 修复`loadFontFaces:completionHandler:`无法添加多个不同字重的字体的问题
 ## [2.11.2] - 2020-12-03
