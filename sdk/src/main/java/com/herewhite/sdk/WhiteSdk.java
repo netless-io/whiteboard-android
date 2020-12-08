@@ -329,7 +329,15 @@ public class WhiteSdk {
 
     @JavascriptInterface
     public void postMessage(Object args) {
+        if (this.commonCallbacks != null) {
+            try {
 
+                JSONObject object = new JSONObject((String) args);
+                this.commonCallbacks.onMessage(object);
+            } catch (Throwable throwable) {
+
+            }
+        }
     }
 
     @JavascriptInterface

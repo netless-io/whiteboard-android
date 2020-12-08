@@ -20,6 +20,7 @@ import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RectangleConfig;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Scene;
+import com.herewhite.sdk.domain.WhiteObject;
 import com.herewhite.sdk.domain.WhiteScenePathType;
 
 import org.json.JSONObject;
@@ -51,6 +52,24 @@ public class Displayer {
         this.bridge = bridge;
         this.context = context;
         this.sdk = sdk;
+    }
+
+    /**
+     * 向 iframe 插件发送字符串信息
+     * @param string
+     * @since 2.11.4
+     */
+    public void postIframeMessage(String string) {
+        bridge.callHandler("displayer.postMessage", new Object[]{string});
+    }
+
+    /**
+     * 向 iframe 插件发送 key-value 格式的信息。可以自己创建 WhiteObject 的子类进行发送
+     * @param object
+     * @since 2.11.4
+     */
+    public void postIframeMessage(WhiteObject object) {
+        bridge.callHandler("displayer.postMessage", new Object[]{object});
     }
 
     /**

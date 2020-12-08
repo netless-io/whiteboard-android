@@ -2,6 +2,8 @@ package com.herewhite.sdk;
 
 import com.herewhite.sdk.domain.SDKError;
 
+import org.json.JSONObject;
+
 public class AbstractCommonCallbacks implements CommonCallbacks {
 
     /**
@@ -40,6 +42,11 @@ public class AbstractCommonCallbacks implements CommonCallbacks {
      * @since 2.9.13
      */
     public void onPPTMediaPause() {
+
+    }
+
+    @Override
+    public void onMessage(JSONObject message) {
 
     }
 

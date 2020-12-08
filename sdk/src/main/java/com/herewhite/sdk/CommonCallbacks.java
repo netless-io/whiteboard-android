@@ -2,6 +2,8 @@ package com.herewhite.sdk;
 
 import com.herewhite.sdk.domain.SDKError;
 
+import org.json.JSONObject;
+
 /**
  * 部分通用回调，不管是回放房间，还是实时房间，都有该部分通知
  * @since 2.9.13
@@ -37,6 +39,13 @@ public interface CommonCallbacks {
      * @since 2.9.13
      */
     void onPPTMediaPause();
+
+    /**
+     * 部分自定义消息接口，用于本地客户端与 bridge 网页的内容的一些交互，这些信息，不是所有端都会收到。
+     * @param object 内容格式会根据情况发送。发送时，均为 JSON 格式
+     * @since 2.11.4
+     */
+    void onMessage(JSONObject object);
 
     /**
      * 初始化 SDK 时，会根据传入的 App Identifier 向服务器配置信息（最多尝试三次）
