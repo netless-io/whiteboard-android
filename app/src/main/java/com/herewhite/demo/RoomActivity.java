@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.alibaba.sdk.android.httpdns.HttpDns;
 import com.alibaba.sdk.android.httpdns.HttpDnsService;
 import com.google.gson.Gson;
+import com.herewhite.sdk.AbstractCommonCallbacks;
 import com.herewhite.sdk.CommonCallbacks;
 import com.herewhite.sdk.domain.AnimationMode;
 import com.herewhite.sdk.domain.FontFace;
@@ -55,6 +56,7 @@ import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
 import com.herewhite.sdk.domain.ViewMode;
 import com.herewhite.sdk.domain.WhiteDisplayerState;
+import com.herewhite.sdk.domain.WhiteObject;
 
 import org.json.JSONObject;
 
@@ -177,10 +179,15 @@ public class RoomActivity extends AppCompatActivity {
 
         //图片替换 API，需要在 whiteSDKConfig 中先行调用 setHasUrlInterrupterAPI，进行设置，否则不会被回调。
         whiteSdk = new WhiteSdk(whiteboardView, this, sdkConfiguration,
-                new CommonCallbacks() {
+                new AbstractCommonCallbacks() {
                     @Override
                     public String urlInterrupter(String sourceUrl) {
                         return sourceUrl;
+                    }
+
+                    @Override
+                    public void onMessage(JSONObject message) {
+                        super.onMessage(message);
                     }
 
                     @Override
@@ -190,7 +197,6 @@ public class RoomActivity extends AppCompatActivity {
 
                     @Override
                     public void throwError(Object args) {
-
                     }
 
                     @Override
