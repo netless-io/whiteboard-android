@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.11.7] - 2020-12-17
+- 更新`@netless/iframe-bridge`至 1.0.4
 ## [2.11.6] - 2020-12-10
 - 同步更新 web sdk 至 2.11.7
 - 同步更新`@netless/combine-player`,`@netless/iframe-bridge`插件
