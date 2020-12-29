@@ -17,7 +17,6 @@ import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -55,7 +54,7 @@ public class WhiteSdk {
     private AudioMixerImplement audioMixerImplement;
 
     public static String Version() {
-        return "2.11.9";
+        return "2.11.10";
     }
 
     public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, @Nullable CommonCallbacks commonCallbacks) {

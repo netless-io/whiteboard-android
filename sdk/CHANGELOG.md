@@ -1,4 +1,8 @@
 # 版本更新记录
+## [2.11.10] - 2020-12-29
+- 更新`white-web-sdk`至 2.11.8
+- 更新`@netless/iframe-bridge`至 1.0.6
+- 更新`LoggerOptions`日志相关配置类
 ## [2.11.9] - 2020-12-29
 - 更新`white-web-sdk`至 2.11.8
 - 更新`@netless/iframe-bridge`至 1.0.6
