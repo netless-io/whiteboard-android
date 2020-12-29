@@ -40,7 +40,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
     // native 永远只接收 touch 事件
     private DeviceType deviceType = DeviceType.touch;
-    // 在 webView 中，打印日志，并回调给 native 端
+    // 在 webView 中，打印 native 的调用，并将得到的数据回传给 native 端
     private boolean log = false;
     private RenderEngineType renderEngine = RenderEngineType.canvas;
     private boolean enableInterrupterAPI = false;
