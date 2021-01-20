@@ -69,4 +69,10 @@ public class WhiteDisplayerState extends WhiteObject {
     private RoomMember[] roomMembers;
     private SceneState sceneState;
 
+    public CameraState getCameraState() {
+        return cameraState;
+    }
+
+    private CameraState cameraState;
+
 }
