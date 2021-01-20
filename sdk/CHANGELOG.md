@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.11.11] - 2021-01-20
+- 更新`white-web-sdk`至 2.11.9
+- `DisplayerState`新增`cameraState`属性，`RoomState`与`PlayerState`均可使用，具体请看`CameraState`类注释
 ## [2.11.10] - 2020-12-29
 - 更新`white-web-sdk`至 2.11.8
 - 更新`@netless/iframe-bridge`至 1.0.6

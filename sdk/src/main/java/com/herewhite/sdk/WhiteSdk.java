@@ -54,7 +54,7 @@ public class WhiteSdk {
     private AudioMixerImplement audioMixerImplement;
 
     public static String Version() {
-        return "2.11.10";
+        return "2.11.11";
     }
 
     public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, @Nullable CommonCallbacks commonCallbacks) {
