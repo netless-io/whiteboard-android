@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.11.12] - 2021-01-26
+- 更新`white-web-sdk`至 2.11.10，兼容部分低版本 ppt 音视频播放
 ## [2.11.11] - 2021-01-20
 - 更新`white-web-sdk`至 2.11.9
 - `DisplayerState`新增`cameraState`属性，`RoomState`与`PlayerState`均可使用，具体请看`CameraState`类注释
