@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.11.15] - 2021-02-05
+- 更新`@netless/white-audio-plugin@1.2.19`,`@netless/white-video-plugin@1.2.18`，优化音视频插件进度同步
 ## [2.11.14] - 2021-02-05
 - 更新`@netless/white-audio-plugin@1.2.17`,`@netless/white-video-plugin@1.2.16`，优化音视频插件进度同步
 ## [2.11.13] - 2021-01-29
