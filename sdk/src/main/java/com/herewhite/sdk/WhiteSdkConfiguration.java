@@ -33,6 +33,21 @@ public class WhiteSdkConfiguration extends WhiteObject {
         }
 
         private String scheme;
+
+        public boolean isUseServerWrap() {
+            return useServerWrap;
+        }
+
+        /**
+         * 2021-02-10 之后转换的动态 ppt 支持服务端排版功能，可以确保不同平台排版一致，目前默认关闭
+         * @param useServerWrap
+         * @since 2.11.16
+         */
+        public void setUseServerWrap(boolean useServerWrap) {
+            this.useServerWrap = useServerWrap;
+        }
+
+        private boolean useServerWrap;
         public PptParams(String scheme) {
             this.scheme = scheme;
         }
