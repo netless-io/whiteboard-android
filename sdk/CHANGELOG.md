@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.11.18] - 2021-03-03
+更新@netless/white-audio-plugin@1.2.20,@netless/white-video-plugin@1.2.20，优化音视频插件
 ## [2.11.17] - 2021-03-02
 - 更新`@netless/iframe-bridge`至2.1.1
 ## [2.11.16] - 2021-02-10
