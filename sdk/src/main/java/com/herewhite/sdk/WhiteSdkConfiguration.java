@@ -1,13 +1,14 @@
 package com.herewhite.sdk;
 
 import android.os.Build;
+import android.os.Build.VERSION;
 
 import com.google.gson.annotations.SerializedName;
 import com.herewhite.sdk.domain.DeviceType;
 import com.herewhite.sdk.domain.LoggerOptions;
-import com.herewhite.sdk.domain.WhiteObject;
 import com.herewhite.sdk.domain.Region;
-import android.os.Build.VERSION;
+import com.herewhite.sdk.domain.WhiteObject;
+
 import java.util.HashMap;
 
 /**
@@ -40,6 +41,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
         /**
          * 2021-02-10 之后转换的动态 ppt 支持服务端排版功能，可以确保不同平台排版一致，目前默认关闭
+         *
          * @param useServerWrap
          * @since 2.11.16
          */
@@ -48,11 +50,14 @@ public class WhiteSdkConfiguration extends WhiteObject {
         }
 
         private boolean useServerWrap;
+
         public PptParams(String scheme) {
             this.scheme = scheme;
         }
     }
 
+
+    private Region region;
     // native 永远只接收 touch 事件
     private DeviceType deviceType = DeviceType.touch;
     // 在 webView 中，打印 native 的调用，并将得到的数据回传给 native 端
@@ -64,6 +69,18 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private boolean userCursor = false;
     private boolean onlyCallbackRemoteStateModify = false;
     private boolean disableDeviceInputs = false;
+    private boolean enableIFramePlugin = false;
+    private boolean enableRtcIntercept = false;
+
+    private LoggerOptions loggerOptions;
+
+    private String appIdentifier;
+    private HashMap<String, String> __nativeTags = new HashMap<>();
+    /**
+     * pptParams 动态 ppt 专用参数
+     */
+    private PptParams pptParams;
+    private HashMap<String, String> fonts;
 
     public boolean isEnableIFramePlugin() {
         return enableIFramePlugin;
@@ -73,8 +90,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
         this.enableIFramePlugin = enableIFramePlugin;
     }
 
-    private boolean enableIFramePlugin = false;
-
     public Region getRegion() {
         return region;
     }
@@ -83,8 +98,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
         this.region = region;
     }
 
-    private Region region;
-
     boolean isEnableRtcIntercept() {
         return enableRtcIntercept;
     }
@@ -92,13 +105,12 @@ public class WhiteSdkConfiguration extends WhiteObject {
     /**
      * 是否使用 rtc 接管动态 PPT 音视频播放（声音），默认 false。
      * SDK 会根据 WhiteSdk 初始化时，是否传入 {@link AudioMixerBridge} 实现类，来自动配置该属性，无需开发者主动设置。
+     *
      * @param enableRtcIntercept
      */
     void setEnableRtcIntercept(boolean enableRtcIntercept) {
         this.enableRtcIntercept = enableRtcIntercept;
     }
-
-    private boolean enableRtcIntercept = false;
 
     public boolean isDisableDeviceInputs() {
         return disableDeviceInputs;
@@ -106,6 +118,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
     /**
      * 禁止教具输入
+     *
      * @param disableDeviceInputs
      * @since 2.9.0
      */
@@ -113,16 +126,9 @@ public class WhiteSdkConfiguration extends WhiteObject {
         this.disableDeviceInputs = disableDeviceInputs;
     }
 
-    private LoggerOptions loggerOptions;
-
-    private String appIdentifier;
-    private HashMap<String, String> __nativeTags = new HashMap<>();
-    /** pptParams 动态 ppt 专用参数 */
-    private PptParams pptParams;
-    private HashMap<String, String> fonts;
-
     /**
      * 设置画笔的渲染引擎模式
+     *
      * @param renderEngine 画笔教具的渲染模式，对于大量书写做了额外优化。2.9.0 默认切换至 canvas，之前版本为 svg。
      * @since 2.8.0
      */
@@ -148,6 +154,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
     /**
      * 文档转网页（动态 PPT）时，自定义字体，为 key-value 结构
+     *
      * @param fonts key 为字体名称，value 为字体网址的字典结构
      * @since 2.2.0
      */
@@ -161,7 +168,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
     /**
      * 动态 PPT 预加载选项
-     *
+     * <p>
      * 在使用动态 PPT 的同时，加载动态 PPT 中所需要的图片资源，会导致在第一次加载页面时，出现大量加载。
      *
      * @param preloadDynamicPPT 默认关闭，不进行预加载
@@ -175,23 +182,31 @@ public class WhiteSdkConfiguration extends WhiteObject {
         __nativeTags.put("platform", "android API " + Build.VERSION.SDK_INT);
     }
 
-    public WhiteSdkConfiguration(String appIdentifier, boolean log) {
-        this(appIdentifier);
-        this.log = log;
-    }
-
-    public WhiteSdkConfiguration(String appIdentifier) {
-        this.appIdentifier = appIdentifier;
+    public WhiteSdkConfiguration() {
         if (VERSION.SDK_INT >= Build.VERSION_CODES.N && VERSION.SDK_INT < Build.VERSION_CODES.P) {
             renderEngine = RenderEngineType.svg;
         }
         setupNativeTags();
     }
 
+    public WhiteSdkConfiguration(String appId) {
+        this();
+        this.appIdentifier = appId;
+    }
+
+    public WhiteSdkConfiguration(String appId, boolean log) {
+        this(appId);
+        this.log = log;
+    }
+
+    public void setAppIdentifier(String appIdentifier) {
+        this.appIdentifier = appIdentifier;
+    }
 
     public LoggerOptions getLoggerOptions() {
         return loggerOptions;
     }
+
     /**
      * 日志上报系统设置项，有默认上报行为
      *
@@ -208,6 +223,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
     /**
      * 是否启用双路由功能，同时像两个网址请求数据，选择最快的应答。会造成一定的额外开销。默认关闭
+     *
      * @param routeBackup
      */
     public void setRouteBackup(boolean routeBackup) {
@@ -224,9 +240,13 @@ public class WhiteSdkConfiguration extends WhiteObject {
      *
      * @param userCursor 开关，默认关闭,即不显示用户头像
      */
-    public void setUserCursor(boolean userCursor) { this.userCursor = userCursor; }
+    public void setUserCursor(boolean userCursor) {
+        this.userCursor = userCursor;
+    }
 
-    public boolean isUserCursor() { return userCursor; }
+    public boolean isUserCursor() {
+        return userCursor;
+    }
 
     public boolean isOnlyCallbackRemoteStateModify() {
         return onlyCallbackRemoteStateModify;

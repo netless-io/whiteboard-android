@@ -62,7 +62,7 @@ public class LocalFileWebViewClient extends WebViewClient {
                     WebResourceResponse response = null;
                     String mimeTypeFromExtension = MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(url));
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                        HashMap<String, String>headers = new HashMap<>();
+                        HashMap<String, String> headers = new HashMap<>();
                         headers.put("Access-Control-Allow-Origin", "*");
                         headers.put("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
                         headers.put("Access-Control-Allow-Headers", "X-PINGOTHER, Content-Type");
@@ -75,7 +75,7 @@ public class LocalFileWebViewClient extends WebViewClient {
                             String[] parts = rangeString.split("=");
                             String[] streamParts = parts[1].split("-");
                             String fromRange = streamParts[0];
-                            int range = totalRange-1;
+                            int range = totalRange - 1;
                             if (streamParts.length > 1 && streamParts[1] != "") {
                                 range = Integer.parseInt(streamParts[1]);
                             }

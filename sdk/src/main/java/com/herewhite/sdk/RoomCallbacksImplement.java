@@ -1,8 +1,7 @@
 package com.herewhite.sdk;
 
-import android.content.Context;
 import android.os.Handler;
-import androidx.annotation.Nullable;
+import android.os.Looper;
 import android.webkit.JavascriptInterface;
 
 import com.google.gson.Gson;
@@ -11,20 +10,23 @@ import com.herewhite.sdk.domain.FrameError;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
 
+import androidx.annotation.Nullable;
+
 /**
  * Created by buhe on 2018/8/12.
  */
-
 public class RoomCallbacksImplement implements SyncDisplayerState.Listener<RoomState> {
 
     private final static Gson gson = new Gson();
     private final Handler handler;
-    private @Nullable RoomCallbacks listener;
+    private @Nullable
+    RoomCallbacks listener;
 
-    private @Nullable Room room;
+    private @Nullable
+    Room room;
 
-    RoomCallbacksImplement(Context context) {
-        this.handler = new Handler(context.getMainLooper());
+    RoomCallbacksImplement() {
+        this.handler = new Handler(Looper.getMainLooper());
     }
 
     public RoomCallbacks getListener() {

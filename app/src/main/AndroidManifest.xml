@@ -39,6 +39,20 @@
             android:name=".RoomActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
         <activity android:name=".TestActivity" />
-    </application>
 
+        <activity
+            android:name=".refactoring.StartActivity"
+            android:label="@string/title_activity_start"
+            android:theme="@style/AppTheme.NoActionBar">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
+        <activity
+            android:name=".refactoring.RoomActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
+    </application>
 </manifest>

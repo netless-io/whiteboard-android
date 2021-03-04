@@ -1,0 +1,6 @@
+
+Question
+* 原WhiteSdk通过WhiteSdkConfiguration初始化构建，存在向JS端发送初始化配置，需要根据业务构建
+* WhiteSdkConfiguration内部pptParams、fonts等参数是否必须在启动初始化时设置
+* 当前WhiteSdkConfiguration不仅仅是WebView的初始化数据，同时具有每次重连时的请求数据，不能用于类似Map的createFromAttr。
+* WhiteSdkConfiguration API在整个运行时是否会更改

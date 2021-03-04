@@ -1,11 +1,15 @@
-package com.herewhite.demo;
+package com.herewhite.demo.refactoring;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+
+import com.herewhite.demo.DemoAPI;
+import com.herewhite.demo.PlayActivity;
+import com.herewhite.demo.PureReplayActivity;
+import com.herewhite.demo.R;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -37,12 +41,10 @@ public class StartActivity extends AppCompatActivity {
         AlertDialog alertDialog = new AlertDialog.Builder(StartActivity.this).create();
         alertDialog.setTitle(title);
         alertDialog.setMessage(message);
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+        alertDialog.setButton(
+                AlertDialog.BUTTON_NEUTRAL,
+                "OK",
+                (dialog, which) -> dialog.dismiss());
         alertDialog.show();
     }
 

@@ -29,7 +29,7 @@ public class WhiteWebViewClient extends WebViewClient {
     private static final String TAG = "WebClient";
     private HttpDnsService httpDns;
 
-    WhiteWebViewClient(HttpDnsService httpDns) {
+    public WhiteWebViewClient(HttpDnsService httpDns) {
         this.httpDns = httpDns;
     }
 

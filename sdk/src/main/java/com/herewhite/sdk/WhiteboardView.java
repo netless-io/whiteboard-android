@@ -5,7 +5,6 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.view.View;
 import android.webkit.WebChromeClient;
 
 import com.google.gson.Gson;
@@ -26,17 +25,17 @@ import wendu.dsbridge.OnReturnValue;
  * white on 2018/8/10.
  */
 
-public class WhiteboardView extends DWebView {
-
+public class WhiteboardView extends DWebView implements JsBridgeInterface {
+    private WhiteSdkConfiguration whiteSdkConfiguration;
 
     public WhiteboardView(Context context) {
         super(getFixedContext(context));
-        init();
+        init(context, null);
     }
 
     public WhiteboardView(Context context, AttributeSet attrs) {
         super(getFixedContext(context), attrs);
-        init();
+        init(context, attrs);
     }
 
     public static Context getFixedContext(Context context) {
@@ -47,11 +46,35 @@ public class WhiteboardView extends DWebView {
         }
     }
 
-    private void init() {
+    private void init(Context context, AttributeSet attrs) {
         getSettings().setMediaPlaybackRequiresUserGesture(false);
         loadUrl("file:///android_asset/whiteboard/index.html");
         setWebChromeClient(new FixWebChromeClient());
+
+        // create WhiteSdkConfiguration
+        // whiteSdkConfiguration = createWhiteSdkConfiguration(context, attrs);
     }
+
+//    private WhiteSdkConfiguration createWhiteSdkConfiguration(Context context, AttributeSet attrs) {
+//        WhiteSdkConfiguration configuration = new WhiteSdkConfiguration();
+//        if (context != null && attrs != null) {
+//            TypedArray typedArray = context.getResources().obtainAttributes(attrs, R.styleable.WhiteboardView);
+//            if (typedArray.hasValue(R.styleable.WhiteboardView_wb_appIdentifier)) {
+//                configuration.setAppIdentifier(typedArray.getString(R.styleable.WhiteboardView_wb_appIdentifier));
+//            }
+//
+//            if (typedArray.hasValue(R.styleable.WhiteboardView_wb_deviceType)) {
+//                int deviceTypeCode = typedArray.getInt(R.styleable.WhiteboardView_wb_deviceType, 1);
+//                configuration.setDeviceType(deviceTypeCode == 1 ? DeviceType.desktop : DeviceType.touch);
+//            }
+//
+//            if (typedArray.hasValue(R.styleable.WhiteboardView_wb_log)) {
+//                boolean log = typedArray.getBoolean(R.styleable.WhiteboardView_wb_log, false);
+//                configuration.setLog(log);
+//            }
+//        }
+//        return configuration;
+//    }
 
     private int getWebViewVersion() {
         String userAgent = getSettings().getUserAgentString();
@@ -65,7 +88,6 @@ public class WhiteboardView extends DWebView {
     }
 
     private final static Gson gson = new Gson();
-
 
     public <T> void callHandler(String method, Object[] args, OnReturnValue<T> handler) {
         super.callHandler(method, toMaps(args), handler);
@@ -91,9 +113,9 @@ public class WhiteboardView extends DWebView {
         }
     }
 
-    private static final Class[] PRIMITIVE_TYPES = { int.class, long.class, short.class,
+    private static final Class[] PRIMITIVE_TYPES = {int.class, long.class, short.class,
             float.class, double.class, byte.class, boolean.class, char.class, Integer.class, Long.class,
-            Short.class, Float.class, Double.class, Byte.class, Boolean.class, Character.class };
+            Short.class, Float.class, Double.class, Byte.class, Boolean.class, Character.class};
     private static List<Class> PRIMITIVE_LIST = new ArrayList<>(Arrays.asList(PRIMITIVE_TYPES));
 
     private static boolean isPrimitiveOrStringOrNull(Object target) {
@@ -117,8 +139,8 @@ public class WhiteboardView extends DWebView {
             return ((WhiteObject) object).toJSON();
         } else if (object instanceof WhiteObject[]) {
             List<JSONObject> list = new ArrayList<>();
-            for (int i=0; i<((WhiteObject[]) object).length; i++) {
-                list.add(((WhiteObject[])object)[i].toJSON());
+            for (int i = 0; i < ((WhiteObject[]) object).length; i++) {
+                list.add(((WhiteObject[]) object)[i].toJSON());
             }
             return list;
         } else {
@@ -129,14 +151,23 @@ public class WhiteboardView extends DWebView {
     class FixWebChromeClient extends WebChromeClient {
         @Override
         public Bitmap getDefaultVideoPoster() {
-            try{
+            try {
                 int width = 100;
                 int height = 50;
                 // fix https://bugs.chromium.org/p/chromium/issues/detail?id=521753#c8
                 return Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-            }catch(Exception e){
+            } catch (Exception e) {
                 return super.getDefaultVideoPoster();
             }
         }
     }
+
+//    private WhiteSdk mWhiteSdk;
+//
+//    public WhiteSdk getWhiteSdk() {
+//        if (mWhiteSdk != null) {
+//            mWhiteSdk = new WhiteSdk(this, getContext(), whiteSdkConfiguration);
+//        }
+//        return mWhiteSdk;
+//    }
 }

@@ -21,18 +21,18 @@ import wendu.dsbridge.OnReturnValue;
  * 回放房间操作类
  */
 public class Player extends Displayer {
-
     private final ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, FrequencyEventListener> frequencyEventListenerConcurrentHashMap = new ConcurrentHashMap<>();
 
     private final SyncDisplayerState<PlayerState> syncPlayerState;
 
     private final long timeDuration;
-    private final int framesCount;
     private final long beginTimestamp;
+    private final int framesCount;
 
     /**
      * 获取播放时的播放速率
+     *
      * @return 播放速率
      * @since 2.5.2
      */
@@ -42,6 +42,7 @@ public class Player extends Displayer {
 
     /**
      * 设置播放时的播放速率
+     *
      * @param playbackSpeed
      * @since 2.5.2
      */
@@ -53,6 +54,7 @@ public class Player extends Displayer {
     /**
      * 异步从 player 中获取播放时的播放速率，暂停时不会变为 0。
      * 正常情况下，不需要使用该 API，仅做 Debug 与测试用
+     *
      * @param promise
      * @since 2.5.2
      */
@@ -81,7 +83,7 @@ public class Player extends Displayer {
      * @param playerTimeInfo  the player time info
      * @param syncPlayerState the sync player state
      */
-    public Player(String room, WhiteboardView bridge, Context context, WhiteSdk whiteSdk, PlayerTimeInfo playerTimeInfo, SyncDisplayerState<PlayerState> syncPlayerState) {
+    public Player(String room, JsBridgeInterface bridge, Context context, WhiteSdk whiteSdk, PlayerTimeInfo playerTimeInfo, SyncDisplayerState<PlayerState> syncPlayerState) {
         super(room, bridge, context, whiteSdk);
         this.syncPlayerState = syncPlayerState;
         this.timeDuration = playerTimeInfo.getTimeDuration();
@@ -177,7 +179,7 @@ public class Player extends Displayer {
 
     /**
      * 异步API 获取回放房间播放状态
-     *
+     * <p>
      * 一般情况，可以使用 {@link #getPlayerPhase()} 同步API，进行获取。
      * 如果操作 {@link #stop()} {@link #play()} {@link #stop()} 等影响 playerPhase API，可以使用该 API
      *
@@ -204,7 +206,7 @@ public class Player extends Displayer {
 
     /**
      * 同步API 获取回放房间中所有状态
-     *
+     * <p>
      * 当 phase 状态为 WhitePlayerPhaseWaitingFirstFrame
      * 回调得到的数据为 null
      *
@@ -220,8 +222,9 @@ public class Player extends Displayer {
 
     /**
      * 异步API 获取回放房间中状态
-     *
+     * <p>
      * 一般情况，请使用 {@link #getPlayerState()} 同步 API，进行获取。
+     *
      * @param promise 完成回调
      */
     public void getPlayerState(final Promise<PlayerState> promise) {
@@ -246,7 +249,7 @@ public class Player extends Displayer {
 
     /**
      * 同步API 获取播放文件信息
-     *
+     * <p>
      * 当前时间，总时长，开始 UTC 时间戳。单位：毫秒
      * 当前时间不准确
      *
@@ -259,8 +262,9 @@ public class Player extends Displayer {
 
     /**
      * 异步API 获取播放文件信息
-     *
+     * <p>
      * 一般情况，请使用 {@link #getPlayerTimeInfo()} 同步 API，进行获取。
+     *
      * @param promise 完成回调
      */
     public void getPlayerTimeInfo(final Promise<PlayerTimeInfo> promise) {

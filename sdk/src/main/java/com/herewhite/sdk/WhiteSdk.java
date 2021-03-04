@@ -1,9 +1,6 @@
 package com.herewhite.sdk;
 
 import android.content.Context;
-import android.webkit.JavascriptInterface;
-
-import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -19,32 +16,29 @@ import com.herewhite.sdk.domain.UrlInterrupter;
 
 import org.json.JSONObject;
 
-import java.util.Map;
-
+import androidx.annotation.Nullable;
 import wendu.dsbridge.OnReturnValue;
 
 public class WhiteSdk {
-
-    private final static Gson gson = new Gson();
-
-    private final WhiteboardView bridge;
+    private final JsBridgeInterface bridge;
     private final Context context;
     private final RoomCallbacksImplement roomCallbacksImplement;
     private final PlayerCallbacksImplement playerCallbacksImplement;
+    private final SdkCallbacksImplement sdkCallbacksImplement;
 
-    public CommonCallbacks getCommonCallbacks() {
-        return commonCallbacks;
-    }
+    private final static Gson gson = new Gson();
 
     public void setCommonCallbacks(CommonCallbacks commonCallbacks) {
-        this.commonCallbacks = commonCallbacks;
+        sdkCallbacksImplement.setCommonCallbacks(commonCallbacks);
     }
 
-    @Nullable
-    private CommonCallbacks commonCallbacks;
+    public void setRoomCallbacks(RoomCallbacks roomCallbacks) {
+        if (roomCallbacks != null) {
+            this.roomCallbacksImplement.setListener(roomCallbacks);  // 覆盖
+        }
+    }
+
     private final boolean onlyCallbackRemoteStateModify;
-    @Nullable
-    private UrlInterrupter urlInterrupter;
 
     public AudioMixerImplement getAudioMixerImplement() {
         return audioMixerImplement;
@@ -57,44 +51,46 @@ public class WhiteSdk {
         return "2.11.18";
     }
 
-    public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, @Nullable CommonCallbacks commonCallbacks) {
+    @Deprecated
+    public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, @Nullable CommonCallbacks commonCallbacks) {
         this(bridge, context, whiteSdkConfiguration, commonCallbacks, null);
     }
 
-    public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, @Nullable CommonCallbacks commonCallbacks, @Nullable AudioMixerBridge audioMixerBridge) {
+    @Deprecated
+    public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, @Nullable CommonCallbacks commonCallbacks, @Nullable AudioMixerBridge audioMixerBridge) {
         this.bridge = bridge;
         this.context = context;
-        this.roomCallbacksImplement = new RoomCallbacksImplement(context);
+        this.roomCallbacksImplement = new RoomCallbacksImplement();
         this.playerCallbacksImplement = new PlayerCallbacksImplement();
-        this.onlyCallbackRemoteStateModify = whiteSdkConfiguration.isOnlyCallbackRemoteStateModify();
-        this.commonCallbacks = commonCallbacks;
+        this.sdkCallbacksImplement = new SdkCallbacksImplement(commonCallbacks);
+        onlyCallbackRemoteStateModify = whiteSdkConfiguration.isOnlyCallbackRemoteStateModify();
+
         if (audioMixerBridge != null) {
             this.audioMixerImplement = new AudioMixerImplement(bridge, audioMixerBridge);
             bridge.addJavascriptObject(this.audioMixerImplement, "rtc");
             whiteSdkConfiguration.setEnableRtcIntercept(true);
         }
 
-        bridge.addJavascriptObject(this, "sdk");
+        bridge.addJavascriptObject(this.sdkCallbacksImplement, "sdk");
         bridge.addJavascriptObject(this.roomCallbacksImplement, "room");
         bridge.addJavascriptObject(this.playerCallbacksImplement, "player");
 
-        if (whiteSdkConfiguration.isOnlyCallbackRemoteStateModify()) {
-            // JavaScript 必须将所有 state 变化回调提供给 native。
-            // 该属性的实现在 native 代码中体现。
-            whiteSdkConfiguration.setOnlyCallbackRemoteStateModify(false);
-        }
-        bridge.callHandler("sdk.newWhiteSdk", new Object[]{whiteSdkConfiguration});
+        // JavaScript 必须将所有 state 变化回调提供给 native。
+        // 该属性的实现在 native 代码中体现。
+        WhiteSdkConfiguration copyConfig = Utils.deepCopy(whiteSdkConfiguration, WhiteSdkConfiguration.class);
+        copyConfig.setOnlyCallbackRemoteStateModify(false);
 
-        whiteSdkConfiguration.setOnlyCallbackRemoteStateModify(this.onlyCallbackRemoteStateModify);
+        bridge.callHandler("sdk.newWhiteSdk", new Object[]{copyConfig});
     }
 
-    public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration) {
+    public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration) {
         this(bridge, context, whiteSdkConfiguration, (CommonCallbacks) null);
     }
 
-    public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, UrlInterrupter urlInterrupter) {
+    @Deprecated
+    public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, UrlInterrupter urlInterrupter) {
         this(bridge, context, whiteSdkConfiguration);
-        this.urlInterrupter = urlInterrupter;
+        sdkCallbacksImplement.setUrlInterrupter(urlInterrupter);
     }
 
     /**
@@ -105,6 +101,26 @@ public class WhiteSdk {
      */
     public void joinRoom(final RoomParams roomParams, final Promise<Room> roomPromise) {
         this.joinRoom(roomParams, null, roomPromise);
+    }
+
+    /**
+     * 加入房间，参考 {@link #joinRoom(RoomParams, RoomCallbacks, Promise)}
+     *
+     * @param roomParams the room params
+     * @NewApi
+     */
+    public void joinRoom(final RoomParams roomParams, final OnRoomJoinCallback onRoomJoinCallback) {
+        this.joinRoom(roomParams, null, new Promise<Room>() {
+            @Override
+            public void then(Room room) {
+                onRoomJoinCallback.onRoomJoinSuccess(room);
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+                onRoomJoinCallback.onRoomJoinFail(t);
+            }
+        });
     }
 
     /**
@@ -212,7 +228,7 @@ public class WhiteSdk {
      * 查看房间是否有回放数据
      *
      * @param playerConfiguration 回放房间和时间段信息
-     * @param playablePromise 返回是否能够播放
+     * @param playablePromise     返回是否能够播放
      * @since 2.11.0
      */
     public void isPlayable(final PlayerConfiguration playerConfiguration, final Promise<Boolean> playablePromise) {
@@ -226,11 +242,11 @@ public class WhiteSdk {
 
     /**
      * @param fontFaces 需要增加的字体，当名字可以提供给 ppt 和文字教具使用。
-     * 注意：1. 该修改只在本地有效，不会对远端造成影响。
-     *      2. 以这种方式插入的 FontFace，只有当该字体被使用时，才会触发下载。
-     *      3. FontFace，可能会影响部分设备的渲染逻辑，部分设备，可能会在完成字体加载后，才渲染文字。
-     *      4. 该 API 插入的字体，为一个整体，重复调用该 API，会覆盖之前的字体内容。
-     *      5. 该 API 与 loadFontFaces 重复使用，无法预期行为，请尽量避免。
+     *                  注意：1. 该修改只在本地有效，不会对远端造成影响。
+     *                  2. 以这种方式插入的 FontFace，只有当该字体被使用时，才会触发下载。
+     *                  3. FontFace，可能会影响部分设备的渲染逻辑，部分设备，可能会在完成字体加载后，才渲染文字。
+     *                  4. 该 API 插入的字体，为一个整体，重复调用该 API，会覆盖之前的字体内容。
+     *                  5. 该 API 与 loadFontFaces 重复使用，无法预期行为，请尽量避免。
      * @since 2.11.2
      */
     public void setupFontFaces(FontFace[] fontFaces) {
@@ -238,15 +254,15 @@ public class WhiteSdk {
     }
 
     /**
-     * @param fontFaces 需要增加的字体，可以提供给 ppt 和文字教具使用。
+     * @param fontFaces   需要增加的字体，可以提供给 ppt 和文字教具使用。
      * @param loadPromise 如果有报错，会在此处错误回调。该回调会在每一个字体加载成功或者失败后，单独回调。FontFace 填写正确的话，有多少个字体，就会有多少个回调。
-     * 注意：1. 该修改只在本地有效，不会对远端造成影响。
-     *      2. FontFace，可能会影响部分设备的渲染逻辑，部分设备，可能会在完成字体加载后，才渲染文字。
-     *      3. 该 API 插入的字体，无法删除；每次都是增加新字体。
-     *      4. 该 API 与 setupFontFaces 重复使用，无法预期行为，请尽量避免。
+     *                    注意：1. 该修改只在本地有效，不会对远端造成影响。
+     *                    2. FontFace，可能会影响部分设备的渲染逻辑，部分设备，可能会在完成字体加载后，才渲染文字。
+     *                    3. 该 API 插入的字体，无法删除；每次都是增加新字体。
+     *                    4. 该 API 与 setupFontFaces 重复使用，无法预期行为，请尽量避免。
      * @since 2.11.2
      */
-    public void loadFontFaces(FontFace[] fontFaces, final Promise<JSONObject>loadPromise) {
+    public void loadFontFaces(FontFace[] fontFaces, final Promise<JSONObject> loadPromise) {
         bridge.callHandler("sdk.asyncInsertFontFaces", new Object[]{fontFaces}, new OnReturnValue<JSONObject>() {
             @Override
             public void onValue(JSONObject retValue) {
@@ -257,7 +273,7 @@ public class WhiteSdk {
 
     /**
      * @param names 定义文字教具，在本地使用的字体。
-     * 注意：该修改只在本地有效，不会对远端造成影响。
+     *              注意：该修改只在本地有效，不会对远端造成影响。
      * @since 2.11.2
      */
     public void updateTextFont(String[] names) {
@@ -276,8 +292,8 @@ public class WhiteSdk {
     /**
      * 释放实时房间对 RoomCallback 的持有
      *
-     * @deprecated 一个 WhiteSDK 实例，只能对应一个实时房间，所以不再需要使用 room uuid 进行定位
      * @param uuid 任意参数，不会被使用
+     * @deprecated 一个 WhiteSDK 实例，只能对应一个实时房间，所以不再需要使用 room uuid 进行定位
      */
     public void releaseRoom(String uuid) {
         releaseRoom();
@@ -294,71 +310,16 @@ public class WhiteSdk {
 
     /**
      * 释放回放房间对 PlayerEventListener 的持有
-     * @deprecated 由于一个 WhiteSDK 实例，只能对应一个回放房间，所以不再需要使用 player uuid 进行定位
+     *
      * @param uuid 任意参数，不会被使用
+     * @deprecated 由于一个 WhiteSDK 实例，只能对应一个回放房间，所以不再需要使用 player uuid 进行定位
      */
     public void releasePlayer(String uuid) {
         releasePlayer();
     }
 
-    //region SDK Callbacks
+    /**
+     * TODO: 此处暂时保持与历史命名同步
+     */
 
-    @JavascriptInterface
-    public String urlInterrupter(Object args) {
-        if (this.commonCallbacks != null) {
-            return this.commonCallbacks.urlInterrupter(String.valueOf(args));
-        } else if (this.urlInterrupter == null) {
-            return String.valueOf(args);
-        }
-        return this.urlInterrupter.urlInterrupter(String.valueOf(args));
-    }
-
-    @JavascriptInterface
-    public void throwError(Object args) {
-        Logger.info("WhiteSDK JS error: " + gson.fromJson(String.valueOf(args), Map.class));
-        if (this.commonCallbacks != null) {
-            this.commonCallbacks.throwError(args);
-        }
-    }
-
-    @JavascriptInterface
-    public void logger(Object args) {
-        Logger.info("WhiteSDK logger: " + gson.fromJson(String.valueOf(args), Map.class));
-    }
-
-    @JavascriptInterface
-    public void postMessage(Object args) {
-        if (this.commonCallbacks != null) {
-            try {
-
-                JSONObject object = new JSONObject((String) args);
-                this.commonCallbacks.onMessage(object);
-            } catch (Throwable throwable) {
-
-            }
-        }
-    }
-
-    @JavascriptInterface
-    public void onPPTMediaPlay(Object args) {
-        if (this.commonCallbacks != null) {
-            this.commonCallbacks.onPPTMediaPlay();
-        }
-    }
-
-    @JavascriptInterface
-    public void onPPTMediaPause(Object args) {
-        if (this.commonCallbacks != null) {
-            this.commonCallbacks.onPPTMediaPause();
-        }
-    }
-
-    @JavascriptInterface
-    public void setupFail(Object object) {
-        if (this.commonCallbacks != null && object instanceof JSONObject) {
-            SDKError sdkError = SDKError.parseError((JSONObject) object);
-            this.commonCallbacks.sdkSetupFail(sdkError);
-        }
-    }
-    //endregion
 }
