@@ -20,13 +20,14 @@ import androidx.annotation.Nullable;
 import wendu.dsbridge.OnReturnValue;
 
 public class WhiteSdk {
+    private final static Gson gson = new Gson();
+
     private final JsBridgeInterface bridge;
-    private final Context context;
     private final RoomCallbacksImplement roomCallbacksImplement;
     private final PlayerCallbacksImplement playerCallbacksImplement;
     private final SdkCallbacksImplement sdkCallbacksImplement;
 
-    private final static Gson gson = new Gson();
+    private final int densityDpi;
 
     public void setCommonCallbacks(CommonCallbacks commonCallbacks) {
         sdkCallbacksImplement.setCommonCallbacks(commonCallbacks);
@@ -59,7 +60,7 @@ public class WhiteSdk {
     @Deprecated
     public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, @Nullable CommonCallbacks commonCallbacks, @Nullable AudioMixerBridge audioMixerBridge) {
         this.bridge = bridge;
-        this.context = context;
+        this.densityDpi = Utils.getDensityDpi(context);
         this.roomCallbacksImplement = new RoomCallbacksImplement();
         this.playerCallbacksImplement = new PlayerCallbacksImplement();
         this.sdkCallbacksImplement = new SdkCallbacksImplement(commonCallbacks);
@@ -152,7 +153,7 @@ public class WhiteSdk {
                         boolean disableCallbackWhilePutting = onlyCallbackRemoteStateModify;
                         JsonObject jsonState = jsonObject.getAsJsonObject("state");
                         SyncDisplayerState<RoomState> syncRoomState = new SyncDisplayerState<>(RoomState.class, jsonState.toString(), disableCallbackWhilePutting);
-                        Room room = new Room(roomParams.getUuid(), bridge, context, WhiteSdk.this, syncRoomState);
+                        Room room = new Room(roomParams.getUuid(), bridge, densityDpi, syncRoomState);
                         Long observerId = jsonObject.get("observerId").getAsLong();
                         Boolean isWritable = jsonObject.get("isWritable").getAsBoolean();
                         room.setObserverId(observerId);
@@ -211,7 +212,7 @@ public class WhiteSdk {
                         JsonObject timeInfo = jsonObject.getAsJsonObject("timeInfo");
                         PlayerTimeInfo playerTimeInfo = gson.fromJson(timeInfo.toString(), PlayerTimeInfo.class);
                         SyncDisplayerState<PlayerState> syncPlayerState = new SyncDisplayerState(PlayerState.class, "{}", true);
-                        Player player = new Player(playerConfiguration.getRoom(), bridge, context, WhiteSdk.this, playerTimeInfo, syncPlayerState);
+                        Player player = new Player(playerConfiguration.getRoom(), bridge, densityDpi, playerTimeInfo, syncPlayerState);
                         playerCallbacksImplement.setPlayer(player);
                         playerPromise.then(player);
                     }
@@ -321,5 +322,4 @@ public class WhiteSdk {
     /**
      * TODO: 此处暂时保持与历史命名同步
      */
-
 }

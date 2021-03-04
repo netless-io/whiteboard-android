@@ -1,7 +1,5 @@
 package com.herewhite.sdk;
 
-import android.content.Context;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.AkkoEvent;
@@ -59,8 +57,8 @@ public class Room extends Displayer {
     private Integer timeDelay;
     private Long observerId;
 
-    public Room(String uuid, JsBridgeInterface bridge, Context context, WhiteSdk sdk, SyncDisplayerState<RoomState> syncRoomState) {
-        super(uuid, bridge, context, sdk);
+    Room(String uuid, JsBridgeInterface bridge, int densityDpi, SyncDisplayerState<RoomState> syncRoomState) {
+        super(uuid, bridge, densityDpi);
         this.timeDelay = 0;
         this.syncRoomState = syncRoomState;
     }
@@ -109,7 +107,6 @@ public class Room extends Displayer {
         syncRoomState.putDisplayerStateProperty("memberState", memberState);
         bridge.callHandler("room.setMemberState", new Object[]{memberState});
     }
-
     //region operation
 
 

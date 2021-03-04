@@ -1,6 +1,5 @@
 package com.herewhite.sdk;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -40,18 +39,16 @@ public class Displayer {
     private int backgroundColor = Color.WHITE;
     protected final JsBridgeInterface bridge;
     protected String uuid;
-    protected final Context context;
-    protected WhiteSdk sdk;
+    protected int densityDpi;
     protected final static Gson gson = new Gson();
 
     protected ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
     protected ConcurrentHashMap<String, FrequencyEventListener> frequencyEventListenerConcurrentHashMap = new ConcurrentHashMap<>();
 
-    public Displayer(String uuid, JsBridgeInterface bridge, Context context, WhiteSdk sdk) {
+    public Displayer(String uuid, JsBridgeInterface bridge, int densityDpi) {
         this.uuid = uuid;
         this.bridge = bridge;
-        this.context = context;
-        this.sdk = sdk;
+        this.densityDpi = densityDpi;
     }
 
     /**
@@ -296,7 +293,7 @@ public class Displayer {
         final String pureBase64Encoded = base64String.substring(base64String.indexOf(",") + 1);
         final byte[] decodedBytes = Base64.decode(pureBase64Encoded, Base64.DEFAULT);
         BitmapFactory.Options opts = new BitmapFactory.Options();
-        opts.inDensity = context.getResources().getDisplayMetrics().densityDpi;
+        opts.inDensity = densityDpi;
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length, opts);
     }
 
