@@ -31,7 +31,7 @@ import wendu.dsbridge.OnReturnValue;
 /**
  * 实时房间操作类
  */
-public class Room extends Displayer {
+public class Room extends Displayer implements SyncDisplayerState.Listener<RoomState> {
     private final SyncDisplayerState<RoomState> syncRoomState;
     private RoomPhase roomPhase = RoomPhase.connected;
 
@@ -61,6 +61,7 @@ public class Room extends Displayer {
         super(uuid, bridge, densityDpi);
         this.timeDelay = 0;
         this.syncRoomState = syncRoomState;
+        syncRoomState.setListener(this);
     }
 
     SyncDisplayerState<RoomState> getSyncRoomState() {
@@ -69,6 +70,15 @@ public class Room extends Displayer {
 
     void setRoomPhase(RoomPhase roomPhase) {
         this.roomPhase = roomPhase;
+        if (roomCallbacks != null) {
+            try {
+                roomCallbacks.onPhaseChanged(roomPhase);
+            } catch (AssertionError a) {
+                throw a;
+            } catch (Throwable e) {
+                Logger.error("An exception occurred while invoke onPhaseChanged method", e);
+            }
+        }
     }
 
     /**
@@ -94,7 +104,7 @@ public class Room extends Displayer {
      * @param globalState 自定义字段，可以传入 {@link GlobalState} 子类
      */
     public void setGlobalState(GlobalState globalState) {
-        syncRoomState.putDisplayerStateProperty("globalState", globalState);
+        syncRoomState.putProperty("globalState", globalState);
         bridge.callHandler("room.setGlobalState", new Object[]{globalState});
     }
 
@@ -104,7 +114,7 @@ public class Room extends Displayer {
      * @param memberState {@link MemberState} 只需要传入需要修改的部分即可。
      */
     public void setMemberState(MemberState memberState) {
-        syncRoomState.putDisplayerStateProperty("memberState", memberState);
+        syncRoomState.putProperty("memberState", memberState);
         bridge.callHandler("room.setMemberState", new Object[]{memberState});
     }
     //region operation
@@ -957,6 +967,82 @@ public class Room extends Displayer {
     public void dispatchMagixEvent(AkkoEvent eventEntry) {
         bridge.callHandler("room.dispatchMagixEvent", new Object[]{eventEntry});
     }
+    //endregion
 
+    //region roomCallbacks
+    // 关于此处的回调在JsBridge线程，请考虑/讨论确定是否在诛仙城执行
+    private RoomCallbacks roomCallbacks;
+
+    public void setRoomCallbacks(RoomCallbacks roomCallbacks) {
+        this.roomCallbacks = roomCallbacks;
+    }
+
+    @Override
+    public void onDisplayerStateChanged(final RoomState modifyState) {
+        if (roomCallbacks != null) {
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    if (roomCallbacks != null) {
+                        roomCallbacks.onRoomStateChanged(modifyState);
+                    }
+                }
+            });
+        }
+    }
+
+    public void fireCanUndoStepsUpdate(long canUndoSteps) {
+        if (roomCallbacks != null) {
+            roomCallbacks.onCanUndoStepsUpdate(canUndoSteps);
+        }
+    }
+
+    public void onCanRedoStepsUpdate(long canRedoSteps) {
+        if (roomCallbacks != null) {
+            roomCallbacks.onCanRedoStepsUpdate(canRedoSteps);
+        }
+    }
+
+    public void fireKickedWithReason(String reason) {
+        // 获取事件,反序列化然后发送通知给监听者
+        if (roomCallbacks != null) {
+            try {
+                roomCallbacks.onKickedWithReason(reason);
+            } catch (AssertionError a) {
+                throw a;
+            } catch (Throwable e) {
+                Logger.error("An exception occurred while invoke onKickedWithReason method", e);
+            }
+        }
+    }
+
+    public void fireDisconnectWithError(Exception exception) {
+        // 获取事件,反序列化然后发送通知给监听者
+        if (roomCallbacks != null) {
+            try {
+                roomCallbacks.onDisconnectWithError(exception);
+            } catch (AssertionError a) {
+                throw a;
+            } catch (Throwable e) {
+                Logger.error("An exception occurred while invoke onDisconnectWithError method", e);
+            }
+        }
+    }
+
+    public void fireCatchErrorWhenAppendFrame(long userId, Exception exception) {
+        if (roomCallbacks != null) {
+            try {
+                roomCallbacks.onCatchErrorWhenAppendFrame(userId, exception);
+            } catch (AssertionError a) {
+                throw a;
+            } catch (Throwable e) {
+                Logger.error("An exception occurred while invoke onCatchErrorWhenAppendFrame method", e);
+            }
+        }
+    }
+
+    public void fireRoomStateChanged(String stateJSON) {
+        syncRoomState.syncDisplayerState(stateJSON);
+    }
     //endregion
 }

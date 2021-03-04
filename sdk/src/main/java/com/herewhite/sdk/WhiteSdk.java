@@ -23,20 +23,14 @@ public class WhiteSdk {
     private final static Gson gson = new Gson();
 
     private final JsBridgeInterface bridge;
-    private final RoomCallbacksImplement roomCallbacksImplement;
-    private final PlayerCallbacksImplement playerCallbacksImplement;
-    private final SdkCallbacksImplement sdkCallbacksImplement;
+    private final RoomCallbacksImpl roomJsCallbacks;
+    private final PlayerCallbacksImpl playerJsCallbacks;
+    private final SdkCallbacksImpl sdkJsCallbacks;
 
     private final int densityDpi;
 
     public void setCommonCallbacks(CommonCallbacks commonCallbacks) {
-        sdkCallbacksImplement.setCommonCallbacks(commonCallbacks);
-    }
-
-    public void setRoomCallbacks(RoomCallbacks roomCallbacks) {
-        if (roomCallbacks != null) {
-            this.roomCallbacksImplement.setListener(roomCallbacks);  // 覆盖
-        }
+        sdkJsCallbacks.setCommonCallbacks(commonCallbacks);
     }
 
     private final boolean onlyCallbackRemoteStateModify;
@@ -52,18 +46,25 @@ public class WhiteSdk {
         return "2.11.18";
     }
 
-    @Deprecated
+    public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration) {
+        this(bridge, context, whiteSdkConfiguration, (CommonCallbacks) null);
+    }
+
     public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, @Nullable CommonCallbacks commonCallbacks) {
         this(bridge, context, whiteSdkConfiguration, commonCallbacks, null);
     }
 
-    @Deprecated
+    public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, UrlInterrupter urlInterrupter) {
+        this(bridge, context, whiteSdkConfiguration);
+        sdkJsCallbacks.setUrlInterrupter(urlInterrupter);
+    }
+
     public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, @Nullable CommonCallbacks commonCallbacks, @Nullable AudioMixerBridge audioMixerBridge) {
         this.bridge = bridge;
-        this.densityDpi = Utils.getDensityDpi(context);
-        this.roomCallbacksImplement = new RoomCallbacksImplement();
-        this.playerCallbacksImplement = new PlayerCallbacksImplement();
-        this.sdkCallbacksImplement = new SdkCallbacksImplement(commonCallbacks);
+        densityDpi = Utils.getDensityDpi(context);
+        roomJsCallbacks = new RoomCallbacksImpl();
+        playerJsCallbacks = new PlayerCallbacksImpl();
+        sdkJsCallbacks = new SdkCallbacksImpl(commonCallbacks);
         onlyCallbackRemoteStateModify = whiteSdkConfiguration.isOnlyCallbackRemoteStateModify();
 
         if (audioMixerBridge != null) {
@@ -72,9 +73,9 @@ public class WhiteSdk {
             whiteSdkConfiguration.setEnableRtcIntercept(true);
         }
 
-        bridge.addJavascriptObject(this.sdkCallbacksImplement, "sdk");
-        bridge.addJavascriptObject(this.roomCallbacksImplement, "room");
-        bridge.addJavascriptObject(this.playerCallbacksImplement, "player");
+        bridge.addJavascriptObject(this.sdkJsCallbacks, "sdk");
+        bridge.addJavascriptObject(this.roomJsCallbacks, "room");
+        bridge.addJavascriptObject(this.playerJsCallbacks, "player");
 
         // JavaScript 必须将所有 state 变化回调提供给 native。
         // 该属性的实现在 native 代码中体现。
@@ -82,16 +83,6 @@ public class WhiteSdk {
         copyConfig.setOnlyCallbackRemoteStateModify(false);
 
         bridge.callHandler("sdk.newWhiteSdk", new Object[]{copyConfig});
-    }
-
-    public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration) {
-        this(bridge, context, whiteSdkConfiguration, (CommonCallbacks) null);
-    }
-
-    @Deprecated
-    public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, UrlInterrupter urlInterrupter) {
-        this(bridge, context, whiteSdkConfiguration);
-        sdkCallbacksImplement.setUrlInterrupter(urlInterrupter);
     }
 
     /**
@@ -105,26 +96,6 @@ public class WhiteSdk {
     }
 
     /**
-     * 加入房间，参考 {@link #joinRoom(RoomParams, RoomCallbacks, Promise)}
-     *
-     * @param roomParams the room params
-     * @NewApi
-     */
-    public void joinRoom(final RoomParams roomParams, final OnRoomJoinCallback onRoomJoinCallback) {
-        this.joinRoom(roomParams, null, new Promise<Room>() {
-            @Override
-            public void then(Room room) {
-                onRoomJoinCallback.onRoomJoinSuccess(room);
-            }
-
-            @Override
-            public void catchEx(SDKError t) {
-                onRoomJoinCallback.onRoomJoinFail(t);
-            }
-        });
-    }
-
-    /**
      * 加入房间，最终调用 API
      *
      * @param roomParams    房间参数，room uuid 与 room token
@@ -133,9 +104,7 @@ public class WhiteSdk {
      */
     public void joinRoom(final RoomParams roomParams, final RoomCallbacks roomCallbacks, final Promise<Room> roomPromise) {
         try {
-            if (roomCallbacks != null) {
-                this.roomCallbacksImplement.setListener(roomCallbacks);  // 覆盖
-            }
+            final RoomCallbacksImpl finalRoomJsCallbacks = roomJsCallbacks;
             bridge.callHandler("sdk.joinRoom", new Object[]{roomParams}, new OnReturnValue<String>() {
                 @Override
                 public void onValue(String roomString) {
@@ -153,13 +122,16 @@ public class WhiteSdk {
                         boolean disableCallbackWhilePutting = onlyCallbackRemoteStateModify;
                         JsonObject jsonState = jsonObject.getAsJsonObject("state");
                         SyncDisplayerState<RoomState> syncRoomState = new SyncDisplayerState<>(RoomState.class, jsonState.toString(), disableCallbackWhilePutting);
+                        long observerId = jsonObject.get("observerId").getAsLong();
+                        boolean isWritable = jsonObject.get("isWritable").getAsBoolean();
+
                         Room room = new Room(roomParams.getUuid(), bridge, densityDpi, syncRoomState);
-                        Long observerId = jsonObject.get("observerId").getAsLong();
-                        Boolean isWritable = jsonObject.get("isWritable").getAsBoolean();
                         room.setObserverId(observerId);
                         room.setWritable(isWritable);
                         room.setRoomPhase(RoomPhase.connected);
-                        roomCallbacksImplement.setRoom(room);
+                        // TODO 必须保证joinRoom调用到穿件成功之前没有其它事件回调
+                        room.setRoomCallbacks(roomCallbacks);
+                        finalRoomJsCallbacks.setRoom(room);
                         roomPromise.then(room);
                     }
                 }
@@ -191,7 +163,7 @@ public class WhiteSdk {
     public void createPlayer(final PlayerConfiguration playerConfiguration, PlayerEventListener playerEventListener, final Promise<Player> playerPromise) {
         try {
             if (playerEventListener != null) {
-                this.playerCallbacksImplement.setListener(playerEventListener);
+                this.playerJsCallbacks.setListener(playerEventListener);
             }
             bridge.callHandler("sdk.replayRoom", new Object[]{
                     playerConfiguration
@@ -213,7 +185,7 @@ public class WhiteSdk {
                         PlayerTimeInfo playerTimeInfo = gson.fromJson(timeInfo.toString(), PlayerTimeInfo.class);
                         SyncDisplayerState<PlayerState> syncPlayerState = new SyncDisplayerState(PlayerState.class, "{}", true);
                         Player player = new Player(playerConfiguration.getRoom(), bridge, densityDpi, playerTimeInfo, syncPlayerState);
-                        playerCallbacksImplement.setPlayer(player);
+                        playerJsCallbacks.setPlayer(player);
                         playerPromise.then(player);
                     }
                 }
@@ -287,7 +259,8 @@ public class WhiteSdk {
      * @since 2.4.12
      */
     public void releaseRoom() {
-        roomCallbacksImplement.setListener(null);
+        // TODO 清理Room资源
+        roomJsCallbacks.setRoom(null);
     }
 
     /**
@@ -306,7 +279,7 @@ public class WhiteSdk {
      * @since 2.4.12
      */
     public void releasePlayer() {
-        playerCallbacksImplement.setListener(null);
+        playerJsCallbacks.setListener(null);
     }
 
     /**

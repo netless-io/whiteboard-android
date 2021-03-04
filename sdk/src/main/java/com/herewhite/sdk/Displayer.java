@@ -3,6 +3,8 @@ package com.herewhite.sdk;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Base64;
 
 import com.google.gson.Gson;
@@ -34,13 +36,14 @@ import wendu.dsbridge.OnReturnValue;
  * 白板房间基类
  */
 public class Displayer {
-
+    protected final static Gson gson = new Gson();
     @ColorInt
     private int backgroundColor = Color.WHITE;
+
     protected final JsBridgeInterface bridge;
     protected String uuid;
     protected int densityDpi;
-    protected final static Gson gson = new Gson();
+    private final Handler handler;
 
     protected ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
     protected ConcurrentHashMap<String, FrequencyEventListener> frequencyEventListenerConcurrentHashMap = new ConcurrentHashMap<>();
@@ -49,6 +52,12 @@ public class Displayer {
         this.uuid = uuid;
         this.bridge = bridge;
         this.densityDpi = densityDpi;
+        // TODO 如何处理释放问题
+        this.handler = new Handler(Looper.getMainLooper());
+    }
+
+    protected void post(Runnable runnable) {
+        handler.post(runnable);
     }
 
     /**

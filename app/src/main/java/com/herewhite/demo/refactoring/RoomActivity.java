@@ -27,7 +27,6 @@ import com.herewhite.sdk.AbstractRoomCallbacks;
 import com.herewhite.sdk.Converter;
 import com.herewhite.sdk.ConverterCallbacks;
 import com.herewhite.sdk.Logger;
-import com.herewhite.sdk.OnRoomJoinCallback;
 import com.herewhite.sdk.Room;
 import com.herewhite.sdk.RoomParams;
 import com.herewhite.sdk.WhiteSdk;
@@ -235,7 +234,7 @@ public class RoomActivity extends AppCompatActivity {
 
         final Date joinDate = new Date();
         logRoomInfo("native join " + joinDate);
-        mWhiteSdk.setRoomCallbacks(new AbstractRoomCallbacks() {
+        mWhiteSdk.joinRoom(roomParams, new AbstractRoomCallbacks() {
             @Override
             public void onCanUndoStepsUpdate(long canUndoSteps) {
                 logRoomInfo("canUndoSteps: " + canUndoSteps);
@@ -258,10 +257,9 @@ public class RoomActivity extends AppCompatActivity {
             public void onRoomStateChanged(RoomState modifyState) {
                 logRoomInfo(gson.toJson(modifyState));
             }
-        });
-        mWhiteSdk.joinRoom(roomParams, new OnRoomJoinCallback() {
+        }, new Promise<Room>() {
             @Override
-            public void onRoomJoinSuccess(Room room) {
+            public void then(Room room) {
                 //记录加入房间消耗的时长
                 logRoomInfo("native join in room duration: " + (System.currentTimeMillis() - joinDate.getTime()) / 1000f + "s");
                 mRoom = room;
@@ -269,7 +267,7 @@ public class RoomActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onRoomJoinFail(SDKError t) {
+            public void catchEx(SDKError t) {
                 showToast(t.getMessage());
             }
         });

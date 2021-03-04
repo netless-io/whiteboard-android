@@ -13,12 +13,10 @@ import com.herewhite.sdk.domain.SDKError;
  * Created by buhe on 2018/8/12.
  */
 
-class PlayerCallbacksImplement implements SyncDisplayerState.Listener<PlayerState> {
-
+class PlayerCallbacksImpl implements SyncDisplayerState.Listener<PlayerState> {
     private final static Gson gson = new Gson();
 
     private PlayerEventListener listener;
-
     private Player player;
 
     public PlayerEventListener getListener() {
