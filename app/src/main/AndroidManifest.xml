@@ -4,8 +4,6 @@
     package="com.herewhite.demo">
 
     <uses-permission android:name="android.permission.INTERNET" />
-<!--    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />-->
-<!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>-->
 
     <application
         android:allowBackup="true"
@@ -18,9 +16,8 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".PureReplayActivity"
-            android:label="@string/title_activity_pure_replay"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize">
-        </activity>
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:label="@string/title_activity_pure_replay"></activity>
         <activity
             android:name=".PlayActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
@@ -39,20 +36,5 @@
             android:name=".RoomActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
         <activity android:name=".TestActivity" />
-
-        <activity
-            android:name=".refactoring.StartActivity"
-            android:label="@string/title_activity_start"
-            android:theme="@style/AppTheme.NoActionBar">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-        </activity>
-        <activity
-            android:name=".refactoring.RoomActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
     </application>
 </manifest>

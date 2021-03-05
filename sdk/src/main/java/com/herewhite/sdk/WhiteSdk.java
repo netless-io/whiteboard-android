@@ -74,7 +74,7 @@ public class WhiteSdk {
             whiteSdkConfiguration.setEnableRtcIntercept(true);
         }
 
-        //  bridge.addJavascriptObject(this.sdkJsCallbacks, "sdk");
+        bridge.addJavascriptObject(this.sdkJsInterface, "sdk");
         bridge.addJavascriptObject(this.roomJsInterface, "room");
         bridge.addJavascriptObject(this.playerJsInterface, "player");
 
