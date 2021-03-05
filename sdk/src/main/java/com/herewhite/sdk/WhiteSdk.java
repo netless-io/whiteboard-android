@@ -26,7 +26,7 @@ public class WhiteSdk {
     private final RoomJsInterfaceImpl roomJsInterface;
 
     private final PlayerJsInterfaceImpl playerJsInterface;
-    private final SdkInterfaceImpl sdkJsInterface;
+    private final SdkJsInterfaceImpl sdkJsInterface;
 
     private final int densityDpi;
 
@@ -65,7 +65,7 @@ public class WhiteSdk {
         densityDpi = Utils.getDensityDpi(context);
         roomJsInterface = new RoomJsInterfaceImpl();
         playerJsInterface = new PlayerJsInterfaceImpl();
-        sdkJsInterface = new SdkInterfaceImpl(commonCallbacks);
+        sdkJsInterface = new SdkJsInterfaceImpl(commonCallbacks);
         onlyCallbackRemoteStateModify = whiteSdkConfiguration.isOnlyCallbackRemoteStateModify();
 
         if (audioMixerBridge != null) {
@@ -158,14 +158,11 @@ public class WhiteSdk {
      * 创建回放房间
      *
      * @param playerConfiguration 回放参数，具体查看 {@link PlayerConfiguration}
-     * @param playerEventListener 回放房间变化回调。当使用同一个 sdk 初始化多个房间时，该参数传入 null，则新回放房间，仍然会回调旧的 playerEventListener
+     * @param listener            回放房间变化回调。当使用同一个 sdk 初始化多个房间时，该参数传入 null，则新回放房间，仍然会回调旧的 playerEventListener
      * @param playerPromise       创建完成回调
      */
-    public void createPlayer(final PlayerConfiguration playerConfiguration, PlayerEventListener playerEventListener, final Promise<Player> playerPromise) {
+    public void createPlayer(final PlayerConfiguration playerConfiguration, final PlayerEventListener listener, final Promise<Player> playerPromise) {
         try {
-            if (playerEventListener != null) {
-                this.playerJsInterface.setListener(playerEventListener);
-            }
             bridge.callHandler("sdk.replayRoom", new Object[]{
                     playerConfiguration
             }, new OnReturnValue<String>() {
@@ -187,6 +184,8 @@ public class WhiteSdk {
                         SyncDisplayerState<PlayerState> syncPlayerState = new SyncDisplayerState(PlayerState.class, "{}", true);
                         Player player = new Player(playerConfiguration.getRoom(), bridge, densityDpi, playerTimeInfo, syncPlayerState);
                         playerJsInterface.setPlayer(player);
+                        // TODO 同Room一样，需保证事件状态完整
+                        player.setPlayerEventListener(listener);
                         playerPromise.then(player);
                     }
                 }
@@ -280,7 +279,7 @@ public class WhiteSdk {
      * @since 2.4.12
      */
     public void releasePlayer() {
-        playerJsInterface.setListener(null);
+        playerJsInterface.setPlayer(null);
     }
 
     /**
@@ -292,8 +291,4 @@ public class WhiteSdk {
     public void releasePlayer(String uuid) {
         releasePlayer();
     }
-
-    /**
-     * TODO: 此处暂时保持与历史命名同步
-     */
 }

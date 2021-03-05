@@ -11,17 +11,17 @@ import java.util.Map;
 
 import androidx.annotation.Nullable;
 
-class SdkInterfaceImpl {
+class SdkJsInterfaceImpl {
     @Nullable
     private CommonCallbacks commonCallbacks;
     @Nullable
     private UrlInterrupter urlInterrupter;
 
-    public SdkInterfaceImpl() {
+    public SdkJsInterfaceImpl() {
 
     }
 
-    public SdkInterfaceImpl(CommonCallbacks commonCallbacks) {
+    public SdkJsInterfaceImpl(CommonCallbacks commonCallbacks) {
         this.commonCallbacks = commonCallbacks;
     }
 

@@ -18,7 +18,7 @@ import wendu.dsbridge.OnReturnValue;
 /**
  * 回放房间操作类
  */
-public class Player extends Displayer {
+public class Player extends Displayer implements SyncDisplayerState.Listener<PlayerState> {
     private final ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, FrequencyEventListener> frequencyEventListenerConcurrentHashMap = new ConcurrentHashMap<>();
 
@@ -90,14 +90,6 @@ public class Player extends Displayer {
 
     SyncDisplayerState<PlayerState> getSyncPlayerState() {
         return syncPlayerState;
-    }
-
-    void setPlayerPhase(PlayerPhase playerPhase) {
-        this.playerPhase = playerPhase;
-    }
-
-    void setScheduleTime(long scheduleTime) {
-        this.scheduleTime = scheduleTime;
     }
 
     public void play() {
@@ -273,4 +265,108 @@ public class Player extends Displayer {
         });
     }
     //endregion
+
+    // region playerEventListener
+    private PlayerEventListener listener;
+
+    public void setPlayerEventListener(PlayerEventListener playerEventListener) {
+        this.listener = playerEventListener;
+    }
+
+    public PlayerEventListener getPlayerEventListener() {
+        return listener;
+    }
+
+    @Override
+    public void onDisplayerStateChanged(PlayerState modifyState) {
+        if (listener != null) {
+            try {
+                listener.onPlayerStateChanged(modifyState);
+            } catch (AssertionError a) {
+                throw a;
+            } catch (Throwable e) {
+                Logger.error("An exception occurred while invoke onPlayerStateChanged method", e);
+            }
+        }
+    }
+
+    void setPlayerPhase(PlayerPhase playerPhase) {
+        this.playerPhase = playerPhase;
+        if (listener != null) {
+            try {
+                listener.onPhaseChanged(playerPhase);
+            } catch (AssertionError a) {
+                throw a;
+            } catch (Throwable e) {
+                Logger.error("An exception occurred while invoke onPhaseChanged method", e);
+            }
+        }
+    }
+
+    public void onLoadFirstFrame() {
+        if (listener != null) {
+            try {
+                listener.onLoadFirstFrame();
+            } catch (AssertionError a) {
+                throw a;
+            } catch (Throwable e) {
+                Logger.error("An exception occurred while invoke onLoadFirstFrame method", e);
+            }
+        }
+    }
+
+    public void onSliceChanged(String slice) {
+        if (listener != null) {
+            try {
+                listener.onSliceChanged(slice);
+            } catch (AssertionError a) {
+                throw a;
+            } catch (Throwable e) {
+                Logger.error("An exception occurred while invoke onSliceChanged method", e);
+            }
+        }
+    }
+
+    public void syncDisplayerState(String stateJSON) {
+        syncPlayerState.syncDisplayerState(stateJSON);
+    }
+
+    public void onStoppedWithError(SDKError error) {
+        if (listener != null) {
+            try {
+                listener.onStoppedWithError(error);
+            } catch (AssertionError a) {
+                throw a;
+            } catch (Throwable e) {
+                Logger.error("An exception occurred while invoke onStoppedWithError method", e);
+            }
+        }
+    }
+
+    void setScheduleTime(long scheduleTime) {
+        this.scheduleTime = scheduleTime;
+        // 获取事件,反序列化然后发送通知给监听者
+        if (listener != null) {
+            try {
+                listener.onScheduleTimeChanged(scheduleTime);
+            } catch (AssertionError a) {
+                throw a;
+            } catch (Throwable e) {
+                Logger.error("An exception occurred while invoke onScheduleTimeChanged method", e);
+            }
+        }
+    }
+
+    public void onCatchErrorWhenAppendFrame(SDKError error) {
+        if (listener != null) {
+            listener.onCatchErrorWhenAppendFrame(error);
+        }
+    }
+
+    public void onCatchErrorWhenRender(SDKError error) {
+        if (listener != null) {
+            listener.onCatchErrorWhenRender(error);
+        }
+    }
+    // endregion
 }
