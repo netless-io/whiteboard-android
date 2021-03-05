@@ -23,14 +23,15 @@ public class WhiteSdk {
     private final static Gson gson = new Gson();
 
     private final JsBridgeInterface bridge;
-    private final RoomCallbacksImpl roomJsCallbacks;
-    private final PlayerCallbacksImpl playerJsCallbacks;
-    private final SdkCallbacksImpl sdkJsCallbacks;
+    private final RoomJsInterfaceImpl roomJsInterface;
+
+    private final PlayerJsInterfaceImpl playerJsInterface;
+    private final SdkInterfaceImpl sdkJsInterface;
 
     private final int densityDpi;
 
     public void setCommonCallbacks(CommonCallbacks commonCallbacks) {
-        sdkJsCallbacks.setCommonCallbacks(commonCallbacks);
+        sdkJsInterface.setCommonCallbacks(commonCallbacks);
     }
 
     private final boolean onlyCallbackRemoteStateModify;
@@ -56,15 +57,15 @@ public class WhiteSdk {
 
     public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, UrlInterrupter urlInterrupter) {
         this(bridge, context, whiteSdkConfiguration);
-        sdkJsCallbacks.setUrlInterrupter(urlInterrupter);
+        sdkJsInterface.setUrlInterrupter(urlInterrupter);
     }
 
     public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, @Nullable CommonCallbacks commonCallbacks, @Nullable AudioMixerBridge audioMixerBridge) {
         this.bridge = bridge;
         densityDpi = Utils.getDensityDpi(context);
-        roomJsCallbacks = new RoomCallbacksImpl();
-        playerJsCallbacks = new PlayerCallbacksImpl();
-        sdkJsCallbacks = new SdkCallbacksImpl(commonCallbacks);
+        roomJsInterface = new RoomJsInterfaceImpl();
+        playerJsInterface = new PlayerJsInterfaceImpl();
+        sdkJsInterface = new SdkInterfaceImpl(commonCallbacks);
         onlyCallbackRemoteStateModify = whiteSdkConfiguration.isOnlyCallbackRemoteStateModify();
 
         if (audioMixerBridge != null) {
@@ -73,9 +74,9 @@ public class WhiteSdk {
             whiteSdkConfiguration.setEnableRtcIntercept(true);
         }
 
-        bridge.addJavascriptObject(this.sdkJsCallbacks, "sdk");
-        bridge.addJavascriptObject(this.roomJsCallbacks, "room");
-        bridge.addJavascriptObject(this.playerJsCallbacks, "player");
+        //  bridge.addJavascriptObject(this.sdkJsCallbacks, "sdk");
+        bridge.addJavascriptObject(this.roomJsInterface, "room");
+        bridge.addJavascriptObject(this.playerJsInterface, "player");
 
         // JavaScript 必须将所有 state 变化回调提供给 native。
         // 该属性的实现在 native 代码中体现。
@@ -104,7 +105,7 @@ public class WhiteSdk {
      */
     public void joinRoom(final RoomParams roomParams, final RoomCallbacks roomCallbacks, final Promise<Room> roomPromise) {
         try {
-            final RoomCallbacksImpl finalRoomJsCallbacks = roomJsCallbacks;
+            final RoomJsInterfaceImpl finalRoomJsCallbacks = roomJsInterface;
             bridge.callHandler("sdk.joinRoom", new Object[]{roomParams}, new OnReturnValue<String>() {
                 @Override
                 public void onValue(String roomString) {
@@ -163,7 +164,7 @@ public class WhiteSdk {
     public void createPlayer(final PlayerConfiguration playerConfiguration, PlayerEventListener playerEventListener, final Promise<Player> playerPromise) {
         try {
             if (playerEventListener != null) {
-                this.playerJsCallbacks.setListener(playerEventListener);
+                this.playerJsInterface.setListener(playerEventListener);
             }
             bridge.callHandler("sdk.replayRoom", new Object[]{
                     playerConfiguration
@@ -185,7 +186,7 @@ public class WhiteSdk {
                         PlayerTimeInfo playerTimeInfo = gson.fromJson(timeInfo.toString(), PlayerTimeInfo.class);
                         SyncDisplayerState<PlayerState> syncPlayerState = new SyncDisplayerState(PlayerState.class, "{}", true);
                         Player player = new Player(playerConfiguration.getRoom(), bridge, densityDpi, playerTimeInfo, syncPlayerState);
-                        playerJsCallbacks.setPlayer(player);
+                        playerJsInterface.setPlayer(player);
                         playerPromise.then(player);
                     }
                 }
@@ -260,7 +261,7 @@ public class WhiteSdk {
      */
     public void releaseRoom() {
         // TODO 清理Room资源
-        roomJsCallbacks.setRoom(null);
+        roomJsInterface.setRoom(null);
     }
 
     /**
@@ -279,7 +280,7 @@ public class WhiteSdk {
      * @since 2.4.12
      */
     public void releasePlayer() {
-        playerJsCallbacks.setListener(null);
+        playerJsInterface.setListener(null);
     }
 
     /**

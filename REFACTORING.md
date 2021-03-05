@@ -13,7 +13,7 @@ TODO
 
 
 类定义
-RoomCallbacksImpl 用于提供Js调用Native接口
+RoomInterfaceImpl 用于提供Js调用Native接口
 XXXImpl
 
 Room Player 
