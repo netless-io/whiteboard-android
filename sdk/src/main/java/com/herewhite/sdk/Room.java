@@ -62,15 +62,9 @@ public class Room extends Displayer implements SyncDisplayerState.Listener<RoomS
         this.timeDelay = 0;
     }
 
-    Room(String uuid, JsBridgeInterface bridge, int densityDpi, SyncDisplayerState<RoomState> syncRoomState) {
-        super(uuid, bridge, densityDpi);
-        this.timeDelay = 0;
+    void setSyncRoomState(SyncDisplayerState<RoomState> syncRoomState) {
         this.syncRoomState = syncRoomState;
-        syncRoomState.setListener(this);
-    }
-
-    void setSyncRoomState(SyncDisplayerState<RoomState> syncRoomState)  {
-        this.syncRoomState = syncRoomState;
+        this.syncRoomState.setListener(this);
     }
 
     void setRoomPhase(RoomPhase roomPhase) {
@@ -941,26 +935,14 @@ public class Room extends Displayer implements SyncDisplayerState.Listener<RoomS
     void fireMagixEvent(EventEntry eventEntry) {
         EventListener eventListener = eventListenerConcurrentHashMap.get(eventEntry.getEventName());
         if (eventListener != null) {
-            try {
-                eventListener.onEvent(eventEntry);
-            } catch (AssertionError a) {
-                throw a;
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while sending the event", e);
-            }
+            eventListener.onEvent(eventEntry);
         }
     }
 
     void fireHighFrequencyEvent(EventEntry[] eventEntries) {
         FrequencyEventListener eventListener = frequencyEventListenerConcurrentHashMap.get(eventEntries[0].getEventName());
         if (eventListener != null) {
-            try {
-                eventListener.onEvent(eventEntries);
-            } catch (AssertionError a) {
-                throw a;
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while sending the event", e);
-            }
+            eventListener.onEvent(eventEntries);
         }
     }
 
@@ -985,12 +967,9 @@ public class Room extends Displayer implements SyncDisplayerState.Listener<RoomS
     @Override
     public void onDisplayerStateChanged(final RoomState modifyState) {
         if (roomCallbacks != null) {
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    if (roomCallbacks != null) {
-                        roomCallbacks.onRoomStateChanged(modifyState);
-                    }
+            post(() -> {
+                if (roomCallbacks != null) {
+                    roomCallbacks.onRoomStateChanged(modifyState);
                 }
             });
         }
@@ -1009,40 +988,20 @@ public class Room extends Displayer implements SyncDisplayerState.Listener<RoomS
     }
 
     public void fireKickedWithReason(String reason) {
-        // 获取事件,反序列化然后发送通知给监听者
         if (roomCallbacks != null) {
-            try {
-                roomCallbacks.onKickedWithReason(reason);
-            } catch (AssertionError a) {
-                throw a;
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onKickedWithReason method", e);
-            }
+            roomCallbacks.onKickedWithReason(reason);
         }
     }
 
     public void fireDisconnectWithError(Exception exception) {
-        // 获取事件,反序列化然后发送通知给监听者
         if (roomCallbacks != null) {
-            try {
-                roomCallbacks.onDisconnectWithError(exception);
-            } catch (AssertionError a) {
-                throw a;
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onDisconnectWithError method", e);
-            }
+            roomCallbacks.onDisconnectWithError(exception);
         }
     }
 
     public void fireCatchErrorWhenAppendFrame(long userId, Exception exception) {
         if (roomCallbacks != null) {
-            try {
-                roomCallbacks.onCatchErrorWhenAppendFrame(userId, exception);
-            } catch (AssertionError a) {
-                throw a;
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onCatchErrorWhenAppendFrame method", e);
-            }
+            roomCallbacks.onCatchErrorWhenAppendFrame(userId, exception);
         }
     }
 

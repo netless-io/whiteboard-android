@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.PlayerPhase;
 import com.herewhite.sdk.domain.SDKError;
+import com.herewhite.sdk.internal.JsCallWrapper;
 
 /**
  * Created by buhe on 2018/8/12.
@@ -24,30 +25,35 @@ class PlayerJsInterfaceImpl {
     @JavascriptInterface
     public void fireMagixEvent(Object args) {
         if (player != null) {
-            EventEntry eventEntry = gson.fromJson(String.valueOf(args), EventEntry.class);
-            player.fireMagixEvent(eventEntry);
+            new JsCallWrapper(() ->
+                    player.fireMagixEvent(gson.fromJson(String.valueOf(args), EventEntry.class)),
+                    "An exception occurred while sending the event"
+            ).run();
         }
     }
 
     @JavascriptInterface
     public void fireHighFrequencyEvent(Object args) {
-        EventEntry[] events = gson.fromJson(String.valueOf(args), EventEntry[].class);
         if (player != null) {
-            player.fireHighFrequencyEvent(events);
+            new JsCallWrapper(() -> {
+                EventEntry[] events = gson.fromJson(String.valueOf(args), EventEntry[].class);
+                player.fireHighFrequencyEvent(events);
+            }, "An exception occurred while sending the event").run();
         }
     }
 
     @JavascriptInterface
     public void onPhaseChanged(Object args) {
-        PlayerPhase phase = gson.fromJson(String.valueOf(args), PlayerPhase.class);
         if (player != null) {
-            player.setPlayerPhase(phase);
+            new JsCallWrapper(() -> {
+                PlayerPhase phase = gson.fromJson(String.valueOf(args), PlayerPhase.class);
+                player.setPlayerPhase(phase);
+            }, "An exception occurred while invoke onPhaseChanged method").run();
         }
     }
 
     @JavascriptInterface
     public void onLoadFirstFrame(Object args) {
-        // 获取事件,反序列化然后发送通知给监听者
         if (player != null) {
             player.onLoadFirstFrame();
         }
@@ -55,15 +61,16 @@ class PlayerJsInterfaceImpl {
 
     @JavascriptInterface
     public void onSliceChanged(Object args) {
-        // 获取事件,反序列化然后发送通知给监听者
         if (player != null) {
-            player.onSliceChanged(String.valueOf(args));
+            new JsCallWrapper(() ->
+                    player.onSliceChanged(String.valueOf(args)),
+                    "An exception occurred while invoke onSliceChanged method"
+            ).run();
         }
     }
 
     @JavascriptInterface
     public void onPlayerStateChanged(Object args) {
-        // 获取事件,反序列化然后发送通知给监听者
         if (player != null) {
             player.syncDisplayerState(String.valueOf(args));
         }
@@ -71,9 +78,11 @@ class PlayerJsInterfaceImpl {
 
     @JavascriptInterface
     public void onStoppedWithError(Object args) {
-        // 获取事件,反序列化然后发送通知给监听者
         if (player != null) {
-            player.onStoppedWithError(resolverSDKError(args));
+            new JsCallWrapper(() ->
+                    player.onStoppedWithError(resolverSDKError(args)),
+                    "An exception occurred while invoke onStoppedWithError method"
+            ).run();
         }
     }
 
@@ -93,25 +102,26 @@ class PlayerJsInterfaceImpl {
 
     @JavascriptInterface
     public void onScheduleTimeChanged(Object args) {
-        long scheduleTime = 0;
-        String valueString = String.valueOf(args);
-        // FIXME: 之前用 Long，但是实际情况是会带小数点的情况存在（修改回调速率时）
-        if (valueString.contains(".")) {
-            scheduleTime = Math.round(Double.parseDouble(String.valueOf(args)));
-        } else {
-            scheduleTime = Long.parseLong(String.valueOf(args));
-        }
-
         if (player != null) {
-            player.setScheduleTime(scheduleTime);
+            new JsCallWrapper(() -> {
+                long scheduleTime = 0;
+                String valueString = String.valueOf(args);
+                // FIXME: 之前用 Long，但是实际情况是会带小数点的情况存在（修改回调速率时）
+                if (valueString.contains(".")) {
+                    scheduleTime = Math.round(Double.parseDouble(String.valueOf(args)));
+                } else {
+                    scheduleTime = Long.parseLong(String.valueOf(args));
+                }
+                player.setScheduleTime(scheduleTime);
+            }, "An exception occurred while invoke onScheduleTimeChanged method"
+            ).run();
         }
     }
 
     @JavascriptInterface
     public void onCatchErrorWhenAppendFrame(Object args) {
-        // 获取事件,反序列化然后发送通知给监听者
         if (player != null) {
-            new Wrapper(() ->
+            new JsCallWrapper(() ->
                     player.onCatchErrorWhenAppendFrame(resolverSDKError(args)),
                     "An exception occurred while invoke onCatchErrorWhenAppendFrame method"
             ).run();
@@ -120,34 +130,11 @@ class PlayerJsInterfaceImpl {
 
     @JavascriptInterface
     public void onCatchErrorWhenRender(final Object args) {
-        // 获取事件,反序列化然后发送通知给监听者
         if (player != null) {
-            new Wrapper(() ->
+            new JsCallWrapper(() ->
                     player.onCatchErrorWhenRender(resolverSDKError(args)),
                     "An exception occurred while invoke onCatchErrorWhenRender method"
             ).run();
-        }
-    }
-
-    // TODO 是否处理批量的异常模版
-    static class Wrapper {
-        private final Runnable runnable;
-        private final String message;
-
-        // TODO Change Runnable
-        public Wrapper(Runnable runnable, String message) {
-            this.runnable = runnable;
-            this.message = message;
-        }
-
-        public void run() {
-            try {
-                runnable.run();
-            } catch (AssertionError a) {
-                throw a;
-            } catch (Throwable e) {
-                Logger.error(message, e);
-            }
         }
     }
 }

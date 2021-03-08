@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.FrameError;
 import com.herewhite.sdk.domain.RoomPhase;
+import com.herewhite.sdk.internal.JsCallWrapper;
 
 import androidx.annotation.Nullable;
 
@@ -41,39 +42,53 @@ public class RoomJsInterfaceImpl {
 
     @JavascriptInterface
     public void fireMagixEvent(Object args) {
-        EventEntry eventEntry = gson.fromJson(String.valueOf(args), EventEntry.class);
         if (room != null) {
-            room.fireMagixEvent(eventEntry);
+            new JsCallWrapper(() -> {
+                EventEntry eventEntry = gson.fromJson(String.valueOf(args), EventEntry.class);
+                room.fireMagixEvent(eventEntry);
+            }, "An exception occurred while sending the event"
+            ).run();
         }
     }
 
     @JavascriptInterface
     public void fireHighFrequencyEvent(Object args) {
-        EventEntry[] events = gson.fromJson(String.valueOf(args), EventEntry[].class);
         if (room != null) {
-            room.fireHighFrequencyEvent(events);
+            new JsCallWrapper(() -> {
+                EventEntry[] events = gson.fromJson(String.valueOf(args), EventEntry[].class);
+                room.fireHighFrequencyEvent(events);
+            }, "An exception occurred while sending the event"
+            ).run();
         }
     }
 
     @JavascriptInterface
     public void firePhaseChanged(Object args) {
-        RoomPhase phase = RoomPhase.valueOf(String.valueOf(args));
         if (room != null) {
-            room.setRoomPhase(phase);
+            new JsCallWrapper(() ->
+                    room.setRoomPhase(RoomPhase.valueOf(String.valueOf(args))),
+                    "An exception occurred while invoke onPhaseChanged method"
+            ).run();
         }
     }
 
     @JavascriptInterface
     public void fireKickedWithReason(Object args) {
         if (room != null) {
-            room.fireKickedWithReason(String.valueOf(args));
+            new JsCallWrapper(() ->
+                    room.fireKickedWithReason(String.valueOf(args)),
+                    "An exception occurred while invoke onKickedWithReason method"
+            ).run();
         }
     }
 
     @JavascriptInterface
     public void fireDisconnectWithError(Object args) {
         if (room != null) {
-            room.fireDisconnectWithError(new Exception(String.valueOf(args)));
+            new JsCallWrapper(() ->
+                    room.fireDisconnectWithError(new Exception(String.valueOf(args))),
+                    "An exception occurred while invoke onDisconnectWithError method"
+            ).run();
         }
     }
 
@@ -86,10 +101,12 @@ public class RoomJsInterfaceImpl {
 
     @JavascriptInterface
     public void fireCatchErrorWhenAppendFrame(Object args) {
-        // 获取事件,反序列化然后发送通知给监听者
-        FrameError frameError = gson.fromJson(String.valueOf(args), FrameError.class);
         if (room != null) {
-            room.fireCatchErrorWhenAppendFrame(frameError.getUserId(), new Exception(frameError.getError()));
+            new JsCallWrapper(() -> {
+                FrameError frameError = gson.fromJson(String.valueOf(args), FrameError.class);
+                room.fireCatchErrorWhenAppendFrame(frameError.getUserId(), new Exception(frameError.getError()));
+            }, "An exception occurred while invoke onCatchErrorWhenAppendFrame method"
+            ).run();
         }
     }
 }

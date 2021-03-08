@@ -50,31 +50,7 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
         getSettings().setMediaPlaybackRequiresUserGesture(false);
         loadUrl("file:///android_asset/whiteboard/index.html");
         setWebChromeClient(new FixWebChromeClient());
-
-        // create WhiteSdkConfiguration
-        // whiteSdkConfiguration = createWhiteSdkConfiguration(context, attrs);
     }
-
-//    private WhiteSdkConfiguration createWhiteSdkConfiguration(Context context, AttributeSet attrs) {
-//        WhiteSdkConfiguration configuration = new WhiteSdkConfiguration();
-//        if (context != null && attrs != null) {
-//            TypedArray typedArray = context.getResources().obtainAttributes(attrs, R.styleable.WhiteboardView);
-//            if (typedArray.hasValue(R.styleable.WhiteboardView_wb_appIdentifier)) {
-//                configuration.setAppIdentifier(typedArray.getString(R.styleable.WhiteboardView_wb_appIdentifier));
-//            }
-//
-//            if (typedArray.hasValue(R.styleable.WhiteboardView_wb_deviceType)) {
-//                int deviceTypeCode = typedArray.getInt(R.styleable.WhiteboardView_wb_deviceType, 1);
-//                configuration.setDeviceType(deviceTypeCode == 1 ? DeviceType.desktop : DeviceType.touch);
-//            }
-//
-//            if (typedArray.hasValue(R.styleable.WhiteboardView_wb_log)) {
-//                boolean log = typedArray.getBoolean(R.styleable.WhiteboardView_wb_log, false);
-//                configuration.setLog(log);
-//            }
-//        }
-//        return configuration;
-//    }
 
     private int getWebViewVersion() {
         String userAgent = getSettings().getUserAgentString();
@@ -161,13 +137,4 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
             }
         }
     }
-
-//    private WhiteSdk mWhiteSdk;
-//
-//    public WhiteSdk getWhiteSdk() {
-//        if (mWhiteSdk != null) {
-//            mWhiteSdk = new WhiteSdk(this, getContext(), whiteSdkConfiguration);
-//        }
-//        return mWhiteSdk;
-//    }
 }

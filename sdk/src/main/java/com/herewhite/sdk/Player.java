@@ -101,9 +101,11 @@ public class Player extends Displayer implements SyncDisplayerState.Listener<Pla
 
     void setSyncPlayerState(SyncDisplayerState<PlayerState> syncPlayerState) {
         this.syncPlayerState = syncPlayerState;
+        syncPlayerState.setListener(this);
     }
 
     public void setPlayerTimeInfo(PlayerTimeInfo playerTimeInfo) {
+        this.scheduleTime = playerTimeInfo.getScheduleTime();
         this.timeDuration = playerTimeInfo.getTimeDuration();
         this.framesCount = playerTimeInfo.getFramesCount();
         this.beginTimestamp = playerTimeInfo.getBeginTimestamp();
@@ -137,24 +139,14 @@ public class Player extends Displayer implements SyncDisplayerState.Listener<Pla
     void fireMagixEvent(EventEntry eventEntry) {
         EventListener eventListener = eventListenerConcurrentHashMap.get(eventEntry.getEventName());
         if (eventListener != null) {
-            try {
-                eventListener.onEvent(eventEntry);
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while sending the event", e);
-            }
+            eventListener.onEvent(eventEntry);
         }
     }
 
     void fireHighFrequencyEvent(EventEntry[] eventEntries) {
         FrequencyEventListener eventListener = frequencyEventListenerConcurrentHashMap.get(eventEntries[0].getEventName());
         if (eventListener != null) {
-            try {
-                eventListener.onEvent(eventEntries);
-            } catch (AssertionError a) {
-                throw a;
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while sending the event", e);
-            }
+            eventListener.onEvent(eventEntries);
         }
     }
 
@@ -297,80 +289,45 @@ public class Player extends Displayer implements SyncDisplayerState.Listener<Pla
     @Override
     public void onDisplayerStateChanged(PlayerState modifyState) {
         if (listener != null) {
-            try {
-                listener.onPlayerStateChanged(modifyState);
-            } catch (AssertionError a) {
-                throw a;
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onPlayerStateChanged method", e);
-            }
+            listener.onPlayerStateChanged(modifyState);
         }
     }
 
     void setPlayerPhase(PlayerPhase playerPhase) {
         this.playerPhase = playerPhase;
         if (listener != null) {
-            try {
-                listener.onPhaseChanged(playerPhase);
-            } catch (AssertionError a) {
-                throw a;
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onPhaseChanged method", e);
-            }
+            listener.onPhaseChanged(playerPhase);
         }
     }
 
     public void onLoadFirstFrame() {
         if (listener != null) {
-            try {
-                listener.onLoadFirstFrame();
-            } catch (AssertionError a) {
-                throw a;
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onLoadFirstFrame method", e);
-            }
+            listener.onLoadFirstFrame();
         }
     }
 
     public void onSliceChanged(String slice) {
         if (listener != null) {
-            try {
-                listener.onSliceChanged(slice);
-            } catch (AssertionError a) {
-                throw a;
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onSliceChanged method", e);
-            }
+            listener.onSliceChanged(slice);
         }
     }
 
     public void syncDisplayerState(String stateJSON) {
-        syncPlayerState.syncDisplayerState(stateJSON);
+        if (syncPlayerState != null) {
+            syncPlayerState.syncDisplayerState(stateJSON);
+        }
     }
 
     public void onStoppedWithError(SDKError error) {
         if (listener != null) {
-            try {
-                listener.onStoppedWithError(error);
-            } catch (AssertionError a) {
-                throw a;
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onStoppedWithError method", e);
-            }
+            listener.onStoppedWithError(error);
         }
     }
 
     void setScheduleTime(long scheduleTime) {
         this.scheduleTime = scheduleTime;
-        // 获取事件,反序列化然后发送通知给监听者
         if (listener != null) {
-            try {
-                listener.onScheduleTimeChanged(scheduleTime);
-            } catch (AssertionError a) {
-                throw a;
-            } catch (Throwable e) {
-                Logger.error("An exception occurred while invoke onScheduleTimeChanged method", e);
-            }
+            listener.onScheduleTimeChanged(scheduleTime);
         }
     }
 

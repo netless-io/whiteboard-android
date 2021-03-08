@@ -367,7 +367,7 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
         WhiteSdk whiteSdk = new WhiteSdk(
                 mWhiteboardView,
                 PlayActivity.this,
-                new WhiteSdkConfiguration(demoAPI.getAppIdentifier(), true),
+                new WhiteSdkConfiguration(demoAPI.getAppId(), true),
                 new UrlInterrupter() {
                     @Override
                     public String urlInterrupter(String sourceUrl) {
@@ -413,7 +413,6 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
     }
 
     public void alert(final String title, final String detail) {
-
         runOnUiThread(new Runnable() {
             public void run() {
                 AlertDialog alertDialog = new AlertDialog.Builder(PlayActivity.this).create();

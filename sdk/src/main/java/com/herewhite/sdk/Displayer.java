@@ -52,7 +52,6 @@ public class Displayer {
         this.uuid = uuid;
         this.bridge = bridge;
         this.densityDpi = densityDpi;
-        // TODO 如何处理释放问题
         this.handler = new Handler(Looper.getMainLooper());
     }
 
