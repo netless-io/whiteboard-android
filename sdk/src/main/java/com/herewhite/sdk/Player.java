@@ -22,11 +22,12 @@ public class Player extends Displayer implements SyncDisplayerState.Listener<Pla
     private final ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, FrequencyEventListener> frequencyEventListenerConcurrentHashMap = new ConcurrentHashMap<>();
 
-    private final SyncDisplayerState<PlayerState> syncPlayerState;
+    private SyncDisplayerState<PlayerState> syncPlayerState;
 
-    private final long timeDuration;
-    private final long beginTimestamp;
-    private final int framesCount;
+    private long scheduleTime = 0;
+    private long timeDuration;
+    private long beginTimestamp;
+    private int framesCount;
 
     /**
      * 获取播放时的播放速率
@@ -67,9 +68,19 @@ public class Player extends Displayer implements SyncDisplayerState.Listener<Pla
 
     private double playbackSpeed;
 
-    private long scheduleTime = 0;
-
     private PlayerPhase playerPhase = PlayerPhase.waitingFirstFrame;
+
+
+    /**
+     * Instantiates a new Player.
+     *
+     * @param room       回放房间 uuid
+     * @param bridge     the bridge
+     * @param densityDpi the densityDpi
+     */
+    Player(String room, JsBridgeInterface bridge, int densityDpi) {
+        super(room, bridge, densityDpi);
+    }
 
     /**
      * Instantiates a new Player.
@@ -88,8 +99,14 @@ public class Player extends Displayer implements SyncDisplayerState.Listener<Pla
         this.beginTimestamp = playerTimeInfo.getBeginTimestamp();
     }
 
-    SyncDisplayerState<PlayerState> getSyncPlayerState() {
-        return syncPlayerState;
+    void setSyncPlayerState(SyncDisplayerState<PlayerState> syncPlayerState) {
+        this.syncPlayerState = syncPlayerState;
+    }
+
+    public void setPlayerTimeInfo(PlayerTimeInfo playerTimeInfo) {
+        this.timeDuration = playerTimeInfo.getTimeDuration();
+        this.framesCount = playerTimeInfo.getFramesCount();
+        this.beginTimestamp = playerTimeInfo.getBeginTimestamp();
     }
 
     public void play() {

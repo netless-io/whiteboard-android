@@ -32,8 +32,8 @@ import wendu.dsbridge.OnReturnValue;
  * 实时房间操作类
  */
 public class Room extends Displayer implements SyncDisplayerState.Listener<RoomState> {
-    private final SyncDisplayerState<RoomState> syncRoomState;
-    private RoomPhase roomPhase = RoomPhase.connected;
+    private SyncDisplayerState<RoomState> syncRoomState;
+    private RoomPhase roomPhase = RoomPhase.connecting;
 
     void setDisconnectedBySelf(Boolean disconnectedBySelf) {
         this.disconnectedBySelf = disconnectedBySelf;
@@ -57,6 +57,11 @@ public class Room extends Displayer implements SyncDisplayerState.Listener<RoomS
     private Integer timeDelay;
     private Long observerId;
 
+    Room(String uuid, JsBridgeInterface bridge, int densityDpi) {
+        super(uuid, bridge, densityDpi);
+        this.timeDelay = 0;
+    }
+
     Room(String uuid, JsBridgeInterface bridge, int densityDpi, SyncDisplayerState<RoomState> syncRoomState) {
         super(uuid, bridge, densityDpi);
         this.timeDelay = 0;
@@ -64,8 +69,8 @@ public class Room extends Displayer implements SyncDisplayerState.Listener<RoomS
         syncRoomState.setListener(this);
     }
 
-    SyncDisplayerState<RoomState> getSyncRoomState() {
-        return syncRoomState;
+    void setSyncRoomState(SyncDisplayerState<RoomState> syncRoomState)  {
+        this.syncRoomState = syncRoomState;
     }
 
     void setRoomPhase(RoomPhase roomPhase) {

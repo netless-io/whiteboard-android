@@ -24,7 +24,6 @@ public class WhiteSdk {
 
     private final JsBridgeInterface bridge;
     private final RoomJsInterfaceImpl roomJsInterface;
-
     private final PlayerJsInterfaceImpl playerJsInterface;
     private final SdkJsInterfaceImpl sdkJsInterface;
 
@@ -104,37 +103,29 @@ public class WhiteSdk {
      * @param roomPromise   创建完成回调
      */
     public void joinRoom(final RoomParams roomParams, final RoomCallbacks roomCallbacks, final Promise<Room> roomPromise) {
-        try {
-            final RoomJsInterfaceImpl finalRoomJsCallbacks = roomJsInterface;
-            bridge.callHandler("sdk.joinRoom", new Object[]{roomParams}, new OnReturnValue<String>() {
-                @Override
-                public void onValue(String roomString) {
-                    JsonObject jsonObject = gson.fromJson(roomString, JsonObject.class);
-                    SDKError promiseError = SDKError.promiseError(jsonObject);
-                    if (promiseError != null) {
-                        try {
-                            roomPromise.catchEx(promiseError);
-                        } catch (AssertionError a) {
-                            throw a;
-                        } catch (Throwable e) {
-                            Logger.error("An exception occurred while catch joinRoom method exception", e);
-                        }
-                    } else {
-                        boolean disableCallbackWhilePutting = onlyCallbackRemoteStateModify;
-                        JsonObject jsonState = jsonObject.getAsJsonObject("state");
-                        SyncDisplayerState<RoomState> syncRoomState = new SyncDisplayerState<>(RoomState.class, jsonState.toString(), disableCallbackWhilePutting);
-                        long observerId = jsonObject.get("observerId").getAsLong();
-                        boolean isWritable = jsonObject.get("isWritable").getAsBoolean();
+        Room room = new Room(roomParams.getUuid(), bridge, densityDpi);
+        room.setRoomCallbacks(roomCallbacks);
+        roomJsInterface.setRoom(room);
 
-                        Room room = new Room(roomParams.getUuid(), bridge, densityDpi, syncRoomState);
-                        room.setObserverId(observerId);
-                        room.setWritable(isWritable);
-                        room.setRoomPhase(RoomPhase.connected);
-                        // TODO 必须保证joinRoom调用到穿件成功之前没有其它事件回调
-                        room.setRoomCallbacks(roomCallbacks);
-                        finalRoomJsCallbacks.setRoom(room);
-                        roomPromise.then(room);
-                    }
+        try {
+            bridge.callHandler("sdk.joinRoom", new Object[]{roomParams}, (OnReturnValue<String>) roomString -> {
+                JsonObject jsonObject = gson.fromJson(roomString, JsonObject.class);
+                SDKError promiseError = SDKError.promiseError(jsonObject);
+                if (promiseError != null) {
+                    roomPromise.catchEx(promiseError);
+                } else {
+                    boolean disableCallbackWhilePutting = onlyCallbackRemoteStateModify;
+                    JsonObject jsonState = jsonObject.getAsJsonObject("state");
+                    SyncDisplayerState<RoomState> syncRoomState = new SyncDisplayerState<>(RoomState.class, jsonState.toString(), disableCallbackWhilePutting);
+                    Long observerId = jsonObject.get("observerId").getAsLong();
+                    Boolean isWritable = jsonObject.get("isWritable").getAsBoolean();
+
+                    room.setSyncRoomState(syncRoomState);
+                    room.setObserverId(observerId);
+                    room.setWritable(isWritable);
+                    room.setRoomPhase(RoomPhase.connected);
+
+                    roomPromise.then(room);
                 }
             });
         } catch (AssertionError a) {
@@ -162,32 +153,27 @@ public class WhiteSdk {
      * @param playerPromise       创建完成回调
      */
     public void createPlayer(final PlayerConfiguration playerConfiguration, final PlayerEventListener listener, final Promise<Player> playerPromise) {
+        Player player = new Player(playerConfiguration.getRoom(), bridge, densityDpi);
+        player.setPlayerEventListener(listener);
+        playerJsInterface.setPlayer(player);
+
         try {
             bridge.callHandler("sdk.replayRoom", new Object[]{
                     playerConfiguration
-            }, new OnReturnValue<String>() {
-                @Override
-                public void onValue(String roomString) {
-                    JsonObject jsonObject = gson.fromJson(roomString, JsonObject.class);
-                    SDKError promiseError = SDKError.promiseError(jsonObject);
-                    if (promiseError != null) {
-                        try {
-                            playerPromise.catchEx(promiseError);
-                        } catch (AssertionError a) {
-                            throw a;
-                        } catch (Throwable e) {
-                            Logger.error("An exception occurred while catch createPlayer method exception", e);
-                        }
-                    } else {
-                        JsonObject timeInfo = jsonObject.getAsJsonObject("timeInfo");
-                        PlayerTimeInfo playerTimeInfo = gson.fromJson(timeInfo.toString(), PlayerTimeInfo.class);
-                        SyncDisplayerState<PlayerState> syncPlayerState = new SyncDisplayerState(PlayerState.class, "{}", true);
-                        Player player = new Player(playerConfiguration.getRoom(), bridge, densityDpi, playerTimeInfo, syncPlayerState);
-                        playerJsInterface.setPlayer(player);
-                        // TODO 同Room一样，需保证事件状态完整
-                        player.setPlayerEventListener(listener);
-                        playerPromise.then(player);
-                    }
+            }, (OnReturnValue<String>) playString -> {
+                JsonObject jsonObject = gson.fromJson(playString, JsonObject.class);
+                SDKError promiseError = SDKError.promiseError(jsonObject);
+                if (promiseError != null) {
+                    playerPromise.catchEx(promiseError);
+                } else {
+                    JsonObject timeInfo = jsonObject.getAsJsonObject("timeInfo");
+                    PlayerTimeInfo playerTimeInfo = gson.fromJson(timeInfo.toString(), PlayerTimeInfo.class);
+                    SyncDisplayerState<PlayerState> syncPlayerState = new SyncDisplayerState(PlayerState.class, "{}", true);
+
+                    player.setSyncPlayerState(syncPlayerState);
+                    player.setPlayerTimeInfo(playerTimeInfo);
+
+                    playerPromise.then(player);
                 }
             });
         } catch (AssertionError a) {
@@ -259,7 +245,6 @@ public class WhiteSdk {
      * @since 2.4.12
      */
     public void releaseRoom() {
-        // TODO 清理Room资源
         roomJsInterface.setRoom(null);
     }
 
