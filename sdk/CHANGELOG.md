@@ -1,6 +1,8 @@
 # 版本更新记录
+## [2.11.21] - 2021-03-08
+- 更新`@netless/iframe-bridge`至2.1.2
 ## [2.11.19] - 2021-03-05
-更新@netless/white-audio-plugin@1.2.20,@netless/white-video-plugin@1.2.20，优化音视频插件
+- 更新@netless/white-audio-plugin@1.2.20,@netless/white-video-plugin@1.2.20，优化音视频插件
 - 更新`@netless/iframe-bridge`至2.1.1
 - 更新`white-web-sdk`至 2.11.12,优化 ppt 显示逻辑
 ## [2.11.15] - 2021-02-05
