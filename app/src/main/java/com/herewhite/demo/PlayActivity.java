@@ -3,7 +3,6 @@ package com.herewhite.demo;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,9 +38,8 @@ import com.herewhite.sdk.domain.UrlInterrupter;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
-public class PlayActivity extends AppCompatActivity implements PlayerEventListener {
+public class PlayActivity extends BaseActivity implements PlayerEventListener {
     private final String TAG = "player";
     private final String TAG_Native = "nativePlayer";
 
@@ -54,11 +52,11 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
      * 如果不需要音视频混合播放，可以直接操作 Player
      */
     @Nullable
-    private PlayerSyncManager mPlayerSyncManager;
+    PlayerSyncManager mPlayerSyncManager;
     @Nullable
-    private Player mPlaybackPlayer;
+    Player mPlaybackPlayer;
     @Nullable
-    private NativePlayer mWhiteMediaPlayer;
+    NativePlayer mWhiteMediaPlayer;
 
     private boolean mUserIsSeeking;
     // 是否使用 ExoPlayer，true 使用 EXOPlayer，false 则使用 IjkPlayer，默认为 true
@@ -73,6 +71,7 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
         mWhiteboardView = findViewById(R.id.white);
         WebView.setWebContentsDebuggingEnabled(true);
 
+        testMarkIdling(false);
         setupPlayer();
     }
 
@@ -384,8 +383,9 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
             @Override
             public void then(Player wPlayer) {
                 mPlaybackPlayer = wPlayer;
-                setupSeekBar();
                 mPlayerSyncManager.setWhitePlayer(mPlaybackPlayer);
+
+                setupSeekBar();
                 if (mWhiteMediaPlayer != null) {
                     if (mIsUsedExoPlayer) {
                         ((WhiteExoPlayer) mWhiteMediaPlayer).setPlayerSyncManager(mPlayerSyncManager);
@@ -394,10 +394,12 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
                     }
                 }
                 // seek 一次才能主动触发
-                wPlayer.seekToScheduleTime(0);
+                mPlaybackPlayer.seekToScheduleTime(0);
                 enableBtn();
                 play();
                 mSeekBarUpdateHandler.postDelayed(mUpdateSeekBar, 100);
+
+                testMarkIdling(true);
             }
 
             @Override

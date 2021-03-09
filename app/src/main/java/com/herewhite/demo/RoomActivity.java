@@ -59,10 +59,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
-import androidx.appcompat.app.AppCompatActivity;
 import wendu.dsbridge.DWebView;
 
-public class RoomActivity extends AppCompatActivity {
+
+public class RoomActivity extends BaseActivity {
     /**
      * 和 iOS 名字一致
      */
@@ -78,9 +78,9 @@ public class RoomActivity extends AppCompatActivity {
     private String uuid;
     private String token;
 
-    private WhiteboardView mWhiteboardView;
-    private WhiteSdk mWhiteSdk;
-    private Room mRoom;
+    WhiteboardView mWhiteboardView;
+    WhiteSdk mWhiteSdk;
+    Room mRoom;
 
     /**
      * 自定义 GlobalState 示例
@@ -115,6 +115,7 @@ public class RoomActivity extends AppCompatActivity {
         client.setPptDirectory(getCacheDir().getAbsolutePath());
         mWhiteboardView.setWebViewClient(client);
 
+        testMarkIdling(false);
         String uuid = getIntent().getStringExtra(StartActivity.EXTRA_MESSAGE);
         if (uuid == null) {
             createRoom();
@@ -122,7 +123,6 @@ public class RoomActivity extends AppCompatActivity {
             getRoomToken(uuid);
         }
     }
-
 
     @Override
     protected void onDestroy() {
@@ -259,6 +259,8 @@ public class RoomActivity extends AppCompatActivity {
                 logRoomInfo("native join in room duration: " + (System.currentTimeMillis() - joinDate.getTime()) / 1000f + "s");
                 mRoom = room;
                 addCustomEventListener();
+
+                testMarkIdling(true);
             }
 
             @Override
