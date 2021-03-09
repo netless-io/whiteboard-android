@@ -43,7 +43,7 @@ public class Displayer {
     protected final JsBridgeInterface bridge;
     protected String uuid;
     protected int densityDpi;
-    private final Handler handler;
+    private Handler handler;
 
     protected ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
     protected ConcurrentHashMap<String, FrequencyEventListener> frequencyEventListenerConcurrentHashMap = new ConcurrentHashMap<>();
@@ -52,11 +52,17 @@ public class Displayer {
         this.uuid = uuid;
         this.bridge = bridge;
         this.densityDpi = densityDpi;
-        this.handler = new Handler(Looper.getMainLooper());
+    }
+
+    private Handler getHandler() {
+        if (handler == null) {
+            handler = new Handler(Looper.getMainLooper());
+        }
+        return handler;
     }
 
     protected void post(Runnable runnable) {
-        handler.post(runnable);
+        getHandler().post(runnable);
     }
 
     /**

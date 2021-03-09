@@ -10,7 +10,6 @@ import com.herewhite.sdk.domain.PlayerState;
 import com.herewhite.sdk.domain.PlayerTimeInfo;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
-import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
 
@@ -103,7 +102,7 @@ public class WhiteSdk {
      * @param roomPromise   创建完成回调
      */
     public void joinRoom(final RoomParams roomParams, final RoomCallbacks roomCallbacks, final Promise<Room> roomPromise) {
-        Room room = new Room(roomParams.getUuid(), bridge, densityDpi);
+        Room room = new Room(roomParams.getUuid(), bridge, densityDpi, onlyCallbackRemoteStateModify);
         room.setRoomCallbacks(roomCallbacks);
         roomJsInterface.setRoom(room);
 
@@ -114,13 +113,11 @@ public class WhiteSdk {
                 if (promiseError != null) {
                     roomPromise.catchEx(promiseError);
                 } else {
-                    boolean disableCallbackWhilePutting = onlyCallbackRemoteStateModify;
                     JsonObject jsonState = jsonObject.getAsJsonObject("state");
-                    SyncDisplayerState<RoomState> syncRoomState = new SyncDisplayerState<>(RoomState.class, jsonState.toString(), disableCallbackWhilePutting);
                     Long observerId = jsonObject.get("observerId").getAsLong();
                     Boolean isWritable = jsonObject.get("isWritable").getAsBoolean();
 
-                    room.setSyncRoomState(syncRoomState);
+                    room.setSyncRoomState(jsonState.toString());
                     room.setObserverId(observerId);
                     room.setWritable(isWritable);
                     room.setRoomPhase(RoomPhase.connected);
@@ -168,11 +165,8 @@ public class WhiteSdk {
                 } else {
                     JsonObject timeInfo = jsonObject.getAsJsonObject("timeInfo");
                     PlayerTimeInfo playerTimeInfo = gson.fromJson(timeInfo.toString(), PlayerTimeInfo.class);
-                    SyncDisplayerState<PlayerState> syncPlayerState = new SyncDisplayerState(PlayerState.class, "{}", true);
 
-                    player.setSyncPlayerState(syncPlayerState);
                     player.setPlayerTimeInfo(playerTimeInfo);
-
                     playerPromise.then(player);
                 }
             });

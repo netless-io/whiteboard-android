@@ -80,27 +80,7 @@ public class Player extends Displayer implements SyncDisplayerState.Listener<Pla
      */
     Player(String room, JsBridgeInterface bridge, int densityDpi) {
         super(room, bridge, densityDpi);
-    }
-
-    /**
-     * Instantiates a new Player.
-     *
-     * @param room            回放房间 uuid
-     * @param bridge          the bridge
-     * @param densityDpi      the densityDpi
-     * @param playerTimeInfo  the player time info
-     * @param syncPlayerState the sync player state
-     */
-    Player(String room, JsBridgeInterface bridge, int densityDpi, PlayerTimeInfo playerTimeInfo, SyncDisplayerState<PlayerState> syncPlayerState) {
-        super(room, bridge, densityDpi);
-        this.syncPlayerState = syncPlayerState;
-        this.timeDuration = playerTimeInfo.getTimeDuration();
-        this.framesCount = playerTimeInfo.getFramesCount();
-        this.beginTimestamp = playerTimeInfo.getBeginTimestamp();
-    }
-
-    void setSyncPlayerState(SyncDisplayerState<PlayerState> syncPlayerState) {
-        this.syncPlayerState = syncPlayerState;
+        syncPlayerState = new SyncDisplayerState(PlayerState.class, "{}", true);
         syncPlayerState.setListener(this);
     }
 

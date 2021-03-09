@@ -57,14 +57,15 @@ public class Room extends Displayer implements SyncDisplayerState.Listener<RoomS
     private Integer timeDelay;
     private Long observerId;
 
-    Room(String uuid, JsBridgeInterface bridge, int densityDpi) {
+    Room(String uuid, JsBridgeInterface bridge, int densityDpi, boolean disableCallbackWhilePutting) {
         super(uuid, bridge, densityDpi);
         this.timeDelay = 0;
+        this.syncRoomState = new SyncDisplayerState<>(RoomState.class, "{}", disableCallbackWhilePutting);
+        this.syncRoomState.setListener(this);
     }
 
-    void setSyncRoomState(SyncDisplayerState<RoomState> syncRoomState) {
-        this.syncRoomState = syncRoomState;
-        this.syncRoomState.setListener(this);
+    void setSyncRoomState(String stateJSON) {
+        syncRoomState.syncDisplayerState(stateJSON);
     }
 
     void setRoomPhase(RoomPhase roomPhase) {
