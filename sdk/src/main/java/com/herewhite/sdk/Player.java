@@ -58,10 +58,10 @@ public class Player extends Displayer implements SyncDisplayerState.Listener<Pla
      * @since 2.5.2
      */
     public void getPlaybackSpeed(final Promise<Double> promise) {
-        bridge.callHandler("player.state.playbackSpeed", new OnReturnValue<Double>() {
+        bridge.callHandler("player.state.playbackSpeed", new OnReturnValue<Number>() {
             @Override
-            public void onValue(Double retValue) {
-                promise.then(retValue);
+            public void onValue(Number value) {
+                promise.then(value.doubleValue());
             }
         });
     }
