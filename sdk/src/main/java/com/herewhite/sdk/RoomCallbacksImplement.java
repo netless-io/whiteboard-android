@@ -15,6 +15,7 @@ import com.herewhite.sdk.domain.RoomState;
  * Created by buhe on 2018/8/12.
  */
 
+// 私有方法，文档中隐藏
 public class RoomCallbacksImplement implements SyncDisplayerState.Listener<RoomState> {
 
     private final static Gson gson = new Gson();

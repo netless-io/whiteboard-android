@@ -15,12 +15,21 @@ public class PlayerConfiguration extends WhiteObject {
         return region;
     }
 
+    /**
+     * 类似 {@link com.herewhite.sdk.RoomParams#setRegion(Region)}
+     * @param region
+     */
     public void setRegion(Region region) {
         this.region = region;
     }
 
     private Region region;
 
+    /**
+     * player 初始化方法
+     * @param room 需要回放的房间 uuid
+     * @param roomToken 房间 roomToken
+     */
     public PlayerConfiguration(String room, String roomToken) {
         this.room = room;
         this.roomToken = roomToken;
@@ -30,12 +39,21 @@ public class PlayerConfiguration extends WhiteObject {
         return cameraBound;
     }
 
+    /**
+     * {@link com.herewhite.sdk.Room#setCameraBound(CameraBound)}
+     * @param cameraBound
+     */
     public void setCameraBound(CameraBound cameraBound) {
         this.cameraBound = cameraBound;
     }
 
-    public void setStep(Long step, TimeUnit timeUnit) {
-        this.step = TimeUnit.MILLISECONDS.convert(step, timeUnit);
+    /**
+     * 回放时，时间进度的调用频率
+     * @param duration 时长长度
+     * @param timeUnit 时间单位
+     */
+    public void setStep(Long duration, TimeUnit timeUnit) {
+        this.step = TimeUnit.MILLISECONDS.convert(duration, timeUnit);
     }
 
     /*
@@ -56,10 +74,18 @@ public class PlayerConfiguration extends WhiteObject {
 
     public void setRoomToken(String roomToken) { this.roomToken = roomToken; }
 
+    /**
+     * 文档中隐藏
+     * @return
+     */
     public String getSlice() {
         return slice;
     }
 
+    /**
+     * 文档中隐藏
+     * @return
+     */
     public void setSlice(String slice) {
         this.slice = slice;
     }
@@ -68,6 +94,11 @@ public class PlayerConfiguration extends WhiteObject {
         return beginTimestamp;
     }
 
+    /***
+     * 回放房间的起始 UTC 时间戳(毫秒）
+     * 比如，想要回放 Wed Mar 10 2021 18:03:34 GMT+0800 (中国标准时间) 的话，需要传入 1615370614269
+     * @param beginTimestamp
+     */
     public void setBeginTimestamp(Long beginTimestamp) {
         this.beginTimestamp = beginTimestamp;
     }
@@ -76,6 +107,10 @@ public class PlayerConfiguration extends WhiteObject {
         return duration;
     }
 
+    /**
+     * 设置持续时长（毫秒）
+     * @param duration
+     */
     public void setDuration(Long duration) {
         this.duration = duration;
     }

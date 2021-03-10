@@ -105,7 +105,7 @@ public class Displayer {
 
     /**
      * 刷新当前白板的视觉矩形。
-     * 当 WhiteboardView 大小出现改变时，需要手动调用该方法。
+     * @note 当 WhiteboardView 大小出现改变时，需要手动调用该方法。
      */
     public void refreshViewSize() {
         bridge.callHandler("displayer.refreshViewSize", new Object[]{});

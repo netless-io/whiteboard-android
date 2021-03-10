@@ -29,11 +29,20 @@ import wendu.dsbridge.OnReturnValue;
 public class WhiteboardView extends DWebView {
 
 
+    /**
+     * 初始化白板界面
+     * @param context
+     */
     public WhiteboardView(Context context) {
         super(getFixedContext(context));
         init();
     }
 
+    /**
+     * 初始化白板界面
+     * @param context
+     * @param attrs
+     */
     public WhiteboardView(Context context, AttributeSet attrs) {
         super(getFixedContext(context), attrs);
         init();

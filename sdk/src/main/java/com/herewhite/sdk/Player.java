@@ -51,7 +51,7 @@ public class Player extends Displayer {
     }
 
     /**
-     * 异步从 player 中获取播放时的播放速率，暂停时不会变为 0。
+     * 异步从 player 中获取播放时的播放速率，暂停时不会变为 0
      * 正常情况下，不需要使用该 API，仅做 Debug 与测试用
      * @param promise
      * @since 2.5.2
@@ -72,6 +72,7 @@ public class Player extends Displayer {
     private PlayerPhase playerPhase = PlayerPhase.waitingFirstFrame;
 
     /**
+     * 文档中隐藏，SDK 内部使用
      * Instantiates a new Player.
      *
      * @param room            回放房间 uuid
@@ -101,10 +102,16 @@ public class Player extends Displayer {
         this.scheduleTime = scheduleTime;
     }
 
+    /**
+     * 开始回放
+     */
     public void play() {
         bridge.callHandler("player.play", new Object[]{});
     }
 
+    /**
+     * 暂停回放
+     */
     public void pause() {
         bridge.callHandler("player.pause", new Object[]{});
     }

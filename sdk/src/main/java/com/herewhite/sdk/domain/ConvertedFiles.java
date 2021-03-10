@@ -2,6 +2,9 @@ package com.herewhite.sdk.domain;
 
 import com.herewhite.sdk.Converter;
 
+/**
+ * 内部类，文档中隐藏
+ */
 public class ConvertedFiles {
     private String taskId;
     private Converter.ConvertType type;

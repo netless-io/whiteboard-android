@@ -36,6 +36,10 @@ public class WhiteSdk {
         return commonCallbacks;
     }
 
+    /**
+     * 修改 commonCallbacks 的类
+     * @param commonCallbacks
+     */
     public void setCommonCallbacks(CommonCallbacks commonCallbacks) {
         this.commonCallbacks = commonCallbacks;
     }
@@ -53,14 +57,32 @@ public class WhiteSdk {
     @Nullable
     private AudioMixerImplement audioMixerImplement;
 
+    /***
+     * @return NativeSDK 版本号
+     */
     public static String Version() {
         return "2.11.20";
     }
 
+    /**
+     * 初始化 sdk 方法
+     * @param bridge whiteboardView
+     * @param context Android 中的 context
+     * @param whiteSdkConfiguration sdk 配置
+     * @param commonCallbacks commonCallbacks 回调
+     */
     public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, @Nullable CommonCallbacks commonCallbacks) {
         this(bridge, context, whiteSdkConfiguration, commonCallbacks, null);
     }
 
+    /**
+     * 初始化 sdk 方法，如果使用 rtc 进行混音，需要使用该初始化方法
+     * @param bridge
+     * @param context
+     * @param whiteSdkConfiguration
+     * @param commonCallbacks
+     * @param audioMixerBridge rtc 桥接类，如果不为 null，动态 ppt 会将所有音频输出交给 RTC 进行处理
+     */
     public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, @Nullable CommonCallbacks commonCallbacks, @Nullable AudioMixerBridge audioMixerBridge) {
         this.bridge = bridge;
         this.context = context;
@@ -88,10 +110,24 @@ public class WhiteSdk {
         whiteSdkConfiguration.setOnlyCallbackRemoteStateModify(this.onlyCallbackRemoteStateModify);
     }
 
+    /**
+     * 初始化方法
+     * @param bridge
+     * @param context
+     * @param whiteSdkConfiguration
+     */
     public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration) {
         this(bridge, context, whiteSdkConfiguration, (CommonCallbacks) null);
     }
 
+    /**
+     * 初始化方法
+     * @param bridge
+     * @param context
+     * @param whiteSdkConfiguration
+     * @param urlInterrupter 自带图片拦截替换 API，
+     * @deprecated 请使用 {@link CommonCallbacks#urlInterrupter(String)} 进行处理
+     */
     public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, UrlInterrupter urlInterrupter) {
         this(bridge, context, whiteSdkConfiguration);
         this.urlInterrupter = urlInterrupter;
@@ -194,7 +230,7 @@ public class WhiteSdk {
                     } else {
                         JsonObject timeInfo = jsonObject.getAsJsonObject("timeInfo");
                         PlayerTimeInfo playerTimeInfo = gson.fromJson(timeInfo.toString(), PlayerTimeInfo.class);
-                        SyncDisplayerState<PlayerState> syncPlayerState = new SyncDisplayerState(PlayerState.class, "{}", true);
+                        SyncDisplayerState<PlayerState> syncPlayerState =  new SyncDisplayerState(PlayerState.class, "{}", true);
                         Player player = new Player(playerConfiguration.getRoom(), bridge, context, WhiteSdk.this, playerTimeInfo, syncPlayerState);
                         playerCallbacksImplement.setPlayer(player);
                         playerPromise.then(player);
@@ -285,7 +321,6 @@ public class WhiteSdk {
 
     /**
      * 释放回放房间对 PlayerEventListener 的持有
-     *
      * @since 2.4.12
      */
     public void releasePlayer() {

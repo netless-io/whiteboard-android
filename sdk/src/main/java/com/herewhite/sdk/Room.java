@@ -30,7 +30,7 @@ import java.util.UUID;
 import wendu.dsbridge.OnReturnValue;
 
 /**
- * 实时房间操作类
+ * 实时房间 room 操作类
  */
 public class Room extends Displayer {
 
@@ -41,12 +41,16 @@ public class Room extends Displayer {
         this.disconnectedBySelf = disconnectedBySelf;
     }
 
+    /** 标记是否是自己主动断开房间的，以避免递归反复加入房间 */
     public Boolean getDisconnectedBySelf() {
         return disconnectedBySelf;
     }
 
     private Boolean disconnectedBySelf = false;
 
+    /**
+     * @return 获取当前房间的互动模式，true 为互动模式；false 为订阅模式。
+     */
     public Boolean getWritable() {
         return writable;
     }
@@ -59,6 +63,9 @@ public class Room extends Displayer {
     private Integer timeDelay;
     private Long observerId;
 
+    /**
+     * 文档中隐藏，只有 sdk 内部初始化才有意义
+     */
     public Room(String uuid, WhiteboardView bridge, Context context, WhiteSdk sdk, SyncDisplayerState<RoomState> syncRoomState) {
         super(uuid, bridge, context, sdk);
         this.timeDelay = 0;
@@ -113,6 +120,7 @@ public class Room extends Displayer {
 
     /**
      * 复制选中内容，不会粘贴，而是存储在内存中
+     * @since 2.9.3
      */
     public void copy() {
         bridge.callHandler("room.sync.copy", new Object[]{});
@@ -120,6 +128,7 @@ public class Room extends Displayer {
 
     /**
      * 将 copy API 的复制内容，粘贴到白板中间（用户当前视野的中间）。多次粘贴，会有随机偏移
+     * @since 2.9.3
      */
     public void paste() {
         bridge.callHandler("room.sync.paste", new Object[]{});
@@ -127,6 +136,7 @@ public class Room extends Displayer {
 
     /**
      * copy paste 组合 API
+     * @since 2.9.3
      */
     public void duplicate() {
         bridge.callHandler("room.sync.duplicate", new Object[]{});
@@ -134,6 +144,7 @@ public class Room extends Displayer {
 
     /**
      * 删除选中内容
+     * @since 2.9.3
      */
     public void deleteOperation() {
         bridge.callHandler("room.sync.delete", new Object[]{});
@@ -339,7 +350,6 @@ public class Room extends Displayer {
     /**
      * 异步API 获取当前用户教具状态
      *
-     * @deprecated 请使用 {@link #getMemberState()} 同步 API，进行获取。
      * @param promise 完成回调
      * @see MemberState
      */
@@ -378,7 +388,6 @@ public class Room extends Displayer {
     /**
      * 异步API 获取房间中用户列表
      *
-     * @deprecated 请使用 {@link #getRoomMembers()} 同步 API 进行获取。
      * @param promise 完成回调
      */
     public void getRoomMembers(final Promise<RoomMember[]> promise) {
@@ -415,7 +424,6 @@ public class Room extends Displayer {
     /**
      * 异步API 获取用户视角状态
      *
-     * @deprecated 请使用 {@link #getBroadcastState()} 同步 API 进行获取。
      * @param promise 完成回调
      */
     public void getBroadcastState(final Promise<BroadcastState> promise) {

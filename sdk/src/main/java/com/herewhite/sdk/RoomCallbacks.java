@@ -5,8 +5,8 @@ import com.herewhite.sdk.domain.RoomState;
 
 /**
  * Created by buhe on 2018/8/12.
+ * 房间状态回调接口
  */
-
 public interface RoomCallbacks {
 
     /** 房间网络连接状态回调事件 */
@@ -20,7 +20,7 @@ public interface RoomCallbacks {
 
     /**
      房间中RoomState属性，发生变化时，会触发该回调。
-     @param modifyState 只包含发生变化的 RoomState 内容，未发生改变的内容，均为空
+     @param modifyState 只包含发生变化的 RoomState 字段，未发生改变的内容，均为空
      */
     void onRoomStateChanged(RoomState modifyState);
 

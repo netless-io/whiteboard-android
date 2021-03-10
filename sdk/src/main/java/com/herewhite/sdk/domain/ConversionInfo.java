@@ -1,5 +1,6 @@
 package com.herewhite.sdk.domain;
 
+/** 内部类，文档中隐藏 */
 public class ConversionInfo extends WhiteObject {
 
     public enum ServerConversionStatus {

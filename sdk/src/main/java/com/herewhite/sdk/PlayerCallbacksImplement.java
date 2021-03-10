@@ -11,8 +11,8 @@ import com.herewhite.sdk.domain.SDKError;
 
 /**
  * Created by buhe on 2018/8/12.
+ * 内部类，文档中隐藏
  */
-
 public class PlayerCallbacksImplement implements SyncDisplayerState.Listener<PlayerState> {
 
     private final static Gson gson = new Gson();
