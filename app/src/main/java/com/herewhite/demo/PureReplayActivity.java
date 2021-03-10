@@ -8,8 +8,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,7 +24,6 @@ import com.herewhite.sdk.PlayerEventListener;
 import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
 import com.herewhite.sdk.WhiteboardView;
-import com.herewhite.sdk.domain.DeviceType;
 import com.herewhite.sdk.domain.PlayerConfiguration;
 import com.herewhite.sdk.domain.PlayerPhase;
 import com.herewhite.sdk.domain.PlayerState;
@@ -38,6 +35,9 @@ import com.herewhite.sdk.domain.UrlInterrupter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class PureReplayActivity extends AppCompatActivity implements PlayerEventListener {
 
@@ -136,6 +136,20 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
 
     public void getPhase(MenuItem item) {
         Log.i(TAG, gson.toJson(player.getPlayerPhase()));
+    }
+
+    public void getPlaybackSpeed(MenuItem item) {
+        player.getPlaybackSpeed(new Promise<Double>() {
+            @Override
+            public void then(Double value) {
+                showToast("playbackSpeed:" + value);
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+
+            }
+        });
     }
 
     //endregion
@@ -246,11 +260,11 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
         WhiteSdk whiteSdk = new WhiteSdk(whiteboardView, PureReplayActivity.this,
                 new WhiteSdkConfiguration(demoAPI.getAppIdentifier(), true),
                 new UrlInterrupter() {
-            @Override
-            public String urlInterrupter(String sourceUrl) {
-                return sourceUrl;
-            }
-        });
+                    @Override
+                    public String urlInterrupter(String sourceUrl) {
+                        return sourceUrl;
+                    }
+                });
 
         PlayerConfiguration playerConfiguration = new PlayerConfiguration(uuid, roomToken);
         // 只回放 60 秒。如果时间太长，seek bar 进度条移动不明显。

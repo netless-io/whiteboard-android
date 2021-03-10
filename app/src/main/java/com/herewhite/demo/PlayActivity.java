@@ -237,6 +237,20 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
         Log.i(TAG, gson.toJson(mPlaybackPlayer.getPlayerPhase()));
     }
 
+    public void getPlaybackSpeed(MenuItem item) {
+        mPlaybackPlayer.getPlaybackSpeed(new Promise<Double>() {
+            @Override
+            public void then(Double value) {
+                showToast("playbackSpeed:" + value);
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+
+            }
+        });
+    }
+
     //endregion
 
     protected void play() {
