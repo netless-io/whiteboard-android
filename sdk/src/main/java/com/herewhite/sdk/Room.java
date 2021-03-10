@@ -29,7 +29,7 @@ import androidx.annotation.Nullable;
 import wendu.dsbridge.OnReturnValue;
 
 /**
- * 实时房间操作类
+ * 实时房间 room 操作类
  */
 public class Room extends Displayer implements SyncDisplayerState.Listener<RoomState> {
     private SyncDisplayerState<RoomState> syncRoomState;
@@ -39,12 +39,18 @@ public class Room extends Displayer implements SyncDisplayerState.Listener<RoomS
         this.disconnectedBySelf = disconnectedBySelf;
     }
 
+    /**
+     * 标记是否是自己主动断开房间的，以避免递归反复加入房间
+     */
     public Boolean getDisconnectedBySelf() {
         return disconnectedBySelf;
     }
 
     private Boolean disconnectedBySelf = false;
 
+    /**
+     * @return 获取当前房间的互动模式，true 为互动模式；false 为订阅模式。
+     */
     public Boolean getWritable() {
         return writable;
     }
@@ -57,6 +63,9 @@ public class Room extends Displayer implements SyncDisplayerState.Listener<RoomS
     private Integer timeDelay;
     private Long observerId;
 
+    /**
+     * 文档中隐藏，只有 sdk 内部初始化才有意义
+     */
     Room(String uuid, JsBridgeInterface bridge, int densityDpi, boolean disableCallbackWhilePutting) {
         super(uuid, bridge, densityDpi);
         this.timeDelay = 0;
@@ -122,6 +131,8 @@ public class Room extends Displayer implements SyncDisplayerState.Listener<RoomS
 
     /**
      * 复制选中内容，不会粘贴，而是存储在内存中
+     *
+     * @since 2.9.3
      */
     public void copy() {
         bridge.callHandler("room.sync.copy", new Object[]{});
@@ -129,6 +140,8 @@ public class Room extends Displayer implements SyncDisplayerState.Listener<RoomS
 
     /**
      * 将 copy API 的复制内容，粘贴到白板中间（用户当前视野的中间）。多次粘贴，会有随机偏移
+     *
+     * @since 2.9.3
      */
     public void paste() {
         bridge.callHandler("room.sync.paste", new Object[]{});
@@ -136,6 +149,8 @@ public class Room extends Displayer implements SyncDisplayerState.Listener<RoomS
 
     /**
      * copy paste 组合 API
+     *
+     * @since 2.9.3
      */
     public void duplicate() {
         bridge.callHandler("room.sync.duplicate", new Object[]{});
@@ -143,6 +158,8 @@ public class Room extends Displayer implements SyncDisplayerState.Listener<RoomS
 
     /**
      * 删除选中内容
+     *
+     * @since 2.9.3
      */
     public void deleteOperation() {
         bridge.callHandler("room.sync.delete", new Object[]{});

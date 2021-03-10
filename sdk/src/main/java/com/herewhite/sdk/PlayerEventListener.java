@@ -4,6 +4,9 @@ import com.herewhite.sdk.domain.PlayerPhase;
 import com.herewhite.sdk.domain.PlayerState;
 import com.herewhite.sdk.domain.SDKError;
 
+/**
+ * 回放房间事件回调接口
+ */
 public interface PlayerEventListener {
     /**
      * 播放状态切换回调
@@ -21,7 +24,7 @@ public interface PlayerEventListener {
     void onSliceChanged(String slice);
 
     /**
-     * 播放中，状态出现变化的回调
+     * 播放中，状态出现变化的回调，只会包含实际发生改变的属性
      */
     void onPlayerStateChanged(PlayerState modifyState);
 

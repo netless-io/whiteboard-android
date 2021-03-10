@@ -28,11 +28,20 @@ import wendu.dsbridge.OnReturnValue;
 public class WhiteboardView extends DWebView implements JsBridgeInterface {
     private WhiteSdkConfiguration whiteSdkConfiguration;
 
+    /**
+     * 初始化白板界面
+     * @param context
+     */
     public WhiteboardView(Context context) {
         super(getFixedContext(context));
         init(context, null);
     }
 
+    /**
+     * 初始化白板界面
+     * @param context
+     * @param attrs
+     */
     public WhiteboardView(Context context, AttributeSet attrs) {
         super(getFixedContext(context), attrs);
         init(context, attrs);

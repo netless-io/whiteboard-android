@@ -30,6 +30,9 @@ public class PlayerTimeInfo {
         return timeDuration;
     }
 
+    /**
+     * 文档中隐藏
+     */
     public int getFramesCount() {
         return framesCount;
     }

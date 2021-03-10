@@ -11,11 +11,21 @@ import java.util.concurrent.TimeUnit;
  * Created by buhe on 2018/8/11.
  */
 
+/**
+ * 加入房间时的参数配置类，类似 {@link WhiteSdkConfiguration}
+ */
 public class RoomParams extends WhiteObject {
 
     private String uuid;
     private String roomToken;
 
+    /**
+     * 与 {@link WhiteSdkConfiguration#setRegion(Region)} 一致，
+     * 如果 {@link WhiteSdkConfiguration#setRegion(Region)} 已经配置，此处可以不填。
+     * 配置后，会在加入房间时，覆盖 {@link WhiteSdkConfiguration} 中的 region
+     *
+     * @param region
+     */
     public void setRegion(Region region) {
         this.region = region;
     }
@@ -26,6 +36,7 @@ public class RoomParams extends WhiteObject {
 
     private Region region;
     private CameraBound cameraBound;
+
     /**
      * 重连时，最大重连尝试时间，单位：毫秒，默认 45 秒。
      */
@@ -36,8 +47,11 @@ public class RoomParams extends WhiteObject {
     }
 
     /**
-     * 只读模式，只读模式的房间，无法操作影响房间的 API。不在成员列表中
-     * @param writable 
+     * 互动模式API，设置为订阅（false）的房间，无法操作影响房间的 API。
+     * 设置为 false，该用户，将不在成员列表中，其他用户无法得知该用户的存在。
+     * 默认 true
+     *
+     * @param writable
      */
     public void setWritable(boolean writable) {
         isWritable = writable;
@@ -49,28 +63,33 @@ public class RoomParams extends WhiteObject {
         return disableEraseImage;
     }
 
+    /**
+     * 设置橡皮擦教具是否能够擦除图片，true 不能擦除图片；false 为可以擦除图片。默认 false；
+     *
+     * @param disableEraseImage
+     */
     public void setDisableEraseImage(boolean disableEraseImage) {
         this.disableEraseImage = disableEraseImage;
     }
 
+    /**
+     * 设置加入房间时的超时时间
+     *
+     * @param timeout  时长长度
+     * @param timeUnit 时长单位
+     */
     public void setTimeout(long timeout, TimeUnit timeUnit) {
         this.timeout = TimeUnit.MILLISECONDS.convert(timeout, timeUnit);
     }
 
     private boolean disableEraseImage = false;
 
-    /**
-     * Is disable device inputs boolean.
-     *
-     * @return the boolean
-     * @since 2.5.0
-     */
     public boolean isDisableDeviceInputs() {
         return disableDeviceInputs;
     }
 
     /**
-     * 禁止教具响应用户输入
+     * 禁止教具响应用户输入，会覆盖 {@link WhiteSdkConfiguration#setDisableDeviceInputs(boolean)} 的配置
      *
      * @param disableDeviceInputs 是否禁止响应用户输入。默认 false，即响应用户输入。
      * @since 2.5.0
@@ -79,18 +98,13 @@ public class RoomParams extends WhiteObject {
         this.disableDeviceInputs = disableDeviceInputs;
     }
 
-    /**
-     * Is disable operations boolean.
-     *
-     * @return the boolean
-     * @since 2.5.0
-     */
     public boolean isDisableOperations() {
         return disableOperations;
     }
 
     /**
-     * 只读，禁止响应用户任何操作。
+     * 禁止响应用户任何操作。教具无法输入内容，同时用户无法对房间进行视角缩放，移动等操作。
+     * 计费时，还是全价。
      *
      * @param disableOperations 禁止响应用户操作。默认 false，即响应用户任何操作。
      * @since 2.5.0
@@ -102,18 +116,12 @@ public class RoomParams extends WhiteObject {
         this.disableOperations = disableOperations;
     }
 
-    /**
-     * Is disable bezier boolean.
-     *
-     * @return the boolean
-     * @since 2.5.0
-     */
     public boolean isDisableBezier() {
         return disableBezier;
     }
 
     /**
-     * 关闭贝塞尔曲线优化
+     * 关闭贝塞尔曲线优化，主要作用在线条的展示效果上。
      *
      * @param disableBezier 关闭贝塞尔曲线优化。默认 false，即开启贝塞尔曲线优化。
      * @since 2.5.0
@@ -129,6 +137,9 @@ public class RoomParams extends WhiteObject {
         return disableCameraTransform;
     }
 
+    /**
+     * 禁止本地用户视野移动，默认 false，允许用户移动；true 则禁止用户移动视野
+     */
     public void setDisableCameraTransform(boolean disableCameraTransform) {
         this.disableCameraTransform = disableCameraTransform;
     }
@@ -136,18 +147,12 @@ public class RoomParams extends WhiteObject {
     private boolean disableCameraTransform = false;
     private boolean disableBezier = false;
 
-    /**
-     * Gets camera bound.
-     *
-     * @return the camera bound
-     * @since 2.5.0
-     */
     public CameraBound getCameraBound() {
         return cameraBound;
     }
 
     /**
-     * 锁定画布范围
+     * 锁定白板的视野范围范围
      *
      * @param cameraBound 画布范围 {@link CameraBound}
      * @since 2.5.0
@@ -175,6 +180,12 @@ public class RoomParams extends WhiteObject {
 
     private Object userPayload;
 
+    /**
+     * 初始化 RoomParam 配置类
+     *
+     * @param uuid      房间 uuid
+     * @param roomToken 房间 roomToken
+     */
     public RoomParams(String uuid, String roomToken) {
         this(uuid, roomToken, (Object) null);
     }
@@ -213,7 +224,7 @@ public class RoomParams extends WhiteObject {
      * 获取设置的用户信息
      *
      * @return 用户信息
-     * @deprecated 请使用 {@link #getUserPayload()}
+     * @deprecated 2.0.0 请使用 {@link #getUserPayload()}
      */
     @Deprecated
     public MemberInformation getMemberInfo() {
@@ -227,7 +238,7 @@ public class RoomParams extends WhiteObject {
      * 设置用户信息
      *
      * @param memberInfo {@link MemberInformation} 已弃用
-     * @deprecated 请使用 {@link #setUserPayload(Object)} 设置自定义用户信息。
+     * @deprecated 2.0.0 请使用 {@link #setUserPayload(Object)} 设置自定义用户信息。
      */
     @Deprecated
     public void setMemberInfo(MemberInformation memberInfo) {

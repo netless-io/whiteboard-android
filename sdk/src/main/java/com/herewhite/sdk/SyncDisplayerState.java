@@ -11,6 +11,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * 私有类，文档中隐藏
+ * @param <T>
+ */
 public class SyncDisplayerState<T> {
 
     private final static Gson gson = new Gson();
