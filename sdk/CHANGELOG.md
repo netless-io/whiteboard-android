@@ -1,10 +1,14 @@
 # 版本更新记录
+## [2.12.0] - 2021-03-11
+- `WhiteSdkConfiguration`新增`enableImgErrorCallback`参数，开启图片加载失败事件的监听，该监听，会回调`CommonCallbacks`增的`onMessage`方法。事件内容格式，见`onMessage`中注释。
 ## [2.11.21] - 2021-03-08
-- 更新`@netless/iframe-bridge`至2.1.2
+- 更新`@netless/iframe-bridge`至1.1.2
+## [2.11.20] - 2021-03-08
+- 解决构建工具缓存，导致部分 Android Studio 用户 2.11.19 版本缓存错误的问题。
 ## [2.11.19] - 2021-03-05
+- 更新`white-web-sdk`至 2.12.2,优化 ppt 显示逻辑
 - 更新@netless/white-audio-plugin@1.2.20,@netless/white-video-plugin@1.2.20，优化音视频插件
-- 更新`@netless/iframe-bridge`至2.1.1
-- 更新`white-web-sdk`至 2.11.12,优化 ppt 显示逻辑
+- 更新`@netless/iframe-bridge`至1.1.1
 ## [2.11.15] - 2021-02-05
 - 更新`@netless/white-audio-plugin@1.2.19`,`@netless/white-video-plugin@1.2.18`，优化音视频插件进度同步
 ## [2.11.14] - 2021-02-05
