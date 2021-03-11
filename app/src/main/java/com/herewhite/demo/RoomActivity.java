@@ -21,7 +21,6 @@ import com.herewhite.sdk.AbstractCommonCallbacks;
 import com.herewhite.sdk.AbstractRoomCallbacks;
 import com.herewhite.sdk.Converter;
 import com.herewhite.sdk.ConverterCallbacks;
-import com.herewhite.sdk.Logger;
 import com.herewhite.sdk.Room;
 import com.herewhite.sdk.RoomParams;
 import com.herewhite.sdk.WhiteSdk;
@@ -63,6 +62,8 @@ import wendu.dsbridge.DWebView;
 
 
 public class RoomActivity extends BaseActivity {
+    static final String TAG = RoomActivity.class.getSimpleName();
+
     /**
      * 和 iOS 名字一致
      */
@@ -683,7 +684,7 @@ public class RoomActivity extends BaseActivity {
 
             @Override
             public void catchEx(SDKError t) {
-                Logger.error("convertToPointInWorld  error", t);
+                Log.e(TAG, "convertToPointInWorld error " + t.getStackTrace().toString());
             }
         });
     }

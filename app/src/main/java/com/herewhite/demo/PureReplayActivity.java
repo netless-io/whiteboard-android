@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.alibaba.sdk.android.httpdns.HttpDns;
 import com.alibaba.sdk.android.httpdns.HttpDnsService;
 import com.google.gson.Gson;
-import com.herewhite.sdk.Logger;
 import com.herewhite.sdk.Player;
 import com.herewhite.sdk.PlayerEventListener;
 import com.herewhite.sdk.WhiteSdk;
@@ -280,7 +279,7 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
 
             @Override
             public void catchEx(SDKError t) {
-                Logger.error("create player error, ", t);
+                Log.e(TAG, "create player error" + t.getStackTrace().toString());
                 alert("创建回放失败", t.getJsStack());
             }
         });

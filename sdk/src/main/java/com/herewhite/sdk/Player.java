@@ -10,18 +10,14 @@ import com.herewhite.sdk.domain.PlayerState;
 import com.herewhite.sdk.domain.PlayerTimeInfo;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.SDKError;
-
-import java.util.concurrent.ConcurrentHashMap;
+import com.herewhite.sdk.internal.Logger;
 
 import wendu.dsbridge.OnReturnValue;
 
 /**
  * 回放房间操作类
  */
-public class Player extends Displayer implements SyncDisplayerState.Listener<PlayerState> {
-    private final ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, FrequencyEventListener> frequencyEventListenerConcurrentHashMap = new ConcurrentHashMap<>();
-
+public class Player extends Displayer {
     private SyncDisplayerState<PlayerState> syncPlayerState;
 
     private long scheduleTime = 0;
@@ -31,6 +27,7 @@ public class Player extends Displayer implements SyncDisplayerState.Listener<Pla
 
     /**
      * 获取播放时的播放速率
+     *
      * @return 播放速率
      * @since 2.5.2
      */
@@ -40,6 +37,7 @@ public class Player extends Displayer implements SyncDisplayerState.Listener<Pla
 
     /**
      * 设置播放时的播放速率
+     *
      * @param playbackSpeed
      * @since 2.5.2
      */
@@ -51,6 +49,7 @@ public class Player extends Displayer implements SyncDisplayerState.Listener<Pla
     /**
      * 异步从 player 中获取播放时的播放速率，暂停时不会变为 0
      * 正常情况下，不需要使用该 API，仅做 Debug 与测试用
+     *
      * @param promise
      * @since 2.5.2
      */
@@ -78,10 +77,10 @@ public class Player extends Displayer implements SyncDisplayerState.Listener<Pla
     Player(String room, JsBridgeInterface bridge, int densityDpi) {
         super(room, bridge, densityDpi);
         syncPlayerState = new SyncDisplayerState(PlayerState.class, "{}", true);
-        syncPlayerState.setListener(this);
+        syncPlayerState.setListener(localPlayStateListener);
     }
 
-    public void setPlayerTimeInfo(PlayerTimeInfo playerTimeInfo) {
+    void setPlayerTimeInfo(PlayerTimeInfo playerTimeInfo) {
         this.scheduleTime = playerTimeInfo.getScheduleTime();
         this.timeDuration = playerTimeInfo.getTimeDuration();
         this.framesCount = playerTimeInfo.getFramesCount();
@@ -114,23 +113,6 @@ public class Player extends Displayer implements SyncDisplayerState.Listener<Pla
     public void seekToScheduleTime(long seekTime) {
         bridge.callHandler("player.seekToScheduleTime", new Object[]{seekTime});
     }
-
-    //region Event API
-    void fireMagixEvent(EventEntry eventEntry) {
-        EventListener eventListener = eventListenerConcurrentHashMap.get(eventEntry.getEventName());
-        if (eventListener != null) {
-            eventListener.onEvent(eventEntry);
-        }
-    }
-
-    void fireHighFrequencyEvent(EventEntry[] eventEntries) {
-        FrequencyEventListener eventListener = frequencyEventListenerConcurrentHashMap.get(eventEntries[0].getEventName());
-        if (eventListener != null) {
-            eventListener.onEvent(eventEntries);
-        }
-    }
-
-    //endregion
 
     /**
      * 设置查看模式
@@ -200,8 +182,9 @@ public class Player extends Displayer implements SyncDisplayerState.Listener<Pla
 
     /**
      * 异步API 获取回放房间中状态
-     *
+     * <p>
      * 一般情况，请使用 {@link #getPlayerState()} 同步 API，进行获取。
+     *
      * @param promise 完成回调
      */
     public void getPlayerState(final Promise<PlayerState> promise) {
@@ -226,7 +209,7 @@ public class Player extends Displayer implements SyncDisplayerState.Listener<Pla
 
     /**
      * 同步API 获取播放文件信息
-     *
+     * <p>
      * 当前时间，总时长，开始 UTC 时间戳。单位：毫秒
      * 当前时间不准确
      *
@@ -239,8 +222,9 @@ public class Player extends Displayer implements SyncDisplayerState.Listener<Pla
 
     /**
      * 异步API 获取播放文件信息
-     *
+     * <p>
      * 一般情况，请使用 {@link #getPlayerTimeInfo()} 同步 API，进行获取。
+     *
      * @param promise 完成回调
      */
     public void getPlayerTimeInfo(final Promise<PlayerTimeInfo> promise) {
@@ -253,72 +237,93 @@ public class Player extends Displayer implements SyncDisplayerState.Listener<Pla
     }
     //endregion
 
-    // region playerEventListener
+    // region PlayerListener
     private PlayerEventListener listener;
 
-    public void setPlayerEventListener(PlayerEventListener playerEventListener) {
+    void setPlayerEventListener(PlayerEventListener playerEventListener) {
         this.listener = playerEventListener;
     }
+    // endregion
 
-    public PlayerEventListener getPlayerEventListener() {
-        return listener;
+    private PlayerDelegate playerDelegate;
+
+    PlayerDelegate getDelegate() {
+        if (playerDelegate == null) {
+            playerDelegate = new PlayerDelegateImpl();
+        }
+        return playerDelegate;
     }
 
-    @Override
-    public void onDisplayerStateChanged(PlayerState modifyState) {
+    private SyncDisplayerState.Listener<PlayerState> localPlayStateListener = modifyState -> {
         if (listener != null) {
             listener.onPlayerStateChanged(modifyState);
         }
-    }
+    };
 
-    void setPlayerPhase(PlayerPhase playerPhase) {
-        this.playerPhase = playerPhase;
-        if (listener != null) {
-            listener.onPhaseChanged(playerPhase);
+
+    private class PlayerDelegateImpl implements PlayerDelegate {
+        public void fireMagixEvent(EventEntry eventEntry) {
+            EventListener eventListener = eventListenerMap.get(eventEntry.getEventName());
+            if (eventListener != null) {
+                eventListener.onEvent(eventEntry);
+            }
+        }
+
+        public void fireHighFrequencyEvent(EventEntry[] eventEntries) {
+            FrequencyEventListener eventListener = frequencyEventListenerMap.get(eventEntries[0].getEventName());
+            if (eventListener != null) {
+                eventListener.onEvent(eventEntries);
+            }
+        }
+
+        public void setPlayerPhase(PlayerPhase playerPhase) {
+            Player.this.playerPhase = playerPhase;
+            if (listener != null) {
+                listener.onPhaseChanged(playerPhase);
+            }
+        }
+
+        public void onLoadFirstFrame() {
+            if (listener != null) {
+                listener.onLoadFirstFrame();
+            }
+        }
+
+        public void onSliceChanged(String slice) {
+            if (listener != null) {
+                listener.onSliceChanged(slice);
+            }
+        }
+
+        public void syncDisplayerState(String stateJSON) {
+            if (syncPlayerState != null) {
+                syncPlayerState.syncDisplayerState(stateJSON);
+            }
+        }
+
+        public void onStoppedWithError(SDKError error) {
+            if (listener != null) {
+                listener.onStoppedWithError(error);
+            }
+        }
+
+        public void setScheduleTime(long scheduleTime) {
+            Player.this.scheduleTime = scheduleTime;
+            if (listener != null) {
+                listener.onScheduleTimeChanged(scheduleTime);
+            }
+        }
+
+        public void onCatchErrorWhenAppendFrame(SDKError error) {
+            if (listener != null) {
+                listener.onCatchErrorWhenAppendFrame(error);
+            }
+        }
+
+        public void onCatchErrorWhenRender(SDKError error) {
+            if (listener != null) {
+                listener.onCatchErrorWhenRender(error);
+            }
         }
     }
-
-    public void onLoadFirstFrame() {
-        if (listener != null) {
-            listener.onLoadFirstFrame();
-        }
-    }
-
-    public void onSliceChanged(String slice) {
-        if (listener != null) {
-            listener.onSliceChanged(slice);
-        }
-    }
-
-    public void syncDisplayerState(String stateJSON) {
-        if (syncPlayerState != null) {
-            syncPlayerState.syncDisplayerState(stateJSON);
-        }
-    }
-
-    public void onStoppedWithError(SDKError error) {
-        if (listener != null) {
-            listener.onStoppedWithError(error);
-        }
-    }
-
-    void setScheduleTime(long scheduleTime) {
-        this.scheduleTime = scheduleTime;
-        if (listener != null) {
-            listener.onScheduleTimeChanged(scheduleTime);
-        }
-    }
-
-    public void onCatchErrorWhenAppendFrame(SDKError error) {
-        if (listener != null) {
-            listener.onCatchErrorWhenAppendFrame(error);
-        }
-    }
-
-    public void onCatchErrorWhenRender(SDKError error) {
-        if (listener != null) {
-            listener.onCatchErrorWhenRender(error);
-        }
-    }
-    // endregion
 }

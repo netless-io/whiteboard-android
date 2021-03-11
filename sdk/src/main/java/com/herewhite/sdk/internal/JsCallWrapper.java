@@ -1,7 +1,5 @@
 package com.herewhite.sdk.internal;
 
-import com.herewhite.sdk.Logger;
-
 // TODO 是否处理批量的异常模版
 public class JsCallWrapper {
     private final Runnable runnable;

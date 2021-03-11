@@ -13,16 +13,15 @@ import androidx.annotation.Nullable;
 /**
  * Created by buhe on 2018/8/12.
  */
-public class RoomJsInterfaceImpl {
+class RoomJsInterfaceImpl {
     private final static Gson gson = new Gson();
     @Nullable
-    private Room room;
+    private RoomDelegate room;
 
     RoomJsInterfaceImpl() {
     }
 
-    // TODO 命令是否切合，是否使用attach之类的
-    public void setRoom(Room room) {
+    void setRoom(RoomDelegate room) {
         this.room = room;
     }
 
@@ -66,7 +65,7 @@ public class RoomJsInterfaceImpl {
     public void firePhaseChanged(Object args) {
         if (room != null) {
             new JsCallWrapper(() ->
-                    room.setRoomPhase(RoomPhase.valueOf(String.valueOf(args))),
+                    room.firePhaseChanged(RoomPhase.valueOf(String.valueOf(args))),
                     "An exception occurred while invoke onPhaseChanged method"
             ).run();
         }

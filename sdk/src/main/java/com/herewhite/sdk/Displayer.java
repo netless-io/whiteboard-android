@@ -22,6 +22,7 @@ import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.WhiteObject;
 import com.herewhite.sdk.domain.WhiteScenePathType;
+import com.herewhite.sdk.internal.Logger;
 
 import org.json.JSONObject;
 
@@ -45,8 +46,8 @@ public class Displayer {
     protected int densityDpi;
     private Handler handler;
 
-    protected ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
-    protected ConcurrentHashMap<String, FrequencyEventListener> frequencyEventListenerConcurrentHashMap = new ConcurrentHashMap<>();
+    protected ConcurrentHashMap<String, EventListener> eventListenerMap = new ConcurrentHashMap<>();
+    protected ConcurrentHashMap<String, FrequencyEventListener> frequencyEventListenerMap = new ConcurrentHashMap<>();
 
     public Displayer(String uuid, JsBridgeInterface bridge, int densityDpi) {
         this.uuid = uuid;
@@ -147,7 +148,7 @@ public class Displayer {
      * @param eventListener 自定义事件回调；重复添加时，旧回调会被覆盖
      */
     public void addMagixEventListener(String eventName, EventListener eventListener) {
-        this.eventListenerConcurrentHashMap.put(eventName, eventListener);
+        this.eventListenerMap.put(eventName, eventListener);
         bridge.callHandler("displayer.addMagixEventListener", new Object[]{eventName});
     }
 
@@ -162,7 +163,7 @@ public class Displayer {
         if (fireInterval < 500) {
             fireInterval = 500;
         }
-        this.frequencyEventListenerConcurrentHashMap.put(eventName, eventListener);
+        this.frequencyEventListenerMap.put(eventName, eventListener);
         bridge.callHandler("displayer.addHighFrequencyEventListener", new Object[]{eventName, fireInterval});
     }
 
@@ -172,8 +173,8 @@ public class Displayer {
      * @param eventName 需要移除监听的自定义事件名称
      */
     public void removeMagixEventListener(String eventName) {
-        this.eventListenerConcurrentHashMap.remove(eventName);
-        this.frequencyEventListenerConcurrentHashMap.remove(eventName);
+        this.eventListenerMap.remove(eventName);
+        this.frequencyEventListenerMap.remove(eventName);
         bridge.callHandler("displayer.removeMagixEventListener", new Object[]{eventName});
     }
 

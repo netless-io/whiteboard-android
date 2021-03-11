@@ -4,6 +4,7 @@ import android.webkit.JavascriptInterface;
 
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
+import com.herewhite.sdk.internal.Logger;
 
 import org.json.JSONObject;
 

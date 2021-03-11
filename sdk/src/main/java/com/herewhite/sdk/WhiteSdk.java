@@ -149,7 +149,7 @@ public class WhiteSdk {
     public void joinRoom(final RoomParams roomParams, final RoomCallbacks roomCallbacks, final Promise<Room> roomPromise) {
         Room room = new Room(roomParams.getUuid(), bridge, densityDpi, onlyCallbackRemoteStateModify);
         room.setRoomCallbacks(roomCallbacks);
-        roomJsInterface.setRoom(room);
+        roomJsInterface.setRoom(room.getRoomDelegate());
 
         try {
             bridge.callHandler("sdk.joinRoom", new Object[]{roomParams}, (OnReturnValue<String>) roomString -> {
@@ -197,7 +197,7 @@ public class WhiteSdk {
     public void createPlayer(final PlayerConfiguration playerConfiguration, final PlayerEventListener listener, final Promise<Player> playerPromise) {
         Player player = new Player(playerConfiguration.getRoom(), bridge, densityDpi);
         player.setPlayerEventListener(listener);
-        playerJsInterface.setPlayer(player);
+        playerJsInterface.setPlayer(player.getDelegate());
 
         try {
             bridge.callHandler("sdk.replayRoom", new Object[]{

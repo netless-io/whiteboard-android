@@ -1,4 +1,4 @@
-package com.herewhite.sdk;
+package com.herewhite.sdk.internal;
 
 import android.util.Log;
 

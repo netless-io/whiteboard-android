@@ -16,9 +16,9 @@ import com.herewhite.sdk.internal.JsCallWrapper;
 class PlayerJsInterfaceImpl {
     private final static Gson gson = new Gson();
 
-    private Player player;
+    private PlayerDelegate player;
 
-    public void setPlayer(Player player) {
+    void setPlayer(PlayerDelegate player) {
         this.player = player;
     }
 
