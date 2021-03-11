@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.herewhite.sdk.domain.FontFace;
 import com.herewhite.sdk.domain.PlayerConfiguration;
-import com.herewhite.sdk.domain.PlayerState;
 import com.herewhite.sdk.domain.PlayerTimeInfo;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;

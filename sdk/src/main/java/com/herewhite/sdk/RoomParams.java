@@ -162,7 +162,7 @@ public class RoomParams extends WhiteObject {
 
     /**
      * 配置需要透传的用户信息，推荐使用 {@link WhiteObject} 子类，以保证字段结构正确
-     *
+     * <p>
      * 如果需要显示用户头像地址，请在用户信息的 avatar 字段中，添加用户头像图片地址。
      * 从 {@link MemberInformation} 迁移，只需要在 userPayload 中，传入相同字段即可。
      *
@@ -182,10 +182,10 @@ public class RoomParams extends WhiteObject {
     /**
      * 配置实时房间参数
      *
-     * @see MemberInformation 已弃用，现已支持更高自由度的用户信息定义
      * @param uuid       实时房间 uuid
      * @param roomToken  实时房间 token
      * @param memberInfo 用户信息，仅限对应字段
+     * @see MemberInformation 已弃用，现已支持更高自由度的用户信息定义
      * @deprecated 请使用 {@link #RoomParams(String, String, Object)} 传入用户信息。
      */
     @Deprecated
@@ -198,8 +198,8 @@ public class RoomParams extends WhiteObject {
     /**
      * 配置实时房间参数
      *
-     * @param uuid       实时房间 uuid
-     * @param roomToken  实时房间 token
+     * @param uuid        实时房间 uuid
+     * @param roomToken   实时房间 token
      * @param userPayload 自定义用户字段，参考 {@link #setUserPayload(Object)} key-value 结构，请使用自定义后的 {@link WhiteObject} 子类
      * @since 2.0.0
      */
@@ -218,7 +218,7 @@ public class RoomParams extends WhiteObject {
     @Deprecated
     public MemberInformation getMemberInfo() {
         if (userPayload instanceof MemberInformation) {
-            return (MemberInformation)userPayload;
+            return (MemberInformation) userPayload;
         }
         return null;
     }

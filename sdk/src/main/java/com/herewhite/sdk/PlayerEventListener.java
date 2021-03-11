@@ -39,6 +39,7 @@ public interface PlayerEventListener {
      * 添加帧出错
      */
     void onCatchErrorWhenAppendFrame(SDKError error);
+
     /**
      * 渲染时，出错
      */
