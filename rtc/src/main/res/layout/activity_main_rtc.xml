@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.herewhite.sdk.WhiteboardView
+        android:id="@+id/whiteboardView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        tools:context=".MainRtcActivity">
+
+        <FrameLayout
+            android:id="@+id/remote_video_view_container"
+            android:layout_width="90dp"
+            android:layout_height="160dp"
+            android:background="#000000" />
+
+        <ImageView
+            android:id="@+id/btn_call"
+            android:layout_width="@dimen/call_button_size"
+            android:layout_height="@dimen/call_button_size"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:onClick="onCallClicked"
+            android:scaleType="centerCrop"
+            android:src="@drawable/btn_startcall" />
+
+        <FrameLayout
+            android:id="@+id/local_video_view_container"
+            android:layout_width="90dp"
+            android:layout_height="160dp"
+            android:background="#827b92" />
+    </LinearLayout>
+</FrameLayout>

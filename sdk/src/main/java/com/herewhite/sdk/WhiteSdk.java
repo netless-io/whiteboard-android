@@ -49,7 +49,7 @@ public class WhiteSdk {
      * @return NativeSDK 版本号
      */
     public static String Version() {
-        return "2.11.20";
+        return "2.12.0";
     }
 
     /**
@@ -226,7 +226,7 @@ public class WhiteSdk {
      * 查看房间是否有回放数据
      *
      * @param playerConfiguration 回放房间和时间段信息
-     * @param playablePromise     返回是否能够播放
+     * @param playablePromise 返回是否能够播放
      * @since 2.11.0
      */
     public void isPlayable(final PlayerConfiguration playerConfiguration, final Promise<Boolean> playablePromise) {
@@ -240,11 +240,11 @@ public class WhiteSdk {
 
     /**
      * @param fontFaces 需要增加的字体，当名字可以提供给 ppt 和文字教具使用。
-     *                  注意：1. 该修改只在本地有效，不会对远端造成影响。
-     *                  2. 以这种方式插入的 FontFace，只有当该字体被使用时，才会触发下载。
-     *                  3. FontFace，可能会影响部分设备的渲染逻辑，部分设备，可能会在完成字体加载后，才渲染文字。
-     *                  4. 该 API 插入的字体，为一个整体，重复调用该 API，会覆盖之前的字体内容。
-     *                  5. 该 API 与 loadFontFaces 重复使用，无法预期行为，请尽量避免。
+     * 注意：1. 该修改只在本地有效，不会对远端造成影响。
+     *      2. 以这种方式插入的 FontFace，只有当该字体被使用时，才会触发下载。
+     *      3. FontFace，可能会影响部分设备的渲染逻辑，部分设备，可能会在完成字体加载后，才渲染文字。
+     *      4. 该 API 插入的字体，为一个整体，重复调用该 API，会覆盖之前的字体内容。
+     *      5. 该 API 与 loadFontFaces 重复使用，无法预期行为，请尽量避免。
      * @since 2.11.2
      */
     public void setupFontFaces(FontFace[] fontFaces) {
@@ -252,15 +252,15 @@ public class WhiteSdk {
     }
 
     /**
-     * @param fontFaces   需要增加的字体，可以提供给 ppt 和文字教具使用。
+     * @param fontFaces 需要增加的字体，可以提供给 ppt 和文字教具使用。
      * @param loadPromise 如果有报错，会在此处错误回调。该回调会在每一个字体加载成功或者失败后，单独回调。FontFace 填写正确的话，有多少个字体，就会有多少个回调。
-     *                    注意：1. 该修改只在本地有效，不会对远端造成影响。
-     *                    2. FontFace，可能会影响部分设备的渲染逻辑，部分设备，可能会在完成字体加载后，才渲染文字。
-     *                    3. 该 API 插入的字体，无法删除；每次都是增加新字体。
-     *                    4. 该 API 与 setupFontFaces 重复使用，无法预期行为，请尽量避免。
+     * 注意：1. 该修改只在本地有效，不会对远端造成影响。
+     *      2. FontFace，可能会影响部分设备的渲染逻辑，部分设备，可能会在完成字体加载后，才渲染文字。
+     *      3. 该 API 插入的字体，无法删除；每次都是增加新字体。
+     *      4. 该 API 与 setupFontFaces 重复使用，无法预期行为，请尽量避免。
      * @since 2.11.2
      */
-    public void loadFontFaces(FontFace[] fontFaces, final Promise<JSONObject> loadPromise) {
+    public void loadFontFaces(FontFace[] fontFaces, final Promise<JSONObject>loadPromise) {
         bridge.callHandler("sdk.asyncInsertFontFaces", new Object[]{fontFaces}, new OnReturnValue<JSONObject>() {
             @Override
             public void onValue(JSONObject retValue) {
@@ -271,7 +271,7 @@ public class WhiteSdk {
 
     /**
      * @param names 定义文字教具，在本地使用的字体。
-     *              注意：该修改只在本地有效，不会对远端造成影响。
+     * 注意：该修改只在本地有效，不会对远端造成影响。
      * @since 2.11.2
      */
     public void updateTextFont(String[] names) {
@@ -290,8 +290,8 @@ public class WhiteSdk {
     /**
      * 释放实时房间对 RoomCallback 的持有
      *
-     * @param uuid 任意参数，不会被使用
      * @deprecated 一个 WhiteSDK 实例，只能对应一个实时房间，所以不再需要使用 room uuid 进行定位
+     * @param uuid 任意参数，不会被使用
      */
     public void releaseRoom(String uuid) {
         releaseRoom();
@@ -308,9 +308,8 @@ public class WhiteSdk {
 
     /**
      * 释放回放房间对 PlayerEventListener 的持有
-     *
-     * @param uuid 任意参数，不会被使用
      * @deprecated 由于一个 WhiteSDK 实例，只能对应一个回放房间，所以不再需要使用 player uuid 进行定位
+     * @param uuid 任意参数，不会被使用
      */
     public void releasePlayer(String uuid) {
         releasePlayer();

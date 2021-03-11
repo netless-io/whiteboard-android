@@ -8,13 +8,15 @@ import com.herewhite.sdk.domain.LoggerOptions;
 import com.herewhite.sdk.domain.WhiteObject;
 import com.herewhite.sdk.domain.Region;
 import android.os.Build.VERSION;
+
+import org.json.JSONObject;
+
 import java.util.HashMap;
 
 /**
  * Created by buhe on 2018/8/10.
  * 初始化 whiteSDK 用的配置参数，初始化成功，该类中的参数修改，不起作用
  */
-
 public class WhiteSdkConfiguration extends WhiteObject {
 
     /**
@@ -320,4 +322,18 @@ public class WhiteSdkConfiguration extends WhiteObject {
     public void setEnableInterrupterAPI(boolean enableInterrupterAPI) {
         this.enableInterrupterAPI = enableInterrupterAPI;
     }
+
+    public boolean isEnableImgErrorCallback() {
+        return enableImgErrorCallback;
+    }
+
+    /**
+     * 开启对图片加载失败事件的监听，默认关闭。开启后，所有 img 标签加载事件，都会在 {@link CommonCallbacks#onMessage(JSONObject)} 中回调
+     * @param enableImgErrorCallback
+     */
+    public void setEnableImgErrorCallback(boolean enableImgErrorCallback) {
+        this.enableImgErrorCallback = enableImgErrorCallback;
+    }
+
+    private boolean enableImgErrorCallback;
 }

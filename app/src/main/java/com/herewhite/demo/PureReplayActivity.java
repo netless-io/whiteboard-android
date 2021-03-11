@@ -134,6 +134,20 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
         Log.i(TAG, gson.toJson(player.getPlayerPhase()));
     }
 
+    public void getPlaybackSpeed(MenuItem item) {
+        player.getPlaybackSpeed(new Promise<Double>() {
+            @Override
+            public void then(Double value) {
+                showToast("playbackSpeed:" + value);
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+
+            }
+        });
+    }
+
     //endregion
 
     //region Play Action

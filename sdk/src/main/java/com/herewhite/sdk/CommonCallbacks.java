@@ -42,6 +42,14 @@ public interface CommonCallbacks {
 
     /**
      * 部分自定义消息接口，用于本地客户端与 bridge 网页的内容的一些交互，这些信息，不是所有端都会收到。
+     * 目前存在的事件：
+     * 1. iframe 透传信息; 数据格式由 iframe 协商定义，直接透传
+     *      限制必须为 字典格式，同时必须存在 name 字段，且值必须为 "iframe"
+     * 2. 图片加载失败信息（必须先在初始化先开启），格式：
+     *     {name: "imageLoadError",
+     *      customMessage: true,
+     *      src: 图片地址}
+     * 3. ppt 播放，暂停信息（该事件，可以直接监听 pptMediaPlay 和 pptMediaPause，此处不提供具体格式）
      * @param object 内容格式会根据情况发送。发送时，均为 JSON 格式
      * @since 2.11.4
      */
