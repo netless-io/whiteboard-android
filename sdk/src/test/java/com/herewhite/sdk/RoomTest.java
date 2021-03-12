@@ -1,9 +1,12 @@
 package com.herewhite.sdk;
 
 import com.herewhite.sdk.domain.Promise;
+import com.herewhite.sdk.domain.RoomPhase;
+import com.herewhite.sdk.domain.ViewMode;
 
 import junit.framework.TestCase;
 
+import static org.mockito.AdditionalMatchers.aryEq;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -42,6 +45,9 @@ public class RoomTest extends TestCase {
     }
 
     public void testSetRoomPhase() {
+        mRoom.setRoomPhase(RoomPhase.connecting);
+        assertEquals(RoomPhase.connecting, mRoom.getRoomPhase());
+        verify(mockRoomCallbacks).onPhaseChanged(RoomPhase.connecting);
     }
 
     public void testGetObserverId() {
@@ -82,12 +88,25 @@ public class RoomTest extends TestCase {
     }
 
     public void testRedo() {
+        mRoom.redo();
+        verify(mockJsBridgeInterface).callHandler("room.redo", new Object[]{});
     }
 
     public void testUndo() {
+        mRoom.undo();
+        verify(mockJsBridgeInterface).callHandler("room.undo", new Object[]{});
+
     }
 
     public void testSetViewMode() {
+        mRoom.setViewMode(ViewMode.Freedom);
+        verify(mockJsBridgeInterface).callHandler(eq("room.setViewMode"), aryEq(new Object[]{"Freedom"}));
+
+        mRoom.setViewMode(ViewMode.Follower);
+        verify(mockJsBridgeInterface).callHandler(eq("room.setViewMode"), aryEq(new Object[]{"Follower"}));
+
+        mRoom.setViewMode(ViewMode.Broadcaster);
+        verify(mockJsBridgeInterface).callHandler(eq("room.setViewMode"), aryEq(new Object[]{"Broadcaster"}));
     }
 
     public void testDisconnect() {
