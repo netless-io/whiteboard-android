@@ -350,13 +350,12 @@ public class RoomActivity extends BaseActivity {
         mRoom.scalePptToFit(AnimationMode.Continuous);
     }
 
-    public void
-    reconnect(MenuItem item) {
-        final RoomActivity that = this;
+    public void reconnect(MenuItem item) {
+        testMarkIdling(false);
         mRoom.disconnect(new Promise<Object>() {
             @Override
             public void then(Object b) {
-                joinRoom(that.uuid, that.token);
+                joinRoom(RoomActivity.this.uuid, RoomActivity.this.token);
             }
 
             @Override

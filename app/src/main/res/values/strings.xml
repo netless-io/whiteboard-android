@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">whiteboard-demo</string>
     <string name="title_activity_start">首页</string>
     <string name="uuid">uuid</string>
@@ -7,6 +7,7 @@
     <string name="create">创建房间</string>
     <string name="title_activity_play">PlayActivity</string>
     <string name="broadcast_command">进入主播模式</string>
+    <string name="scalePptToFit_command">铺满 ppt</string>
     <string name="getBroadcastState_command">获取视角状态</string>
     <string name="dispatchCustomEvent_command">发送自定义事件</string>
     <string name="cleanScene_command">清屏（保留 ppt）</string>
@@ -33,6 +34,7 @@
     <string name="getPlaybackSpeed_command">获取播放速度</string>
     <string name="seek_command">快进</string>
     <string name="textarea_command">文本</string>
+    <string name="selector_command">选择框</string>
     <string name="staticConvert">静态转换</string>
     <string name="dynamicConvert">动态转换</string>
     <string name="next_scene">下一页</string>

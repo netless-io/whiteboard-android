@@ -17,7 +17,7 @@
         android:title="@string/broadcast_command"/>
     <item android:id="@+id/scalePptToFit"
         android:onClick="scalePptToFit"
-        android:title="铺满 ppt"/>
+        android:title="@string/scalePptToFit_command"/>
     <item android:id="@+id/getBroadcastState"
         android:onClick="getBroadcastState"
         android:title="@string/getBroadcastState_command"/>
@@ -98,7 +98,7 @@
         android:title="@string/textarea_command"/>
     <item android:id="@+id/selector"
         android:onClick="selector"
-        android:title="选择框"/>
+        android:title="@string/selector_command"/>
     <item android:id="@+id/pencil"
         android:onClick="pencil"
         android:title="@string/pencil_command"/>
