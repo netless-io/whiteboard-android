@@ -69,11 +69,14 @@ public class WhiteSdkConfiguration extends WhiteObject {
         }
 
         private boolean useServerWrap;
+
         public PptParams(String scheme) {
             this.scheme = scheme;
         }
     }
 
+
+    private Region region;
     // native 永远只接收 touch 事件
     private DeviceType deviceType = DeviceType.touch;
     // 在 webView 中，打印 native 的调用，并将得到的数据回传给 native 端
@@ -85,6 +88,18 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private boolean userCursor = false;
     private boolean onlyCallbackRemoteStateModify = false;
     private boolean disableDeviceInputs = false;
+    private boolean enableIFramePlugin = false;
+    private boolean enableRtcIntercept = false;
+
+    private LoggerOptions loggerOptions;
+
+    private String appIdentifier;
+    private HashMap<String, String> __nativeTags = new HashMap<>();
+    /**
+     * pptParams 动态 ppt 专用参数
+     */
+    private PptParams pptParams;
+    private HashMap<String, String> fonts;
 
     public boolean isEnableIFramePlugin() {
         return enableIFramePlugin;
@@ -99,8 +114,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
         this.enableIFramePlugin = enableIFramePlugin;
     }
 
-    private boolean enableIFramePlugin = false;
-
     public Region getRegion() {
         return region;
     }
@@ -112,8 +125,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
     public void setRegion(Region region) {
         this.region = region;
     }
-
-    private Region region;
 
     boolean isEnableRtcIntercept() {
         return enableRtcIntercept;
@@ -130,8 +141,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
         this.enableRtcIntercept = enableRtcIntercept;
     }
 
-    private boolean enableRtcIntercept = false;
-
     public boolean isDisableDeviceInputs() {
         return disableDeviceInputs;
     }
@@ -147,15 +156,9 @@ public class WhiteSdkConfiguration extends WhiteObject {
         this.disableDeviceInputs = disableDeviceInputs;
     }
 
-    private LoggerOptions loggerOptions;
-
-    private String appIdentifier;
-    private HashMap<String, String> __nativeTags = new HashMap<>();
-    private PptParams pptParams;
-    private HashMap<String, String> fonts;
-
     /**
      * 设置画笔的渲染引擎模式
+     *
      * @param renderEngine 画笔教具的渲染模式，对于大量书写做了额外优化。2.9.0 默认切换至 canvas，之前版本为 svg。
      * @since 2.8.0
      */
@@ -237,6 +240,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     public LoggerOptions getLoggerOptions() {
         return loggerOptions;
     }
+
     /**
      * 日志上报系统设置项，有默认上报行为
      * 与 web 端一致
@@ -270,9 +274,13 @@ public class WhiteSdkConfiguration extends WhiteObject {
      * 需要保证对应用户在加入房间时，传入了 userPayload，并且 userPayload key-value 结构中，存在 avatar 字段
      * @param userCursor 开关，默认关闭,即不显示用户头像
      */
-    public void setUserCursor(boolean userCursor) { this.userCursor = userCursor; }
+    public void setUserCursor(boolean userCursor) {
+        this.userCursor = userCursor;
+    }
 
-    public boolean isUserCursor() { return userCursor; }
+    public boolean isUserCursor() {
+        return userCursor;
+    }
 
     public boolean isOnlyCallbackRemoteStateModify() {
         return onlyCallbackRemoteStateModify;

@@ -1,10 +1,9 @@
-package com.herewhite.sdk;
+package com.herewhite.sdk.internal;
 
 import android.util.Log;
 
 public class Logger {
-
-    public final static String LOG_TAG = "WhiteSDK";
+    private final static String LOG_TAG = "WhiteSDK";
 
     public static void error(String msg, Throwable throwable) {
         Log.e(LOG_TAG, msg, throwable);

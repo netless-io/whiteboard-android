@@ -1,54 +1,42 @@
 package com.herewhite.sdk;
 
 import android.content.Context;
-import android.webkit.JavascriptInterface;
-
-import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.herewhite.sdk.domain.FontFace;
 import com.herewhite.sdk.domain.PlayerConfiguration;
-import com.herewhite.sdk.domain.PlayerState;
 import com.herewhite.sdk.domain.PlayerTimeInfo;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
-import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
 
 import org.json.JSONObject;
 
-import java.util.Map;
-
+import androidx.annotation.Nullable;
 import wendu.dsbridge.OnReturnValue;
 
 public class WhiteSdk {
-
     private final static Gson gson = new Gson();
 
-    private final WhiteboardView bridge;
-    private final Context context;
-    private final RoomCallbacksImplement roomCallbacksImplement;
-    private final PlayerCallbacksImplement playerCallbacksImplement;
+    private final JsBridgeInterface bridge;
+    private final RoomJsInterfaceImpl roomJsInterface;
+    private final PlayerJsInterfaceImpl playerJsInterface;
+    private final SdkJsInterfaceImpl sdkJsInterface;
 
-    public CommonCallbacks getCommonCallbacks() {
-        return commonCallbacks;
-    }
+    private final int densityDpi;
 
     /**
      * 修改 commonCallbacks 的类
+     *
      * @param commonCallbacks
      */
     public void setCommonCallbacks(CommonCallbacks commonCallbacks) {
-        this.commonCallbacks = commonCallbacks;
+        sdkJsInterface.setCommonCallbacks(commonCallbacks);
     }
 
-    @Nullable
-    private CommonCallbacks commonCallbacks;
     private final boolean onlyCallbackRemoteStateModify;
-    @Nullable
-    private UrlInterrupter urlInterrupter;
 
     public AudioMixerImplement getAudioMixerImplement() {
         return audioMixerImplement;
@@ -65,53 +53,8 @@ public class WhiteSdk {
     }
 
     /**
-     * 初始化 sdk 方法
-     * @param bridge whiteboardView
-     * @param context Android 中的 context
-     * @param whiteSdkConfiguration sdk 配置
-     * @param commonCallbacks commonCallbacks 回调
-     */
-    public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, @Nullable CommonCallbacks commonCallbacks) {
-        this(bridge, context, whiteSdkConfiguration, commonCallbacks, null);
-    }
-
-    /**
-     * 初始化 sdk 方法，如果使用 rtc 进行混音，需要使用该初始化方法
-     * @param bridge
-     * @param context
-     * @param whiteSdkConfiguration
-     * @param commonCallbacks
-     * @param audioMixerBridge rtc 桥接类，如果不为 null，动态 ppt 会将所有音频输出交给 RTC 进行处理
-     */
-    public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, @Nullable CommonCallbacks commonCallbacks, @Nullable AudioMixerBridge audioMixerBridge) {
-        this.bridge = bridge;
-        this.context = context;
-        this.roomCallbacksImplement = new RoomCallbacksImplement(context);
-        this.playerCallbacksImplement = new PlayerCallbacksImplement();
-        this.onlyCallbackRemoteStateModify = whiteSdkConfiguration.isOnlyCallbackRemoteStateModify();
-        this.commonCallbacks = commonCallbacks;
-        if (audioMixerBridge != null) {
-            this.audioMixerImplement = new AudioMixerImplement(bridge, audioMixerBridge);
-            bridge.addJavascriptObject(this.audioMixerImplement, "rtc");
-            whiteSdkConfiguration.setEnableRtcIntercept(true);
-        }
-
-        bridge.addJavascriptObject(this, "sdk");
-        bridge.addJavascriptObject(this.roomCallbacksImplement, "room");
-        bridge.addJavascriptObject(this.playerCallbacksImplement, "player");
-
-        if (whiteSdkConfiguration.isOnlyCallbackRemoteStateModify()) {
-            // JavaScript 必须将所有 state 变化回调提供给 native。
-            // 该属性的实现在 native 代码中体现。
-            whiteSdkConfiguration.setOnlyCallbackRemoteStateModify(false);
-        }
-        bridge.callHandler("sdk.newWhiteSdk", new Object[]{whiteSdkConfiguration});
-
-        whiteSdkConfiguration.setOnlyCallbackRemoteStateModify(this.onlyCallbackRemoteStateModify);
-    }
-
-    /**
      * 初始化方法
+     *
      * @param bridge
      * @param context
      * @param whiteSdkConfiguration
@@ -120,18 +63,71 @@ public class WhiteSdk {
         this(bridge, context, whiteSdkConfiguration, (CommonCallbacks) null);
     }
 
+    public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration) {
+        this(bridge, context, whiteSdkConfiguration, (CommonCallbacks) null);
+    }
+
+    /**
+     * 初始化 sdk 方法
+     *
+     * @param bridge                whiteboardView
+     * @param context               Android 中的 context
+     * @param whiteSdkConfiguration sdk 配置
+     * @param commonCallbacks       commonCallbacks 回调
+     */
+    public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, @Nullable CommonCallbacks commonCallbacks) {
+        this(bridge, context, whiteSdkConfiguration, commonCallbacks, null);
+    }
+
     /**
      * 初始化方法
+     *
      * @param bridge
      * @param context
      * @param whiteSdkConfiguration
-     * @param urlInterrupter 自带图片拦截替换 API，
+     * @param urlInterrupter        自带图片拦截替换 API，
      * @deprecated 请使用 {@link CommonCallbacks#urlInterrupter(String)} 进行处理
      */
-    public WhiteSdk(WhiteboardView bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, UrlInterrupter urlInterrupter) {
+    public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, UrlInterrupter urlInterrupter) {
         this(bridge, context, whiteSdkConfiguration);
-        this.urlInterrupter = urlInterrupter;
+        sdkJsInterface.setUrlInterrupter(urlInterrupter);
     }
+
+    /**
+     * 初始化 sdk 方法，如果使用 rtc 进行混音，需要使用该初始化方法
+     *
+     * @param bridge
+     * @param context
+     * @param whiteSdkConfiguration
+     * @param commonCallbacks
+     * @param audioMixerBridge      rtc 桥接类，如果不为 null，动态 ppt 会将所有音频输出交给 RTC 进行处理
+     */
+    public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, @Nullable CommonCallbacks commonCallbacks, @Nullable AudioMixerBridge audioMixerBridge) {
+        this.bridge = bridge;
+        densityDpi = Utils.getDensityDpi(context);
+        roomJsInterface = new RoomJsInterfaceImpl();
+        playerJsInterface = new PlayerJsInterfaceImpl();
+        sdkJsInterface = new SdkJsInterfaceImpl(commonCallbacks);
+        onlyCallbackRemoteStateModify = whiteSdkConfiguration.isOnlyCallbackRemoteStateModify();
+
+        if (audioMixerBridge != null) {
+            this.audioMixerImplement = new AudioMixerImplement(bridge, audioMixerBridge);
+            bridge.addJavascriptObject(this.audioMixerImplement, "rtc");
+            whiteSdkConfiguration.setEnableRtcIntercept(true);
+        }
+
+        bridge.addJavascriptObject(this.sdkJsInterface, "sdk");
+        bridge.addJavascriptObject(this.roomJsInterface, "room");
+        bridge.addJavascriptObject(this.playerJsInterface, "player");
+
+        // JavaScript 必须将所有 state 变化回调提供给 native。
+        // 该属性的实现在 native 代码中体现。
+        WhiteSdkConfiguration copyConfig = Utils.deepCopy(whiteSdkConfiguration, WhiteSdkConfiguration.class);
+        copyConfig.setOnlyCallbackRemoteStateModify(false);
+
+        bridge.callHandler("sdk.newWhiteSdk", new Object[]{copyConfig});
+    }
+
 
     /**
      * 加入房间，参考 {@link #joinRoom(RoomParams, RoomCallbacks, Promise)}
@@ -151,36 +147,27 @@ public class WhiteSdk {
      * @param roomPromise   创建完成回调
      */
     public void joinRoom(final RoomParams roomParams, final RoomCallbacks roomCallbacks, final Promise<Room> roomPromise) {
+        Room room = new Room(roomParams.getUuid(), bridge, densityDpi, onlyCallbackRemoteStateModify);
+        room.setRoomCallbacks(roomCallbacks);
+        roomJsInterface.setRoom(room.getRoomDelegate());
+
         try {
-            if (roomCallbacks != null) {
-                this.roomCallbacksImplement.setListener(roomCallbacks);  // 覆盖
-            }
-            bridge.callHandler("sdk.joinRoom", new Object[]{roomParams}, new OnReturnValue<String>() {
-                @Override
-                public void onValue(String roomString) {
-                    JsonObject jsonObject = gson.fromJson(roomString, JsonObject.class);
-                    SDKError promiseError = SDKError.promiseError(jsonObject);
-                    if (promiseError != null) {
-                        try {
-                            roomPromise.catchEx(promiseError);
-                        } catch (AssertionError a) {
-                            throw a;
-                        } catch (Throwable e) {
-                            Logger.error("An exception occurred while catch joinRoom method exception", e);
-                        }
-                    } else {
-                        boolean disableCallbackWhilePutting = onlyCallbackRemoteStateModify;
-                        JsonObject jsonState = jsonObject.getAsJsonObject("state");
-                        SyncDisplayerState<RoomState> syncRoomState = new SyncDisplayerState<>(RoomState.class, jsonState.toString(), disableCallbackWhilePutting);
-                        Room room = new Room(roomParams.getUuid(), bridge, context, WhiteSdk.this, syncRoomState);
-                        Long observerId = jsonObject.get("observerId").getAsLong();
-                        Boolean isWritable = jsonObject.get("isWritable").getAsBoolean();
-                        room.setObserverId(observerId);
-                        room.setWritable(isWritable);
-                        room.setRoomPhase(RoomPhase.connected);
-                        roomCallbacksImplement.setRoom(room);
-                        roomPromise.then(room);
-                    }
+            bridge.callHandler("sdk.joinRoom", new Object[]{roomParams}, (OnReturnValue<String>) roomString -> {
+                JsonObject jsonObject = gson.fromJson(roomString, JsonObject.class);
+                SDKError promiseError = SDKError.promiseError(jsonObject);
+                if (promiseError != null) {
+                    roomPromise.catchEx(promiseError);
+                } else {
+                    JsonObject jsonState = jsonObject.getAsJsonObject("state");
+                    Long observerId = jsonObject.get("observerId").getAsLong();
+                    Boolean isWritable = jsonObject.get("isWritable").getAsBoolean();
+
+                    room.setSyncRoomState(jsonState.toString());
+                    room.setObserverId(observerId);
+                    room.setWritable(isWritable);
+                    room.setRoomPhase(RoomPhase.connected);
+
+                    roomPromise.then(room);
                 }
             });
         } catch (AssertionError a) {
@@ -204,37 +191,28 @@ public class WhiteSdk {
      * 创建回放房间
      *
      * @param playerConfiguration 回放参数，具体查看 {@link PlayerConfiguration}
-     * @param playerEventListener 回放房间变化回调。当使用同一个 sdk 初始化多个房间时，该参数传入 null，则新回放房间，仍然会回调旧的 playerEventListener
+     * @param listener            回放房间变化回调。当使用同一个 sdk 初始化多个房间时，该参数传入 null，则新回放房间，仍然会回调旧的 playerEventListener
      * @param playerPromise       创建完成回调
      */
-    public void createPlayer(final PlayerConfiguration playerConfiguration, PlayerEventListener playerEventListener, final Promise<Player> playerPromise) {
+    public void createPlayer(final PlayerConfiguration playerConfiguration, final PlayerEventListener listener, final Promise<Player> playerPromise) {
+        Player player = new Player(playerConfiguration.getRoom(), bridge, densityDpi);
+        player.setPlayerEventListener(listener);
+        playerJsInterface.setPlayer(player.getDelegate());
+
         try {
-            if (playerEventListener != null) {
-                this.playerCallbacksImplement.setListener(playerEventListener);
-            }
             bridge.callHandler("sdk.replayRoom", new Object[]{
                     playerConfiguration
-            }, new OnReturnValue<String>() {
-                @Override
-                public void onValue(String roomString) {
-                    JsonObject jsonObject = gson.fromJson(roomString, JsonObject.class);
-                    SDKError promiseError = SDKError.promiseError(jsonObject);
-                    if (promiseError != null) {
-                        try {
-                            playerPromise.catchEx(promiseError);
-                        } catch (AssertionError a) {
-                            throw a;
-                        } catch (Throwable e) {
-                            Logger.error("An exception occurred while catch createPlayer method exception", e);
-                        }
-                    } else {
-                        JsonObject timeInfo = jsonObject.getAsJsonObject("timeInfo");
-                        PlayerTimeInfo playerTimeInfo = gson.fromJson(timeInfo.toString(), PlayerTimeInfo.class);
-                        SyncDisplayerState<PlayerState> syncPlayerState =  new SyncDisplayerState(PlayerState.class, "{}", true);
-                        Player player = new Player(playerConfiguration.getRoom(), bridge, context, WhiteSdk.this, playerTimeInfo, syncPlayerState);
-                        playerCallbacksImplement.setPlayer(player);
-                        playerPromise.then(player);
-                    }
+            }, (OnReturnValue<String>) playString -> {
+                JsonObject jsonObject = gson.fromJson(playString, JsonObject.class);
+                SDKError promiseError = SDKError.promiseError(jsonObject);
+                if (promiseError != null) {
+                    playerPromise.catchEx(promiseError);
+                } else {
+                    JsonObject timeInfo = jsonObject.getAsJsonObject("timeInfo");
+                    PlayerTimeInfo playerTimeInfo = gson.fromJson(timeInfo.toString(), PlayerTimeInfo.class);
+
+                    player.setPlayerTimeInfo(playerTimeInfo);
+                    playerPromise.then(player);
                 }
             });
         } catch (AssertionError a) {
@@ -306,7 +284,7 @@ public class WhiteSdk {
      * @since 2.4.12
      */
     public void releaseRoom() {
-        roomCallbacksImplement.setListener(null);
+        roomJsInterface.setRoom(null);
     }
 
     /**
@@ -321,10 +299,11 @@ public class WhiteSdk {
 
     /**
      * 释放回放房间对 PlayerEventListener 的持有
+     *
      * @since 2.4.12
      */
     public void releasePlayer() {
-        playerCallbacksImplement.setListener(null);
+        playerJsInterface.setPlayer(null);
     }
 
     /**
@@ -335,65 +314,4 @@ public class WhiteSdk {
     public void releasePlayer(String uuid) {
         releasePlayer();
     }
-
-    //region SDK Callbacks
-
-    @JavascriptInterface
-    public String urlInterrupter(Object args) {
-        if (this.commonCallbacks != null) {
-            return this.commonCallbacks.urlInterrupter(String.valueOf(args));
-        } else if (this.urlInterrupter == null) {
-            return String.valueOf(args);
-        }
-        return this.urlInterrupter.urlInterrupter(String.valueOf(args));
-    }
-
-    @JavascriptInterface
-    public void throwError(Object args) {
-        Logger.info("WhiteSDK JS error: " + gson.fromJson(String.valueOf(args), Map.class));
-        if (this.commonCallbacks != null) {
-            this.commonCallbacks.throwError(args);
-        }
-    }
-
-    @JavascriptInterface
-    public void logger(Object args) {
-        Logger.info("WhiteSDK logger: " + gson.fromJson(String.valueOf(args), Map.class));
-    }
-
-    @JavascriptInterface
-    public void postMessage(Object args) {
-        if (this.commonCallbacks != null) {
-            try {
-
-                JSONObject object = new JSONObject((String) args);
-                this.commonCallbacks.onMessage(object);
-            } catch (Throwable throwable) {
-
-            }
-        }
-    }
-
-    @JavascriptInterface
-    public void onPPTMediaPlay(Object args) {
-        if (this.commonCallbacks != null) {
-            this.commonCallbacks.onPPTMediaPlay();
-        }
-    }
-
-    @JavascriptInterface
-    public void onPPTMediaPause(Object args) {
-        if (this.commonCallbacks != null) {
-            this.commonCallbacks.onPPTMediaPause();
-        }
-    }
-
-    @JavascriptInterface
-    public void setupFail(Object object) {
-        if (this.commonCallbacks != null && object instanceof JSONObject) {
-            SDKError sdkError = SDKError.parseError((JSONObject) object);
-            this.commonCallbacks.sdkSetupFail(sdkError);
-        }
-    }
-    //endregion
 }

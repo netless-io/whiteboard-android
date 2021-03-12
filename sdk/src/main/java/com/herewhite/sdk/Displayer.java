@@ -1,10 +1,10 @@
 package com.herewhite.sdk;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import androidx.annotation.ColorInt;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Base64;
 
 import com.google.gson.Gson;
@@ -22,6 +22,7 @@ import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.WhiteObject;
 import com.herewhite.sdk.domain.WhiteScenePathType;
+import com.herewhite.sdk.internal.Logger;
 
 import org.json.JSONObject;
 
@@ -29,29 +30,40 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import androidx.annotation.ColorInt;
 import wendu.dsbridge.OnReturnValue;
 
 /**
  * 白板房间基类
  */
 public class Displayer {
-
+    protected final static Gson gson = new Gson();
     @ColorInt
     private int backgroundColor = Color.WHITE;
-    protected final WhiteboardView bridge;
+
+    protected final JsBridgeInterface bridge;
     protected String uuid;
-    protected final Context context;
-    protected WhiteSdk sdk;
-    protected final static Gson gson = new Gson();
+    protected int densityDpi;
+    private Handler handler;
 
-    protected ConcurrentHashMap<String, EventListener> eventListenerConcurrentHashMap = new ConcurrentHashMap<>();
-    protected ConcurrentHashMap<String, FrequencyEventListener> frequencyEventListenerConcurrentHashMap = new ConcurrentHashMap<>();
+    protected ConcurrentHashMap<String, EventListener> eventListenerMap = new ConcurrentHashMap<>();
+    protected ConcurrentHashMap<String, FrequencyEventListener> frequencyEventListenerMap = new ConcurrentHashMap<>();
 
-    public Displayer(String uuid, WhiteboardView bridge, Context context, WhiteSdk sdk) {
+    public Displayer(String uuid, JsBridgeInterface bridge, int densityDpi) {
         this.uuid = uuid;
         this.bridge = bridge;
-        this.context = context;
-        this.sdk = sdk;
+        this.densityDpi = densityDpi;
+    }
+
+    private Handler getHandler() {
+        if (handler == null) {
+            handler = new Handler(Looper.getMainLooper());
+        }
+        return handler;
+    }
+
+    protected void post(Runnable runnable) {
+        getHandler().post(runnable);
     }
 
     /**
@@ -136,7 +148,7 @@ public class Displayer {
      * @param eventListener 自定义事件回调；重复添加时，旧回调会被覆盖
      */
     public void addMagixEventListener(String eventName, EventListener eventListener) {
-        this.eventListenerConcurrentHashMap.put(eventName, eventListener);
+        this.eventListenerMap.put(eventName, eventListener);
         bridge.callHandler("displayer.addMagixEventListener", new Object[]{eventName});
     }
 
@@ -151,7 +163,7 @@ public class Displayer {
         if (fireInterval < 500) {
             fireInterval = 500;
         }
-        this.frequencyEventListenerConcurrentHashMap.put(eventName, eventListener);
+        this.frequencyEventListenerMap.put(eventName, eventListener);
         bridge.callHandler("displayer.addHighFrequencyEventListener", new Object[]{eventName, fireInterval});
     }
 
@@ -161,8 +173,8 @@ public class Displayer {
      * @param eventName 需要移除监听的自定义事件名称
      */
     public void removeMagixEventListener(String eventName) {
-        this.eventListenerConcurrentHashMap.remove(eventName);
-        this.frequencyEventListenerConcurrentHashMap.remove(eventName);
+        this.eventListenerMap.remove(eventName);
+        this.frequencyEventListenerMap.remove(eventName);
         bridge.callHandler("displayer.removeMagixEventListener", new Object[]{eventName});
     }
 
@@ -286,7 +298,7 @@ public class Displayer {
         final String pureBase64Encoded = base64String.substring(base64String.indexOf(",")  + 1);
         final byte[] decodedBytes = Base64.decode(pureBase64Encoded, Base64.DEFAULT);
         BitmapFactory.Options opts = new BitmapFactory.Options();
-        opts.inDensity = context.getResources().getDisplayMetrics().densityDpi;
+        opts.inDensity = densityDpi;
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length, opts);
     }
 

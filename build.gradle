@@ -8,6 +8,13 @@ buildscript {
         // androidx
         annotationVersion = "1.1.0"
 
+        // test
+        testCoreVersion = "1.3.0"
+        extJUnitVersion = '1.1.1'
+        testRunnerVersion = "1.3.0"
+        espressoVersion = "3.3.0"
+        jUnitVersion = '4.13.2'
+
         gradleVersion = "4.1.0"
     }
     repositories {

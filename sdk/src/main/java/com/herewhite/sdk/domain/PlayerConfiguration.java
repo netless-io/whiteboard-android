@@ -70,9 +70,13 @@ public class PlayerConfiguration extends WhiteObject {
         this.room = room;
     }
 
-    public String getRoomToken() { return roomToken; }
+    public String getRoomToken() {
+        return roomToken;
+    }
 
-    public void setRoomToken(String roomToken) { this.roomToken = roomToken; }
+    public void setRoomToken(String roomToken) {
+        this.roomToken = roomToken;
+    }
 
     /**
      * 文档中隐藏

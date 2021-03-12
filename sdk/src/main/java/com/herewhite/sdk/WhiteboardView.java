@@ -5,7 +5,6 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.view.View;
 import android.webkit.WebChromeClient;
 
 import com.google.gson.Gson;
@@ -26,8 +25,8 @@ import wendu.dsbridge.OnReturnValue;
  * white on 2018/8/10.
  */
 
-public class WhiteboardView extends DWebView {
-
+public class WhiteboardView extends DWebView implements JsBridgeInterface {
+    private WhiteSdkConfiguration whiteSdkConfiguration;
 
     /**
      * 初始化白板界面
@@ -35,7 +34,7 @@ public class WhiteboardView extends DWebView {
      */
     public WhiteboardView(Context context) {
         super(getFixedContext(context));
-        init();
+        init(context, null);
     }
 
     /**
@@ -45,7 +44,7 @@ public class WhiteboardView extends DWebView {
      */
     public WhiteboardView(Context context, AttributeSet attrs) {
         super(getFixedContext(context), attrs);
-        init();
+        init(context, attrs);
     }
 
     public static Context getFixedContext(Context context) {
@@ -56,7 +55,7 @@ public class WhiteboardView extends DWebView {
         }
     }
 
-    private void init() {
+    private void init(Context context, AttributeSet attrs) {
         getSettings().setMediaPlaybackRequiresUserGesture(false);
         loadUrl("file:///android_asset/whiteboard/index.html");
         setWebChromeClient(new FixWebChromeClient());
@@ -74,7 +73,6 @@ public class WhiteboardView extends DWebView {
     }
 
     private final static Gson gson = new Gson();
-
 
     public <T> void callHandler(String method, Object[] args, OnReturnValue<T> handler) {
         super.callHandler(method, toMaps(args), handler);
@@ -100,9 +98,9 @@ public class WhiteboardView extends DWebView {
         }
     }
 
-    private static final Class[] PRIMITIVE_TYPES = { int.class, long.class, short.class,
+    private static final Class[] PRIMITIVE_TYPES = {int.class, long.class, short.class,
             float.class, double.class, byte.class, boolean.class, char.class, Integer.class, Long.class,
-            Short.class, Float.class, Double.class, Byte.class, Boolean.class, Character.class };
+            Short.class, Float.class, Double.class, Byte.class, Boolean.class, Character.class};
     private static List<Class> PRIMITIVE_LIST = new ArrayList<>(Arrays.asList(PRIMITIVE_TYPES));
 
     private static boolean isPrimitiveOrStringOrNull(Object target) {
@@ -126,8 +124,8 @@ public class WhiteboardView extends DWebView {
             return ((WhiteObject) object).toJSON();
         } else if (object instanceof WhiteObject[]) {
             List<JSONObject> list = new ArrayList<>();
-            for (int i=0; i<((WhiteObject[]) object).length; i++) {
-                list.add(((WhiteObject[])object)[i].toJSON());
+            for (int i = 0; i < ((WhiteObject[]) object).length; i++) {
+                list.add(((WhiteObject[]) object)[i].toJSON());
             }
             return list;
         } else {
@@ -138,12 +136,12 @@ public class WhiteboardView extends DWebView {
     class FixWebChromeClient extends WebChromeClient {
         @Override
         public Bitmap getDefaultVideoPoster() {
-            try{
+            try {
                 int width = 100;
                 int height = 50;
                 // fix https://bugs.chromium.org/p/chromium/issues/detail?id=521753#c8
                 return Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-            }catch(Exception e){
+            } catch (Exception e) {
                 return super.getDefaultVideoPoster();
             }
         }

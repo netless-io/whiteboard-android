@@ -3,12 +3,9 @@ package com.herewhite.demo;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,13 +20,13 @@ import com.google.gson.Gson;
 import com.herewhite.demo.exo.WhiteExoPlayer;
 import com.herewhite.demo.ijk.WhiteIjkPlayer;
 import com.herewhite.demo.ijk.widget.media.IjkVideoView;
-import com.herewhite.sdk.PlayerEventListener;
-import com.herewhite.sdk.combinePlayer.NativePlayer;
-import com.herewhite.sdk.combinePlayer.PlayerSyncManager;
 import com.herewhite.sdk.Player;
+import com.herewhite.sdk.PlayerEventListener;
 import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
 import com.herewhite.sdk.WhiteboardView;
+import com.herewhite.sdk.combinePlayer.NativePlayer;
+import com.herewhite.sdk.combinePlayer.PlayerSyncManager;
 import com.herewhite.sdk.domain.PlayerConfiguration;
 import com.herewhite.sdk.domain.PlayerPhase;
 import com.herewhite.sdk.domain.PlayerState;
@@ -40,26 +37,30 @@ import com.herewhite.sdk.domain.UrlInterrupter;
 
 import java.util.concurrent.TimeUnit;
 
-public class PlayActivity extends AppCompatActivity implements PlayerEventListener {
+import androidx.annotation.Nullable;
 
-    protected WhiteboardView mWhiteboardView;
-    @Nullable
-    protected Player mPlaybackPlayer;
+public class PlayActivity extends BaseActivity implements PlayerEventListener {
+    private final String TAG = "player";
+    private final String TAG_Native = "nativePlayer";
+
     Gson gson = new Gson();
     private DemoAPI demoAPI = new DemoAPI();
-    protected boolean mUserIsSeeking;
+
+    protected WhiteboardView mWhiteboardView;
     protected SeekBar mSeekBar;
-    @Nullable
-    private NativePlayer mWhiteMediaPlayer;
-    // 是否使用 ExoPlayer，true 使用 EXOPlayer，false 则使用 IjkPlayer，默认为 true
-    private boolean mIsUsedExoPlayer = true;
     /*
      * 如果不需要音视频混合播放，可以直接操作 Player
      */
     @Nullable
     PlayerSyncManager mPlayerSyncManager;
-    private final String TAG = "player";
-    private final String TAG_Native = "nativePlayer";
+    @Nullable
+    Player mPlaybackPlayer;
+    @Nullable
+    NativePlayer mWhiteMediaPlayer;
+
+    private boolean mUserIsSeeking;
+    // 是否使用 ExoPlayer，true 使用 EXOPlayer，false 则使用 IjkPlayer，默认为 true
+    private boolean mIsUsedExoPlayer = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +69,9 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
 
         mSeekBar = findViewById(R.id.player_seek_bar);
         mWhiteboardView = findViewById(R.id.white);
-
         WebView.setWebContentsDebuggingEnabled(true);
+
+        testMarkIdling(false);
         setupPlayer();
     }
 
@@ -141,8 +143,7 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
 
     //region override
     protected void setupPlayer() {
-        Intent intent = getIntent();
-        final String uuid = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
+        final String uuid = getIntent().getStringExtra(StartActivity.EXTRA_MESSAGE);
 
         try {
             if (mIsUsedExoPlayer) {
@@ -379,7 +380,7 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
         WhiteSdk whiteSdk = new WhiteSdk(
                 mWhiteboardView,
                 PlayActivity.this,
-                new WhiteSdkConfiguration(demoAPI.getAppIdentifier(), true),
+                new WhiteSdkConfiguration(demoAPI.getAppId(), true),
                 new UrlInterrupter() {
                     @Override
                     public String urlInterrupter(String sourceUrl) {
@@ -396,8 +397,9 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
             @Override
             public void then(Player wPlayer) {
                 mPlaybackPlayer = wPlayer;
-                setupSeekBar();
                 mPlayerSyncManager.setWhitePlayer(mPlaybackPlayer);
+
+                setupSeekBar();
                 if (mWhiteMediaPlayer != null) {
                     if (mIsUsedExoPlayer) {
                         ((WhiteExoPlayer) mWhiteMediaPlayer).setPlayerSyncManager(mPlayerSyncManager);
@@ -406,10 +408,12 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
                     }
                 }
                 // seek 一次才能主动触发
-                wPlayer.seekToScheduleTime(0);
+                mPlaybackPlayer.seekToScheduleTime(0);
                 enableBtn();
                 play();
                 mSeekBarUpdateHandler.postDelayed(mUpdateSeekBar, 100);
+
+                testMarkIdling(true);
             }
 
             @Override
@@ -425,7 +429,6 @@ public class PlayActivity extends AppCompatActivity implements PlayerEventListen
     }
 
     public void alert(final String title, final String detail) {
-
         runOnUiThread(new Runnable() {
             public void run() {
                 AlertDialog alertDialog = new AlertDialog.Builder(PlayActivity.this).create();

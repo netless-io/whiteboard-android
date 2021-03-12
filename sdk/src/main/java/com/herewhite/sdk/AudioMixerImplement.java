@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 public class AudioMixerImplement {
 
-    AudioMixerImplement(WhiteboardView bridge, AudioMixerBridge mixerBridge) {
+    AudioMixerImplement(JsBridgeInterface bridge, AudioMixerBridge mixerBridge) {
         this.bridge = bridge;
         this.mixerBridge = mixerBridge;
     }
@@ -25,7 +25,7 @@ public class AudioMixerImplement {
         this.bridge.callHandler("rtc.callback", new Object[]{state, errorCode});
     }
 
-    private WhiteboardView bridge;
+    private JsBridgeInterface bridge;
     private AudioMixerBridge mixerBridge;
 
     @JavascriptInterface

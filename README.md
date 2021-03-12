@@ -4,7 +4,6 @@
 [外部版本列表](https://jitpack.io/com/github/duty-os/white-sdk-android/)
 
 # TODO
-
 - [x] 单元测试
 - [x] changelog
 - [x] 在底部调用时，自行实现序列化与反序列化，减少重复调用代码

@@ -3,7 +3,6 @@ package com.herewhite.demo;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import android.widget.Toast;
 import com.alibaba.sdk.android.httpdns.HttpDns;
 import com.alibaba.sdk.android.httpdns.HttpDnsService;
 import com.google.gson.Gson;
-import com.herewhite.sdk.Logger;
 import com.herewhite.sdk.Player;
 import com.herewhite.sdk.PlayerEventListener;
 import com.herewhite.sdk.WhiteSdk;
@@ -69,10 +67,7 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
     }
 
     protected void setupPlayer() {
-        Intent intent = getIntent();
-        final String uuid = intent.getStringExtra(StartActivity.EXTRA_MESSAGE);
-
-
+        final String uuid = getIntent().getStringExtra(StartActivity.EXTRA_MESSAGE);
         DemoAPI.Result result = new DemoAPI.Result() {
             @Override
             public void success(String uuid, String roomToken) {
@@ -284,7 +279,7 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
 
             @Override
             public void catchEx(SDKError t) {
-                Logger.error("create player error, ", t);
+                Log.e(TAG, "create player error" + t.getStackTrace().toString());
                 alert("创建回放失败", t.getJsStack());
             }
         });

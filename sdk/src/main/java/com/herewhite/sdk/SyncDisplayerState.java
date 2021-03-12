@@ -15,7 +15,7 @@ import java.util.Set;
  * 私有类，文档中隐藏
  * @param <T>
  */
-public class SyncDisplayerState<T> {
+class SyncDisplayerState<T> {
 
     private final static Gson gson = new Gson();
     private final static JsonParser parser = new JsonParser();
@@ -45,7 +45,7 @@ public class SyncDisplayerState<T> {
     }
 
     public void syncDisplayerState(String stateJSON) {
-        JsonObject modifyStateJSON = this.putDisplayerStateAndCompareModifyStateJSON(parser.parse(stateJSON).getAsJsonObject());
+        JsonObject modifyStateJSON = compareAndModifyStateJSON(parser.parse(stateJSON).getAsJsonObject());
         if (listener != null) {
             if (modifyStateJSON != null) {
                 T modifyState = gson.fromJson(modifyStateJSON, this.clazz);
@@ -54,7 +54,7 @@ public class SyncDisplayerState<T> {
         }
     }
 
-    public void putDisplayerStateProperty(String key, Object value) {
+    protected void putProperty(String key, Object value) {
         JsonElement originalValue = this.stateJSON.get(key);
 
         if (originalValue != null) {
@@ -62,7 +62,7 @@ public class SyncDisplayerState<T> {
 
             if (!compareJson(originalValue, newValue)) {
                 JsonObject newStateJSON = new JsonObject();
-                for (String otherKey: this.stateJSON.keySet()) {
+                for (String otherKey : this.stateJSON.keySet()) {
                     if (otherKey.equals(key)) {
                         newStateJSON.add(otherKey, newValue);
                     } else {
@@ -81,12 +81,10 @@ public class SyncDisplayerState<T> {
         }
     }
 
-    private JsonObject putDisplayerStateAndCompareModifyStateJSON(JsonObject modifyStateJSON) {
-
+    private JsonObject compareAndModifyStateJSON(JsonObject modifyStateJSON) {
         if (this.stateJSON == null) {
             this.stateJSON = modifyStateJSON;
             return null;
-
         } else {
             JsonObject jsonObject = new JsonObject();
             JsonObject checkedModifyStateJSON = null;
@@ -94,7 +92,7 @@ public class SyncDisplayerState<T> {
             String[] strs = this.stateJSON.keySet().toArray(new String[0]);
             Set<String> keySet = new HashSet<>(Arrays.asList(strs));
             keySet.addAll(modifyStateJSON.keySet());
-            for (String key: keySet) {
+            for (String key : keySet) {
                 JsonElement originalValue = this.stateJSON.get(key);
                 JsonElement newValue = modifyStateJSON.get(key);
 
@@ -107,12 +105,11 @@ public class SyncDisplayerState<T> {
                     }
                     jsonObject.add(key, newValue);
 
-                } else if (originalValue != null){
+                } else if (originalValue != null) {
                     jsonObject.add(key, originalValue);
                 }
             }
             this.stateJSON = jsonObject;
-
             return checkedModifyStateJSON;
         }
     }
@@ -125,14 +122,14 @@ public class SyncDisplayerState<T> {
             JsonObject object2 = (JsonObject) value2;
             JsonObject newObject = new JsonObject();
 
-            for (String key: object1.keySet()) {
+            for (String key : object1.keySet()) {
                 if (object2.has(key)) {
                     newObject.add(key, object2.get(key));
                 } else {
                     newObject.add(key, object1.get(key));
                 }
             }
-            for (String key: object2.keySet()) {
+            for (String key : object2.keySet()) {
                 if (!newObject.has(key)) {
                     newObject.add(key, object2.get(key));
                 }

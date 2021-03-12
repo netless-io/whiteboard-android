@@ -47,7 +47,7 @@ public class RoomParams extends WhiteObject {
      * 互动模式API，设置为订阅（false）的房间，无法操作影响房间的 API。
      * 设置为 false，该用户，将不在成员列表中，其他用户无法得知该用户的存在。
      * 默认 true
-     * @param writable 
+     * @param writable
      */
     public void setWritable(boolean writable) {
         isWritable = writable;
@@ -214,7 +214,7 @@ public class RoomParams extends WhiteObject {
      * 获取设置的用户信息
      *
      * @return 用户信息
-     * @deprecated 2.0.0 请使用 {@link #getUserPayload()}
+     * @deprecated 请使用 {@link #getUserPayload()}
      */
     @Deprecated
     public MemberInformation getMemberInfo() {
@@ -227,7 +227,7 @@ public class RoomParams extends WhiteObject {
     /**
      * 设置用户信息
      * @param memberInfo {@link MemberInformation} 已弃用
-     * @deprecated 2.0.0 请使用 {@link #setUserPayload(Object)} 设置自定义用户信息。
+     * @deprecated 请使用 {@link #setUserPayload(Object)} 设置自定义用户信息。
      */
     @Deprecated
     public void setMemberInfo(MemberInformation memberInfo) {
