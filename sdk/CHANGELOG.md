@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.12.1] - 2021-03-15
+- 优化使用 iframe 课件时，部分课件存在性能问题
 ## [2.12.0] - 2021-03-11
 - `WhiteSdkConfiguration`新增`enableImgErrorCallback`参数，开启图片加载失败事件的监听，该监听，会回调`CommonCallbacks`增的`onMessage`方法。事件内容格式，见`onMessage`中注释。
 ## [2.11.21] - 2021-03-08
