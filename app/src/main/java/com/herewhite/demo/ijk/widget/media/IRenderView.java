@@ -18,12 +18,12 @@
 package com.herewhite.demo.ijk.widget.media;
 
 import android.graphics.SurfaceTexture;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 
 public interface IRenderView {

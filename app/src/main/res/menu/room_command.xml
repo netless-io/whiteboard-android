@@ -4,117 +4,154 @@
     android:layout_height="match_parent">
     <!-- Settings, should always be in the overflow -->
     <!--<item android:id="@+id/bound"-->
-        <!--android:onClick="setBound"-->
-        <!--android:title="@string/set_bound" />-->
-    <item android:id="@+id/reconnect"
+    <!--android:onClick="setBound"-->
+    <!--android:title="@string/set_bound" />-->
+    <item
+        android:id="@+id/reconnect"
         android:onClick="reconnect"
         android:title="@string/reconnect" />
-    <item android:id="@+id/orientation"
+    <item
+        android:id="@+id/orientation"
         android:onClick="orientation"
         android:title="@string/orientation" />
-    <item android:id="@+id/broadcast"
+    <item
+        android:id="@+id/broadcast"
         android:onClick="broadcast"
-        android:title="@string/broadcast_command"/>
-    <item android:id="@+id/scalePptToFit"
+        android:title="@string/broadcast_command" />
+    <item
+        android:id="@+id/scalePptToFit"
         android:onClick="scalePptToFit"
-        android:title="@string/scalePptToFit_command"/>
-    <item android:id="@+id/getBroadcastState"
+        android:title="@string/scalePptToFit_command" />
+    <item
+        android:id="@+id/getBroadcastState"
         android:onClick="getBroadcastState"
-        android:title="@string/getBroadcastState_command"/>
-    <item android:id="@+id/moveCamera"
+        android:title="@string/getBroadcastState_command" />
+    <item
+        android:id="@+id/moveCamera"
         android:onClick="moveCamera"
         android:title="@string/move_camera" />
-    <item android:id="@+id/undoRedo"
+    <item
+        android:id="@+id/undoRedo"
         android:onClick="undoRedoOperation"
         android:title="@string/redo_undo" />
-    <item android:id="@+id/duplicate"
+    <item
+        android:id="@+id/duplicate"
         android:onClick="duplicate"
         android:title="@string/duplicate" />
-    <item android:id="@+id/copyPaste"
+    <item
+        android:id="@+id/copyPaste"
         android:onClick="copyPaste"
-        android:title="@string/copy_paste"/>
-    <item android:id="@+id/deleteOperation"
+        android:title="@string/copy_paste" />
+    <item
+        android:id="@+id/deleteOperation"
         android:onClick="deleteOperation"
-        android:title="@string/deleteOperation"/>
-    <item android:id="@+id/moveRectangle"
+        android:title="@string/deleteOperation" />
+    <item
+        android:id="@+id/moveRectangle"
         android:onClick="moveRectangle"
         android:title="@string/moveRectangle" />
-    <item android:id="@+id/dispatchCustomEvent"
+    <item
+        android:id="@+id/dispatchCustomEvent"
         android:onClick="dispatchCustomEvent"
-        android:title="@string/dispatchCustomEvent_command"/>
-    <item android:id="@+id/clean_scene"
+        android:title="@string/dispatchCustomEvent_command" />
+    <item
+        android:id="@+id/clean_scene"
         android:onClick="cleanScene"
-        android:title="@string/cleanScene_command"/>
-    <item android:id="@+id/insertNewScene"
+        android:title="@string/cleanScene_command" />
+    <item
+        android:id="@+id/insertNewScene"
         android:onClick="insertNewScene"
-        android:title="@string/insertNewScene_command"/>
-    <item android:id="@+id/insert_ppt"
+        android:title="@string/insertNewScene_command" />
+    <item
+        android:id="@+id/insert_ppt"
         android:onClick="insertPPT"
-        android:title="@string/insert_ppt_command"/>
-    <item android:onClick="nextScene"
+        android:title="@string/insert_ppt_command" />
+    <item
+        android:onClick="nextScene"
         android:id="@+id/next_scene"
         android:title="@string/next_scene" />
-    <item android:id="@+id/static_ppt"
+    <item
+        android:id="@+id/static_ppt"
         android:onClick="staticConvert"
-        android:title="@string/staticConvert"/>
-    <item android:id="@+id/dynamic_ppt"
+        android:title="@string/staticConvert" />
+    <item
+        android:id="@+id/dynamic_ppt"
         android:onClick="dynamicConvert"
-        android:title="@string/dynamicConvert"/>
-    <item android:id="@+id/insertImage"
+        android:title="@string/dynamicConvert" />
+    <item
+        android:id="@+id/insertImage"
         android:onClick="insertImage"
-        android:title="@string/insertImage_command"/>
-    <item android:id="@+id/getPreviewImage"
+        android:title="@string/insertImage_command" />
+    <item
+        android:id="@+id/getPreviewImage"
         android:onClick="getPreviewImage"
-        android:title="@string/getPreview_command"/>
-    <item android:id="@+id/getSceneImage"
+        android:title="@string/getPreview_command" />
+    <item
+        android:id="@+id/getSceneImage"
         android:onClick="getSceneImage"
-        android:title="@string/getSceneImage_command"/>
-    <item android:id="@+id/getScene"
+        android:title="@string/getSceneImage_command" />
+    <item
+        android:id="@+id/getScene"
         android:onClick="getScene"
-        android:title="@string/getScene_command"/>
-    <item android:id="@+id/getRoomPhase"
+        android:title="@string/getScene_command" />
+    <item
+        android:id="@+id/getRoomPhase"
         android:onClick="getRoomPhase"
-        android:title="@string/getRoomPhase_command"/>
-    <item android:id="@+id/getRoomState"
+        android:title="@string/getRoomPhase_command" />
+    <item
+        android:id="@+id/getRoomState"
         android:onClick="getRoomState"
-        android:title="@string/getRoomState_command"/>
-    <item android:id="@+id/disconnect"
+        android:title="@string/getRoomState_command" />
+    <item
+        android:id="@+id/disconnect"
         android:onClick="disconnect"
-        android:title="@string/disconnect_command"/>
-    <item android:id="@+id/setWritableFalse"
+        android:title="@string/disconnect_command" />
+    <item
+        android:id="@+id/setWritableFalse"
         android:onClick="setWritableFalse"
-        android:title="@string/writable_false_command"/>
-    <item android:id="@+id/setWritableTrue"
+        android:title="@string/writable_false_command" />
+    <item
+        android:id="@+id/setWritableTrue"
         android:onClick="setWritableTrue"
-        android:title="@string/writable_true_command"/>
-    <item android:id="@+id/disable"
+        android:title="@string/writable_true_command" />
+    <item
+        android:id="@+id/disable"
         android:onClick="disableOperation"
-        android:title="@string/disable_command"/>
-    <item android:id="@+id/cancelDisable"
+        android:title="@string/disable_command" />
+    <item
+        android:id="@+id/cancelDisable"
         android:onClick="cancelDisableOperation"
-        android:title="@string/cancelDisable_command"/>
-    <item android:id="@+id/text"
+        android:title="@string/cancelDisable_command" />
+    <item
+        android:id="@+id/text"
         android:onClick="textArea"
-        android:title="@string/textarea_command"/>
-    <item android:id="@+id/selector"
+        android:title="@string/textarea_command" />
+    <item
+        android:id="@+id/selector"
         android:onClick="selector"
-        android:title="@string/selector_command"/>
-    <item android:id="@+id/pencil"
+        android:title="@string/selector_command" />
+    <item
+        android:id="@+id/pencil"
         android:onClick="pencil"
-        android:title="@string/pencil_command"/>
-    <item android:id="@+id/rectangle"
+        android:title="@string/pencil_command" />
+    <item
+        android:id="@+id/rectangle"
         android:onClick="rectangle"
-        android:title="@string/rectangle_command"/>
-    <item android:id="@+id/color"
+        android:title="@string/rectangle_command" />
+    <item
+        android:id="@+id/color"
         android:onClick="color"
-        android:title="@string/color_command"/>
-    <item android:id="@+id/convertPoint"
+        android:title="@string/color_command" />
+    <item
+        android:id="@+id/convertPoint"
         android:onClick="convertPoint"
-        android:title="@string/convertPoint_command"/>
-    <item android:id="@+id/externalEvent"
+        android:title="@string/convertPoint_command" />
+    <item
+        android:id="@+id/externalEvent"
         android:onClick="externalEvent"
-        android:title="@string/externalEvent_command"/>
-    <item android:id="@+id/zoomChange"
+        android:title="@string/externalEvent_command" />
+    <item
+        android:id="@+id/zoomChange"
         android:onClick="zoomChange"
-        android:title="@string/zoomChange_command"/>
+        android:title="@string/zoomChange_command" />
 </menu>

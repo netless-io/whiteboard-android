@@ -9,8 +9,9 @@ public enum ConvertErrorCode {
     GetDynamicFail(20006);
 
     private int code;
+
     ConvertErrorCode(int code) {
-        this.code=code;
+        this.code = code;
     }
 
     public int getCode() {

@@ -18,12 +18,13 @@
 package com.herewhite.demo.ijk.widget.media;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.view.View;
 
 import com.herewhite.demo.R;
 
 import java.lang.ref.WeakReference;
+
+import androidx.annotation.NonNull;
 
 public final class MeasureHelper {
     private WeakReference<View> mWeakView;
@@ -75,7 +76,7 @@ public final class MeasureHelper {
         //        + MeasureSpec.toString(heightMeasureSpec) + ")");
         if (mVideoRotationDegree == 90 || mVideoRotationDegree == 270) {
             int tempSpec = widthMeasureSpec;
-            widthMeasureSpec  = heightMeasureSpec;
+            widthMeasureSpec = heightMeasureSpec;
             heightMeasureSpec = tempSpec;
         }
 

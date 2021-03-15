@@ -1,7 +1,6 @@
 package com.herewhite.demo.ijk;
 
 import android.net.Uri;
-import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.herewhite.demo.ijk.widget.media.IMediaController;
@@ -11,6 +10,7 @@ import com.herewhite.sdk.combinePlayer.PlayerSyncManager;
 
 import java.util.concurrent.TimeUnit;
 
+import androidx.annotation.NonNull;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 
 import static com.herewhite.demo.ijk.widget.media.IjkVideoView.STATE_ERROR;
@@ -40,6 +40,7 @@ public class WhiteIjkPlayer implements NativePlayer,
 
     /**
      * 绑定 playerSyncManager，设置的同时，需要将当前实例的 NativePlayerPhase 也更新
+     *
      * @param player PlayerSyncManager 实例
      */
     public void setPlayerSyncManager(PlayerSyncManager player) {
@@ -140,7 +141,7 @@ public class WhiteIjkPlayer implements NativePlayer,
 
     /**
      * 释放播放器资源
-     *
+     * <p>
      * release 后需要调用 resume 重新进行播放器资源的初始化
      */
     public void release() {
@@ -168,7 +169,7 @@ public class WhiteIjkPlayer implements NativePlayer,
         if (mVideoView.getCurrentState() == STATE_IDLE || mVideoView.getCurrentState() == STATE_PREPARING) {
             return false;
         } else {
-            return  mPlayerPhase != NativePlayerPhase.Buffering;
+            return mPlayerPhase != NativePlayerPhase.Buffering;
         }
     }
 

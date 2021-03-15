@@ -2,6 +2,7 @@ package com.herewhite.sdk.domain;
 
 /**
  * 视角调整配置类
+ *
  * @since 2.2.0
  */
 public class CameraConfig extends WhiteObject {

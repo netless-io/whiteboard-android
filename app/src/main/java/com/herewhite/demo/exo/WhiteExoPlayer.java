@@ -2,8 +2,6 @@ package com.herewhite.demo.exo;
 
 import android.content.Context;
 import android.net.Uri;
-import androidx.annotation.NonNull;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -25,6 +23,8 @@ import com.herewhite.sdk.combinePlayer.NativePlayer;
 import com.herewhite.sdk.combinePlayer.PlayerSyncManager;
 
 import java.util.concurrent.TimeUnit;
+
+import androidx.annotation.NonNull;
 
 public class WhiteExoPlayer implements NativePlayer, Player.EventListener {
     private static final String TAG = "WhiteExoPlayer";
@@ -54,6 +54,7 @@ public class WhiteExoPlayer implements NativePlayer, Player.EventListener {
 
     /**
      * 绑定 playerSyncManager，设置的同时，需要将当前实例的 NativePlayerPhase 也更新
+     *
      * @param player PlayerSyncManager 实例
      */
     public void setPlayerSyncManager(PlayerSyncManager player) {
@@ -103,6 +104,7 @@ public class WhiteExoPlayer implements NativePlayer, Player.EventListener {
 
     /**
      * 由 nativePlayer 进行主动 seek，然后在 seek 完成后，再调用 {@link PlayerSyncManager} 同步
+     *
      * @param time 跳转时间戳
      * @param unit 时间戳单位
      */
@@ -126,7 +128,7 @@ public class WhiteExoPlayer implements NativePlayer, Player.EventListener {
     /**
      * 在当播放器对用户可见以及 {@code surface_type} 是 {@code spherical_gl_surface_view} 时，应调用此方法。
      * 此方法与 {@link #onPause()} 对应
-     *
+     * <p>
      * 通常应在 {@code Activity.onStart()}, 或者 API level <= 23 时的 {@code Activity.onResume()} 中调用此方法
      */
     public void onResume() {
@@ -136,7 +138,7 @@ public class WhiteExoPlayer implements NativePlayer, Player.EventListener {
     /**
      * 在当播放器对用户不可见以及 {@code surface_type} 为 {@code spherical_gl_surface_view} 时，应调用此方法
      * 此方法与 {@link #onResume()} 对应
-     *
+     * <p>
      * 通常应在 {@code Activity.onStop()}, 或者 API level <= 23 时的 {@code Activity.onPause()} 中调用此方法
      */
     public void onPause() {
@@ -208,7 +210,7 @@ public class WhiteExoPlayer implements NativePlayer, Player.EventListener {
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
         mCurrentState = playbackState;
-        switch (playbackState){
+        switch (playbackState) {
             case Player.STATE_IDLE:
                 // 空闲
                 break;
@@ -237,7 +239,7 @@ public class WhiteExoPlayer implements NativePlayer, Player.EventListener {
     @Override
     public void onPlayerError(ExoPlaybackException error) {
         Log.e(TAG, "onError: " + error.getMessage());
-        switch (error.type){
+        switch (error.type) {
             case ExoPlaybackException.TYPE_SOURCE:
                 // 加载资源时出错
                 break;

@@ -45,9 +45,9 @@ public class RoomMember {
     /**
      * 返回当前用户的教具类型
      *
-     * @deprecated 请使用 {@link #getMemberState()} 获取教具详细信息
      * @return 教具名称
      * @since 2.4.8
+     * @deprecated 请使用 {@link #getMemberState()} 获取教具详细信息
      */
     @Deprecated
     public String getCurrentApplianceName() {
@@ -55,11 +55,10 @@ public class RoomMember {
     }
 
     /**
-     *
      * 获取用户信息（加入房间时，自带内容）
      *
-     * @deprecated 请使用 {@link #getPayload()} 获取用户信息
      * @return the information
+     * @deprecated 请使用 {@link #getPayload()} 获取用户信息
      */
     public MemberInformation getInformation() {
         return information;

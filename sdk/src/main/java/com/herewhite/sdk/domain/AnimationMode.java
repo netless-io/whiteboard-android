@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * 视野调整、视角移动时，动画选项
+ *
  * @since 2.3.2
  */
 public enum AnimationMode {

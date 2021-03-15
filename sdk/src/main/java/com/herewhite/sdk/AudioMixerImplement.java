@@ -14,11 +14,12 @@ public class AudioMixerImplement {
 
     /**
      * 混音 API 完成后的状态回调
-     * @param state 混音状态
-     *  710: 成功调用 startAudioMixing 或 resumeAudioMixing
-     *  711: 成功调用 pauseAudioMixing
-     *  713: 成功调用 stopAudioMixing
-     *  714: 播放失败，error code 会有具体原因,
+     *
+     * @param state     混音状态
+     *                  710: 成功调用 startAudioMixing 或 resumeAudioMixing
+     *                  711: 成功调用 pauseAudioMixing
+     *                  713: 成功调用 stopAudioMixing
+     *                  714: 播放失败，error code 会有具体原因,
      * @param errorCode 当播放失败时，该值有意义
      */
     public void setMediaState(long state, long errorCode) {
@@ -31,7 +32,7 @@ public class AudioMixerImplement {
     @JavascriptInterface
     public void startAudioMixing(Object args) {
         if (this.mixerBridge != null && args instanceof JSONObject) {
-            JSONObject jsonObject = (JSONObject)args;
+            JSONObject jsonObject = (JSONObject) args;
             try {
                 String filePath = jsonObject.getString("filePath");
                 boolean loopback = jsonObject.getBoolean("loopback");

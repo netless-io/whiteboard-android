@@ -2,6 +2,7 @@ package com.herewhite.sdk.combinePlayer;
 
 /**
  * NativePlayer 接口
+ *
  * @since 2.4.23
  */
 public interface NativePlayer {
@@ -9,7 +10,7 @@ public interface NativePlayer {
     /**
      * play 方法，由 PlayerSyncManager 调用，请勿主动调用。
      * 在该方法里，如果 NativePlayerPhase 发生了，需要调动 {@link PlayerSyncManager#updateNativePhase(NativePlayerPhase)} 方法
-     * */
+     */
     void play();
 
     /**
@@ -19,12 +20,14 @@ public interface NativePlayer {
 
     /**
      * 是否能够不经过缓冲，而直接播放
+     *
      * @return 是否有足够的缓冲
      */
     boolean hasEnoughBuffer();
 
     /**
      * 允许 PlayerSyncManager 提前初始化，不等待 nativePlayer 初始化
+     *
      * @return
      */
     NativePlayerPhase getPhase();

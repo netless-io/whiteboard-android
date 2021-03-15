@@ -2,6 +2,7 @@ package com.herewhite.sdk.domain;
 
 /**
  * 视觉矩形配置类
+ *
  * @since 2.2.0
  */
 public class RectangleConfig extends WhiteObject {
@@ -12,7 +13,7 @@ public class RectangleConfig extends WhiteObject {
 
     /**
      * 只需宽高，动画的视觉矩形构建方法
-     *
+     * <p>
      * 固定视角中心为白板初始化时的中点。会根据宽高，计算 originX originY。
      * 适合快速显示完整 ppt 内容。
      *
@@ -23,14 +24,14 @@ public class RectangleConfig extends WhiteObject {
     public RectangleConfig(Double width, Double height, AnimationMode mode) {
         this.width = width;
         this.height = height;
-        this.originX = - width / 2.0d;
-        this.originY = - height / 2.0d;
+        this.originX = -width / 2.0d;
+        this.originY = -height / 2.0d;
         this.animationMode = mode;
     }
 
     /**
      * 只需宽高的视觉矩形构建方法
-     *
+     * <p>
      * 固定视角中心为白板初始化时的中点。会根据宽高，计算 originX originY。
      * 动画默认为 连续动画 {@link AnimationMode#Continuous}
      * 适合快速显示完整 ppt 内容。
@@ -44,7 +45,7 @@ public class RectangleConfig extends WhiteObject {
 
     /**
      * 自行配置左上角位置，宽高的构建方法
-     *
+     * <p>
      * 注意，originX，originY 为白板内部坐标系坐标。白板内部坐标系
      *
      * @param originX the origin x

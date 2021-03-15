@@ -7,6 +7,7 @@ import org.json.JSONObject;
 public class WhiteObject {
 
     static Gson gson = new Gson();
+
     @Override
     public String toString() {
         return gson.toJson(this);

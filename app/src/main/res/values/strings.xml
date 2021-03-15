@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="app_name">whiteboard-demo</string>
     <string name="title_activity_start">首页</string>
     <string name="uuid">uuid</string>

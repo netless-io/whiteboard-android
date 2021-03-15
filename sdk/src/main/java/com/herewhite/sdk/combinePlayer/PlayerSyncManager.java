@@ -1,15 +1,16 @@
 package com.herewhite.sdk.combinePlayer;
 
+import android.os.Handler;
 import android.os.Looper;
 
 import com.herewhite.sdk.Player;
 import com.herewhite.sdk.domain.PlayerPhase;
-import android.os.Handler;
 
 import java.util.concurrent.TimeUnit;
 
 /**
  * 同步 nativePlayer 与 whitePlayer 播放状态
+ *
  * @since 2.4.23
  */
 public class PlayerSyncManager {
@@ -33,11 +34,12 @@ public class PlayerSyncManager {
         WaitingBothBuffering(1 << 1 | 1),
         Pause(1 << 2),
         PauseAndWhiteBuffering(1 << 2 | 1),
-        PauseAndNativeBuffering(1 << 2 | 1<< 1),
-        PauseAndBothBuffering(1 << 2 | 1<< 1 | 1),
+        PauseAndNativeBuffering(1 << 2 | 1 << 1),
+        PauseAndBothBuffering(1 << 2 | 1 << 1 | 1),
         Init(1 | 1 << 1 | 1 << 2);
 
         private int flag;
+
         PauseReason(int flag) {
             this.flag = flag;
         }
@@ -56,7 +58,7 @@ public class PlayerSyncManager {
 
         public PauseReason removeFlag(PauseReason flag) {
             int value = getValue() & ~flag.getValue();
-            for (PauseReason p:PauseReason.values()) {
+            for (PauseReason p : PauseReason.values()) {
                 if (value == p.getValue()) {
                     return p;
                 }
@@ -67,7 +69,7 @@ public class PlayerSyncManager {
 
         public PauseReason addFlag(PauseReason flag) {
             int value = getValue() | flag.getValue();
-            for (PauseReason p:PauseReason.values()) {
+            for (PauseReason p : PauseReason.values()) {
                 if (value == p.getValue()) {
                     return p;
                 }
@@ -120,7 +122,8 @@ public class PlayerSyncManager {
 
     /**
      * nativePlayer seek 完成后，调用此方法，将 whiteCombinePlayer 也 seek 到对应位置。
-     * @param time 时间长度
+     *
+     * @param time     时间长度
      * @param timeUnit 时间单位
      */
     public void seek(long time, TimeUnit timeUnit) {
@@ -134,6 +137,7 @@ public class PlayerSyncManager {
 
     /**
      * 更新 PlayerSyncManager 的播放状态，buffering 以及 idle 状态，会保证 whitePlayer 等待 nativePlayer 可以播放
+     *
      * @param phase {@link NativePlayer.NativePlayerPhase}
      */
     public void updateNativePhase(NativePlayer.NativePlayerPhase phase) {
@@ -145,6 +149,7 @@ public class PlayerSyncManager {
     }
 
     private Handler mainHandler = new Handler(Looper.getMainLooper());
+
     private void runOnMainThread(Runnable runnable) {
         if (Looper.getMainLooper() == Looper.myLooper()) {
             runnable.run();
@@ -216,6 +221,7 @@ public class PlayerSyncManager {
 
     /**
      * 更新 WhitePlayer 的播放状态
+     *
      * @param phase {@link PlayerPhase} whitePlayer 的播放状态
      */
     public void updateWhitePlayerPhase(PlayerPhase phase) {

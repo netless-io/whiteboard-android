@@ -17,6 +17,7 @@ public class PlayerConfiguration extends WhiteObject {
 
     /**
      * 类似 {@link com.herewhite.sdk.RoomParams#setRegion(Region)}
+     *
      * @param region
      */
     public void setRegion(Region region) {
@@ -27,7 +28,8 @@ public class PlayerConfiguration extends WhiteObject {
 
     /**
      * player 初始化方法
-     * @param room 需要回放的房间 uuid
+     *
+     * @param room      需要回放的房间 uuid
      * @param roomToken 房间 roomToken
      */
     public PlayerConfiguration(String room, String roomToken) {
@@ -41,6 +43,7 @@ public class PlayerConfiguration extends WhiteObject {
 
     /**
      * {@link com.herewhite.sdk.Room#setCameraBound(CameraBound)}
+     *
      * @param cameraBound
      */
     public void setCameraBound(CameraBound cameraBound) {
@@ -49,6 +52,7 @@ public class PlayerConfiguration extends WhiteObject {
 
     /**
      * 回放时，时间进度的调用频率
+     *
      * @param duration 时长长度
      * @param timeUnit 时间单位
      */
@@ -80,6 +84,7 @@ public class PlayerConfiguration extends WhiteObject {
 
     /**
      * 文档中隐藏
+     *
      * @return
      */
     public String getSlice() {
@@ -88,6 +93,7 @@ public class PlayerConfiguration extends WhiteObject {
 
     /**
      * 文档中隐藏
+     *
      * @return
      */
     public void setSlice(String slice) {
@@ -113,6 +119,7 @@ public class PlayerConfiguration extends WhiteObject {
 
     /**
      * 设置持续时长（毫秒）
+     *
      * @param duration
      */
     public void setDuration(Long duration) {

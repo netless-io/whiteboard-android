@@ -17,7 +17,9 @@ public class MemberState extends WhiteObject {
         return currentApplianceName;
     }
 
-    /** 教具名称，值参考 {@link Appliance} */
+    /**
+     * 教具名称，值参考 {@link Appliance}
+     */
     public void setCurrentApplianceName(String currentApplianceName) {
         this.currentApplianceName = currentApplianceName;
     }

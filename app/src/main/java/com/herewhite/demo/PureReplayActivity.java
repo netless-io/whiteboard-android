@@ -38,20 +38,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class PureReplayActivity extends AppCompatActivity implements PlayerEventListener {
-
     protected WhiteboardView whiteboardView;
     @Nullable
     protected Player player;
-    Gson gson;
-    protected boolean mUserIsSeeking;
+    Gson gson = new Gson();
+    protected boolean mUserIsSeeking = false;
     protected SeekBar mSeekBar;
     private final String TAG = "player";
     private DemoAPI demoAPI = new DemoAPI();
-
-    public PureReplayActivity() {
-        mUserIsSeeking = false;
-        gson = new Gson();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

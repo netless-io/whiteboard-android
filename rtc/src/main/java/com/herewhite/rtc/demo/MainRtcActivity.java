@@ -9,14 +9,13 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.herewhite.sdk.WhiteSdk;
+import com.herewhite.sdk.WhiteboardView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
-import com.herewhite.sdk.WhiteSdk;
-import com.herewhite.sdk.WhiteboardView;
-
 import io.agora.rtc.IRtcEngineEventHandler;
 import io.agora.rtc.RtcEngine;
 import io.agora.rtc.video.VideoCanvas;

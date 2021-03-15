@@ -68,6 +68,7 @@ public class Displayer {
 
     /**
      * 向 iframe 插件发送字符串信息
+     *
      * @param string
      * @since 2.11.4
      */
@@ -77,6 +78,7 @@ public class Displayer {
 
     /**
      * 向 iframe 插件发送 key-value 格式的信息。可以自己创建 WhiteObject 的子类进行发送
+     *
      * @param object
      * @since 2.11.4
      */
@@ -86,11 +88,12 @@ public class Displayer {
 
     /**
      * 查询路径对应的内容，还是页面（场景），或者是页面（场景）目录，或者不存在任何内容。
-     * @param path 进行查询的路径
+     *
+     * @param path    进行查询的路径
      * @param promise 回调结果，具体内容，可以查看 {@link WhiteScenePathType}
      */
     public void getScenePathType(String path, final Promise<WhiteScenePathType> promise) {
-        bridge.callHandler("displayer.scenePathType", new Object[]{path},new OnReturnValue<String>() {
+        bridge.callHandler("displayer.scenePathType", new Object[]{path}, new OnReturnValue<String>() {
             @Override
             public void onValue(String retValue) {
                 WhiteScenePathType type = gson.fromJson(retValue, WhiteScenePathType.class);
@@ -102,13 +105,15 @@ public class Displayer {
 
     /**
      * 获取当前房间内所有的白板页面信息
+     *
      * @param promise 返回 一个 map，key 为场景目录地址，value 为该目录下，所有 Scene 数组。
      */
     public void getEntireScenes(final Promise<Map<String, Scene[]>> promise) {
         bridge.callHandler("displayer.entireScenes", new OnReturnValue<JSONObject>() {
             @Override
             public void onValue(JSONObject retValue) {
-                Type type = new TypeToken<Map<String, Scene[]>>(){}.getType();
+                Type type = new TypeToken<Map<String, Scene[]>>() {
+                }.getType();
                 Map<String, Scene[]> map = gson.fromJson(String.valueOf(retValue), type);
                 promise.then(map);
             }
@@ -117,6 +122,7 @@ public class Displayer {
 
     /**
      * 刷新当前白板的视觉矩形。
+     *
      * @note 当 WhiteboardView 大小出现改变时，需要手动调用该方法。
      */
     public void refreshViewSize() {
@@ -125,6 +131,7 @@ public class Displayer {
 
     /**
      * 以连续动画的形式，等比例缩放ppt，保证ppt所有内容都在容器内。
+     *
      * @since 2.4.22
      */
     public void scalePptToFit() {
@@ -133,6 +140,7 @@ public class Displayer {
 
     /**
      * 等比例缩放ppt，保证ppt所有内容都在容器内。
+     *
      * @param mode 缩放时，动画行为
      * @since 2.4.28
      */
@@ -144,6 +152,7 @@ public class Displayer {
     /**
      * 注册自定义事件监听，接受对应名称的自定义事件通知（包括自己发送的）。
      * 目前 Android 端，同一个自定义事件（名），只支持单个回调。只有 Web 端支持一个自定义事件，调用多个回调。
+     *
      * @param eventName     需要监听自定义事件名称
      * @param eventListener 自定义事件回调；重复添加时，旧回调会被覆盖
      */
@@ -155,9 +164,10 @@ public class Displayer {
     /**
      * 注册高频自定义事件监听，接受对应名称的自定义事件通知（包括自己发送的）。
      * 目前 Android 端，同一个自定义事件（名），只支持单个回调。只有 Web 端支持一个自定义事件，调用多个回调。
+     *
      * @param eventName     需要监听自定义事件名称
      * @param eventListener 自定义事件回调；重复添加时，旧回调会被覆盖
-     * @param fireInterval 调用频率, 单位：毫秒，最低 500ms，传入任何低于该值的数字，都会重置为 500ms
+     * @param fireInterval  调用频率, 单位：毫秒，最低 500ms，传入任何低于该值的数字，都会重置为 500ms
      */
     public void addHighFrequencyEventListener(String eventName, FrequencyEventListener eventListener, Integer fireInterval) {
         if (fireInterval < 500) {
@@ -170,6 +180,7 @@ public class Displayer {
     /**
      * 移除自定义事件监听
      * 目前 Android 端同一个自定义事件（名），只支持单个回调。移除时，只需要传入自定义事件名称即可。
+     *
      * @param eventName 需要移除监听的自定义事件名称
      */
     public void removeMagixEventListener(String eventName) {
@@ -207,7 +218,7 @@ public class Displayer {
     /**
      * 锁定视野范围
      *
-     * @param bound  视野范围描述类 {@link CameraBound}
+     * @param bound 视野范围描述类 {@link CameraBound}
      * @since 2.5.0
      */
     public void setCameraBound(CameraBound bound) {
@@ -218,8 +229,8 @@ public class Displayer {
      * 设置白板背景色（本地操作，不会同步）
      *
      * @param intColor 16 进制 aRGB,a 属性并不能达到使白板透明的效果
-     * @deprecated Android 端直接使用 {@link WhiteboardView#setBackgroundColor(int)} 即可
      * @since 2.4.14
+     * @deprecated Android 端直接使用 {@link WhiteboardView#setBackgroundColor(int)} 即可
      */
     @Deprecated
     public void setBackgroundColor(@ColorInt int intColor) {
@@ -230,8 +241,8 @@ public class Displayer {
 
     private static Float[] hexSplit(@ColorInt int color) {
         Float r = Float.valueOf((color >> 16) & 0xff);
-        Float g = Float.valueOf((color >>  8) & 0xff);
-        Float b = Float.valueOf((color      ) & 0xff);
+        Float g = Float.valueOf((color >> 8) & 0xff);
+        Float b = Float.valueOf((color) & 0xff);
         Float a = Float.valueOf(((color >> 24) & 0xff) / 255.0f);
         return new Float[]{r, g, b, a};
     }
@@ -253,7 +264,7 @@ public class Displayer {
      * @param promise   完成回调
      * @since 2.3.0
      */
-    public void getScenePreviewImage(String scenePath, final Promise<Bitmap>promise) {
+    public void getScenePreviewImage(String scenePath, final Promise<Bitmap> promise) {
         this.bridge.callHandler("displayerAsync.scenePreview", new Object[]{scenePath}, new OnReturnValue<String>() {
             @Override
             public void onValue(String retValue) {
@@ -277,7 +288,7 @@ public class Displayer {
      * @param promise   完成回调
      * @since 2.3.0
      */
-    public void getSceneSnapshotImage(String scenePath, final Promise<Bitmap>promise) {
+    public void getSceneSnapshotImage(String scenePath, final Promise<Bitmap> promise) {
         this.bridge.callHandler("displayerAsync.sceneSnapshot", new Object[]{scenePath}, new OnReturnValue<String>() {
             @Override
             public void onValue(String retValue) {
@@ -295,7 +306,7 @@ public class Displayer {
     }
 
     private Bitmap transformBase64toBitmap(String base64String) {
-        final String pureBase64Encoded = base64String.substring(base64String.indexOf(",")  + 1);
+        final String pureBase64Encoded = base64String.substring(base64String.indexOf(",") + 1);
         final byte[] decodedBytes = Base64.decode(pureBase64Encoded, Base64.DEFAULT);
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inDensity = densityDpi;

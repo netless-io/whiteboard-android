@@ -30,8 +30,13 @@ public class MemberInformation extends WhiteObject {
         return nickName;
     }
 
-    public String getUserId() { return userId; }
-    public void setUserId(String userId) { this.userId = userId; }
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public void setNickName(String nickName) {
         this.nickName = nickName;

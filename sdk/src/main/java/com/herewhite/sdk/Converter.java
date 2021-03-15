@@ -72,6 +72,7 @@ public class Converter {
     }
 
     private ConverterStatus status;
+
     public Converter(String roomToken) {
         this(roomToken, 15 * 1000, 3 * 60 * 1000);
     }
@@ -166,7 +167,9 @@ public class Converter {
 
     private interface ConvertCallback {
         void onConvertProgress(Double progress, ConversionInfo info);
+
         void onConvertFinish(ConversionInfo info);
+
         void onConvertFailure(ConvertException e);
     }
 
@@ -181,7 +184,7 @@ public class Converter {
         Request request = new Request.Builder()
                 .url(PPT_ORIGIN + "/services/conversion/tasks?roomToken=" + this.roomToken)
                 .header("Content-Type", "application/json")
-                .header("Accept","application/json")
+                .header("Accept", "application/json")
                 .post(body)
                 .build();
         final Call call = client.newCall(request);
@@ -249,6 +252,7 @@ public class Converter {
 
     private interface CheckCallback {
         void onCheckResponse(ConversionInfo info);
+
         void onCheckFailure(Exception e);
     }
 
@@ -257,9 +261,9 @@ public class Converter {
         String typeUrl = type.equals(ConvertType.Dynamic) ? "dynamic_conversion" : "static_conversion";
 
         Request request = new Request.Builder()
-                .url(PPT_ORIGIN + "/services/conversion/tasks/" + taskId +"/progress?roomToken=" + this.roomToken + "&serviceType=" + typeUrl)
+                .url(PPT_ORIGIN + "/services/conversion/tasks/" + taskId + "/progress?roomToken=" + this.roomToken + "&serviceType=" + typeUrl)
                 .header("Content-Type", "application/json")
-                .header("Accept","application/json")
+                .header("Accept", "application/json")
                 .build();
         Call call = client.newCall(request);
 
@@ -311,7 +315,7 @@ public class Converter {
             PptPage pptPage = info.getConvertedFileList()[i];
             pptPage.setSrc(info.getPrefix() + pptPage.getSrc());
             sliderURLs[i] = pptPage.getSrc();
-            scenes[i] = new Scene(String.valueOf(i+1), pptPage);
+            scenes[i] = new Scene(String.valueOf(i + 1), pptPage);
         }
 
         files.setSlideURLs(sliderURLs);

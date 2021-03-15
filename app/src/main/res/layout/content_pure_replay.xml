@@ -26,8 +26,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-    />
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,34 +36,34 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/player_seek_bar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" >
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <Button
-        android:id="@+id/button_play"
-        android:onClick="play"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:enabled="false"
-        android:text="@string/play" />
+        <Button
+            android:id="@+id/button_play"
+            android:onClick="play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:enabled="false"
+            android:text="@string/play" />
 
-    <Button
-        android:id="@+id/button_pause"
-        android:onClick="pause"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:enabled="false"
-        android:text="@string/pause" />
+        <Button
+            android:id="@+id/button_pause"
+            android:onClick="pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:enabled="false"
+            android:text="@string/pause" />
 
-    <Button
-        android:id="@+id/button_reset"
-        android:onClick="reset"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:enabled="false"
-        android:text="@string/rest" />
+        <Button
+            android:id="@+id/button_reset"
+            android:onClick="reset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:enabled="false"
+            android:text="@string/rest" />
     </LinearLayout>
 
 </LinearLayout>

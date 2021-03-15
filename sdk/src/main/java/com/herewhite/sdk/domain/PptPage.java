@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class PptPage extends WhiteObject {
 
-    @SerializedName(value ="src", alternate = {"conversionFileUrl"})
+    @SerializedName(value = "src", alternate = {"conversionFileUrl"})
     private String src;
     private Double width;
     private Double height;

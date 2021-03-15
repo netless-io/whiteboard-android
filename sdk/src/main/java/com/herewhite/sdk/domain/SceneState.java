@@ -9,9 +9,11 @@ public class SceneState extends WhiteObject {
     public Scene[] getScenes() {
         return scenes;
     }
+
     public String getScenePath() {
         return scenePath;
     }
+
     public int getIndex() {
         return index;
     }

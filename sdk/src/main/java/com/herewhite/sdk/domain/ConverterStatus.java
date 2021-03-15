@@ -1,6 +1,6 @@
 package com.herewhite.sdk.domain;
 
-public enum  ConverterStatus {
+public enum ConverterStatus {
     Idle,
     Created,
     CreateFail,

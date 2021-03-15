@@ -8,8 +8,8 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.herewhite.sdk.combinePlayer.PlayerSyncManager;
 import com.herewhite.sdk.combinePlayer.NativePlayer;
+import com.herewhite.sdk.combinePlayer.PlayerSyncManager;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -83,6 +83,7 @@ public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, 
 
     /**
      * 绑定 playerSyncManager，设置的同时，需要将当前实例的 NativePlayerPhase 也更新
+     *
      * @param player PlayerSyncManager 实例
      */
     void setPlayerSyncManager(PlayerSyncManager player) {
@@ -93,6 +94,7 @@ public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, 
 
     /**
      * player 的预期播放状态，为了播放而缓冲也算
+     *
      * @return 播放状态
      */
     public boolean isPlaying() {
@@ -116,7 +118,7 @@ public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, 
             phase = NativePlayerPhase.Playing;
             mMediaPlayer.start();
             mState = STATE_PLAYING;
-        //如果处于准备状态，无法立即调用 mediaPlayer 进行播放，此时 NativePlayerNative 应该处于缓冲状态，需要手动更新
+            //如果处于准备状态，无法立即调用 mediaPlayer 进行播放，此时 NativePlayerNative 应该处于缓冲状态，需要手动更新
         } else if (mState == STATE_IDLE) {
             mState = STATE_PLAY_PENDING;
             phase = NativePlayerPhase.Buffering;
@@ -142,6 +144,7 @@ public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, 
 
     /**
      * 由 nativePlayer 进行主动 seek，然后在 seek 完成后，再调用 {@link PlayerSyncManager} 同步
+     *
      * @param time 跳转时间戳
      * @param unit 时间戳单位
      */

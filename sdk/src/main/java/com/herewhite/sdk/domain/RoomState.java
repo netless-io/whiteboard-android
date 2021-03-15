@@ -13,9 +13,11 @@ public class RoomState extends WhiteDisplayerState {
     public MemberState getMemberState() {
         return memberState;
     }
+
     public BroadcastState getBroadcastState() {
         return broadcastState;
     }
+
     public Double getZoomScale() {
         return zoomScale;
     }

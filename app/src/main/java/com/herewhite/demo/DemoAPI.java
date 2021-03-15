@@ -101,14 +101,12 @@ public class DemoAPI {
     }
 
     private void createRoom(int limit, Callback callback) {
-
         Map<String, Object> roomSpec = new HashMap<>();
         roomSpec.put("name", "Android test room");
         roomSpec.put("limit", limit);
         roomSpec.put("mode", "historied");
 
         RequestBody body = RequestBody.create(JSON, gson.toJson(roomSpec));
-
         Request request = new Request.Builder()
                 .url(host + "/room")
                 .addHeader("token", sdkToken)
@@ -126,7 +124,6 @@ public class DemoAPI {
         }
 
         Map<String, Object> roomSpec = new HashMap<>();
-
         RequestBody body = RequestBody.create(JSON, gson.toJson(roomSpec));
         Request request = new Request.Builder()
                 .url(host + "/room/join?uuid=" + uuid)

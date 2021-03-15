@@ -56,7 +56,7 @@ public class WhiteWebViewClient extends WebViewClient {
                 String contentType = connection.getContentType();
                 String mime = getMime(contentType);
                 String charset = getCharset(contentType);
-                HttpURLConnection httpURLConnection = (HttpURLConnection)connection;
+                HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
                 int statusCode = httpURLConnection.getResponseCode();
                 String response = httpURLConnection.getResponseMessage();
                 Map<String, List<String>> headers = httpURLConnection.getHeaderFields();
@@ -75,7 +75,7 @@ public class WhiteWebViewClient extends WebViewClient {
                         WebResourceResponse resourceResponse = new WebResourceResponse(mime, charset, httpURLConnection.getInputStream());
                         resourceResponse.setStatusCodeAndReasonPhrase(statusCode, response);
                         Map<String, String> responseHeader = new HashMap<String, String>();
-                        for (String key: headerKeySet) {
+                        for (String key : headerKeySet) {
                             // HttpUrlConnection可能包含key为null的报头，指向该http请求状态码
                             responseHeader.put(key, httpURLConnection.getHeaderField(key));
                         }
@@ -129,7 +129,7 @@ public class WhiteWebViewClient extends WebViewClient {
             conn.setReadTimeout(30000);
             conn.setInstanceFollowRedirects(false);
             if (conn instanceof HttpsURLConnection) {
-                final HttpsURLConnection httpsURLConnection = (HttpsURLConnection)conn;
+                final HttpsURLConnection httpsURLConnection = (HttpsURLConnection) conn;
                 WebviewTlsSniSocketFactory sslSocketFactory = new WebviewTlsSniSocketFactory((HttpsURLConnection) conn);
 
                 // sni场景，创建SSLScocket
@@ -189,6 +189,7 @@ public class WhiteWebViewClient extends WebViewClient {
 
     /**
      * 从contentType中获取MIME类型
+     *
      * @param contentType
      * @return
      */
@@ -201,6 +202,7 @@ public class WhiteWebViewClient extends WebViewClient {
 
     /**
      * 从contentType中获取编码信息
+     *
      * @param contentType
      * @return
      */
@@ -224,6 +226,7 @@ public class WhiteWebViewClient extends WebViewClient {
 
     /**
      * 是否是二进制资源，二进制资源可以不需要编码信息
+     *
      * @param mime
      * @return
      */
@@ -239,6 +242,7 @@ public class WhiteWebViewClient extends WebViewClient {
 
     /**
      * header中是否含有cookie
+     *
      * @param headers
      */
     private boolean containCookie(Map<String, String> headers) {

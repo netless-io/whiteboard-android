@@ -18,14 +18,15 @@
 package com.herewhite.demo.ijk.widget.media;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.MediaController;
 
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 
 public class AndroidMediaController extends MediaController implements IMediaController {
     private ActionBar mActionBar;

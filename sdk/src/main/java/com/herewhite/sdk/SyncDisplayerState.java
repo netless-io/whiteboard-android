@@ -13,6 +13,7 @@ import java.util.Set;
 
 /**
  * 私有类，文档中隐藏
+ *
  * @param <T>
  */
 class SyncDisplayerState<T> {
