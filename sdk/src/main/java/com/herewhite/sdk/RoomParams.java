@@ -145,6 +145,20 @@ public class RoomParams extends WhiteObject {
     private boolean disableCameraTransform = false;
     private boolean disableBezier = false;
 
+    public boolean isDisableNewPencil() {
+        return disableNewPencil;
+    }
+
+    /**
+     * 2.12.2 默认 false；2.12.3 默认 true，不开启笔锋功能。
+     * 打开笔锋功能绘制的内容，需要 2.12.2 sdk 才能看到。
+     * */
+    public void setDisableNewPencil(boolean disableNewPencil) {
+        this.disableNewPencil = disableNewPencil;
+    }
+
+    private boolean disableNewPencil = true;
+
     public CameraBound getCameraBound() {
         return cameraBound;
     }
