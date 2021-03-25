@@ -139,6 +139,15 @@ public class Displayer {
     }
 
     /**
+     * 如果有自定义 h5 课件，则等比例缩放，保证内容铺满容器
+     *
+     * @since 2.12.6
+     */
+    public void scaleIframeToFit() {
+        bridge.callHandler("displayer.scaleIframeToFit", new Object[]{});
+    }
+
+    /**
      * 等比例缩放ppt，保证ppt所有内容都在容器内。
      *
      * @param mode 缩放时，动画行为
