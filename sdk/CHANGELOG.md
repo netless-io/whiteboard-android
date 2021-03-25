@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.12.6] - 2021-03-25
+- Displayer 新增`scaleIframeToFit`API，可以将 H5 课件进行铺满操作（类似`scalePptToFit`），详情见API注释
 ## [2.12.5] - 2021-03-25
 - 更新`@netless/cursor-tool`至 0.0.7
 ## [2.12.3] - 2021-03-20
