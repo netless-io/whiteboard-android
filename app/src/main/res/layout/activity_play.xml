@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".PlayActivity">
+
+    <com.herewhite.demo.ijk.widget.media.IjkVideoView
+        android:id="@+id/ijk_video_view"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@android:color/black"
+        android:visibility="gone" />
+
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/exo_video_view"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@android:color/black"
+        android:visibility="gone"
+        app:use_controller="false" />
+
+    <com.herewhite.sdk.WhiteboardView
+        android:id="@+id/white"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:visibility="visible" />
+
+    <SeekBar
+        android:id="@+id/player_seek_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_play"
+            android:onClick="play"
+            android:enabled="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:text="@string/play" />
+
+        <Button
+            android:id="@+id/button_pause"
+            android:onClick="pause"
+            android:enabled="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/pause" />
+
+        <Button
+            android:id="@+id/button_reset"
+            android:onClick="reset"
+            android:enabled="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/rest" />
+
+    </LinearLayout>
+
+</LinearLayout>

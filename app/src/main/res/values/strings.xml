@@ -1,0 +1,100 @@
+<resources>
+    <string name="app_name">whiteboard-demo</string>
+    <string name="title_activity_start">首页</string>
+    <string name="uuid">uuid</string>
+    <string name="join">加入房间</string>
+    <string name="replay">回放</string>
+    <string name="create">创建房间</string>
+    <string name="title_activity_play">PlayActivity</string>
+    <string name="broadcast_command">进入主播模式</string>
+    <string name="scalePptToFit_command">铺满 ppt</string>
+    <string name="getBroadcastState_command">获取视角状态</string>
+    <string name="dispatchCustomEvent_command">发送自定义事件</string>
+    <string name="cleanScene_command">清屏（保留 ppt）</string>
+    <string name="insertNewScene_command">插入新页面</string>
+    <string name="insert_ppt_command">插入新 PPT</string>
+    <string name="insertImage_command">插入图片</string>
+    <string name="getScene_command">获取 Scene 状态</string>
+    <string name="getRoomPhase_command">获取房间连接状态</string>
+    <string name="getRoomState_command">获取房间状态</string>
+    <string name="disconnect_command">断开连接</string>
+    <string name="writable_false_command">进入只读模式</string>
+    <string name="writable_true_command">退出只读模式</string>
+    <string name="disable_command">禁止操作</string>
+    <string name="cancelDisable_command">恢复操作</string>
+    <string name="pencil_command">铅笔</string>
+    <string name="rectangle_command">矩形</string>
+    <string name="convertPoint_command">换算</string>
+    <string name="externalEvent_command">外部设备输入</string>
+    <string name="zoomChange_command">缩放</string>
+    <string name="color_command">颜色</string>
+    <string name="getTimeInfo_command">获取时间信息</string>
+    <string name="getPlayState_command">获取播放信息</string>
+    <string name="getPhase_command">获取播放状态</string>
+    <string name="getPlaybackSpeed_command">获取播放速度</string>
+    <string name="seek_command">快进</string>
+    <string name="textarea_command">文本</string>
+    <string name="selector_command">选择框</string>
+    <string name="staticConvert">静态转换</string>
+    <string name="dynamicConvert">动态转换</string>
+    <string name="next_scene">下一页</string>
+    <string name="getPreview_command">获取预览截图</string>
+    <string name="getSceneImage_command">获取场景封面</string>
+    <string name="set_bound">设置视野范围</string>
+    <string name="orientation">横竖屏</string>
+    <string name="reconnect">重连</string>
+    <string name="play">播放</string>
+    <string name="pause">暂停</string>
+    <string name="rest">重置</string>
+    <string name="title_activity_pure_replay">PureReplayActivity</string>
+    <string name="pureReplay">纯白板回放</string>
+
+    <!--ijkplayer-->
+    <string name="N_A">N/A</string>
+    <string name="close">Close</string>
+
+    <string name="exit">Exit</string>
+    <string name="sample">Sample</string>
+    <string name="recent">Recent</string>
+    <string name="settings">Settings</string>
+    <string name="tracks">Tracks</string>
+    <string name="toggle_player">Player</string>
+    <string name="toggle_render">Render</string>
+    <string name="toggle_ratio">Scale</string>
+    <string name="show_info">Info</string>
+    <string name="vdec">vdec</string>
+    <string name="fps">fps</string>
+    <string name="v_cache">v-cache</string>
+    <string name="a_cache">a-cache</string>
+    <string name="load_cost">load-cost</string>
+    <string name="seek_cost">seek_cost</string>
+    <string name="seek_load_cost">seek_load_cost</string>
+    <string name="tcp_speed">tcp_speed</string>
+    <string name="bit_rate">bit_rate</string>
+
+    <string name="VideoView_error_text_invalid_progressive_playback">Invalid progressive playback</string>
+    <string name="VideoView_error_text_unknown">Unknown</string>
+    <string name="VideoView_error_button">OK</string>
+
+    <string name="VideoView_render_none">Render: None</string>
+    <string name="VideoView_render_surface_view">Render: SurfaceView</string>
+    <string name="VideoView_render_texture_view">Render: TextureView</string>
+
+    <string name="VideoView_player_none">Player: None</string>
+    <string name="VideoView_player_AndroidMediaPlayer">Player: AndroidMediaPlayer</string>
+    <string name="VideoView_player_IjkMediaPlayer">Player: IjkMediaPlayer</string>
+    <string name="VideoView_player_IjkExoMediaPlayer">Player: IjkExoMediaPlayer</string>
+
+    <string name="VideoView_ar_aspect_fit_parent">Aspect / Fit parent</string>
+    <string name="VideoView_ar_aspect_fill_parent">Aspect / Fill parent</string>
+    <string name="VideoView_ar_aspect_wrap_content">Aspect / Wrap content</string>
+    <string name="VideoView_ar_match_parent">Free / Fill parent</string>
+    <string name="VideoView_ar_16_9_fit_parent">16:9 / Fit parent</string>
+    <string name="VideoView_ar_4_3_fit_parent">4:3 / Fit parent</string>
+    <string name="moveRectangle">调整视野位置</string>
+    <string name="copy_paste">复制粘贴</string>
+    <string name="redo_undo">撤销，取消撤销</string>
+    <string name="move_camera">移动视角位置</string>
+    <string name="duplicate">副本</string>
+    <string name="deleteOperation">删除</string>
+</resources>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Settings, should always be in the overflow -->
+    <item
+        android:id="@+id/orientation"
+        android:onClick="orientation"
+        android:title="@string/orientation" />
+    <item
+        android:id="@+id/timeinfo"
+        android:onClick="getTimeInfo"
+        android:title="@string/getTimeInfo_command" />
+    <item
+        android:id="@+id/playState"
+        android:onClick="getPlayState"
+        android:title="@string/getPlayState_command" />
+    <item
+        android:id="@+id/getPhase"
+        android:onClick="getPhase"
+        android:title="@string/getPhase_command" />
+    <item
+        android:id="@+id/getPlaybackSpeed"
+        android:onClick="getPlaybackSpeed"
+        android:title="@string/getPlaybackSpeed_command" />
+</menu>
