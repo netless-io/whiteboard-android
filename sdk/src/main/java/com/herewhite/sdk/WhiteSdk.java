@@ -50,7 +50,7 @@ public class WhiteSdk {
      * @return NativeSDK 版本号
      */
     public static String Version() {
-        return "2.12.7";
+        return "2.12.8";
     }
 
     /**
