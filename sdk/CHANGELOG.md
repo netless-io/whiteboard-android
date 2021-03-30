@@ -3,6 +3,8 @@
 - 更新`white-web-sdk`至 2.12.6
 ## [2.12.7] - 2021-03-25
 - 更新`@netless/iframe-bridge`至 2.0.5，优化回放时，H5 课件展示
+- 修复部分设备下，切换到文字教具无法弹出键盘的问题
+- 增加 whiteboardView 自动调用 refreshViewSize 功能
 ## [2.12.6] - 2021-03-25
 - Displayer 新增`scaleIframeToFit`API，可以将 H5 课件进行铺满操作（类似`scalePptToFit`），详情见API注释
 ## [2.12.5] - 2021-03-25
