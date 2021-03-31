@@ -28,7 +28,7 @@ public interface NativePlayer {
     /**
      * 允许 PlayerSyncManager 提前初始化，不等待 nativePlayer 初始化
      *
-     * @return
+     * @return 播放状态
      */
     NativePlayerPhase getPhase();
 

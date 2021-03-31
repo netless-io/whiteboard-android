@@ -3,18 +3,18 @@ package com.herewhite.sdk.domain;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * 视野调整、视角移动时，动画选项
+ * 移动或缩放视野时的动画模式。
  *
  * @since 2.3.2
  */
 public enum AnimationMode {
     /**
-     * 连续变化，移动视角/调整视野时，会进行补间动画（默认）
+     * （默认）渐变模式。
      */
     @SerializedName("continuous")
     Continuous,
     /**
-     * 瞬间切换
+     * 瞬间切换模式。
      */
     @SerializedName("immediately")
     Immediately

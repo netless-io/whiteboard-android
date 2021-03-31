@@ -6,6 +6,10 @@ import com.herewhite.sdk.domain.RoomState;
 
 /**
  * Created by buhe on 2018/8/12.
+ */
+
+/**
+ * `RoomCallbacks` 接口的缺省（空）实现。详见 {@link RoomCallbacks RoomCallbacks}。
  *
  * @deprecated 空实现类由用户应用处理
  */

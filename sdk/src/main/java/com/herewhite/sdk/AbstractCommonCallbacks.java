@@ -15,6 +15,7 @@ public class AbstractCommonCallbacks implements CommonCallbacks {
      *
      * @param args
      */
+    @Override
     public void throwError(Object args) {
 
     }
@@ -29,6 +30,7 @@ public class AbstractCommonCallbacks implements CommonCallbacks {
      * @return 替换后的图片地址
      * @since 2.9.14
      */
+    @Override
     public String urlInterrupter(String sourceUrl) {
         return sourceUrl;
     }
@@ -38,6 +40,7 @@ public class AbstractCommonCallbacks implements CommonCallbacks {
      *
      * @since 2.9.13
      */
+    @Override
     public void onPPTMediaPlay() {
 
     }
@@ -47,6 +50,7 @@ public class AbstractCommonCallbacks implements CommonCallbacks {
      *
      * @since 2.9.13
      */
+    @Override
     public void onPPTMediaPause() {
 
     }
@@ -63,6 +67,7 @@ public class AbstractCommonCallbacks implements CommonCallbacks {
      *
      * @since 2.9.14
      */
+    @Override
     public void sdkSetupFail(SDKError error) {
 
     }

@@ -26,9 +26,11 @@ public class Player extends Displayer {
     private int framesCount;
 
     /**
-     * 获取播放时的播放速率
+     * 获取白板回放的倍速。该方法为同步调用。
+     * <p>
+     * 该方法获取的是播放倍速，如 1.0、1.5、2.0 倍速。因此回放暂停时，返回值也不会为 0。
      *
-     * @return 播放速率
+     * @return 白板回放的播放倍速。
      * @since 2.5.2
      */
     public double getPlaybackSpeed() {
@@ -36,9 +38,9 @@ public class Player extends Displayer {
     }
 
     /**
-     * 设置播放时的播放速率
+     * 设置白板回放的倍速。
      *
-     * @param playbackSpeed
+     * @param playbackSpeed 白板回放的倍速。取值必须大于 0，设为 1 表示按原速播放。
      * @since 2.5.2
      */
     public void setPlaybackSpeed(double playbackSpeed) {
@@ -47,10 +49,14 @@ public class Player extends Displayer {
     }
 
     /**
-     * 异步从 player 中获取播放时的播放速率，暂停时不会变为 0
-     * 正常情况下，不需要使用该 API，仅做 Debug 与测试用
+     * 获取白板回放的倍速。该方法为异步调用。
+     * <p>
+     * 该方法获取的是播放倍速，如 1.0、1.5、2.0 倍速。因此回放暂停时，返回值也不会为 0。
      *
-     * @param promise
+     * @param promise Promise<Double> 接口实例，详见 {@link Promise}。你可以通过该接口了解获取白板回放倍速的结果：
+     *                - 如果获取成功，将返回白板回放的倍速。
+     *                - 如果获取失败，将返回错误信息。
+     * @note 该方位为异步调用。我们推荐你仅在调试或问题排查时使用。一般情况下可以使用同步方法 {@link #getPlaybackSpeed()} 进行获取。
      * @since 2.5.2
      */
     public void getPlaybackSpeed(final Promise<Double> promise) {
@@ -72,7 +78,7 @@ public class Player extends Displayer {
      *
      * @param room       回放房间 uuid
      * @param bridge     the bridge
-     * @param densityDpi the densityDpi
+     * @param densityDpi Android屏幕密度值
      */
     Player(String room, JsBridgeInterface bridge, int densityDpi) {
         super(room, bridge, densityDpi);
@@ -87,37 +93,47 @@ public class Player extends Displayer {
         this.beginTimestamp = playerTimeInfo.getBeginTimestamp();
     }
 
+    /**
+     * 开始白板回放。
+     * <p>
+     * 暂停回放后，也可以调用该方法继续白板回放。
+     */
     public void play() {
         bridge.callHandler("player.play", new Object[]{});
     }
 
     /**
-     * 暂停回放
+     * 暂停白板回放。
      */
     public void pause() {
         bridge.callHandler("player.pause", new Object[]{});
     }
 
     /**
-     * stop 后，player 资源会被释放。需要重新创建WhitePlayer实例，才可以重新播放
+     * 停止白板回放。
+     * <p>
+     * 白板回放停止后，Player 资源会被释放。如果想要重新播放，则需要重新初始化 Player 实例。
      */
     public void stop() {
         bridge.callHandler("player.stop", new Object[]{});
     }
 
     /**
-     * 跳转至特定时间，开始时间为 0，单位毫秒。
+     * 设置白板回放的开始时间。
+     * <p>
+     * 由于 SDK 会录制实时房间的全部过程，因此默认情况下，回放会播放从房间构造开始直到最后一次活跃结束的全部过程。
+     * 因此在进行回放时，需要调用该方法设置开始回放的时间点。
      *
-     * @param seekTime 跳转时间
+     * @param seekTime 白板回放的开始时间，单位为毫秒。
      */
     public void seekToScheduleTime(long seekTime) {
         bridge.callHandler("player.seekToScheduleTime", new Object[]{seekTime});
     }
 
     /**
-     * 设置查看模式
+     * 设置白板回放的查看模式。
      *
-     * @param mode {@link PlayerObserverMode}
+     * @param mode 白板回放的查看模式，详见 {@link PlayerObserverMode}。
      */
     public void setObserverMode(PlayerObserverMode mode) {
         bridge.callHandler("player.setObserverMode", new Object[]{mode.name()});
@@ -126,11 +142,12 @@ public class Player extends Displayer {
     //region Get API
 
     /**
-     * 同步缓存API 获取回放房间播放状态
-     * 初始状态为 WhitePlayerPhaseWaitingFirstFrame.
-     * 如果操作 {@link #stop()} {@link #play()} {@link #stop()} 等影响 playerPhase API，该 API 不会立即更新
+     * 获取白板回放房间的阶段。该方法为同步调用。
+     * <p>
+     * 在 Player 生命周期内，你可以调用该方法获取当前回放房间的阶段。其中初始阶段为 `waitingFirstFrame`，表示正在等待白板回放的第一帧。
      *
-     * @return {@link PlayerPhase} 回放房间状态
+     * @return 回放房间的阶段，详见 {@link PlayerPhase}。
+     * @note 成功调用 {@link #stop()}、{@link #play()}、{@link #pause()} 等方法均会影响回放房间的阶段，但是该阶段不会立即更新。
      * @since 2.4.0
      */
     public PlayerPhase getPlayerPhase() {
@@ -138,12 +155,15 @@ public class Player extends Displayer {
     }
 
     /**
-     * 异步API 获取回放房间播放状态
+     * 获取白板回放房间的阶段。该方法为异步调用。
      * <p>
-     * 一般情况，可以使用 {@link #getPlayerPhase()} 同步API，进行获取。
-     * 如果操作 {@link #stop()} {@link #play()} {@link #stop()} 等影响 playerPhase API，可以使用该 API
+     * 在 Player 生命周期内，你可以调用该方法获取当前回放房间的阶段。其中初始状态为 `waitingFirstFrame`，表示正在等待白板回放的第一帧。
      *
-     * @param promise the promise
+     * @param promise `Promise<PlayerPhase>` 接口实例，详见 {@link Promise 类}。你可以通过该接口了解获取白板回放阶段的结果：
+     *                - 如果获取成功，将返回白板回放的阶段。
+     *                - 如果获取失败，将返回错误信息。
+     * @note - 成功调用 {@link #stop()}、{@link #play()}、{@link #pause()} 等方法均会影响回放房间的阶段，但是该阶段不会立即更新。
+     * - 该方位为异步调用。我们推荐你仅在调试或问题排查时使用。一般情况下可以使用同步方法 {@link #getPlayerPhase()} 进行获取。
      */
     public void getPhase(final Promise<PlayerPhase> promise) {
         bridge.callHandler("player.getBroadcastState", new Object[]{}, new OnReturnValue<Object>() {
@@ -165,12 +185,11 @@ public class Player extends Displayer {
     }
 
     /**
-     * 同步API 获取回放房间中所有状态
+     * 获取回放房间的状态。该方法为同步调用。
      * <p>
-     * 当 phase 状态为 WhitePlayerPhaseWaitingFirstFrame
-     * 回调得到的数据为 null
+     * 如果回放房间的状态 Player phase 为 `waitingFirstFrame`，则该方法返回 Null。
      *
-     * @return 回放房间状态 {@link PlayerState}
+     * @return 回放房间状态，详见 {@link PlayerState}。
      * @since 2.4.0
      */
     public PlayerState getPlayerState() {
@@ -181,11 +200,12 @@ public class Player extends Displayer {
     }
 
     /**
-     * 异步API 获取回放房间中状态
-     * <p>
-     * 一般情况，请使用 {@link #getPlayerState()} 同步 API，进行获取。
+     * 获取白板回放房间的状态。该方法为异步调用。
      *
-     * @param promise 完成回调
+     * @param promise `Promise<PlayerState>` 接口实例，详见 {@link Promise}。你可以通过该接口了解获取白板回放状态的结果：
+     *                - 如果获取成功，将返回具体的白板回放状态。
+     *                - 如果获取失败，将返回错误信息。
+     * @note 该方位为异步调用。我们推荐你仅在调试或问题排查时使用。一般情况下可以使用同步方法 {@link #getPlayerState()} 进行获取。
      */
     public void getPlayerState(final Promise<PlayerState> promise) {
         bridge.callHandler("player.state.playerState", new Object[]{}, new OnReturnValue<Object>() {
@@ -208,12 +228,12 @@ public class Player extends Displayer {
     }
 
     /**
-     * 同步API 获取播放文件信息
+     * 获取白板回放的时间信息，该方法为同步调用。
      * <p>
-     * 当前时间，总时长，开始 UTC 时间戳。单位：毫秒
-     * 当前时间不准确
+     * 该方法获取的时间信息，包含当前的播放时间，回放文件的总时长，以及开始播放的 UTC 时间戳，单位为毫秒。
      *
-     * @return {@link PlayerTimeInfo}
+     * @return 播放时间信息，详见 {@link PlayerTimeInfo}。
+     * @note 该方法获取的当前播放时间可能不准确。
      * @since 2.4.0
      */
     public PlayerTimeInfo getPlayerTimeInfo() {
@@ -221,11 +241,14 @@ public class Player extends Displayer {
     }
 
     /**
-     * 异步API 获取播放文件信息
+     * 获取白板回放的时间信息，该方法为异步调用。
      * <p>
-     * 一般情况，请使用 {@link #getPlayerTimeInfo()} 同步 API，进行获取。
+     * 该方法获取的时间信息，包含当前的播放时间，回放文件的总时长，以及开始播放的 UTC 时间戳，单位为毫秒。
      *
-     * @param promise 完成回调
+     * @param promise `Promise<PlayerTimeInfo>` 接口实例，详见 {@link Promise}。你可以通过该接口了解获取白板回放时间信息的结果：
+     *                - 如果获取成功，将返回白板回放的时间信息。
+     *                - 如果获取失败，将返回错误信息。
+     * @note 该方法为异步调用。我们推荐你仅在调试或问题排查时使用。一般情况下可以使用同步方法 {@link #getPlayerTimeInfo() getPlayerTimeInfo} 进行获取。
      */
     public void getPlayerTimeInfo(final Promise<PlayerTimeInfo> promise) {
         bridge.callHandler("player.state.timeInfo", new Object[]{}, new OnReturnValue<Object>() {
@@ -262,6 +285,7 @@ public class Player extends Displayer {
 
 
     private class PlayerDelegateImpl implements PlayerDelegate {
+        @Override
         public void fireMagixEvent(EventEntry eventEntry) {
             EventListener eventListener = eventListenerMap.get(eventEntry.getEventName());
             if (eventListener != null) {
@@ -269,6 +293,7 @@ public class Player extends Displayer {
             }
         }
 
+        @Override
         public void fireHighFrequencyEvent(EventEntry[] eventEntries) {
             FrequencyEventListener eventListener = frequencyEventListenerMap.get(eventEntries[0].getEventName());
             if (eventListener != null) {
@@ -276,6 +301,7 @@ public class Player extends Displayer {
             }
         }
 
+        @Override
         public void setPlayerPhase(PlayerPhase playerPhase) {
             Player.this.playerPhase = playerPhase;
             if (listener != null) {
@@ -283,30 +309,35 @@ public class Player extends Displayer {
             }
         }
 
+        @Override
         public void onLoadFirstFrame() {
             if (listener != null) {
                 listener.onLoadFirstFrame();
             }
         }
 
+        @Override
         public void onSliceChanged(String slice) {
             if (listener != null) {
                 listener.onSliceChanged(slice);
             }
         }
 
+        @Override
         public void syncDisplayerState(String stateJSON) {
             if (syncPlayerState != null) {
                 syncPlayerState.syncDisplayerState(stateJSON);
             }
         }
 
+        @Override
         public void onStoppedWithError(SDKError error) {
             if (listener != null) {
                 listener.onStoppedWithError(error);
             }
         }
 
+        @Override
         public void setScheduleTime(long scheduleTime) {
             Player.this.scheduleTime = scheduleTime;
             if (listener != null) {
@@ -314,12 +345,14 @@ public class Player extends Displayer {
             }
         }
 
+        @Override
         public void onCatchErrorWhenAppendFrame(SDKError error) {
             if (listener != null) {
                 listener.onCatchErrorWhenAppendFrame(error);
             }
         }
 
+        @Override
         public void onCatchErrorWhenRender(SDKError error) {
             if (listener != null) {
                 listener.onCatchErrorWhenRender(error);

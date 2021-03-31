@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 /**
- * 实时房间，回放房间共有State
+ * `WhiteDisplayerState` 类，为互动白板实时房间和回放房间共有的状态类。
  *
  * @since 2.4.8
  */
@@ -16,10 +16,12 @@ public class WhiteDisplayerState extends WhiteObject {
     static Class<?> customClass = GlobalState.class;
 
     /**
-     * 设置自定义全局变量类型，设置后，所有 GlobalState 都会转换为该类的实例。
+     * 设置自定义 `GlobalState`类。
+     * <p>
+     * 设置后，所有 `GlobalState` 都会转换为该类的实例。
      *
-     * @param <T>      类型约束
-     * @param classOfT 自定义 GlobalState Class
+     * @param <T>      类型约束，自定义的 'GlobalState' 类必须继承 {@link GlobalState GlobalState} 类。
+     * @param classOfT 自定义的 'GlobalState' 类。
      * @since 2.4.8
      */
     public static <T extends GlobalState> void setCustomGlobalStateClass(Class<T> classOfT) {
