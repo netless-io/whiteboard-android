@@ -10,43 +10,59 @@ import com.herewhite.sdk.domain.RoomState;
 public interface RoomListener {
 
     /**
-     * 房间网络连接状态回调事件
+     * 房间连接状态变化回调。
+     *
+     * @param phase 房间的连接状态，详见 {@link RoomPhase RoomPhase}。
      */
     void onPhaseChanged(RoomPhase phase);
 
     /**
-     * 白板失去连接回调，附带错误信息
+     * 白板 SDK 与白板服务器连接中断回调。
+     *
+     * @param e 错误信息。
      */
     void onDisconnectWithError(Exception e);
 
     /**
-     * 用户被远程服务器踢出房间，附带踢出原因
+     * 用户被服务器移出房间回调。
+     *
+     * @param reason 用户被移除房间的原因。
      */
     void onKickedWithReason(String reason);
 
     /**
-     * 房间中RoomState属性，发生变化时，会触发该回调。
+     * 房间状态属性发生变化回调。
+     * <p>
+     * 该回调仅返回发生变化的房间状态属性，未发生变化的房间状态字段，均未空。
      *
-     * @param modifyState 只包含发生变化的 RoomState 字段，未发生改变的内容，均为空
+     * @param modifyState 发生变化的房间状态属性，详见 {@link RoomState RoomState}。
      */
     void onRoomStateChanged(RoomState modifyState);
 
     /**
-     * 当用户本地进行过任意操作，或者执行 room undo，或者取消撤回 room redo 操作后，该数字都会发生变化
+     * 可撤销次数发生变化回调。
+     * <p>
+     * 当本地用户调用 {@link Room#undo undo} 撤销上一步操作时，会触发该回调，报告剩余的可撤销次数。
      *
-     * @param canUndoSteps 可以撤回的步骤数
+     * @param canUndoSteps 剩余的可撤销次数。
      */
     void onCanUndoStepsUpdate(long canUndoSteps);
 
     /**
-     * 当执行撤回，或者取消撤回操作后，该数字会发生变化
+     * 可重做次数发生变化回调。
+     * <p>
+     * 当本地用户调用 {@link Room#redo redo} 重做上一步操作时，会触发该回调，报告剩余的可重做次数。
      *
-     * @param canRedoSteps 可以取消撤回的步骤数
+     * @param canRedoSteps 剩余的可重做次数。
      */
     void onCanRedoStepsUpdate(long canRedoSteps);
 
     /**
-     * 用户错误事件捕获，附带用户 id，以及错误原因
+     * 同步用户行为发生错误回调。
+     *
+     * @param userId 用户 ID。
+     * @param error  错误原因。
+     * @note 该回调通常是可以忽略的，你可以根据业务情况自行决定是否监听。
      */
     void onCatchErrorWhenAppendFrame(long userId, Exception error);
 }

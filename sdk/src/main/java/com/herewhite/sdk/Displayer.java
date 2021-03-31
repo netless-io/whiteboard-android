@@ -35,7 +35,7 @@ import androidx.annotation.VisibleForTesting;
 import wendu.dsbridge.OnReturnValue;
 
 /**
- * 白板房间基类
+ * Displayer 类。该类为白板房间的基类。
  */
 public class Displayer {
     protected final static Gson gson = new Gson();
@@ -52,6 +52,13 @@ public class Displayer {
     @VisibleForTesting
     ConcurrentHashMap<String, FrequencyEventListener> frequencyEventListenerMap = new ConcurrentHashMap<>();
 
+    /**
+     * Displayer 类的构造函数。
+     *
+     * @param uuid       用户 ID。
+     * @param bridge     白板界面，详见 {@link WhiteboardView}。
+     * @param densityDpi Android屏幕密度值。
+     */
     public Displayer(String uuid, JsBridgeInterface bridge, int densityDpi) {
         this.uuid = uuid;
         this.bridge = bridge;
@@ -70,9 +77,9 @@ public class Displayer {
     }
 
     /**
-     * 向 iframe 插件发送字符串信息
+     * 向 iframe 插件发送字符串信息。
      *
-     * @param string
+     * @param string 字符串格式的信息。
      * @since 2.11.4
      */
     public void postIframeMessage(String string) {
@@ -80,9 +87,11 @@ public class Displayer {
     }
 
     /**
-     * 向 iframe 插件发送 key-value 格式的信息。可以自己创建 WhiteObject 的子类进行发送
+     * 向 iframe 插件发送 key-value 格式的信息。
+     * <p>
+     * 你可以通过创建 WhiteObject 的子类来创建一个 ley-value 格式的信息。
      *
-     * @param object
+     * @param object `Whiteobject` 的子类，详见 {@link WhiteObject}。
      * @since 2.11.4
      */
     public void postIframeMessage(WhiteObject object) {
@@ -90,10 +99,14 @@ public class Displayer {
     }
 
     /**
-     * 查询路径对应的内容，还是页面（场景），或者是页面（场景）目录，或者不存在任何内容。
+     * 查询场景路径类型。
+     * <p>
+     * 你可以在该方法中指定想要查询的场景路径，SDK 会返回该路径对应的场景类型，是场景，还是场景目录，或者不存在任何内容。
      *
-     * @param path    进行查询的路径
-     * @param promise 回调结果，具体内容，可以查看 {@link WhiteScenePathType}
+     * @param path    想要查询的场景类型。
+     * @param promise `Promise<WhiteScenePathType>` 接口实例，详见 {@link WhiteScenePathType}。你可以通过该接口获取查询场景路径类型的结果：
+     *                - 如果查询成功，将返回场景路径类型。
+     *                - 如果查询失败，将返回错误信息。
      */
     public void getScenePathType(String path, final Promise<WhiteScenePathType> promise) {
         bridge.callHandler("displayer.scenePathType", new Object[]{path}, new OnReturnValue<String>() {
@@ -107,9 +120,12 @@ public class Displayer {
 
 
     /**
-     * 获取当前房间内所有的白板页面信息
+     * 获取当前房间内所有的白板页面信息。
      *
-     * @param promise 返回 一个 map，key 为场景目录地址，value 为该目录下，所有 Scene 数组。
+     * @param promise `Promise<Map<String, Scene[]>>` 接口实例，详见 {@link Promise<Map<String, Scene[]>>}。你可以通过该接口查询获取当前房间
+     *                内所有白板页面信息的结果：
+     *                - 如果查询成功，将返回当前房间内所有的白板页面信息。该返回值为 map 格式，其中 key 为场景路径，value 为该路径下所有的场景数据。
+     *                - 如果查询失败，将返回错误信息。
      */
     public void getEntireScenes(final Promise<Map<String, Scene[]>> promise) {
         bridge.callHandler("displayer.entireScenes", new OnReturnValue<JSONObject>() {
@@ -125,15 +141,17 @@ public class Displayer {
 
     /**
      * 刷新当前白板的视觉矩形。
-     *
-     * @note 当 WhiteboardView 大小出现改变时，需要手动调用该方法。
+     * <p>
+     * 当 WhiteboardView 大小出现改变时，需要手动调用该方法。
      */
     public void refreshViewSize() {
         bridge.callHandler("displayer.refreshViewSize", new Object[]{});
     }
 
     /**
-     * 以连续动画的形式，等比例缩放ppt，保证ppt所有内容都在容器内。
+     * 以连续动画的形式等比例缩放 PPT。
+     * <p>
+     * 该方法用于确保 PPT 页面的所有内容都在视野范围内。
      *
      * @since 2.4.22
      */
@@ -142,18 +160,11 @@ public class Displayer {
     }
 
     /**
-     * 如果有自定义 h5 课件，则等比例缩放，保证内容铺满容器
+     * 等比例缩放 PPT。
+     * <p>
+     * 该方法用于确保 PPT 页面的内容都在视野内。
      *
-     * @since 2.12.6
-     */
-    public void scaleIframeToFit() {
-        bridge.callHandler("displayer.scaleIframeToFit", new Object[]{});
-    }
-
-    /**
-     * 等比例缩放ppt，保证ppt所有内容都在容器内。
-     *
-     * @param mode 缩放时，动画行为
+     * @param mode PPT 缩放时的动画行为，详见 {@link AnimationMode}。
      * @since 2.4.28
      */
     public void scalePptToFit(AnimationMode mode) {
@@ -162,11 +173,11 @@ public class Displayer {
     }
 
     /**
-     * 注册自定义事件监听，接受对应名称的自定义事件通知（包括自己发送的）。
-     * 目前 Android 端，同一个自定义事件（名），只支持单个回调。只有 Web 端支持一个自定义事件，调用多个回调。
+     * 注册自定义事件监听。成功注册后，你可以接收到对应的自定义事件通知。
      *
-     * @param eventName     需要监听自定义事件名称
-     * @param eventListener 自定义事件回调；重复添加时，旧回调会被覆盖
+     * @param eventName     想要监听的自定义事件名称。
+     * @param eventListener 自定义事件回调，详见 {@link EventListener}。如果添加多个事件回调，则之前添加的回调会被覆盖。
+     * @note 对于同名的自定义事件，SDK 仅支持触发一个回调。
      */
     public void addMagixEventListener(String eventName, EventListener eventListener) {
         this.eventListenerMap.put(eventName, eventListener);
@@ -174,12 +185,12 @@ public class Displayer {
     }
 
     /**
-     * 注册高频自定义事件监听，接受对应名称的自定义事件通知（包括自己发送的）。
-     * 目前 Android 端，同一个自定义事件（名），只支持单个回调。只有 Web 端支持一个自定义事件，调用多个回调。
+     * 注册高频自定义事件监听。成功注册后，你可以接收到对应的自定义事件通知。
      *
-     * @param eventName     需要监听自定义事件名称
-     * @param eventListener 自定义事件回调；重复添加时，旧回调会被覆盖
-     * @param fireInterval  调用频率, 单位：毫秒，最低 500ms，传入任何低于该值的数字，都会重置为 500ms
+     * @param eventName     想要监听的自定义事件名称。
+     * @param eventListener 自定义事件回调，详见 {@link FrequencyEventListener}。如果添加多个事件回调，则之前添加的回调会被覆盖。
+     * @param fireInterval  SDK 触发回调的频率，单位为毫秒。该参数最小值为 500ms；低于该值会被传入重置为 500ms。
+     * @note 对于同名的自定义事件，SDK 仅支持触发一个回调。
      */
     public void addHighFrequencyEventListener(String eventName, FrequencyEventListener eventListener, Integer fireInterval) {
         if (fireInterval < 500) {
@@ -190,10 +201,9 @@ public class Displayer {
     }
 
     /**
-     * 移除自定义事件监听
-     * 目前 Android 端同一个自定义事件（名），只支持单个回调。移除时，只需要传入自定义事件名称即可。
+     * 移除自定义事件监听。
      *
-     * @param eventName 需要移除监听的自定义事件名称
+     * @param eventName 想要移除监听的自定义事件名称。
      */
     public void removeMagixEventListener(String eventName) {
         this.eventListenerMap.remove(eventName);
@@ -202,11 +212,15 @@ public class Displayer {
     }
 
     /**
-     * 将以白板左上角为原点的 Android 坐标系坐标，转换为白板内部坐标系（坐标原点为白板初始化时中点位置，坐标轴方向相同）坐标
+     * 转换白板上点的坐标。
+     * <p>
+     * 该方法可以将 Android 内部坐标系（以屏幕左上角为原点，横轴为 X 轴，正方向向右，纵轴为 Y 轴，正方向向下）中的坐标转换为白板内部坐标系（以白板初始化时的中点为原点，横轴为 X 轴，正方向向右，纵轴为 Y 轴，正方向向下）坐标。
      *
-     * @param x       the Android 端 x 坐标
-     * @param y       the Android 端 y 坐标
-     * @param promise 完成回调
+     * @param x       点在 Android 坐标系中的 X 轴坐标。
+     * @param y       点在 Android 坐标系中的 Y 轴坐标。
+     * @param promise 'Promise<Point>' 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `convertToPointInWorld` 的调用结果：
+     *                - 如果方法调用成功，将返回点在白板内部坐标系上的坐标。
+     *                - 如果方法调用失败，将返回错误信息。
      */
     public void convertToPointInWorld(double x, double y, final Promise<Point> promise) {
         bridge.callHandler("displayer.convertToPointInWorld", new Object[]{x, y}, new OnReturnValue<Object>() {
@@ -228,9 +242,9 @@ public class Displayer {
     }
 
     /**
-     * 锁定视野范围
+     * 设置视野范围。
      *
-     * @param bound 视野范围描述类 {@link CameraBound}
+     * @param bound 视野范围，详见 {@link CameraBound}。
      * @since 2.5.0
      */
     public void setCameraBound(CameraBound bound) {
@@ -238,11 +252,12 @@ public class Displayer {
     }
 
     /**
-     * 设置白板背景色（本地操作，不会同步）
+     * 设置白板背景色。
      *
-     * @param intColor 16 进制 aRGB,a 属性并不能达到使白板透明的效果
+     * @param intColor 白板的背景色，格式为 16 进制，ARGB 定义下的 Hex 值。注意 A 属性不能达到使白板透明的效果。
+     * @note 该方法仅对本地显示有效，不会同步到频道内其他用户。
      * @since 2.4.14
-     * @deprecated Android 端直接使用 {@link WhiteboardView#setBackgroundColor(int)} 即可
+     * @deprecated 该方法已废弃，请改用 {@link WhiteboardView#setBackgroundColor(int)}。
      */
     @Deprecated
     public void setBackgroundColor(@ColorInt int intColor) {
@@ -260,9 +275,9 @@ public class Displayer {
     }
 
     /**
-     * 获取白板房间，本地背景色
+     * 获取本地白板的背景色。
      *
-     * @return 16进制 aRGB 色值
+     * @return 本地白板的背景色。，格式为 16 进制 ARGB 定义下的 Hex 值。
      * @since 2.4.0
      */
     public int getBackgroundColor() {
@@ -270,10 +285,14 @@ public class Displayer {
     }
 
     /**
-     * 获取特定场景的全量截图
+     * 获取特定场景的预览图。
+     * <p>
+     * 该方法可用于实现用户切换到对应场景时，能立刻看到该场景内容的功能。
      *
-     * @param scenePath 场景路径
-     * @param promise   完成回调
+     * @param scenePath 指定的场景路径。
+     * @param promise   `Promise<Bitmap>` 接口实例，详见 {@link Promise}。你可以通过该接口了解获取场景预览图的结果：
+     *                  - 如果获取成功，将返回获取的预览图。
+     *                  - 如果获取失败，将反馈错误码。
      * @since 2.3.0
      */
     public void getScenePreviewImage(String scenePath, final Promise<Bitmap> promise) {
@@ -294,10 +313,14 @@ public class Displayer {
     }
 
     /**
-     * 获取特定场景的预览图（用户切换到对应场景时，能看到的内容）
+     * 获取特定场景的截图。
+     * <p>
+     * 该方法可用于实现用户切换到对应场景时，能立刻看到该场景内容的功能。
      *
-     * @param scenePath 场景路径
-     * @param promise   完成回调
+     * @param scenePath 指定的场景路径。
+     * @param promise   `Promise<Bitmap>` 接口实例，详见 {@link Promise}。你可以通过该接口了解获取场景截图的结果：
+     *                  - 如果获取成功，将返回获取的截图。
+     *                  - 如果获取失败，将返回错误信息。
      * @since 2.3.0
      */
     public void getSceneSnapshotImage(String scenePath, final Promise<Bitmap> promise) {
@@ -326,9 +349,13 @@ public class Displayer {
     }
 
     /**
-     * 禁止用户移动视角
+     * 禁止/允许用户移动视角。
+     * <p>
+     * 移动视角是指用户可以通过触屏手势放大或缩小白板视野。
      *
-     * @param disable 禁止视角移动
+     * @param disable 是否禁止用户移动视角：
+     *                - true: 禁止用户移动视角。
+     *                - false: (默认) 允许用户移动视角。
      * @since 2.11.0
      */
     public void disableCameraTransform(Boolean disable) {
@@ -336,10 +363,11 @@ public class Displayer {
     }
 
     /**
-     * 移动视角：移动，缩放白板
+     * 移动视角。
+     * <p>
+     * 该方法可用于实现用户通过触屏手势对白板视野进行缩放操作的功能。
      *
-     * @param camera 视角参数
-     * @see CameraConfig 只需要传入，需要改动的值
+     * @param camera 移动视角的具体参数配置，详见 {@link CameraConfig}。
      * @since 2.2.0
      */
     public void moveCamera(CameraConfig camera) {
@@ -347,10 +375,9 @@ public class Displayer {
     }
 
     /**
-     * 调整用户视野
+     * 调整用户视野。
      *
-     * @param rectangle 视野参数
-     * @see RectangleConfig 需要传入完整的视野参数
+     * @param rectangle 能表示用户视野的视觉矩形设置，详见 {@link RectangleConfig}。
      * @since 2.2.0
      */
     public void moveCameraToContainer(RectangleConfig rectangle) {

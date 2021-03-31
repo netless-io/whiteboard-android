@@ -14,32 +14,38 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 /**
- * Created by buhe on 2018/8/10.
- * 初始化 whiteSDK 用的配置参数，初始化成功，该类中的参数修改，不起作用
+ * `WhiteSdkConfiguration` 类，用于初始化 `whiteSDK` 配置参数。
+ *
+ * @note 成功初始化 `whiteSDK` 后，无法再调用 `WhiteSdkConfiguration` 类中的任何方法修改 `whiteSDK` 的配置。
  */
 public class WhiteSdkConfiguration extends WhiteObject {
 
     /**
-     * sdk 笔画等教具的渲染的模式
+     * 笔迹的渲染引擎模式。
      *
      * @since 2.8.0
      */
     public enum RenderEngineType {
         /**
-         * 旧版本渲染，兼容性较好，性能较差
-         * Android 6.1 ~ Android 8.1 有部分机器无法渲染 canvas 模式，只能用这个，默认 sdk 中会使用 svg 模式
+         * SVG 渲染模式。
+         * 2.8.0 及之前版本的 `whiteSDK` 默认使用的渲染模式，该模式兼容性较好，但性能较差。
          */
         @SerializedName("svg")
         svg,
         /**
-         * 性能更好，兼容性略有问题，2.8.0；当前的默认渲染模式
+         * Canvas 渲染模式。
+         * <p>
+         * 2.8.0 版本起新增 Canvas 渲染模式，该模式性能较好，但兼容性较差。
+         * 2.9.0 及之后版本的 `whiteSDK` 默认使用 Canvas 渲染模式。
+         *
+         * @note 由于部分 Android 6.1 至 Android 8.1 设备无法支持 Canvas 渲染模式，SDK 会自动将默认的渲染模式切换为 SVG。
          */
         @SerializedName("canvas")
         canvas,
     }
 
     /***
-     * PptParams 单独传给动态 ppt 转换用的参数
+     * `PptParams` 类，用于设置动态 PPT 参数。
      */
     public static class PptParams extends WhiteObject {
 
@@ -60,16 +66,27 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
         private String scheme;
 
+        /**
+         * 查询动态 PPT 服务端排版功能是否开启。
+         *
+         * @return 动态 PPT 服务端排版功能的开启状态：
+         * - 'true'：开启。
+         * - 'false'：关闭。
+         */
+
         public boolean isUseServerWrap() {
             return useServerWrap;
         }
 
         /**
-         * 2021-02-10 之后转换的动态 ppt 支持服务端排版功能，可以确保不同平台排版一致，目前默认关闭。
-         * 如果打开，则不会在前端进行排版
+         * 开启/关闭动态 PPT 服务端排版功能。
          *
-         * @param useServerWrap
+         * @param useServerWrap 是否开启服务端排版功能：
+         *                      - 'true'：开启。
+         *                      - 'false'：（默认）关闭。
          * @since 2.11.16
+         * <p>
+         * 自 2021 年 02 月 10 起，Agora 服务端支持对转换的动态 PPT 排版，以确保转换后的 PPT 在不同平台排版一致。
          */
         public void setUseServerWrap(boolean useServerWrap) {
             this.useServerWrap = useServerWrap;
@@ -108,15 +125,24 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private PptParams pptParams;
     private HashMap<String, String> fonts;
 
+    /**
+     * 查询是否启用 iframe 插件。
+     *
+     * @return 是否启用 iframe 插件：
+     * - 'true'：开启。
+     * - 'false'：未启用。
+     */
     public boolean isEnableIFramePlugin() {
         return enableIFramePlugin;
     }
 
     /**
-     * 是否启用 iframe 插件，插件具体功能，见 https://github.com/netless-io/netless-iframe-bridge。
-     * 默认不启用
+     * 设置是否启用 iframe 插件。
+     * iframe 插件的功能，详见 https://github.com/netless-io/netless-iframe-bridge。
      *
-     * @param enableIFramePlugin
+     * @param enableIFramePlugin 是否启用 iframe 插件：
+     *                           - 'true'：开启。
+     *                           - 'false'：（默认）不启用。
      */
     public void setEnableIFramePlugin(boolean enableIFramePlugin) {
         this.enableIFramePlugin = enableIFramePlugin;
@@ -127,9 +153,10 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
     /**
-     * 数据中心地区，需要与房间所在的数据中心一致，否则无法加入房间，会提示找不到房间
+     * 设置数据中心。
      *
-     * @param region
+     * @param region 数据中心，详见 {@link Region Region}。
+     * @note 该方法设置的数据中心必须与要加入的互动白板实时房间所在数据中心一致，否则无法加入房间。
      */
     public void setRegion(Region region) {
         this.region = region;
@@ -140,12 +167,16 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
     /**
-     * 是否用 RTC 接管动态 PPT 音视频播放（声音），默认 false。
-     * SDK 会根据 WhiteSdk 初始化时，是否传入 {@link AudioMixerBridge} 实现类，来自动配置该属性，无需开发者主动设置。
-     * RTC 必须有 AudioMixerBridge 中需要的接口
+     * 设置是否启用 RTC SDK 的混音方法播放动态 PPT 中的音频。
      *
-     * @param enableRtcIntercept
+     * @param enableRtcIntercept 是否启用 RTC SDK 的混音方法播放动态 PPT 中的音频：
+     *                           - `true`：启用。
+     *                           - `false`：（默认）不启用。
+     *                           可以在文档中隐藏
+     * @note 初始化 `WhiteSdk` 时，如果你实现并传入 {@link AudioMixerBridge AudioMixerBridge} 类，SDK 会自动设置 'setEnableRtcIntercept(true)'。你无需主动调用该方法。
      * @since 2.9.17
+     * <p>
+     * 当同时使用 Agora RTC SDK 和互动白板 SDK, 且互动白板中展示的动态 PPT 中包含音频文件时，你可以启用 RTC SDK 的混音方法播放动态 PPT 中的音频，以
      */
     void setEnableRtcIntercept(boolean enableRtcIntercept) {
         this.enableRtcIntercept = enableRtcIntercept;
@@ -168,56 +199,86 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
     /**
-     * 设置画笔的渲染引擎模式
+     * 设置画笔教具的渲染引擎模式。
      *
-     * @param renderEngine 画笔教具的渲染模式，对于大量书写做了额外优化。2.9.0 默认切换至 canvas，之前版本为 svg。
+     * @param renderEngine 画笔教具的渲染引擎模式，详见 {@link RenderEngineType RenderEngineType}。
      * @since 2.8.0
+     * <p>
+     * 为优化渲染，自 2.8.0 版本起，白板 SDK 新增 'canvas' 渲染模式，并从 2.9.0 版本起，将 'canvas' 渲染模式作为默认的渲染模式。
      */
     public void setRenderEngine(RenderEngineType renderEngine) {
         this.renderEngine = renderEngine;
     }
 
+    /**
+     * 获取画笔教具的渲染引擎模式。
+     *
+     * @return 画笔教具的渲染引擎模式，详见 {@link RenderEngineType RenderEngineType}。
+     */
     public RenderEngineType getRenderEngine() {
         return renderEngine;
     }
 
+    /**
+     * 获取设置的动态 PPT 参数。
+     *
+     * @return 设置的动态 PPT 参数，详见 {@link PptParams PptParams}。
+     */
     public PptParams getPptParams() {
         return pptParams;
     }
 
     /**
-     * pptParams 动态 ppt 专用参数
+     * 设置动态 PPT 参数。
      *
-     * @param pptParams
+     * @param pptParams 动态 PPT 参数，详见 {@link PptParams PptParams}。
      */
     public void setPptParams(PptParams pptParams) {
         this.pptParams = pptParams;
     }
 
+    /**
+     * 获取自定义字体。
+     *
+     * @return 自定义字体名称和地址。
+     */
     public HashMap<String, String> getFonts() {
         return fonts;
     }
 
     /**
-     * 文档转网页（动态 PPT）时，自定义字体，为 key-value 结构，与 web 端一致
+     * 设置自定义字体。
      *
-     * @param fonts key 为字体名称，value 为字体网址的字典结构
+     * @param fonts 自定义字体，为 `key-value` 键值对，`key` 为字体名称，`value` 为字体 URL 的字典结构。
+     * @note 调用该方法前，你需要将字体文件上传至你的 app 服务器或第三方云存储，并生成一个 URL 地址。
+     * <p>
+     * 文档转网页（动态 PPT）时，自定义字体，为 key-value 结构，与 web 端一致
      * @since 2.2.0
+     * <p>
+     * 为正常显示动态 PPT 中的非常规字体，你可以调用该方法在初始化 `WhiteSdk` 时传入该字体文件的 URL 地址。
      */
     public void setFonts(HashMap<String, String> fonts) {
         this.fonts = fonts;
     }
 
+    /**
+     * 获取是否开启一次性加载动态 PPT 中的所有图片资源。
+     *
+     * @return 一次性加载动态 PPT 中的所有图片资源开启状态：
+     * - `true`：开启。
+     * - `false`: 未开启。
+     */
     public boolean isPreloadDynamicPPT() {
         return preloadDynamicPPT;
     }
 
     /**
-     * 动态 PPT 首页一次性加载选项
-     * 在使用动态 PPT 的同时，加载动态 PPT 中所需要的图片资源，会导致在第一次加载页面时，出现大量加载。
+     * 设置是否在加载动态 PPT 首页时，一次性加载动态 PPT 中的所有图片资源。
      *
-     * @param preloadDynamicPPT 默认关闭，不进行预加载
-     *                          不推荐使用
+     * @param preloadDynamicPPT 是否在加载动态 PPT 首页时，一次性加载动态 PPT 中的所有图片资源：
+     *                          - `true`：一次性加载所有动态 PPT。
+     *                          - `false`: （默认）不一次性加载所有动态 PPT。
+     * @note Agora 不推荐调用 setPreloadDynamicPPT（true），这样会使 PPT 显示缓慢。
      */
     public void setPreloadDynamicPPT(boolean preloadDynamicPPT) {
         this.preloadDynamicPPT = preloadDynamicPPT;
@@ -229,10 +290,13 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
     /**
-     * config 初始化方法
+     * 初始化互动白板 SDK 配置。
      *
-     * @param appIdentifier 白板项目的 AppId
-     * @param log           native 端 debug 用日志，是否开启日志回调。（仅限初始化 SDK，加入房间，开始回放 API）
+     * @param appIdentifier 白板项目的唯一标识。详见获取白板项目的 App Identifier。
+     * @param log           是否开启 debug 日志回调:
+     *                      - `true`：开启。
+     *                      - `false`: (默认)关闭。
+     * @note 该日志仅包含调用初始化互动白板 SDK、加入房间和开始回放等方法的回调。
      */
     public WhiteSdkConfiguration(String appIdentifier, boolean log) {
         this(appIdentifier);
@@ -240,9 +304,9 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
     /**
-     * config 初始化方法
+     * 初始化互动白板 SDK 配置。
      *
-     * @param appIdentifier
+     * @param appIdentifier 白板项目的唯一标识。详见获取白板项目的 App Identifier。
      */
     public WhiteSdkConfiguration(String appIdentifier) {
         this.appIdentifier = appIdentifier;
@@ -253,21 +317,30 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
 
+    /**
+     * 获取设置的日志选项。
+     *
+     * @return 设置的日志选项，详见 {@link LoggerOptions LoggerOptions}。
+     */
     public LoggerOptions getLoggerOptions() {
         return loggerOptions;
     }
 
     /**
-     * 日志上报系统设置项，有默认上报行为
-     * 与 web 端一致
+     * 设置日志选项。
      *
-     * @param loggerOptions {@link LoggerOptions}
+     * @param loggerOptions 日志选择，详见 {@link LoggerOptions LoggerOptions}。
      * @since 2.4.2
      */
     public void setLoggerOptions(LoggerOptions loggerOptions) {
         this.loggerOptions = loggerOptions;
     }
 
+    /**
+     * 文档中隐藏
+     *
+     * @return
+     */
     public boolean isRouteBackup() {
         return routeBackup;
     }
@@ -287,27 +360,48 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
     /**
-     * 显示用户头像
-     * 需要保证对应用户在加入房间时，传入了 userPayload，并且 userPayload key-value 结构中，存在 avatar 字段
+     * 设置是否显示用户头像。
+     * <p>
+     * 如果需要显示用户头像，请确保用户在加入房间时传入了 `userPayload`，并且 `userPayload` 的 `key-value` 结构中存在 `avatar` 字段。
      *
-     * @param userCursor 开关，默认关闭,即不显示用户头像
+     * @param userCursor 是否显示用户头像：
+     *                   - true：显示。
+     *                   - false：（默认）不显示。
      */
     public void setUserCursor(boolean userCursor) {
         this.userCursor = userCursor;
     }
 
+    /**
+     * 查询是否显示用户头像。
+     *
+     * @return 是否显示用户头像：
+     * - `true`：显示。
+     * - `false`：不显示。
+     */
     public boolean isUserCursor() {
         return userCursor;
     }
 
+    /**
+     * 查询是否开启仅接收远端用户状态改变回调。
+     *
+     * @return 是否开启仅接收远端用户状态改变回调：
+     * - `true`：是。
+     * - `false`：否。
+     */
     public boolean isOnlyCallbackRemoteStateModify() {
         return onlyCallbackRemoteStateModify;
     }
 
     /**
-     * 只有非本地用户调用状态修改时，才会产生回调
+     * 开启/关闭仅接收远端用户状态改变回调。
+     * <p>
+     * 开启仅接收远端用户状态改变回调后，本地用户状态改变不会触发回调。
      *
-     * @param onlyCallbackRemoteStateModify
+     * @param onlyCallbackRemoteStateModify 是否开启仅接收远端用户状态改变回调：
+     *                                      - `true`：开启。
+     *                                      - `false`：（默认）关闭。
      */
     public void setOnlyCallbackRemoteStateModify(boolean onlyCallbackRemoteStateModify) {
         this.onlyCallbackRemoteStateModify = onlyCallbackRemoteStateModify;
@@ -320,27 +414,49 @@ public class WhiteSdkConfiguration extends WhiteObject {
         this.deviceType = deviceType;
     }
 
+    /**
+     * 查询是否开启 debug 日志打印。
+     *
+     * @return 是否开启 debug 日志打印：
+     * - `true`：开启。
+     * - `false`：关闭。
+     */
     public boolean isLog() {
         return log;
     }
 
     /**
-     * 打印 debug 日志
+     * 开启/关闭 debug 日志打印。
      *
-     * @param log 默认关闭
+     * @param log 是否开启 debug 日志打印：
+     *            - `true`：（默认）开启。
+     *            - `false`：关闭。
      */
     public void setLog(boolean log) {
         this.log = log;
     }
 
+    /**
+     * 查询是否开启图片拦截和替换功能。
+     *
+     * @return 是否开启图片拦截和替换功能：
+     * - `true`：开启。
+     * - `false`：关闭。
+     */
     public boolean isEnableInterrupterAPI() {
         return enableInterrupterAPI;
     }
 
     /**
-     * 设置图片替换 API，图片替换开关，默认关闭；如果开启，则可以在 {@link CommonCallbacks#urlInterrupter(String)} 中回调，并有修改该图片的地址内容
+     * 开启/关闭图片拦截替换功能。
+     * <p>
+     * 该方法可以开启或关闭图片拦截功能。
+     * 如果开启，在图片实际插入白板前，SDK 会拦截图片并触发 {@link CommonCallback#urlInterrupter(String) urlInterrupter} 回调，你可以在该回调中替换图片的地址。
      *
-     * @param enableInterrupterAPI
+     * @param enableInterrupterAPI 是否开启图片拦截和替换功能：
+     *                             - `true`：开启。
+     *                             - `false`：（默认）关闭。
+     * @note Agora 建议不要开启图片拦截功能，否则会频繁触发回调。
      */
     public void setEnableInterrupterAPI(boolean enableInterrupterAPI) {
         this.enableInterrupterAPI = enableInterrupterAPI;
@@ -351,7 +467,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
     /**
-     * 开启对图片加载失败事件的监听，默认关闭。开启后，所有 img 标签加载事件，都会在 {@link CommonCallbacks#onMessage(JSONObject)} 中回调
+     * 开启对图片加载失败事件的监听，默认关闭。开启后，所有 img 标签加载事件，都会在 {@link CommonCallback#onMessage(JSONObject)} 中回调
      *
      * @param enableImgErrorCallback
      */

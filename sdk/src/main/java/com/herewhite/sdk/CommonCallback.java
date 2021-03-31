@@ -5,70 +5,67 @@ import com.herewhite.sdk.domain.SDKError;
 import org.json.JSONObject;
 
 /**
- * 部分通用回调，不管是回放房间，还是实时房间，都有该部分通知
+ * 通用回调，用于 SDK 向 app 发送回调事件通知。
+ * <p>
+ * 实时房间和回放房间都可以继承该接口下的回调方法。
  *
  * @since 2.9.13
  */
 public interface CommonCallback {
 
     /**
-     * 当sdk出现未捕获的全局错误时，会在此处抛出
+     * SDK 出现未捕获的全局错误回调。
      *
      * @param args
      */
     void throwError(Object args);
 
     /**
-     * 图片替换 API
-     * 开启：需要同时在初始化 SDK 时，配置 WhiteSdkConfiguration 实例 enableInterrupterAPI 属性 为 YES；注意：中途无法更改。
-     * 启用后，插入图片API/插入scene 时，均会回调该 API。
-     * 由于该 API 存在性能问题（调用过于频繁），我们不推荐使用；Android 端，可以使用 WebView 的拦截功能进行拦截
+     * 图片拦截回调。
      *
-     * @param sourceUrl 原始图片地址
-     * @return 替换后的图片地址
+     * @param sourceUrl 图片原地址。
+     * @return 替换后的图片地址。
+     * @note 由于该回调过于频繁，Agora 不推荐使用；在 Android 平台，可以使用 WebView 的拦截功能进行图片拦截。
      * @since 2.9.14
+     * <p>
+     * 要触发该回调，必须在初始化白板 SDK 时，调用 {@link WhiteSdkConfiguration#setEnableInterrupterAPI setEnableInterrupterAPI}(true) 开启图片拦截替换功能。
+     * 开启图片拦截替换功能后，在白板中插入图片或场景时，会触发该回调。
      */
     String urlInterrupter(String sourceUrl);
 
     /**
-     * 动态 ppt 中的音视频媒体，播放通知
+     * 播放动态 PPT 中的音视频回调。
      *
      * @since 2.9.13
      */
     void onPPTMediaPlay();
 
     /**
-     * 动态 ppt 中的音视频媒体，暂停通知
+     * 暂停播放动态 PPT 中的音视频回调。
      *
      * @since 2.9.13
      */
     void onPPTMediaPause();
 
     /**
-     * 部分自定义消息接口，用于本地客户端与 bridge 网页的内容的一些交互，这些信息，不是所有端都会收到。
-     * 目前存在的事件：
-     * 1. iframe 透传信息; 数据格式由 iframe 协商定义，直接透传
-     * 限制必须为 字典格式，同时必须存在 name 字段，且值必须为 "iframe"
-     * 2. 图片加载失败信息（必须先在初始化先开启），格式：
-     * {
-     * name: "imageLoadError",
-     * customMessage: true,
-     * src: 图片地址
-     * }
-     * 3. ppt 播放，暂停信息（该事件，可以直接监听 pptMediaPlay 和 pptMediaPause，此处不提供具体格式）
+     * 接收到网页发送的消息回调。
      *
-     * @param object 内容格式会根据情况发送。发送时，均为 JSON 格式
+     * @param object JSON 格式的消息。只有当消息为 JSON 格式时，本地用户才能收到。
+     * @note 不保证所有用户都能接收到该回调。
      * @since 2.11.4
+     * <p>
+     * 当本地用户收到了网页，如 iframe 插件，动态 PPT 发送的消息时会触发该回调。
      */
     void onMessage(JSONObject object);
 
     /**
-     * 初始化 SDK 时，会根据传入的 App Identifier 向服务器配置信息（最多尝试三次）
-     * 如果失败，SDK 处于不可用状态，调用加入房间/回放房间会处于一直无响应状态，需要开发者重新初始化 SDK。
-     * 一般触发情况：
-     * 1. 初始化 SDK 时候，网络异常，导致获取配置信息失败；
-     * 2. 传入了错误不合法的 App Identifier
+     * SDK 初始化失败回调。
      *
+     * @since 2.9.14
+     * <p>
+     * 如果 SDK 初始化失败，调用加入实时房间或回放房间时会处于一直无响应状态，需要重新初始化 SDK。
+     * - 初始化 SDK 时候，网络异常，导致获取配置信息失败。
+     * - 传入了不合法的 App Identifier。
      * @since 2.9.14
      */
     void sdkSetupFail(SDKError error);

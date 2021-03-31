@@ -19,9 +19,9 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
     private boolean autoResize = true;
 
     /**
-     * 初始化白板界面
+     * 初始化白板界面。
      *
-     * @param context
+     * @param context 安卓活动 (Android Activity) 的上下文。
      */
     public WhiteboardView(Context context) {
         super(getFixedContext(context));
@@ -29,10 +29,10 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
     }
 
     /**
-     * 初始化白板界面
+     * 初始化白板界面。
      *
-     * @param context
-     * @param attrs
+     * @param context 安卓活动 (Android Activity) 的上下文。
+     * @param attrs   自定义控件属性，详见 Android 文档。
      */
     public WhiteboardView(Context context, AttributeSet attrs) {
         super(getFixedContext(context), attrs);
@@ -56,6 +56,10 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
         this.autoResize = autoResize;
     }
 
+
+    /**
+     * 兼容 API 文档中隐藏
+     */
     public static Context getFixedContext(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             return context.createConfigurationContext(new Configuration());
@@ -70,14 +74,17 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
         setWebChromeClient(new FixWebChromeClient());
     }
 
+    @Override
     public <T> void callHandler(String method, Object[] args, OnReturnValue<T> handler) {
         super.callHandler(method, Utils.toBridgeMaps(args), handler);
     }
 
+    @Override
     public void callHandler(String method, Object[] args) {
         this.callHandler(method, args, null);
     }
 
+    @Override
     public <T> void callHandler(String method, OnReturnValue<T> handler) {
         this.callHandler(method, null, handler);
     }
