@@ -1,84 +1,81 @@
 package com.herewhite.sdk.domain;
 
 /**
- * `CameraBound` 类，用于设置用户的视野范围。视野范围指白板场景内，用户可以看见的部分。
+ * `CameraBound` 类，用于设置视角边界。
+ *
+ * 视角边界指白板场景内，用户可以移动视角的范围。当视角超出视角边界时，视角会被拉回。
  *
  * @since 2.5.0
  */
 public class CameraBound extends WhiteObject {
 
     /**
-     * 获取用户视野范围的原点在世界坐标系的 x 轴坐标。
-     * <p>
-     * 世界坐标系指白板内部坐标系，即以白板初始化时的中心点为原点的坐标系。
+     * 获取视角边界的中心点在世界坐标系（以白板初始化时的中心点为原点的坐标系）中的 X 轴坐标。
      *
-     * @return 用户视野范围的原点在世界坐标系的 x 轴坐标。
+     * @return 视角边界的中心点在世界坐标系中的 X 轴坐标。
      */
     public Double getCenterX() {
         return centerX;
     }
 
     /**
-     * 设置用户视野范围的原点相对于世界坐标系的 x 轴坐标。
-     * <p>
-     * 世界坐标系指白板内部坐标系，即以白板初始化时的中心点为原点的坐标系。
+     * 设置视角边界的中心点在世界坐标系（以白板初始化时的中心点为原点的坐标系）中的 X 轴坐标。
      *
-     * @param centerX 用户视野范围的原点在世界坐标系的 x 轴坐标。默认值为 0，即与世界坐标系的 x 轴坐标相同。
+     * @param centerX 视角边界的中心点在世界坐标系的 X 轴坐标。默认值为 0.0。
      */
     public void setCenterX(Double centerX) {
         this.centerX = centerX;
     }
 
     /**
-     * 获取用户视野范围的原点相对于世界坐标系的 y 轴坐标。
+     * 获取视角边界的中心点在世界坐标系（以白板初始化时的中心点为原点的坐标系）中的 Y 轴坐标。
      *
-     * @return 用户视野范围的原点相对于世界坐标系的 y 轴坐标。
+     * @return 视角边界的中心点在世界坐标系中的 Y 轴坐标。
      */
     public Double getCenterY() {
         return centerY;
     }
 
     /**
-     * 设置用户视野范围的原点相对于世界坐标系的 y 轴坐标。
+     * 设置视角边界的中心点在世界坐标系（以白板初始化时的中心点为原点的坐标系）中的 Y 轴坐标。
      *
-     * @param centerY 用户视野范围的原点相对于世界坐标系的 y 轴坐标。默认值为 0，即与世界坐标系的 y 轴坐标相同。
+     * @param centerY 视角边界的中心点在世界坐标系中的 Y 轴坐标。默认值为 0.0。
      */
     public void setCenterY(Double centerY) {
         this.centerY = centerY;
     }
 
+    /**
+     * 获取视角边界的宽度。
+     *
+     * @return 视角边界的宽度，单位为像素。
+     */
     public Double getWidth() {
         return width;
     }
 
     /**
-     * 设置用户视野范围的宽度。
-     * <p>
-     * 该方法可以搭配 {@link #setMinContentMode(ContentModeConfig)} 和 {@link #setMaxContentMode(ContentModeConfig)} 使用，
-     * 用来限制用户视野范围的边界。
+     * 设置视角边界的宽度。
      *
-     * @param width 用户视野范围的宽度。如果不设，则表示视野宽度无限制。
+     * @param width 视角边界的宽度，单位为像素。如果不填，则表示无限制。
      */
     public void setWidth(Double width) {
         this.width = width;
     }
 
     /**
-     * 获取用户视野范围的宽度。
+     * 获取视角边界的宽度。
      *
-     * @return 用户视野范围的宽度。
+     * @return 视角边界的宽度，单位为像素。
      */
     public Double getHeight() {
         return height;
     }
 
     /**
-     * 设置用户视野范围的高度。
-     * <p>
-     * 该方法可以搭配 {@link #setMinContentMode(ContentModeConfig)} 或 {@link #setMaxContentMode(ContentModeConfig)} 使用，
-     * 用来限制用户视野的最小或最大缩放比例。
+     * 设置视角边界的高度。
      *
-     * @param height 用户视野范围的高度。如果不设，则表示视野宽度无限制。
+     * @param height 视角边界的高度，单位为像素。如果不填，则表示无限制。
      */
     public void setHeight(Double height) {
         this.height = height;
@@ -86,18 +83,18 @@ public class CameraBound extends WhiteObject {
 
 
     /**
-     * 获取用户视野范围的最大缩放比例。
+     * 获取视角边界的缩放模式和最大缩放比例。
      *
-     * @return 用户视野的最大缩放比例。
+     * @return 视角边界的缩放模式和最大缩放比例，详见 {@link ContentModeConfig ContentModeConfig}。
      */
     public ContentModeConfig getMaxContentMode() {
         return maxContentMode;
     }
 
     /**
-     * 设置用户视野范围的最大缩放比例。
+     * 设置视角边界的缩放模式和最大缩放比例。
      *
-     * @param maxContentMode 用户视野范围的最大缩放比例，详见 {@link ContentModeConfig ContentModeConfig}。
+     * @param maxContentMode 视角边界的最大缩放比例，详见 {@link ContentModeConfig ContentModeConfig}。
      */
     public void setMaxContentMode(ContentModeConfig maxContentMode) {
         this.maxContentMode = maxContentMode;
@@ -105,42 +102,38 @@ public class CameraBound extends WhiteObject {
 
 
     /**
-     * 获取用户视野范围的最小缩放比例。
+     * 获取视角边界的缩放模式和最小缩放比例。
      *
-     * @return 用户视野范围的最小缩放比例。
+     * @return 视角边界的缩放模式和最小缩放比例，详见 {@link ContentModeConfig ContentModeConfig}。
      */
     public ContentModeConfig getMinContentMode() {
         return minContentMode;
     }
 
     /**
-     * 设置用户视野范围的最小缩放比例。
+     * 设置视角边界的缩放模式和最小缩放比例。
      *
-     * @param minContentMode 用户视野范围的最小缩放比例，详见 {@link ContentModeConfig ContentModeConfig}。如果不设置该参数，则表示
-     *                       对用户视野范围的最小缩放比例无限制。
+     * @param minContentMode 视角边界的缩放模式和最小缩放比例，详见 {@link ContentModeConfig ContentModeConfig}。
      */
     public void setMinContentMode(ContentModeConfig minContentMode) {
         this.minContentMode = minContentMode;
     }
 
     /**
-     * 获取用户将视野移出视野范围时感受到的阻力。
+     * 获取用户将视角移出视角边界时感受到的阻力。
      *
-     * @return 用户将视野移出视野范围时感受到的阻力。
+     * @return 用户将视角移出视角边界时感受到的阻力。
      */
     public Double getDamping() {
         return damping;
     }
 
     /**
-     * 设置用户将视野移出视野范围边界时感受到的阻力。
-     * <p>
-     * 该方法仅在用户使用手指触碰方式移动视野时生效。
-     * 设置为 `0.0` 的时候，可以缩放，但是手松开的时候，视野会弹回去；设置为 `1.0`，完全不能将视野移动超过边界。
+     * 设置用户将视角移出视角边界时感受到的阻力。
      *
      * @param damping 阻力大小，取值范围为 [0.0,1.0]。取值越大，用户感受到的阻力越大。
-     *                - 0.0: 设置为 0 时，表示视野缩放完全无阻力；当用户手指离开屏幕时，视野会恢复。
-     *                - 1.0: 用户完全无法将视野移出视野范围的边界。
+     *                - `0.0`: 用户将视角移出视角边界时，完全感受不到阻力，但当其手指离开屏幕时，视角会恢复到原位。
+     *                - `1.0`: 用户完全无法将视角移出视角边界。
      */
     public void setDamping(Double damping) {
         this.damping = damping;
@@ -159,10 +152,10 @@ public class CameraBound extends WhiteObject {
     }
 
     /**
-     * 初始化视野范围。
+     * 初始化视角边界。
      *
-     * @param miniScale 视野范围最小缩放比例。
-     * @param maxScale  视野范围最大缩放比例。
+     * @param miniScale 视角边界的最小缩放比例。
+     * @param maxScale  视角边界的最大缩放比例。
      */
     public CameraBound(Double miniScale, Double maxScale) {
         this();

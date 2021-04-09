@@ -33,7 +33,7 @@ public class WhiteSdk {
      * <p>
      * SDK 通过 `CommonCallbacks` 类向 app 报告 SDK 运行时的各项事件。
      *
-     * @param commonCallbacks 通用回调事件，详见 {@link CommonCallbacks CommonCallbacks}
+     * @param commonCallbacks 通用回调事件，详见 {@link CommonCallbacks CommonCallbacks}。
      */
     public void setCommonCallbacks(CommonCallbacks commonCallbacks) {
         sdkJsInterface.setCommonCallbacks(commonCallbacks);
@@ -51,28 +51,28 @@ public class WhiteSdk {
     /**
      * 查询 SDK 版本号。
      *
-     * @return 当前的 SDK 版本号，格式为字符串，如 2.11.20。
+     * @return 当前的 SDK 版本号，格式为字符串，如 `"2.12.11"`。
      */
     public static String Version() {
         return "2.12.11";
     }
 
     /**
-     * 初始化白板 SDK。
+     * 初始化白板 SDK 实例。
      * <p>
      * 请确保在调用其他 API 前先调用 `WhiteSdk` 创建并初始化白板 SDK 实例。
      *
      * @param bridge                白板界面，详见 {@link WhiteboardView WhiteboardView}。
      * @param context               安卓活动 (Android Activity) 的上下文。
      * @param whiteSdkConfiguration SDK 实例的配置，详见 {@link WhiteSdkConfiguration WhiteSdkConfiguration}。
-     * @note 每个 app 可以创建多个 `Whiteboardview`，并初始化多个 SDK 实例。
+     *
      */
     public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration) {
         this(bridge, context, whiteSdkConfiguration, (CommonCallback) null);
     }
 
     /**
-     * 初始化白板 SDK。
+     * 初始化白板 SDK 实例。
      * <p>
      * 请确保在调用其他 API 前先调用 `WhiteSdk` 创建并初始化白板 SDK 实例。
      *
@@ -86,7 +86,7 @@ public class WhiteSdk {
     }
 
     /**
-     * 初始化白板 SDK。
+     * 初始化白板 SDK 实例。
      * <p>
      * 请确保在调用其他 API 前先调用 `WhiteSdk` 创建并初始化白板 SDK 实例。
      *
@@ -101,7 +101,7 @@ public class WhiteSdk {
     }
 
     /**
-     * 初始化白板 SDK。
+     * 初始化白板 SDK 实例。
      * <p>
      * 请确保在调用其他 API 前先调用 `WhiteSdk` 创建并初始化白板 SDK 实例。
      *
@@ -143,10 +143,10 @@ public class WhiteSdk {
     /**
      * 加入互动白板实时房间。
      *
-     * @param roomParams  互动白板房间的参数配置，详见 {@link RoomParams RoomParams}。
+     * @param roomParams  互动白板实时房间的参数配置，详见 {@link RoomParams RoomParams}。
      * @param roomPromise 'Promise<Room>' 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `joinRoom` 的调用结果：
-     *                    - 如果方法调用成功，将返回房间对象。
-     *                    - 如果方法调用失败，将返回错误信息。
+     * - 如果方法调用成功，将返回房间对象，详见 {@link Room}。
+     * - 如果方法调用失败，将返回错误信息。
      */
     public void joinRoom(final RoomParams roomParams, final Promise<Room> roomPromise) {
         this.joinRoom(roomParams, null, roomPromise);
@@ -155,11 +155,11 @@ public class WhiteSdk {
     /**
      * 加入互动白板实时房间。
      *
-     * @param roomParams   互动白板房间的参数配置，详见 {@link RoomParams RoomParams}。
-     * @param roomListener 房间事件回调，详见 {@link RoomListener RoomListener}。在重连时，如果不传 `roomListener` 参数，则会使用之前上一次设置的 `roomListener`。如果要释放 `roomListener`，可以调用 {@link #releaseRoom(String) releaseRoom}。
+     * @param roomParams   互动白板实时房间的参数配置，详见 {@link RoomParams RoomParams}。
+     * @param roomListener 房间事件回调，详见 {@link RoomListener RoomListener}。在重连时，如果不传 `roomListener` 参数，则会使用上一次设置的 `roomListener`。如果要释放 `roomListener`，可以调用 {@link #releaseRoom(String) releaseRoom}。
      * @param roomPromise  `Promise<Room>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `joinRoom` 的调用结果：
-     *                     - 如果方法调用成功，则返回房间对象。
-     *                     - 如果方法调用失败，则返回错误信息。
+     * - 如果方法调用成功，则返回房间对象，详见 {@link Room}。
+     * - 如果方法调用失败，则返回错误信息。
      */
     public void joinRoom(final RoomParams roomParams, final RoomListener roomListener, final Promise<Room> roomPromise) {
         Room room = new Room(roomParams.getUuid(), bridge, densityDpi, onlyCallbackRemoteStateModify);
@@ -195,10 +195,10 @@ public class WhiteSdk {
     /**
      * 创建互动白板回放房间。
      *
-     * @param playerConfiguration 回放房间的配置，详见 {@link PlayerConfiguration PlayerConfiguration}。
+     * @param playerConfiguration 白板回放的参数配置，详见 {@link PlayerConfiguration PlayerConfiguration}。
      * @param playerPromise       `Promise<Player>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `createPlayer` 的调用结果：
-     *                            - 如果方法调用成功，将返回新创建的回放房间对象。
-     *                            - 如果方法调用失败，将返回错误信息。
+     * - 如果方法调用成功，将返回新创建的回放房间对象，详见 {@link Player}。
+     * - 如果方法调用失败，将返回错误信息。
      */
     public void createPlayer(final PlayerConfiguration playerConfiguration, final Promise<Player> playerPromise) {
         createPlayer(playerConfiguration, null, playerPromise);
@@ -207,11 +207,11 @@ public class WhiteSdk {
     /**
      * 创建互动白板回放房间。
      *
-     * @param playerConfiguration 回放房间的配置，详见 {@link PlayerConfiguration PlayerConfiguration}。
-     * @param listener            回放房间事件回调。如果使用同一个互动白板 SDK 创建多个回放房间且在创建新的回放房间时该参数设为 null, 则新创建的回放房间会使用上一次创建回放房间时传入的 `listener`。
+     * @param playerConfiguration 白板回放的参数配置，详见 {@link PlayerConfiguration PlayerConfiguration}。
+     * @param listener            白板回放事件的回调。如果使用同一个互动白板 SDK 创建多个回放房间且在创建新的回放房间时该参数设为 `null`, 则新创建的回放房间会使用上一次创建回放房间时传入的 `listener`。
      * @param playerPromise       `Promise<Player>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `createPlayer` 的调用结果：
-     *                            - 如果方法调用成功，将返回新创建的回放房间对象。
-     *                            - 如果方法调用失败，将返回错误信息。
+     *  - 如果方法调用成功，将返回新创建的回放房间对象，详见 {@link Player}。
+     *  - 如果方法调用失败，将返回错误信息。
      */
     public void createPlayer(final PlayerConfiguration playerConfiguration, final PlayerListener listener, final Promise<Player> playerPromise) {
         Player player = new Player(playerConfiguration.getRoom(), bridge, densityDpi);
@@ -244,11 +244,12 @@ public class WhiteSdk {
     /**
      * 查看房间是否有回放数据。
      *
-     * @param playerConfiguration 回放房间的配置，详见 {@link PlayerConfiguration PlayerConfiguration}。
-     * @param playablePromise     `Promise<Boolean>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `isPlayable` 的调用结果：
-     *                            - 如果方法调用成功，则返回 'true'。
-     *                            - 如果方法调用失败，则返回 `false`。
      * @since 2.11.0
+     *
+     * @param playerConfiguration 白板回放的参数配置，详见 {@link PlayerConfiguration PlayerConfiguration}。
+     * @param playablePromise     `Promise<Boolean>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `isPlayable` 的调用结果：
+     *                            - 如果方法调用成功，则返回 `true`。
+     *                            - 如果方法调用失败，则返回 `false`。
      */
     public void isPlayable(final PlayerConfiguration playerConfiguration, final Promise<Boolean> playablePromise) {
         bridge.callHandler("sdk.isPlayable", new Object[]{playerConfiguration}, new OnReturnValue<Boolean>() {
@@ -261,18 +262,21 @@ public class WhiteSdk {
 
     /**
      * 声明在本地白板中可用的字体。
+     *
+     * @since 2.11.2
+     *
      * <p>
      * 调用该方法声明的字体可用于显示 PPT 中的文字和教具输入的文字。
      * <p>
      * 该方法和 {@link #loadFontFaces loadFontFaces} 都可以声明在本地白板中可用的字体，区别是 `setupFontFaces` 没有回调，因为无法判断字体声明是否正确；`loadFontFaces` 会触发回调，报告每一种的预加载结果。
      *
-     * @param fontFaces `FontFace` 实例，详见 {@link FontFace FontFace}。
      * @note - 该方法只对本地白板生效，不影响远端白板的字体显示。
      * - 通过该方法声明的字体，只有当被使用时，才会触发下载。
      * - 不同的字体在不同设备上的渲染可能不同，例如，在某些设备上，要等字体加载完成后，才会渲染文字；而在另外一些设备上，会先使用默认的字体渲染文字，等指定的字体加载完毕后，再整体刷新。
      * - 每次调用该方法都会覆盖原来的字体声明。
      * - 请勿同时调用该方法和 `loadFontFaces` 方法。否则，无法预期行为。
-     * @since 2.11.2
+     *
+     * @param fontFaces `FontFace` 实例，详见 {@link FontFace FontFace}。
      */
     public void setupFontFaces(FontFace[] fontFaces) {
         bridge.callHandler("sdk.updateNativeFontFaceCSS", new Object[]{fontFaces});
@@ -280,23 +284,26 @@ public class WhiteSdk {
 
     /**
      * 声明在本地白板中可用的字体并预加载。
+     *
+     * @since 2.11.2
+     *
      * <p>
      * 调用该方法预加载的字体可以用于显示 PPT 中的文字和教具输入的文字。
      * <p>
      * 该方法和 {@link #loadFontFaces loadFontFaces} 都可以声明在本地白板中可用的字体，区别是 `setupFontFaces` 没有回调，因为无法判断字体声明是否正确；`loadFontFaces` 会触发回调，报告每一种的预加载结果。
      *
-     * @param fontFaces   `FontFace` 实例 ，详见 {@link FontFace FontFace}。
-     * @param loadPromise `Promise<JSONObject>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `loadFontFaces` 的调用结果：
-     *                    - 如果方法调用成功，则返回 `FontFace` 对象
-     *                    - 如果方法调用失败，则返回错误信息。
-     *                    <p>
-     *                    每加载完成一种字体，会触发一个回调，报告该字体是否加载成功。传入的 `FontFace` 实例中有多少种字体，就会有多少个回调。
-     * @note - 该方法只对本地白板生效，不影响远端白板的字体显示。
+     * @note
+     * - 该方法只对本地白板生效，不影响远端白板的字体显示。
      * - 使用该方法预加载的字体，只有当该字体被使用时，才会触发下载。
      * - 不同的字体在不同设备上的渲染可能不同，例如，在某些设备上，要等字体加载完成后，才会渲染文字；而在另外一些设备上，会先使用默认的字体渲染文字，等指定的字体加载完毕后，再整体刷新。
      * - 通过该方法预加载的字体无法删除，每次调用都会在原来的基础上新增。
      * - 请勿同时调用该方法和 `setupFontFaces` 方法。否则，无法预期行为。
-     * @since 2.11.2
+     *
+     * @param fontFaces   `FontFace` 实例 ，详见 {@link FontFace FontFace}。
+     * @param loadPromise `Promise<JSONObject>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `loadFontFaces` 的调用结果：
+     *                    - 如果方法调用成功，则返回 `FontFace` 对象
+     *                    - 如果方法调用失败，则返回错误信息。
+     * 每加载完成一种字体，会触发一个回调，报告该字体是否加载成功。传入的 `FontFace` 实例中有多少种字体，就会有多少个回调。
      */
     public void loadFontFaces(FontFace[] fontFaces, final Promise<JSONObject> loadPromise) {
         bridge.callHandler("sdk.asyncInsertFontFaces", new Object[]{fontFaces}, new OnReturnValue<JSONObject>() {
@@ -310,17 +317,21 @@ public class WhiteSdk {
     /**
      * 设置文字教具在本地白板中使用的字体。
      *
-     * @param names 字体名称。如果用户系统中不存在该字体，则文字教具无法使用该字体。请确保你已经调用 `setupFontFaces` 或 `loadFontFaces` 将指定字体加载到本地白板中。
-     * @note - 该方法只对本地白板生效，不影响远端白板的字体显示。
-     * - 该方法只能设置文字教具使用的字体，不能用于 PPT 中的文字显示。
      * @since 2.11.2
+     *
+     * @note
+     * - 该方法只对本地白板生效，不影响远端白板的字体显示。
+     * - 该方法只能设置文字教具使用的字体，不能用于 PPT 中的文字显示。
+     *
+     * @param names 字体名称。如果用户系统中不存在该字体，则文字教具无法使用该字体。请确保你已经调用 `setupFontFaces` 或 `loadFontFaces` 将指定字体加载到本地白板中。
+     *
      */
     public void updateTextFont(String[] names) {
         bridge.callHandler("sdk.updateNativeTextareaFont", new Object[]{names});
     }
 
     /**
-     * 释放互动白板实时房间并删除 `RoomListener` 回调。
+     * 释放互动白板实时房间实例并删除 `RoomListener` 回调。
      *
      * @since 2.4.12
      */
@@ -329,10 +340,12 @@ public class WhiteSdk {
     }
 
     /**
-     * 释放互动白板实时房间并删除 `RoomListener` 回调。
+     * 释放互动白板实时房间实例并删除 `RoomListener` 回调。
      *
-     * @param uuid 房间 UUID。该参数无实际意义，因为一个 WhiteSDK 实例只能对应一个实时房间，不需要使用 UUID 指定房间。
      * @deprecated 该方法已废弃。请改用 {@link #releaseRoom() releaseRoom}。
+     *
+     * @param uuid 房间 UUID。该参数无实际意义，因为一个 `WhiteSdk` 实例只能对应一个实时房间，不需要使用 UUID 指定房间。
+     *
      */
     @Deprecated
     public void releaseRoom(String uuid) {
@@ -340,7 +353,7 @@ public class WhiteSdk {
     }
 
     /**
-     * 释放回放房间并删除 `PlayerListener` 回调。
+     * 释放回放房间实例并删除 `PlayerListener` 回调。
      *
      * @since 2.4.12
      */
@@ -349,10 +362,12 @@ public class WhiteSdk {
     }
 
     /**
-     * 释放回放房间并删除 `PlayerEventListener` 回调。
+     * 释放回放房间实例并删除 `PlayerEventListener` 回调。
      *
-     * @param uuid 回放房间的 UUID。该参数无实际意义，由于一个 WhiteSDK 实例只能对应一个回放房间，不需要使用 UUID 指定回放房间。
-     * @deprecated 该方法已废弃。请改用 {@link #releasePlayer() releasePlayer}。由于一个 WhiteSDK 实例，只能对应一个回放房间，所以不再需要使用 player uuid 进行定位
+     * @deprecated 该方法已废弃。请改用 {@link #releasePlayer() releasePlayer}。
+     *
+     * @param uuid 回放房间的 UUID。该参数无实际意义，由于一个 `WhiteSdk` 实例只能对应一个回放房间，不需要使用 UUID 指定回放房间。
+     *
      */
     @Deprecated
     public void releasePlayer(String uuid) {

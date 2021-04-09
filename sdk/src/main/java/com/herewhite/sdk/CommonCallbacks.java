@@ -5,7 +5,8 @@ package com.herewhite.sdk;
  * 实时房间和回放房间都可以继承该接口下的回调方法。
  *
  * @since 2.9.13
- * @deprecated Use the standard {@link CommonCallback} instead
+ *
+ * @deprecated 该接口已废弃。请改用 {@link CommonCallback}。
  */
 @Deprecated
 public interface CommonCallbacks extends CommonCallback {

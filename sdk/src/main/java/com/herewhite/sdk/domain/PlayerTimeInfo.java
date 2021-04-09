@@ -19,14 +19,18 @@ public class PlayerTimeInfo {
     }
 
     /**
-     * 当前时间进度（毫秒）。
+     * 获取当前的回放进度。
+     *
+     * @return 当前的回放进度，单位为毫秒。
      */
     public long getScheduleTime() {
         return scheduleTime;
     }
 
     /**
-     * 总时长(毫秒）。
+     * 获取回放的总时长。
+     *
+     * @return 回放的总时长，单位为毫秒。
      */
     public long getTimeDuration() {
         return timeDuration;
@@ -40,7 +44,11 @@ public class PlayerTimeInfo {
     }
 
     /**
-     * 开始时间，UTC 时间戳（毫秒）。
+     * 获取白板回放的起始时间。
+     *
+     * 该方法会返回单位为毫秒的 Unix 时间戳，你需要自行转换为 UTC 时间。例如，如果返回 `1615370614269`，表示的 UTC 时间为 2021-03-10 18:03:34 GMT+0800。
+     *
+     * @return Unix 时间戳，单位为毫秒。
      */
     public long getBeginTimestamp() {
         return beginTimestamp;

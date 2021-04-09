@@ -1,52 +1,59 @@
 package com.herewhite.sdk.combinePlayer;
 
 /**
- * NativePlayer 接口
+ * 本地视频播放器接口。
  *
  * @since 2.4.23
  */
 public interface NativePlayer {
 
     /**
-     * play 方法，由 PlayerSyncManager 调用，请勿主动调用。
-     * 在该方法里，如果 NativePlayerPhase 发生了，需要调动 {@link PlayerSyncManager#updateNativePhase(NativePlayerPhase)} 方法
+     * 播放视频。
+     *
+     * @note
+     * 该方法需要由 `PlayerSyncManager` 调用，请勿主动调用。
      */
     void play();
 
     /**
-     * pause 方法，由 PlayerSyncManager 调用，请勿主动调用
+     * 暂停播放视频。
+     *
+     * @note
+     * 该方法需要由 `PlayerSyncManager` 调用，请勿主动调用。
      */
     void pause();
 
     /**
-     * 是否能够不经过缓冲，而直接播放
+     * 获取是否能够不经过缓冲，直接播放视频。
      *
-     * @return 是否有足够的缓冲
+     * @return 是否能够不经过缓冲，直接播放视频：
+     * - `true`：可以不经过缓冲，直接播放视频。
+     * - `false`：需要经过缓冲才能播放视频。
      */
     boolean hasEnoughBuffer();
 
     /**
-     * 允许 PlayerSyncManager 提前初始化，不等待 nativePlayer 初始化
+     * 获取视频播放阶段。
      *
-     * @return 播放状态
+     * @return 视频播放状态，详见 {@link NativePlayer#NativePlayerPhase NativePlayerPhase}。
      */
     NativePlayerPhase getPhase();
 
     enum NativePlayerPhase {
         /**
-         * 初始化状态，没有任何信息
+         * 视频播放尚未开始或已经结束。
          */
         Idle,
         /**
-         * 暂停中
+         * 视频播放已暂停。
          */
         Pause,
         /**
-         * 正在连续播放（如果因为没有数据，进入缓冲状态，就是 buffering
+         * 正在播放视频。
          */
         Playing,
         /**
-         * 正在缓冲中
+         * 视频正在缓冲。
          */
         Buffering,
     }

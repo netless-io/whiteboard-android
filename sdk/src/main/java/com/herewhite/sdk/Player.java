@@ -15,7 +15,7 @@ import com.herewhite.sdk.internal.Logger;
 import wendu.dsbridge.OnReturnValue;
 
 /**
- * 回放房间操作类
+ * `Player` 类，用于操作白板的回放。
  */
 public class Player extends Displayer {
     private SyncDisplayerState<PlayerState> syncPlayerState;
@@ -27,11 +27,12 @@ public class Player extends Displayer {
 
     /**
      * 获取白板回放的倍速。该方法为同步调用。
-     * <p>
-     * 该方法获取的是播放倍速，如 1.0、1.5、2.0 倍速。因此回放暂停时，返回值也不会为 0。
+     *
+     * @since 2.5.2
+     *
+     * 该方法获取的是播放倍速，如 1.0、1.5、2.0 倍速，因此回放暂停时，返回值也不会为 0。
      *
      * @return 白板回放的播放倍速。
-     * @since 2.5.2
      */
     public double getPlaybackSpeed() {
         return playbackSpeed;
@@ -40,8 +41,10 @@ public class Player extends Displayer {
     /**
      * 设置白板回放的倍速。
      *
-     * @param playbackSpeed 白板回放的倍速。取值必须大于 0，设为 1 表示按原速播放。
      * @since 2.5.2
+     *
+     * @param playbackSpeed 白板回放的倍速。取值必须大于 0，设为 1 表示按原速播放。
+     *
      */
     public void setPlaybackSpeed(double playbackSpeed) {
         this.playbackSpeed = playbackSpeed;
@@ -50,14 +53,17 @@ public class Player extends Displayer {
 
     /**
      * 获取白板回放的倍速。该方法为异步调用。
-     * <p>
-     * 该方法获取的是播放倍速，如 1.0、1.5、2.0 倍速。因此回放暂停时，返回值也不会为 0。
      *
-     * @param promise Promise<Double> 接口实例，详见 {@link Promise}。你可以通过该接口了解获取白板回放倍速的结果：
+     * @since 2.5.2
+     *
+     * @note 该方位为异步调用。我们推荐你仅在调试或问题排查时使用。一般情况下可以使用同步方法 {@link #getPlaybackSpeed()} 进行获取。
+     *
+     * <p>
+     * 该方法获取的是播放倍速，如 1.0、1.5、2.0 倍速，因此回放暂停时，返回值也不会为 0。
+     *
+     * @param promise Promise<Double> 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口了解获取白板回放倍速的结果：
      *                - 如果获取成功，将返回白板回放的倍速。
      *                - 如果获取失败，将返回错误信息。
-     * @note 该方位为异步调用。我们推荐你仅在调试或问题排查时使用。一般情况下可以使用同步方法 {@link #getPlaybackSpeed()} 进行获取。
-     * @since 2.5.2
      */
     public void getPlaybackSpeed(final Promise<Double> promise) {
         bridge.callHandler("player.state.playbackSpeed", new OnReturnValue<Number>() {
@@ -112,19 +118,18 @@ public class Player extends Displayer {
     /**
      * 停止白板回放。
      * <p>
-     * 白板回放停止后，Player 资源会被释放。如果想要重新播放，则需要重新初始化 Player 实例。
+     * 白板回放停止后，`Player` 资源会被释放。如果想要重新播放，需要重新初始化 `Player` 实例。
      */
     public void stop() {
         bridge.callHandler("player.stop", new Object[]{});
     }
 
     /**
-     * 设置白板回放的开始时间。
-     * <p>
-     * 由于 SDK 会录制实时房间的全部过程，因此默认情况下，回放会播放从房间构造开始直到最后一次活跃结束的全部过程。
-     * 因此在进行回放时，需要调用该方法设置开始回放的时间点。
+     * 跳转至指定的时间。
      *
-     * @param seekTime 白板回放的开始时间，单位为毫秒。
+     * 回放内容的起始时间点为 0，你可以调用该方法，使白板回放跳转至指定的时间点。
+     *
+     * @param seekTime 时间进度，单位为毫秒。
      */
     public void seekToScheduleTime(long seekTime) {
         bridge.callHandler("player.seekToScheduleTime", new Object[]{seekTime});
@@ -142,28 +147,32 @@ public class Player extends Displayer {
     //region Get API
 
     /**
-     * 获取白板回放房间的阶段。该方法为同步调用。
-     * <p>
-     * 在 Player 生命周期内，你可以调用该方法获取当前回放房间的阶段。其中初始阶段为 `waitingFirstFrame`，表示正在等待白板回放的第一帧。
+     * 获取白板回放的阶段。该方法为同步调用。
      *
-     * @return 回放房间的阶段，详见 {@link PlayerPhase}。
-     * @note 成功调用 {@link #stop()}、{@link #play()}、{@link #pause()} 等方法均会影响回放房间的阶段，但是该阶段不会立即更新。
      * @since 2.4.0
+     *
+     * 在 `Player` 生命周期内，你可以调用该方法获取白板回放当前所处的阶段。其中初始阶段为 `waitingFirstFrame`，表示正在等待白板回放的第一帧。
+     *
+     * @note 成功调用 {@link #stop()}、{@link #play()} 或 {@link #pause()} 等方法均会影响白板回放的阶段，但是通过该方法无法立即获取最新的白板回放阶段。此时，你可以调用 {@link getPhase(final Promise<PlayerPhase> promise) getPhase} 获取最新的回放阶段。
+     *
+     * @return 白板回放的阶段，详见 {@link PlayerPhase}。
+     *
      */
     public PlayerPhase getPlayerPhase() {
         return this.playerPhase;
     }
 
     /**
-     * 获取白板回放房间的阶段。该方法为异步调用。
+     * 获取白板回放的阶段。该方法为异步调用。
      * <p>
-     * 在 Player 生命周期内，你可以调用该方法获取当前回放房间的阶段。其中初始状态为 `waitingFirstFrame`，表示正在等待白板回放的第一帧。
+     * 在 `Player` 生命周期内，你可以调用该方法获取白板回放当前所处的阶段。其中初始状态为 `waitingFirstFrame`，表示正在等待白板回放的第一帧。
      *
-     * @param promise `Promise<PlayerPhase>` 接口实例，详见 {@link Promise 类}。你可以通过该接口了解获取白板回放阶段的结果：
-     *                - 如果获取成功，将返回白板回放的阶段。
-     *                - 如果获取失败，将返回错误信息。
-     * @note - 成功调用 {@link #stop()}、{@link #play()}、{@link #pause()} 等方法均会影响回放房间的阶段，但是该阶段不会立即更新。
-     * - 该方位为异步调用。我们推荐你仅在调试或问题排查时使用。一般情况下可以使用同步方法 {@link #getPlayerPhase()} 进行获取。
+     * @note
+     * 该方位为异步调用。我们推荐你仅在调试或问题排查时使用。一般情况下可以使用同步方法 {@link #getPlayerPhase()} 获取回放阶段。
+     *
+     * @param promise `Promise<PlayerPhase>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getPhase` 方法的调用结果：
+     *                - 如果方法调用成功，将返回白板回放的阶段。
+     *                - 如果方法调用失败，将返回错误信息。
      */
     public void getPhase(final Promise<PlayerPhase> promise) {
         bridge.callHandler("player.getBroadcastState", new Object[]{}, new OnReturnValue<Object>() {
@@ -185,12 +194,15 @@ public class Player extends Displayer {
     }
 
     /**
-     * 获取回放房间的状态。该方法为同步调用。
-     * <p>
-     * 如果回放房间的状态 Player phase 为 `waitingFirstFrame`，则该方法返回 Null。
+     * 获取白板回放的状态。该方法为同步调用。
      *
-     * @return 回放房间状态，详见 {@link PlayerState}。
      * @since 2.4.0
+     *
+     * <p>
+     * 如果白板回放处于 `waitingFirstFrame` 阶段，则该方法返回 `null`。
+     *
+     * @return 白板回放的状态，详见 {@link PlayerState}。
+     *
      */
     public PlayerState getPlayerState() {
         if (playerPhase == PlayerPhase.waitingFirstFrame) {
@@ -200,12 +212,13 @@ public class Player extends Displayer {
     }
 
     /**
-     * 获取白板回放房间的状态。该方法为异步调用。
+     * 获取白板回放的状态。该方法为异步调用。
      *
-     * @param promise `Promise<PlayerState>` 接口实例，详见 {@link Promise}。你可以通过该接口了解获取白板回放状态的结果：
-     *                - 如果获取成功，将返回具体的白板回放状态。
-     *                - 如果获取失败，将返回错误信息。
      * @note 该方位为异步调用。我们推荐你仅在调试或问题排查时使用。一般情况下可以使用同步方法 {@link #getPlayerState()} 进行获取。
+     *
+     * @param promise `Promise<PlayerState>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getPlayerState` 方法调用的结果：
+     *                - 如果方法调用成功，将返回白板回放状态，详见 {@link PlayerState}。
+     *                - 如果方法调用失败，将返回错误信息。
      */
     public void getPlayerState(final Promise<PlayerState> promise) {
         bridge.callHandler("player.state.playerState", new Object[]{}, new OnReturnValue<Object>() {
@@ -229,12 +242,14 @@ public class Player extends Displayer {
 
     /**
      * 获取白板回放的时间信息，该方法为同步调用。
-     * <p>
-     * 该方法获取的时间信息，包含当前的播放时间，回放文件的总时长，以及开始播放的 UTC 时间戳，单位为毫秒。
      *
-     * @return 播放时间信息，详见 {@link PlayerTimeInfo}。
-     * @note 该方法获取的当前播放时间可能不准确。
      * @since 2.4.0
+     * <p>
+     * 该方法获取的时间信息，包含当前的播放进度，回放的总时长，以及回放的起始时间，单位为毫秒。
+     *
+     * @note 该方法获取的当前播放进度可能不准确。
+     *
+     * @return 白板回放的时间信息，详见 {@link PlayerTimeInfo}。
      */
     public PlayerTimeInfo getPlayerTimeInfo() {
         return new PlayerTimeInfo(this.scheduleTime, this.timeDuration, this.framesCount, this.beginTimestamp);
@@ -243,12 +258,13 @@ public class Player extends Displayer {
     /**
      * 获取白板回放的时间信息，该方法为异步调用。
      * <p>
-     * 该方法获取的时间信息，包含当前的播放时间，回放文件的总时长，以及开始播放的 UTC 时间戳，单位为毫秒。
+     * 该方法获取的时间信息，包含当前的播放进度，回放的总时长，以及回放的起始时间，单位为毫秒。
      *
-     * @param promise `Promise<PlayerTimeInfo>` 接口实例，详见 {@link Promise}。你可以通过该接口了解获取白板回放时间信息的结果：
-     *                - 如果获取成功，将返回白板回放的时间信息。
-     *                - 如果获取失败，将返回错误信息。
      * @note 该方法为异步调用。我们推荐你仅在调试或问题排查时使用。一般情况下可以使用同步方法 {@link #getPlayerTimeInfo() getPlayerTimeInfo} 进行获取。
+     *
+     * @param promise `Promise<PlayerTimeInfo>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getPlayerTimeInfo` 方法的调用结果：
+     *                - 如果方法调用成功，将返回白板回放的时间信息，详见 {@link PlayerTimeInfo}。
+     *                - 如果方法调用失败，将返回错误信息。
      */
     public void getPlayerTimeInfo(final Promise<PlayerTimeInfo> promise) {
         bridge.callHandler("player.state.timeInfo", new Object[]{}, new OnReturnValue<Object>() {

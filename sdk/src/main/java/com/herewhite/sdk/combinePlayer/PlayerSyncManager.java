@@ -9,7 +9,7 @@ import com.herewhite.sdk.domain.PlayerPhase;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 同步 nativePlayer 与 whitePlayer 播放状态
+ * `PlayerSyncManager` 类，用于同步白板回放与本地视频播放器的状态。
  *
  * @since 2.4.23
  */
@@ -17,12 +17,12 @@ public class PlayerSyncManager {
 
     public interface Callbacks {
         /**
-         * 开始缓冲
+         * 开始缓冲。
          */
         void startBuffering();
 
         /**
-         * 结束缓冲
+         * 结束缓冲。
          */
         void endBuffering();
     }
@@ -84,6 +84,13 @@ public class PlayerSyncManager {
     private NativePlayer nativePlayer;
     private Callbacks callbacks;
 
+    /**
+     * `PlayerSyncManager` 构造方法，用于初始化 `PlayerSyncManager` 实例。
+     *
+     * @param whitePlayer 白板回放播放器，详见 {@link Player}。
+     * @param nativePlayer 本地视频播放器，详见 {@link NativePlayer}。
+     * @param callbacks 播放器事件回调，详见 {@link PlayerSyncManager#Callbacks Callbacks}。
+     */
     public PlayerSyncManager(Player whitePlayer, NativePlayer nativePlayer, Callbacks callbacks) {
         this.whitePlayer = whitePlayer;
         this.nativePlayer = nativePlayer;
@@ -92,17 +99,31 @@ public class PlayerSyncManager {
         this.updateWhitePlayerPhase(whitePlayer.getPlayerPhase());
     }
 
+    /**
+     * `PlayerSyncManager` 构造方法，用于初始化 `PlayerSyncManager` 实例。
+     *
+     * @param nativePlayer 本地视频播放器，详见 {@link NativePlayer}。
+     * @param callbacks 播放器事件回调，详见 {@link PlayerSyncManager#Callbacks Callbacks}。
+     */
     public PlayerSyncManager(NativePlayer nativePlayer, Callbacks callbacks) {
         this.nativePlayer = nativePlayer;
         this.callbacks = callbacks;
         this.updateNativePhase(nativePlayer.getPhase());
     }
 
+    /**
+     * 设置白板回放播放器。
+     *
+     * @param whitePlayer 白板回放播放器，详见 {@link Player}。
+     */
     public void setWhitePlayer(Player whitePlayer) {
         this.whitePlayer = whitePlayer;
         this.updateWhitePlayerPhase(whitePlayer.getPlayerPhase());
     }
 
+    /**
+     * 播放视频。
+     */
     public void play() {
 
         pauseReason = pauseReason.removeFlag(PauseReason.Pause);
@@ -113,6 +134,9 @@ public class PlayerSyncManager {
         }
     }
 
+    /**
+     * 暂停播放视频。
+     */
     public void pause() {
 
         pauseReason = pauseReason.addFlag(PauseReason.Pause);
@@ -121,10 +145,12 @@ public class PlayerSyncManager {
     }
 
     /**
-     * nativePlayer seek 完成后，调用此方法，将 whiteCombinePlayer 也 seek 到对应位置。
+     * 调整白板回放的播放进度。
      *
-     * @param time     时间长度
-     * @param timeUnit 时间单位
+     * 当调整本地视频播放的进度后，你可以调用该方法，将白板回放的播放进度调整到对应位置。
+     *
+     * @param time     白板回放时间进度条上的位置。
+     * @param timeUnit 时长单位，默认值为毫秒 （`MILLISECONDS`），取值详见 [TimeUnit](https://www.android-doc.com/reference/java/util/concurrent/TimeUnit.html)。
      */
     public void seek(long time, TimeUnit timeUnit) {
         // Android 端比较适合由 NativePlayer 进行 seek。 seek 完成后，再调用 PlayerSyncManager 的 seek 方法，
@@ -136,9 +162,9 @@ public class PlayerSyncManager {
     }
 
     /**
-     * 更新 PlayerSyncManager 的播放状态，buffering 以及 idle 状态，会保证 whitePlayer 等待 nativePlayer 可以播放
+     * 更新 `NativePlayer` 的播放状态，buffering 以及 idle 状态，会保证 whitePlayer 等待 nativePlayer 可以播放
      *
-     * @param phase {@link NativePlayer.NativePlayerPhase}
+     * @param phase `NativePlayer` 的播放状态，详见 {@link NativePlayer.NativePlayerPhase}。
      */
     public void updateNativePhase(NativePlayer.NativePlayerPhase phase) {
         if (phase == NativePlayer.NativePlayerPhase.Buffering || phase == NativePlayer.NativePlayerPhase.Idle) {
@@ -220,9 +246,9 @@ public class PlayerSyncManager {
     }
 
     /**
-     * 更新 WhitePlayer 的播放状态
+     * 更新白板回放播放器的播放状态。
      *
-     * @param phase {@link PlayerPhase} whitePlayer 的播放状态
+     * @param phase `whitePlayer` 的播放状态，详见 {@link PlayerPhase} whitePlayer 的播放状态。
      */
     public void updateWhitePlayerPhase(PlayerPhase phase) {
         if (phase == PlayerPhase.buffering || phase == PlayerPhase.waitingFirstFrame) {

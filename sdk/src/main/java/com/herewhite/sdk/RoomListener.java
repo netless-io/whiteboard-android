@@ -5,7 +5,9 @@ import com.herewhite.sdk.domain.RoomState;
 
 /**
  * Created by buhe on 2018/8/12.
- * 房间状态回调接口
+ */
+/**
+ * 房间事件回调接口。
  */
 public interface RoomListener {
 
@@ -60,9 +62,10 @@ public interface RoomListener {
     /**
      * 同步用户行为发生错误回调。
      *
+     * @note 该回调通常是可以忽略的，你可以根据业务情况自行决定是否监听。
+     *
      * @param userId 用户 ID。
      * @param error  错误原因。
-     * @note 该回调通常是可以忽略的，你可以根据业务情况自行决定是否监听。
      */
     void onCatchErrorWhenAppendFrame(long userId, Exception error);
 }

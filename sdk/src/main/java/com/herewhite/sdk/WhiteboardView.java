@@ -14,6 +14,9 @@ import wendu.dsbridge.OnReturnValue;
  * white on 2018/8/10.
  */
 
+/**
+ * `WhiteboardView` 类，用于配置白板界面。
+ */
 public class WhiteboardView extends DWebView implements JsBridgeInterface {
 
     private boolean autoResize = true;
@@ -48,7 +51,7 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
     }
 
     /**
-     * 设置视图大小切换时自动发送事件至js端
+     * 设置视图大小切换时自动发送事件至js端 // TODO 新增 API？
      *
      * @param autoResize
      */

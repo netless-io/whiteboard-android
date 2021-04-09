@@ -3,7 +3,7 @@ package com.herewhite.sdk.domain;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * 移动或缩放视野时的动画模式。
+ * 移动或缩放视角时的动画模式。
  *
  * @since 2.3.2
  */

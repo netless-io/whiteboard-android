@@ -21,7 +21,7 @@ public class PptPage extends WhiteObject {
      * <p>
      * 该方法只能在场景初始化的时候调用。
      * <p>
-     * 场景背景图的中心点默认为白板内部坐标系得原点，背景图无法移动，即无法改变背景图在白板内部的位置。
+     * 场景背景图的中心点默认为世界坐标系得原点，背景图无法移动，即无法改变背景图在白板内部的位置。
      *
      * @param src    图片的 URL 地址。
      * @param width  图片在白板中的宽度，单位为像素。
@@ -43,7 +43,7 @@ public class PptPage extends WhiteObject {
     }
 
     /**
-     * 设置背景图的 URL 地址。
+     * 通过设置 URL 指定背景图。
      *
      * @param src 背景图的 URL 地址。
      */

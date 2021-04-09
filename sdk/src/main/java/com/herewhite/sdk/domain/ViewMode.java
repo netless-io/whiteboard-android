@@ -24,9 +24,10 @@ public enum ViewMode {
      * <p>
      * 该模式下用户的视角会跟随主播的视角。
      *
-     * @note - 当一个用户的视角设置为主播模式后，房间内其他所有用户（包括新加入房间的用户）的视角会被自动设置为跟随模式。
+     * @note
+     * - 当一个用户的视角设置为主播模式后，房间内其他所有用户（包括新加入房间的用户）的视角会被自动设置为跟随模式。
      * - 跟随模式的用户进行白板操作时，其视角会自动切换为自由模式。
-     * 如有需要，可以调用 {@link disableOperations(boolean) disableOperations} 禁止用户操作，以确保
+     * 如有需要，可以调用 {@link disableOperations(boolean) disableOperations} 禁止用户操作，以锁定用户的视角模式。
      */
     @SerializedName("follower")
     Follower,

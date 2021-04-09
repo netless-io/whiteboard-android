@@ -11,9 +11,8 @@ public class FontFace extends WhiteObject {
 
     /**
      * @param name 字体名称，需要和 CSS 中 `font-family` 字段的值对应。
-     * @param src  字体文件的地址，需要和 CSS 中 `src` 字段的值对应。支持的格式包括：
-     *             - `url()`: 指向远程字体文件位置，例如，`url("https://white-pan.oss-cn-shanghai.aliyuncs.com/Pacifico-Regular.ttf")`。
-     *             - `local()`: 指定用户本地计算机上的字体，例如，`local('Arial')`。
+     * @param src  字体文件的地址，需要和 CSS 中 `src` 字段的值对应。支持的格式为 `url()`，表示指向远程字体文件位置，例如，`url("https://white-pan.oss-cn-shanghai.aliyuncs.com/Pacifico-Regular.ttf")`。
+     *
      */
     public FontFace(String name, String src) {
         this.fontFamily = name;
@@ -36,12 +35,9 @@ public class FontFace extends WhiteObject {
     /**
      * 设置字体样式。
      *
-     * @param fontStyle 字体样式，需要和 CSS 中 `font-style` 字段的值对应。
-     *                  <p>
-     *                  取值包括：
-     *                  - `normal`：（默认）常规。
-     *                  - `italic`：斜体。
-     *                  - `bold`：加粗。（mozilla 上写的是 oblique https://developer.mozilla.org/zh-CN/docs/Web/CSS/@font-face/font-style）
+     * @param fontStyle 字体样式，需要和 CSS 中 `font-style` 字段的值对应，取值包括：
+     * - `normal`：（默认）常规。
+     * - `italic`：斜体。
      */
     public void setFontStyle(String fontStyle) {
         this.fontStyle = fontStyle;

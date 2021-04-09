@@ -11,6 +11,9 @@ import androidx.annotation.Nullable;
  * Created by buhe on 2018/8/18.
  */
 
+/**
+ * 文档中隐藏。
+ */
 public class SDKError extends Exception {
 
     private final String jsStack;
