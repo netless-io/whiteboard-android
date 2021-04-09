@@ -149,6 +149,15 @@ public class Displayer {
     }
 
     /**
+     * 如果有自定义 h5 课件，则等比例缩放，保证内容铺满容器
+     *
+     * @since 2.12.13
+     */
+    public void scaleIframeToFit() {
+        bridge.callHandler("displayer.scaleIframeToFit", new Object[]{});
+    }
+
+    /**
      * 以连续动画的形式等比例缩放 PPT。
      * <p>
      * 该方法用于确保 PPT 页面的所有内容都在视野范围内。
