@@ -162,9 +162,11 @@ public class PlayerSyncManager {
     }
 
     /**
-     * 更新 `NativePlayer` 的播放状态，buffering 以及 idle 状态，会保证 whitePlayer 等待 nativePlayer 可以播放
+     * 向 `PlayerSyncManager` 同步 `NativePlayer` 的状态。
      *
-     * @param phase `NativePlayer` 的播放状态，详见 {@link NativePlayer.NativePlayerPhase}。
+     * `PlayerSyncManager` 接收到 `NativePlayer` 的状态后会同步给 `whitePlayer`，以确保 `whitePlayer` 和 `NativePlayer` 的状态同步。
+     *
+     * @param phase `NativePlayer` 的播放状态，详见 {@link NativePlayer#NativePlayerPhase NativePlayerPhase}。
      */
     public void updateNativePhase(NativePlayer.NativePlayerPhase phase) {
         if (phase == NativePlayer.NativePlayerPhase.Buffering || phase == NativePlayer.NativePlayerPhase.Idle) {
@@ -248,7 +250,7 @@ public class PlayerSyncManager {
     /**
      * 更新白板回放播放器的播放状态。
      *
-     * @param phase `whitePlayer` 的播放状态，详见 {@link PlayerPhase} whitePlayer 的播放状态。
+     * @param phase `whitePlayer` 的播放状态，详见 {@link PlayerPhase} 的播放状态。
      */
     public void updateWhitePlayerPhase(PlayerPhase phase) {
         if (phase == PlayerPhase.buffering || phase == PlayerPhase.waitingFirstFrame) {
