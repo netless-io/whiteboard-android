@@ -51,8 +51,8 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
     }
 
     /**
-     * 设置视图大小切换时自动发送事件至js端 // TODO 新增 API？
-     *
+     * 设置视图大小切换时自动发送事件至js端
+     * 文档中隐藏
      * @param autoResize
      */
     public void setAutoResize(boolean autoResize) {

@@ -21,7 +21,7 @@ public class ContentModeConfig extends WhiteObject {
      */
     public enum ScaleMode {
         /**
-         * （默认）基于设置的 `scale` 缩放视角边界。// TODO 是否保证其在屏幕上居中？
+         * （默认）基于设置的 `scale` 缩放视角边界。
          */
         @SerializedName("Scale")
         CENTER,

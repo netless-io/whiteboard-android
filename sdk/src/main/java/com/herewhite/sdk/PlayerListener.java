@@ -19,7 +19,7 @@ public interface PlayerListener {
     void onLoadFirstFrame();
 
     /**
-     * 分片切换回调，需要了解分片机制。目前无实际用途。// TODO 预留回调，暂不支持。
+     * 分片切换回调，需要了解分片机制。目前无实际用途。
      * 文档中隐藏
      */
     void onSliceChanged(String slice);
