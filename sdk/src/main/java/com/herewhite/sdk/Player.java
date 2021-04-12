@@ -125,11 +125,11 @@ public class Player extends Displayer {
     }
 
     /**
-     * 跳转至指定的时间。
+     * 设置白板回放的播放位置。
      *
-     * 回放内容的起始时间点为 0，你可以调用该方法，使白板回放跳转至指定的时间点。
+     * 白板回放的起始时间点为 0，成功调用该方法后，白板回放会在指定位置开始播放。
      *
-     * @param seekTime 时间进度，单位为毫秒。
+     * @param seekTime 播放进度，单位为毫秒。
      */
     public void seekToScheduleTime(long seekTime) {
         bridge.callHandler("player.seekToScheduleTime", new Object[]{seekTime});

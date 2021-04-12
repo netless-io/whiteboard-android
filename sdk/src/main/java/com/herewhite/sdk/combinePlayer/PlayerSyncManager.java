@@ -147,9 +147,9 @@ public class PlayerSyncManager {
     /**
      * 调整白板回放的播放进度。
      *
-     * 当调整本地视频播放的进度后，你可以调用该方法，将白板回放的播放进度调整到对应位置。
+     * 调整本地视频播放的进度后，你可以调用该方法，将白板回放的播放进度调整到对应位置。
      *
-     * @param time     白板回放时间进度条上的位置。
+     * @param time     白板回放的播放进度。
      * @param timeUnit 时长单位，默认值为毫秒 （`MILLISECONDS`），取值详见 [TimeUnit](https://www.android-doc.com/reference/java/util/concurrent/TimeUnit.html)。
      */
     public void seek(long time, TimeUnit timeUnit) {
