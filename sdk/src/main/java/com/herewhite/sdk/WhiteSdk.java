@@ -17,6 +17,9 @@ import org.json.JSONObject;
 import androidx.annotation.Nullable;
 import wendu.dsbridge.OnReturnValue;
 
+/**
+ * `WhiteSdk` 类。
+ */
 public class WhiteSdk {
     private final static Gson gson = new Gson();
 
@@ -29,11 +32,11 @@ public class WhiteSdk {
     private final int densityDpi;
 
     /**
-     * 设置通用回调事件。
+     * 设置通用事件回调。
      * <p>
      * SDK 通过 `CommonCallbacks` 类向 app 报告 SDK 运行时的各项事件。
      *
-     * @param commonCallbacks 通用回调事件，详见 {@link CommonCallbacks CommonCallbacks}。
+     * @param commonCallbacks 通用事件回调，详见 {@link CommonCallbacks CommonCallbacks}。
      */
     public void setCommonCallbacks(CommonCallbacks commonCallbacks) {
         sdkJsInterface.setCommonCallbacks(commonCallbacks);
@@ -41,6 +44,11 @@ public class WhiteSdk {
 
     private final boolean onlyCallbackRemoteStateModify;
 
+    /**
+     * 获取 {@link AudioMixerImplement} 实例。
+     *
+     * @return {@link AudioMixerImplement} 实例。
+     */
     public AudioMixerImplement getAudioMixerImplement() {
         return audioMixerImplement;
     }
@@ -79,7 +87,7 @@ public class WhiteSdk {
      * @param bridge                白板界面，详见 {@link WhiteboardView WhiteboardView}。
      * @param context               安卓活动 (Android Activity) 的上下文。
      * @param whiteSdkConfiguration SDK 实例的配置，详见 {@link WhiteSdkConfiguration WhiteSdkConfiguration}。
-     * @param commonCallback        通用回调事件，详见 {@link CommonCallback CommonCallback}。
+     * @param commonCallback        通用事件回调，详见 {@link CommonCallback CommonCallback}。
      */
     public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, @Nullable CommonCallback commonCallback) {
         this(bridge, context, whiteSdkConfiguration, commonCallback, null);
@@ -93,7 +101,7 @@ public class WhiteSdk {
      * @param bridge                白板界面，详见 {@link WhiteboardView WhiteboardView}。
      * @param context               安卓活动 (Android Activity) 的上下文。
      * @param whiteSdkConfiguration SDK 实例的配置，详见 {@link WhiteSdkConfiguration WhiteSdkConfiguration}。
-     * @param urlInterrupter        图片拦截替换设置，详见 {@link UrlInterrupter}。@deprecated 该参数已废弃。请改用 `CommonCallbacks` 接口中的 {@link CommonCallbacks#urlInterrupter(String) urlInterrupter} 方法。
+     * @param urlInterrupter        图片 URL 拦截设置，详见 {@link UrlInterrupter}。@deprecated 该参数已废弃。请改用 `CommonCallbacks` 接口中的 {@link CommonCallbacks#urlInterrupter(String) urlInterrupter} 方法。
      */
     public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, UrlInterrupter urlInterrupter) {
         this(bridge, context, whiteSdkConfiguration);
@@ -108,8 +116,8 @@ public class WhiteSdk {
      * @param bridge                白板界面，详见 {@link WhiteboardView WhiteboardView}。
      * @param context               安卓活动 (Android Activity) 的上下文。
      * @param whiteSdkConfiguration SDK 实例的配置，详见 {@link WhiteSdkConfiguration WhiteSdkConfiguration}。
-     * @param commonCallback        通用回调事件，详见 {@link CommonCallback CommonCallback}。
-     * @param audioMixerBridge      RTC 混音设置，详见 {@link AudioMixerBridge AudioMixerBridge}。当你同时使用 Agora RTC SDK 和互动白板 SDK, 且互动白板中展示的动态 PPT 中包含音频文件时，你可以调用 `AudioMixerBridge` 接口，将动态 PPT 中的所有音频交给 Agora RTC SDK 进行混音播放。
+     * @param commonCallback        通用事件回调，详见 {@link CommonCallback CommonCallback}。
+     * @param audioMixerBridge      混音设置，详见 {@link AudioMixerBridge AudioMixerBridge}。当你同时使用 Agora RTC SDK 和互动白板 SDK, 且白板中展示的动态 PPT 中包含音频文件时，你可以调用 `AudioMixerBridge` 接口，将动态 PPT 中的所有音频交给 Agora RTC SDK 进行混音播放。
      */
     public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, @Nullable CommonCallback commonCallback, @Nullable AudioMixerBridge audioMixerBridge) {
         this.bridge = bridge;
@@ -208,7 +216,7 @@ public class WhiteSdk {
      * 创建互动白板回放房间。
      *
      * @param playerConfiguration 白板回放的参数配置，详见 {@link PlayerConfiguration PlayerConfiguration}。
-     * @param listener            白板回放事件的回调。如果使用同一个互动白板 SDK 创建多个回放房间且在创建新的回放房间时该参数设为 `null`, 则新创建的回放房间会使用上一次创建回放房间时传入的 `listener`。
+     * @param listener            白板回放事件的回调，详见 {@link PlayerEventListener}。
      * @param playerPromise       `Promise<Player>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `createPlayer` 的调用结果：
      *  - 如果方法调用成功，将返回新创建的回放房间对象，详见 {@link Player}。
      *  - 如果方法调用失败，将返回错误信息。
@@ -299,11 +307,10 @@ public class WhiteSdk {
      * - 通过该方法预加载的字体无法删除，每次调用都会在原来的基础上新增。
      * - 请勿同时调用该方法和 `setupFontFaces` 方法。否则，无法预期行为。
      *
-     * @param fontFaces   `FontFace` 实例 ，详见 {@link FontFace FontFace}。
+     * @param fontFaces   指定的字体，详见 {@link FontFace}。
      * @param loadPromise `Promise<JSONObject>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `loadFontFaces` 的调用结果：
      *                    - 如果方法调用成功，则返回 `FontFace` 对象
      *                    - 如果方法调用失败，则返回错误信息。
-     * 每加载完成一种字体，会触发一个回调，报告该字体是否加载成功。传入的 `FontFace` 实例中有多少种字体，就会有多少个回调。
      */
     public void loadFontFaces(FontFace[] fontFaces, final Promise<JSONObject> loadPromise) {
         bridge.callHandler("sdk.asyncInsertFontFaces", new Object[]{fontFaces}, new OnReturnValue<JSONObject>() {

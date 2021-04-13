@@ -23,18 +23,20 @@ public class AbstractCommonCallbacks implements CommonCallbacks {
     }
 
     /**
-     * 图片拦截回调。
+     * 图片 URL 拦截回调。
      *
      * @since 2.9.14
      *
-     * 要触发该回调，必须在初始化白板 SDK 时，调用 {@link WhiteSdkConfiguration#setEnableInterrupterAPI setEnableInterrupterAPI}(true) 开启图片拦截替换功能。
-     * 开启图片拦截替换功能后，在白板中插入图片或场景时，会触发该回调。
+     * 该回调默认禁用。你可以在初始化白板 SDK 时，通过 {@link WhiteSdkConfiguration#setEnableInterrupterAPI setEnableInterrupterAPI}(true) 方法开启。
      *
-     * @note 由于该回调过于频繁，Agora 不推荐使用；在 Android 平台，可以使用 WebView 的拦截功能进行图片拦截。
+     * 开启后，在白板中插入图片时，SDK 会触发该回调，报告图片的原 URL 地址。你可以在该回调中将原 URL 地址替换成指定的 URL 地址。
      *
-     * @param sourceUrl 图片原地址。
+     * @note
+     * 开启后，SDK 会频繁触发该回调，因此 Agora 不推荐开启该回调；在 Android 平台，你可以使用 WebView 的拦截功能进行 URL 拦截。
      *
-     * @return 替换后的图片地址。
+     * @param sourceUrl 原 URL 地址。
+     *
+     * @return 替换后的 URL 地址。请确保在返回值中进行传参。
      */
     @Override
     public String urlInterrupter(String sourceUrl) {
