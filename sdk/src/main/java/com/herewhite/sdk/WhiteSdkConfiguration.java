@@ -97,6 +97,9 @@ public class WhiteSdkConfiguration extends WhiteObject {
         public PptParams(String scheme) {
             this.scheme = scheme;
         }
+        public  PptParams() {
+
+        }
     }
 
 
