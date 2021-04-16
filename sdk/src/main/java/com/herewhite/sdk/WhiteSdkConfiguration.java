@@ -14,21 +14,21 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 /**
- * `WhiteSdkConfiguration` 类，用于初始化 `WhiteSdk` 配置参数。
+ * `WhiteSdk` 实例的配置。
  *
  * @note 成功初始化 `WhiteSdk` 后，无法再调用 `WhiteSdkConfiguration` 类中的任何方法修改 `WhiteSdk` 的配置。
  */
 public class WhiteSdkConfiguration extends WhiteObject {
 
     /**
-     * 笔迹的渲染引擎模式。
+     * 白板上绘画的渲染模式。
      *
      * @since 2.8.0
      */
     public enum RenderEngineType {
         /**
          * SVG 渲染模式。
-         * 2.8.0 及之前版本的 `WhiteSdk` 默认使用的渲染模式，该模式兼容性较好，但性能较差。
+         * 2.8.0 及之前版本的互动白板 SDK 默认使用的渲染模式，该模式兼容性较好，但性能较差。
          */
         @SerializedName("svg")
         svg,
@@ -36,7 +36,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
          * Canvas 渲染模式。
          * <p>
          * 2.8.0 版本起新增 `canvas` 渲染模式，该模式性能较好，但兼容性较差。
-         * 2.9.0 及之后版本的 `WhiteSdk` 默认使用 `canvas` 渲染模式。
+         * 2.9.0 及之后版本的互动白板 SDK 默认使用 `canvas` 渲染模式。
          *
          * @note 由于部分 Android 6.1 至 Android 8.1 设备无法支持 `canvas` 渲染模式，SDK 会自动将默认的渲染模式切换为 `svg` 渲染模式。
          */
@@ -73,7 +73,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
          * - `true`：开启。
          * - `false`：关闭。
          */
-
         public boolean isUseServerWrap() {
             return useServerWrap;
         }
@@ -83,7 +82,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
          *
          * @since 2.11.16
          *
-         * 自 2021 年 02 月 10 起，Agora 服务端支持对转换的动态 PPT 排版，以确保转换后的 PPT 在不同平台排版一致。
+         * 自 2021 年 2 月 10 日起，将 PPTX 文件转换为 HTML 网页时，Agora Interactive 白板服务端支持对 PPTX 文件进行排版，以确保 PPTX 文件的文本在各个平台上的呈现保持一致。
          *
          * @param useServerWrap 是否开启服务端排版功能：
          *                      - `true`：开启。
@@ -163,7 +162,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     /**
      * 设置数据中心。
      *
-     * @note 该方法设置的数据中心必须与要加入的互动白板实时房间所在数据中心一致，否则无法加入房间。
+     * @note 该方法设置的数据中心必须与要加入的互动白板实时房间所在数据中心一致；否则，SDK 将无法连接到房间 。
      *
      * @param region 数据中心，详见 {@link Region}。
      */
@@ -215,24 +214,24 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
     /**
-     * 设置画笔教具的渲染引擎模式。
+     * 设置绘图的渲染模式。
      *
      * @since 2.8.0
      * <p>
-     * 为优化渲染，自 2.8.0 版本起，白板 SDK 新增 'canvas' 渲染模式，并从 2.9.0 版本起，将 'canvas' 渲染模式作为默认的渲染模式。
+     * 为优化白板上绘图的渲染，自 2.8.0 版本起，白板 SDK 新增 'canvas' 渲染模式，并从 2.9.0 版本起，将 'canvas' 渲染模式作为默认的渲染模式。
      *
      * @note 由于部分 Android 6.1 至 Android 8.1 设备无法支持 `canvas` 渲染模式，SDK 会自动将默认的渲染模式切换为 `svg` 渲染模式。
      *
-     * @param renderEngine 画笔教具的渲染引擎模式，详见 {@link RenderEngineType}。
+     * @param renderEngine 绘图的渲染模式，详见 {@link RenderEngineType}。
      */
     public void setRenderEngine(RenderEngineType renderEngine) {
         this.renderEngine = renderEngine;
     }
 
     /**
-     * 获取画笔教具的渲染引擎模式。
+     * 获取绘图的渲染模式。
      *
-     * @return 画笔教具的渲染引擎模式，详见 {@link RenderEngineType}。
+     * @return 绘图的渲染模式，详见 {@link RenderEngineType}。
      */
     public RenderEngineType getRenderEngine() {
         return renderEngine;
@@ -390,7 +389,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     /**
      * 设置是否显示用户头像。
      * <p>
-     * 如果需要显示用户头像，请确保用户在加入房间时传入了 `userPayload`，并且 `userPayload` 的 `key-value` 结构中存在 `avatar` 字段。
+     * 要显示用户头像，请确保你在 `userPayload` 对象中传入了头像的键值对，并在调用{@link com.herewhite.sdk.RoomParams.setUserPayload（Object userPayload）}
      *
      * @param userCursor 是否显示用户头像：
      *                   - `true`：显示。

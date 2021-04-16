@@ -35,7 +35,7 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
      * 初始化白板界面。
      *
      * @param context 安卓活动 (Android Activity) 的上下文。
-     * @param attrs   自定义控件属性，详见 Android 文档。
+     * @param attrs   自定义白板界面属性，[AttributeSet](https://developer.android.com/reference/android/util/AttributeSet).
      */
     public WhiteboardView(Context context, AttributeSet attrs) {
         super(getFixedContext(context), attrs);

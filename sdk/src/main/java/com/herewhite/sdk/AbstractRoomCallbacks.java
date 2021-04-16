@@ -9,9 +9,9 @@ import com.herewhite.sdk.domain.RoomState;
  */
 
 /**
- * `RoomCallbacks` 接口的缺省（空）实现。详见 {@link RoomCallbacks RoomCallbacks}。
+ * {@link RoomCallbacks RoomCallbacks} 接口的缺省（空）实现。
  *
- * @deprecated @deprecated 已废弃。空实现类由用户应用处理。
+ * @deprecated 已废弃。
  */
 @Deprecated
 public abstract class AbstractRoomCallbacks implements RoomCallbacks {

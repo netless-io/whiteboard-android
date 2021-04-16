@@ -5,7 +5,7 @@ import com.herewhite.sdk.domain.SDKError;
 import org.json.JSONObject;
 
 /**
- * 通用回调，用于 SDK 向 app 发送回调事件通知。
+ * `CommonCallback`，用于 SDK 向 app 发送回调事件通知。
  * <p>
  * 实时房间和回放房间都可以继承该接口下的回调方法。
  *
