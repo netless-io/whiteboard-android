@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.12.20] - 2021-04-17
+- 更新`white-web-sdk`至 2.12.12
 ## [2.12.19] - 2021-04-14
 - 更新`@netless/iframe-bridge`至 2.0.14，优化 iframe 插件
 - pptParams 提供新的构造方法，不需要配置 scheme 参数
