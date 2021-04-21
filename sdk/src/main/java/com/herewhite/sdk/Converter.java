@@ -2,6 +2,7 @@ package com.herewhite.sdk;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.herewhite.sdk.converter.ConvertType;
 import com.herewhite.sdk.domain.ConversionInfo;
 import com.herewhite.sdk.domain.ConvertErrorCode;
 import com.herewhite.sdk.domain.ConvertException;
@@ -27,12 +28,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class Converter {
-
-    public enum ConvertType {
-        Unknown,
-        Static,
-        Dynamic,
-    }
 
     public String getRoomToken() {
         return roomToken;

@@ -1,13 +1,13 @@
 package com.herewhite.sdk.domain;
 
-import com.herewhite.sdk.Converter;
+import com.herewhite.sdk.converter.ConvertType;
 
 /**
  * 内部类，文档中隐藏
  */
 public class ConvertedFiles {
     private String taskId;
-    private Converter.ConvertType type;
+    private ConvertType type;
     private Double width;
     private Double height;
 
@@ -19,11 +19,11 @@ public class ConvertedFiles {
         this.taskId = taskId;
     }
 
-    public Converter.ConvertType getType() {
+    public ConvertType getType() {
         return type;
     }
 
-    public void setType(Converter.ConvertType type) {
+    public void setType(ConvertType type) {
         this.type = type;
     }
 
