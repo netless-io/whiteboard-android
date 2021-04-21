@@ -1,14 +1,16 @@
-package com.herewhite.sdk;
+package com.herewhite.sdk.internal;
 
 import android.webkit.JavascriptInterface;
+
+import com.herewhite.sdk.AudioMixerBridge;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-class RtcJsInterfaceImpl {
+public class RtcJsInterfaceImpl {
     private AudioMixerBridge mixerBridge;
 
-    RtcJsInterfaceImpl(AudioMixerBridge mixerBridge) {
+    public RtcJsInterfaceImpl(AudioMixerBridge mixerBridge) {
         this.mixerBridge = mixerBridge;
     }
 

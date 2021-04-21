@@ -22,6 +22,7 @@ import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.SceneState;
 import com.herewhite.sdk.domain.ViewMode;
 import com.herewhite.sdk.internal.Logger;
+import com.herewhite.sdk.internal.RoomDelegate;
 
 import org.json.JSONObject;
 

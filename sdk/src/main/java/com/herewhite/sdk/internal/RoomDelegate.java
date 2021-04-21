@@ -1,4 +1,4 @@
-package com.herewhite.sdk;
+package com.herewhite.sdk.internal;
 
 
 import com.herewhite.sdk.domain.EventEntry;
@@ -7,7 +7,7 @@ import com.herewhite.sdk.domain.RoomPhase;
 /**
  * 内部接口，解耦jsBridgeInterface与Room
  */
-interface RoomDelegate {
+public interface RoomDelegate {
     void fireCanUndoStepsUpdate(long valueOf);
 
     void onCanRedoStepsUpdate(long valueOf);

@@ -11,6 +11,10 @@ import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
+import com.herewhite.sdk.internal.PlayerJsInterfaceImpl;
+import com.herewhite.sdk.internal.RoomJsInterfaceImpl;
+import com.herewhite.sdk.internal.RtcJsInterfaceImpl;
+import com.herewhite.sdk.internal.SdkJsInterfaceImpl;
 
 import org.json.JSONObject;
 
@@ -33,10 +37,10 @@ public class WhiteSdk {
      * <p>
      * SDK 通过 `CommonCallbacks` 类向 app 报告 SDK 运行时的各项事件。
      *
-     * @param commonCallbacks 通用回调事件，详见 {@link CommonCallbacks CommonCallbacks}
+     * @param commonCallback 通用回调事件，详见 {@link CommonCallback CommonCallback}
      */
-    public void setCommonCallbacks(CommonCallbacks commonCallbacks) {
-        sdkJsInterface.setCommonCallbacks(commonCallbacks);
+    public void setCommonCallbacks(CommonCallback commonCallback) {
+        sdkJsInterface.setCommonCallbacks(commonCallback);
     }
 
     private final boolean onlyCallbackRemoteStateModify;

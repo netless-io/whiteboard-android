@@ -11,6 +11,7 @@ import com.herewhite.sdk.domain.PlayerTimeInfo;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.internal.Logger;
+import com.herewhite.sdk.internal.PlayerDelegate;
 
 import wendu.dsbridge.OnReturnValue;
 

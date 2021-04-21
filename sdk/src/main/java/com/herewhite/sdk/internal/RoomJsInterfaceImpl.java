@@ -1,4 +1,4 @@
-package com.herewhite.sdk;
+package com.herewhite.sdk.internal;
 
 import android.webkit.JavascriptInterface;
 
@@ -6,22 +6,21 @@ import com.google.gson.Gson;
 import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.FrameError;
 import com.herewhite.sdk.domain.RoomPhase;
-import com.herewhite.sdk.internal.JsCallWrapper;
 
 import androidx.annotation.Nullable;
 
 /**
  * Created by buhe on 2018/8/12.
  */
-class RoomJsInterfaceImpl {
+public class RoomJsInterfaceImpl {
     private final static Gson gson = new Gson();
     @Nullable
     private RoomDelegate room;
 
-    RoomJsInterfaceImpl() {
+    public RoomJsInterfaceImpl() {
     }
 
-    void setRoom(RoomDelegate room) {
+    public void setRoom(RoomDelegate room) {
         this.room = room;
     }
 

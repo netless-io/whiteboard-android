@@ -1,10 +1,10 @@
-package com.herewhite.sdk;
+package com.herewhite.sdk.internal;
 
 import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.PlayerPhase;
 import com.herewhite.sdk.domain.SDKError;
 
-interface PlayerDelegate {
+public interface PlayerDelegate {
     void fireMagixEvent(EventEntry fromJson);
 
     void fireHighFrequencyEvent(EventEntry[] events);
