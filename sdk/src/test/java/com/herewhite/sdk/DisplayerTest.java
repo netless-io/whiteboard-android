@@ -75,6 +75,13 @@ public class DisplayerTest {
     }
 
     @Test
+    public void scaleIframeToFit() {
+        displayer.scaleIframeToFit();
+        verify(mockJsBridgeInterface).callHandler(Matchers.eq("displayer.scaleIframeToFit"), (Object[]) any());
+    }
+
+
+    @Test
     public void scalePptToFit() {
         displayer.scalePptToFit();
         verify(mockJsBridgeInterface).callHandler(Matchers.eq("displayer.scalePptToFit"), (Object[]) any());
