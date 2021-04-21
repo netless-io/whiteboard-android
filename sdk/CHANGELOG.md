@@ -1,6 +1,6 @@
 # 版本更新记录
 - 支持 Converter V5
-- 变更 Converter.ConvertType 为独立 ConvertType
+- 变更 Converter.ConvertType 为独立 ConvertType, 影响 `ConvertedFiles.getType`
 ## [2.12.20] - 2021-04-17
 - 更新`white-web-sdk`至 2.12.12
 ## [2.12.19] - 2021-04-14

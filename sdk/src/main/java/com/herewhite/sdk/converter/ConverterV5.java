@@ -33,35 +33,11 @@ import okhttp3.Response;
  * 此类提供一个PPT转换思路，用户可依据{@see <a href="https://developer.netless.link/server-zh/home/server-conversion">ppt转换</a>}自行实现转换
  */
 public class ConverterV5 {
-    private static final String TAG = ConverterV5.class.getSimpleName();
-
-    public enum OutputFormat {
-        PNG,
-        JPG,
-        JPEG,
-        WEBP,
-        ;
-
-        static Map<OutputFormat, String> map;
-
-        static {
-            map = new HashMap<>();
-            map.put(PNG, "png");
-            map.put(JPG, "jpg");
-            map.put(JPEG, "jpeg");
-            map.put(WEBP, "webp");
-        }
-
-        String getRequestValue() {
-            return map.get(this);
-        }
-    }
-
     private String resource;
     private ConvertType type;
     private boolean preview;
     private double scale;
-    private OutputFormat outputFormat;
+    private ImageFormat outputFormat;
     private boolean pack;
     private Region region;
     private String sdkToken;
@@ -78,7 +54,7 @@ public class ConverterV5 {
                         ConvertType type,
                         boolean preview,
                         double scale,
-                        OutputFormat outputFormat,
+                        ImageFormat outputFormat,
                         boolean pack,
                         Region region,
                         String sdkToken,
@@ -173,11 +149,11 @@ public class ConverterV5 {
     private void requestConvert() {
         Map<String, Object> roomSpec = new HashMap<>();
         roomSpec.put("resource", resource);
-        roomSpec.put("type", getRequestValue(type));
+        roomSpec.put("type", convertType(type));
         roomSpec.put("preview", preview);
         if (type == ConvertType.Static) {
             roomSpec.put("scale", scale);
-            roomSpec.put("outputFormat", outputFormat.getRequestValue());
+            roomSpec.put("outputFormat", convertOutputFormat(outputFormat));
             roomSpec.put("pack", pack);
         }
         RequestBody body = RequestBody.create(JSON, gson.toJson(roomSpec));
@@ -185,7 +161,7 @@ public class ConverterV5 {
         Request request = new Request.Builder()
                 .url(PPT_BASE_URL)
                 .header("token", sdkToken)
-                .header("region", getRequestValue(region))
+                .header("region", convertRegion(region))
                 .header("Content-Type", "application/json")
                 .header("Accept", "application/json")
                 .post(body)
@@ -196,7 +172,7 @@ public class ConverterV5 {
             if (response.code() >= 200 && response.code() <= 204) {
                 JsonObject jsonObject = (JsonObject) JsonParser.parseString(response.body().string());
                 taskUuid = jsonObject.get("uuid").getAsString();
-                type = parseConvertType((jsonObject.get("type").getAsString()));
+                type = parseType((jsonObject.get("type").getAsString()));
                 status = ConverterStatus.Created;
             } else {
                 onFailure(new ConvertException(ConvertErrorCode.ConvertFail, response.body().string()));
@@ -208,7 +184,7 @@ public class ConverterV5 {
         }
     }
 
-    private ConvertType parseConvertType(String type) {
+    private ConvertType parseType(String type) {
         if ("static".equals(type)) {
             return ConvertType.Static;
         } else {
@@ -216,7 +192,7 @@ public class ConverterV5 {
         }
     }
 
-    private String getRequestValue(ConvertType type) {
+    private String convertType(ConvertType type) {
         if (type == ConvertType.Dynamic) {
             return "dynamic";
         } else {
@@ -224,9 +200,23 @@ public class ConverterV5 {
         }
     }
 
-    private String getRequestValue(Region region) {
+    private String convertRegion(Region region) {
         JsonElement regionElement = gson.toJsonTree(region);
         return regionElement.getAsString();
+    }
+
+    static Map<ImageFormat, String> outputFormatMap;
+
+    static {
+        outputFormatMap = new HashMap<>();
+        outputFormatMap.put(ImageFormat.PNG, "png");
+        outputFormatMap.put(ImageFormat.JPG, "jpg");
+        outputFormatMap.put(ImageFormat.JPEG, "jpeg");
+        outputFormatMap.put(ImageFormat.WEBP, "webp");
+    }
+
+    private String convertOutputFormat(ImageFormat outputFormat) {
+        return outputFormatMap.get(outputFormat);
     }
 
     private void startProgressLoop(String token) {
@@ -254,9 +244,9 @@ public class ConverterV5 {
     // Step 3: 轮询查询
     private void checkProgress(String token) throws ConvertException {
         Request request = new Request.Builder()
-                .url(String.format(PROGRESS_URL_FORMAT, taskUuid, getRequestValue(type)))
+                .url(String.format(PROGRESS_URL_FORMAT, taskUuid, convertType(type)))
                 .header("token", token)
-                .header("region", getRequestValue(region))
+                .header("region", convertRegion(region))
                 .header("Content-Type", "application/json")
                 .header("Accept", "application/json")
                 .build();
@@ -273,13 +263,13 @@ public class ConverterV5 {
                 ConversionInfo.ServerConversionStatus status = queryInfo.status;
                 if (status == ConversionInfo.ServerConversionStatus.Fail || status == ConversionInfo.ServerConversionStatus.NotFound) {
                     ConvertErrorCode code = status == ConversionInfo.ServerConversionStatus.Fail ? ConvertErrorCode.ConvertFail : ConvertErrorCode.NotFound;
-                    onFailure(new ConvertException(code, info.getReason()));
+                    onFailure(new ConvertException(code, queryInfo.failedReason));
                     this.status = ConverterStatus.Fail;
                 } else if (status == ConversionInfo.ServerConversionStatus.Finished) {
                     onFinish(getPpt(info, type), info);
                     this.status = ConverterStatus.Success;
                 } else {
-                    onProgress(info.getConvertedPercentage(), info);
+                    onProgress(info.getConvertedPercentage(), queryInfo.progress);
                 }
             } else {
                 throw new ConvertException(ConvertErrorCode.ConvertFail, body);
@@ -331,7 +321,7 @@ public class ConverterV5 {
         private ConvertType type;
         private boolean preview = false;
         private double scale = 1.2;
-        private OutputFormat outputFormat;
+        private ImageFormat outputFormat;
         private boolean pack = false;
         private Region region;
         private String sdkToken;
@@ -386,7 +376,7 @@ public class ConverterV5 {
          * @param outputFormat 输出图片格式，默认为 png，可选参数为 png/jpg/jpeg/webp
          * @return
          */
-        public Builder setOutputFormat(OutputFormat outputFormat) {
+        public Builder setOutputFormat(ImageFormat outputFormat) {
             this.outputFormat = outputFormat;
             return this;
         }
@@ -472,7 +462,7 @@ public class ConverterV5 {
             }
 
             if (outputFormat == null) {
-                outputFormat = OutputFormat.PNG;
+                outputFormat = ImageFormat.PNG;
             }
 
             if (timeout == 0) {

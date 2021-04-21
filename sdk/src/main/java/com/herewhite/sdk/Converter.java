@@ -2,7 +2,6 @@ package com.herewhite.sdk;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.herewhite.sdk.converter.ConvertType;
 import com.herewhite.sdk.domain.ConversionInfo;
 import com.herewhite.sdk.domain.ConvertErrorCode;
 import com.herewhite.sdk.domain.ConvertException;
@@ -28,6 +27,12 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class Converter {
+
+    public enum ConvertType {
+        Unknown,
+        Static,
+        Dynamic,
+    }
 
     public String getRoomToken() {
         return roomToken;
@@ -297,14 +302,13 @@ public class Converter {
     }
 
     private ConvertedFiles getPpt(ConversionInfo info, ConvertType type) {
-
         int fileLength = info.getConvertedFileList().length;
         String[] sliderURLs = new String[fileLength];
         Scene[] scenes = new Scene[fileLength];
 
         ConvertedFiles files = new ConvertedFiles();
         files.setTaskId(taskId);
-        files.setType(type);
+        files.setType(convertType(type));
 
         for (int i = 0; i < fileLength; i++) {
             PptPage pptPage = info.getConvertedFileList()[i];
@@ -317,5 +321,13 @@ public class Converter {
         files.setScenes(scenes);
 
         return files;
+    }
+
+    private com.herewhite.sdk.converter.ConvertType convertType(ConvertType convertType) {
+        if (convertType == Converter.ConvertType.Static) {
+            return com.herewhite.sdk.converter.ConvertType.Static;
+        } else {
+            return com.herewhite.sdk.converter.ConvertType.Dynamic;
+        }
     }
 }

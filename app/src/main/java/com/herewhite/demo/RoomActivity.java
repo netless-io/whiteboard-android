@@ -29,8 +29,9 @@ import com.herewhite.sdk.RoomParams;
 import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
 import com.herewhite.sdk.WhiteboardView;
-import com.herewhite.sdk.converter.ConvertType;
 import com.herewhite.sdk.converter.ConverterV5;
+import com.herewhite.sdk.converter.ImageFormat;
+import com.herewhite.sdk.converter.ConvertType;
 import com.herewhite.sdk.domain.AkkoEvent;
 import com.herewhite.sdk.domain.AnimationMode;
 import com.herewhite.sdk.domain.Appliance;
@@ -518,7 +519,7 @@ public class RoomActivity extends BaseActivity {
 
     public void staticConvert(MenuItem item) {
         Converter c = new Converter(this.token);
-        c.startConvertTask("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/LightWaves.pdf", ConvertType.Static, new ConverterCallbacks() {
+        c.startConvertTask("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/LightWaves.pdf", Converter.ConvertType.Static, new ConverterCallbacks() {
             @Override
             public void onFailure(ConvertException e) {
                 logAction(e.getMessage());
@@ -543,7 +544,7 @@ public class RoomActivity extends BaseActivity {
                 .setResource("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/LightWaves.pdf")
                 .setType(ConvertType.Static)
                 .setScale(1.5)
-                .setOutputFormat(ConverterV5.OutputFormat.JPEG)
+                .setOutputFormat(ImageFormat.JPEG)
                 .setSdkToken(demoAPI.getSdkToken())
                 .setTaskUuid(null)
                 .setTaskToken(null)
@@ -569,7 +570,7 @@ public class RoomActivity extends BaseActivity {
 
     public void dynamicConvert(MenuItem item) {
         Converter c = new Converter(this.token);
-        c.startConvertTask("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/-1/1.pptx", ConvertType.Dynamic, new ConverterCallbacks() {
+        c.startConvertTask("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/-1/1.pptx", Converter.ConvertType.Dynamic, new ConverterCallbacks() {
             @Override
             public void onFailure(ConvertException e) {
                 logAction(e.getMessage());

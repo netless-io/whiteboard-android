@@ -73,10 +73,10 @@ public class ConverterV5Test {
                     .setResource(resources[i % resources.length])
                     .setType(randomInt(1) == 1 ? ConvertType.Static : ConvertType.Dynamic)
                     .setPreview(randomInt(1) == 1)
-                    .setOutputFormat(randomInt(1) == 1 ? ConverterV5.OutputFormat.PNG : ConverterV5.OutputFormat.JPEG)
+                    .setOutputFormat(randomInt(1) == 1 ? ImageFormat.PNG : ImageFormat.JPEG)
                     .setTimeout(60_000L)
                     .setPoolInterval(2000)
-                    .setSdkToken("WHITEcGFydG5lcl9pZD1OZ3pwQWNBdlhiemJERW9NY0E0Z0V3RTUwbVZxM0NIbDJYV0Ymc2lnPWNiZWExOTMwNzc1NmQyNmU3N2U3M2Q0NWZjNTZiOGIwMWE2ZjU4NDI6YWRtaW5JZD0yMTYmcm9sZT1hZG1pbiZleHBpcmVfdGltZT0xNTg5ODMzNTQxJmFrPU5nenBBY0F2WGJ6YkRFb01jQTRnRXdFNTBtVnEzQ0hsMlhXRiZjcmVhdGVfdGltZT0xNTU4Mjc2NTg5Jm5vbmNlPTE1NTgyNzY1ODg4NDQwMA")
+                    .setSdkToken(null)
                     .setCallback(callbacks[i])
                     .build();
             converter.startConvertTask();
