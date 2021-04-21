@@ -128,7 +128,7 @@ public class ConverterV5 {
     private final OkHttpClient client = new OkHttpClient();
 
     public void startConvertTask() {
-        if (startTime != 0 && (status != ConverterStatus.Success || status != ConverterStatus.Fail)) {
+        if (startTime != 0 && isNotFinish()) {
             return;
         }
         startTime = System.currentTimeMillis();
@@ -142,6 +142,10 @@ public class ConverterV5 {
                 startProgressLoop(taskToken != null ? taskToken : sdkToken);
             }
         });
+    }
+
+    private boolean isNotFinish() {
+        return !(status == ConverterStatus.Success || status == ConverterStatus.Fail);
     }
 
     /**
