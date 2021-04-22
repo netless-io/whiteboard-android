@@ -5,8 +5,9 @@ package com.herewhite.sdk.domain;
  *
  * @since 2.2.0
  *
- * 视觉矩形是用户的视角必须容纳的区域。设置好视觉矩形后，视角会自动调整到刚好可以完整展示视觉矩形所表示的范围。
- * 该方法可用于保证同样的内容在不同的设备上都可以显示完整。
+ * 视觉矩形是用户的视角必须容纳的区域。设置好视觉矩形后，SDK 会自动将视角会调整到刚好可以完整展示视觉矩形所表示的范围。
+ *
+ * 你可以根据要展示的 PPT 幻灯片或图像的尺寸设置视觉矩形，以确保相同的内容在不同尺寸的屏幕上都可以完整显示。
  */
 public class RectangleConfig extends WhiteObject {
     private Double originX;

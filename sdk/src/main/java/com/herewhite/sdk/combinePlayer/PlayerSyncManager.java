@@ -9,7 +9,7 @@ import com.herewhite.sdk.domain.PlayerPhase;
 import java.util.concurrent.TimeUnit;
 
 /**
- * `PlayerSyncManager` 类，用于同步白板回放与本地视频播放器的状态。
+ * `PlayerSyncManager` 类，用于同步 `NativePlayer` 和 `Player` 的状态。
  *
  * @since 2.4.23
  */
@@ -147,7 +147,7 @@ public class PlayerSyncManager {
     /**
      * 调整白板回放的播放进度。
      *
-     * 调整本地视频播放的进度后，你可以调用该方法，将白板回放的播放进度调整到对应位置。
+     * 调整本地视频播放的进度后，你需要调用该方法，将白板回放的播放进度调整到对应位置。
      *
      * @param time     白板回放的播放进度。
      * @param timeUnit 时长单位，默认值为毫秒 （`MILLISECONDS`），取值详见 [TimeUnit](https://www.android-doc.com/reference/java/util/concurrent/TimeUnit.html)。
@@ -164,7 +164,7 @@ public class PlayerSyncManager {
     /**
      * 向 `PlayerSyncManager` 同步 `NativePlayer` 的状态。
      *
-     * `PlayerSyncManager` 接收到 `NativePlayer` 的状态后会同步给 `whitePlayer`，以确保 `whitePlayer` 和 `NativePlayer` 的状态同步。
+     * `PlayerSyncManager` 接收到 `NativePlayer` 的状态后会同步给 `Player`，以确保 `Player` 和 `NativePlayer` 的状态同步。
      *
      * @param phase `NativePlayer` 的播放状态，详见 {@link NativePlayer#NativePlayerPhase NativePlayerPhase}。
      */

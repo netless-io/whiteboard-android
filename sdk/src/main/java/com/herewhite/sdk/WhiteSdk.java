@@ -274,7 +274,7 @@ public class WhiteSdk {
      * @since 2.11.2
      *
      * <p>
-     * 调用该方法声明的字体可用于显示 PPT 中的文字和教具输入的文字。
+     * 调用该方法声明的字体可用于显示 PPT 中的文字和白板工具输入的文字。
      * <p>
      * 该方法和 {@link #loadFontFaces loadFontFaces} 都可以声明在本地白板中可用的字体，区别是 `setupFontFaces` 没有回调，因为无法判断字体声明是否正确；`loadFontFaces` 会触发回调，报告每一种的预加载结果。
      *
@@ -296,7 +296,7 @@ public class WhiteSdk {
      * @since 2.11.2
      *
      * <p>
-     * 调用该方法预加载的字体可以用于显示 PPT 中的文字和教具输入的文字。
+     * 调用该方法预加载的字体可以用于显示 PPT 中的文字和白板工具输入的文字。
      * <p>
      * 该方法和 {@link #loadFontFaces loadFontFaces} 都可以声明在本地白板中可用的字体，区别是 `setupFontFaces` 没有回调，因为无法判断字体声明是否正确；`loadFontFaces` 会触发回调，报告每一种的预加载结果。
      *
@@ -322,15 +322,15 @@ public class WhiteSdk {
     }
 
     /**
-     * 设置文字教具在本地白板中使用的字体。
+     * 设置文字白板工具在本地白板中使用的字体。
      *
      * @since 2.11.2
      *
      * @note
      * - 该方法只对本地白板生效，不影响远端白板的字体显示。
-     * - 该方法只能设置文字教具使用的字体，不能用于 PPT 中的文字显示。
+     * - 该方法只能设置文字白板工具使用的字体，不能用于 PPT 中的文字显示。
      *
-     * @param names 字体名称。如果用户系统中不存在该字体，则文字教具无法使用该字体。请确保你已经调用 `setupFontFaces` 或 `loadFontFaces` 将指定字体加载到本地白板中。
+     * @param names 字体名称。如果用户系统中不存在该字体，则文字白板工具无法使用该字体。请确保你已经调用 `setupFontFaces` 或 `loadFontFaces` 将指定字体加载到本地白板中。
      *
      */
     public void updateTextFont(String[] names) {

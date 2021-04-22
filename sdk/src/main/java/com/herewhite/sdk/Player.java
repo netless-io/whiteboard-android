@@ -30,7 +30,10 @@ public class Player extends Displayer {
      *
      * @since 2.5.2
      *
-     * 该方法获取的是播放倍速，如 1.0、1.5、2.0 倍速，因此回放暂停时，返回值也不会为 0。
+     * @note
+     * - 该方法为同步调用。
+     * - 该方法获取的是播放倍速。例如，当返回值为 `2.0` 时，表示当前得播放速度是原速的 2 倍。
+     * - 回放暂停时，返回值也不会为 0。
      *
      * @return 白板回放的播放倍速。
      */
@@ -56,14 +59,14 @@ public class Player extends Displayer {
      *
      * @since 2.5.2
      *
-     * @note 该方位为异步调用。我们推荐你仅在调试或问题排查时使用。一般情况下可以使用同步方法 {@link #getPlaybackSpeed()} 进行获取。
+     * @note
+     * - 该方位为异步调用。我们推荐你仅在调试或问题排查时使用。一般情况下可以使用同步方法 {@link #getPlaybackSpeed() getPlaybackSpeed}[1/2] 获取播放速度。
+     * - 该方法获取的是播放倍速。例如，当返回值为 `2.0` 时，表示当前得播放速度是原速的 2 倍。
+     * - 回放暂停时，返回值也不会为 0。
      *
-     * <p>
-     * 该方法获取的是播放倍速，如 1.0、1.5、2.0 倍速，因此回放暂停时，返回值也不会为 0。
-     *
-     * @param promise Promise<Double> 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口了解获取白板回放倍速的结果：
-     *                - 如果获取成功，将返回白板回放的倍速。
-     *                - 如果获取失败，将返回错误信息。
+     * @param promise Promise<Double> 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getPlaybackSpeed` 的调用结果：
+     * - 如果获取成功，将返回白板回放的倍速。
+     * - 如果获取失败，将返回错误信息。
      */
     public void getPlaybackSpeed(final Promise<Double> promise) {
         bridge.callHandler("player.state.playbackSpeed", new OnReturnValue<Number>() {
@@ -147,13 +150,16 @@ public class Player extends Displayer {
     //region Get API
 
     /**
-     * 获取白板回放的阶段。该方法为同步调用。
+     * 获取白板回放的阶段。
      *
      * @since 2.4.0
      *
-     * 在 `Player` 生命周期内，你可以调用该方法获取白板回放当前所处的阶段。其中初始阶段为 `waitingFirstFrame`，表示正在等待白板回放的第一帧。
+     * 在 `Player` 生命周期内，你可以调用该方法获取白板回放当前所处的阶段。
      *
-     * @note 成功调用 {@link #stop()}、{@link #play()} 或 {@link #pause()} 等方法均会影响白板回放的阶段，但是通过该方法无法立即获取最新的白板回放阶段。此时，你可以调用 {@link getPhase(final Promise<PlayerPhase> promise) getPhase} 获取最新的回放阶段。
+     * @note
+     * - 该方法为同步调用。
+     * - 成功调用 {@link #stop()}、{@link #play()} 或 {@link #pause()} 等方法均会影响白板回放的阶段，但是通过该方法无法立即获取最新的白板回放阶段。
+     * 此时，你可以调用 {@link getPhase(final Promise<PlayerPhase> promise) getPhase} 获取最新的回放阶段。
      *
      * @return 白板回放的阶段，详见 {@link PlayerPhase}。
      *
@@ -163,12 +169,14 @@ public class Player extends Displayer {
     }
 
     /**
-     * 获取白板回放的阶段。该方法为异步调用。
-     * <p>
-     * 在 `Player` 生命周期内，你可以调用该方法获取白板回放当前所处的阶段。其中初始状态为 `waitingFirstFrame`，表示正在等待白板回放的第一帧。
+     * 获取白板回放的阶段。
+     *
+     * 在 `Player` 生命周期内，你可以调用该方法获取白板回放当前所处的阶段。
      *
      * @note
-     * 该方位为异步调用。我们推荐你仅在调试或问题排查时使用。一般情况下可以使用同步方法 {@link #getPlayerPhase()} 获取回放阶段。
+     * - 该方法为异步调用。我们推荐你仅在调试或问题排查时使用。一般情况下可以使用同步方法 {@link #getPlayerPhase() getPlayerPhase} 获取回放阶段。
+     * - 成功调用 {@link #stop()}、{@link #play()} 或 {@link #pause()} 等方法后，你无法通过 {@link #getPlayerPhase() getPlayerPhase} 立即获取最新的白板回放阶段。
+     * 此时，你可以调用 {@link getPhase(final Promise<PlayerPhase> promise) getPhase}。
      *
      * @param promise `Promise<PlayerPhase>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getPhase` 方法的调用结果：
      *                - 如果方法调用成功，将返回白板回放的阶段。
@@ -194,12 +202,13 @@ public class Player extends Displayer {
     }
 
     /**
-     * 获取白板回放的状态。该方法为同步调用。
+     * 获取白板回放的状态。
      *
      * @since 2.4.0
      *
-     * <p>
-     * 如果白板回放处于 `waitingFirstFrame` 阶段，则该方法返回 `null`。
+     * @note
+     * - 该方法为同步调用。
+     * - 如果白板回放处于 `waitingFirstFrame` 阶段，则该方法返回 `null`。
      *
      * @return 白板回放的状态，详见 {@link PlayerState}。
      *
@@ -212,9 +221,11 @@ public class Player extends Displayer {
     }
 
     /**
-     * 获取白板回放的状态。该方法为异步调用。
+     * 获取白板回放的状态。
      *
-     * @note 该方位为异步调用。我们推荐你仅在调试或问题排查时使用。一般情况下可以使用同步方法 {@link #getPlayerState()} 进行获取。
+     * @note
+     * - 该方法为异步调用。我们推荐你仅在调试或问题排查时使用。一般情况下可以使用同步方法 {@link #getPlayerState() getPlayerState}[1/2] 获取。
+     * - 如果白板回放处于 `waitingFirstFrame` 阶段，则该方法返回 `null`。
      *
      * @param promise `Promise<PlayerState>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getPlayerState` 方法调用的结果：
      *                - 如果方法调用成功，将返回白板回放状态，详见 {@link PlayerState}。
@@ -241,13 +252,15 @@ public class Player extends Displayer {
     }
 
     /**
-     * 获取白板回放的时间信息，该方法为同步调用。
+     * 获取白板回放的时间信息。
      *
      * @since 2.4.0
-     * <p>
+     *
      * 该方法获取的时间信息，包含当前的播放进度，回放的总时长，以及回放的起始时间，单位为毫秒。
      *
-     * @note 该方法获取的当前播放进度可能不准确。
+     * @note
+     * - 该方法为同步调用。
+     * - 该方法获取的当前播放进度可能不准确。
      *
      * @return 白板回放的时间信息，详见 {@link PlayerTimeInfo}。
      */

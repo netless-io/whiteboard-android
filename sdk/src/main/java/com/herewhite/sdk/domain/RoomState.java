@@ -14,9 +14,9 @@ public class RoomState extends WhiteDisplayerState {
     private Double zoomScale;
 
     /**
-     * 获取互动白板实时房间内当前的教具状态。
+     * 获取互动白板实时房间内当前的白板工具状态。
      *
-     * @return 教具状态，详见 {@link MemberState MemberState}。
+     * @return 白板工具状态，详见 {@link MemberState MemberState}。
      */
     public MemberState getMemberState() {
         return memberState;

@@ -5,7 +5,7 @@ package com.herewhite.sdk.domain;
  */
 
 /**
- * 教具名称。
+ * 白板工具名称。
  */
 public class Appliance {
     /**

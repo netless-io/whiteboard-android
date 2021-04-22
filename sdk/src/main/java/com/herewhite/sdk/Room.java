@@ -112,9 +112,10 @@ public class Room extends Displayer {
     /**
      * 修改互动白板实时房间的公共全局状态。
      * <p>
-     * 实时房间的 `globalState` 属性为公共全局变量，房间内所有用户看到的都是相同的 `globalState`，所有互动模式用户都可以读写。修改 `globalState` 属性会立即生效并同步给所有用户。
+     * 实时房间的 `globalState` 属性为公共全局变量，房间内所有用户都可以读取 `globalState`，互动模式用户可以修改 `globalState`。
+     * 修改后的 `globalState` 会立即同步给所有用户。
      *
-     * @param globalState 房间公共全局状态，自定义字段，可以传入 {@link GlobalState GlobalState} 子类。
+     * @param globalState 房间公共全局状态，详见 {@link GlobalState GlobalState}.
      */
     public void setGlobalState(GlobalState globalState) {
         syncRoomState.putProperty("globalState", globalState);
@@ -122,12 +123,12 @@ public class Room extends Displayer {
     }
 
     /**
-     * 修改房间内的教具状态。
+     * 修改房间内的白板工具状态。
      * <p>
      * 调用该方法会立刻更新房间的 {@link MemberState MemberState}。
-     * 你可以调用 {@link #getMemberState() getMemberState} 获取最新设置的教具状态。
+     * 你可以调用 {@link #getMemberState() getMemberState} 获取最新设置的白板工具状态。
      *
-     * @param memberState 需要修改的教具状态，详见 {@link MemberState MemberState}。
+     * @param memberState 需要修改的白板工具状态，详见 {@link MemberState MemberState}。
      */
     public void setMemberState(MemberState memberState) {
         syncRoomState.putProperty("memberState", memberState);
@@ -207,7 +208,7 @@ public class Room extends Displayer {
      *
      * @warning
      * 如果要设置 `disableSerialization(false)`，必须确保同一房间内所有用户使用的 SDK 满足以下版本要求，否则会导致 app 客户端崩溃。
-     * - Web SDK 2.9.2 或之后版本
+     * - Web SDK 2.9.3 或之后版本
      * - Android SDK 2.9.3 或之后版本
      * - iOS SDK 2.9.3 或之后版本
      *
@@ -249,16 +250,14 @@ public class Room extends Displayer {
      * 互动白板实时房间支持对用户设置以下视角模式：
      * - `Broadcaster`: 主播模式。
      * - `Follower`：跟随模式。
-     * - `Freedom'：（默认）自由模式。
+     * - `Freedom`：（默认）自由模式。
      * <p>
      * 该方法的设置会影响房间内所有用户的视角模式：
      * - 当房间内不存在主播模式的用户时，所有用户的视角都默认为自由模式。
      * - 当一个用户的视角设置为主播模式后，房间内其他所有用户（包括新加入房间的用户）的视角会被自动设置为跟随模式。
      * - 当跟随模式的用户进行白板操作时，其视角会自动切换为自由模式。你可以调用 {@link #disableOperations(boolean) disableOperations}(true) 禁止跟随模式的用户操作白板，以保证其保持跟随模式。
-     * <p>
-     * <p>
-     * 切换视角模式后，需要等待服务器更新 `BroadcastState` 属性，才能通过 {@link #getBroadcastState() getBroadcastState} 获取最新设置的视角模式。
-     * 这种情况下，你可以使用 {@link #getBroadcastState(Promise) getBroadcastState} 获取最新设置的视角模式。
+     *
+     * 该方法是异步操作。调用该方法后，你可以使用 {@link #getBroadcastState(Promise) getBroadcastState} 获取最新设置的视角模式。
      *
      * @param viewMode 视角模式，详见 {@link ViewMode ViewMode}。
      */
@@ -437,15 +436,15 @@ public class Room extends Displayer {
     }
 
     /**
-     * 获取当前的教具状态。
+     * 获取当前的白板工具状态。
      *
      * @since 2.4.0
      *
      * @note
      * - 该方法为同步调用。
-     * - 调用 {@link #setMemberState(MemberState)} 方法后，可以立即调用 {@link #getMemberState() getMemberState} 获取最新的教具状态。
+     * - 调用 {@link #setMemberState(MemberState)} 方法后，可以立即调用 {@link #getMemberState() getMemberState} 获取最新的白板工具状态。
      *
-     * @return 当前的教具状态，详见 {@link MemberState}。
+     * @return 当前的白板工具状态，详见 {@link MemberState}。
      *
      */
     public MemberState getMemberState() {
@@ -453,12 +452,12 @@ public class Room extends Displayer {
     }
 
     /**
-     * 获取当前的教具状态。
+     * 获取当前的白板工具状态。
      *
      * @note 该方法为异步调用。
      *
      * @param promise `Promise<MemberState>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getMemberState` 的调用结果：
-     *                - 如果方法调用成功，则返回教具状态，详见 {@link MemberState MemberState}。
+     *                - 如果方法调用成功，则返回白板工具状态，详见 {@link MemberState MemberState}。
      *                - 如果方法调用失败，则返回错误信息。
      */
     public void getMemberState(final Promise<MemberState> promise) {
@@ -789,7 +788,7 @@ public class Room extends Displayer {
      * 获取实时房间所有状态。
      *
      * @note
-     * - 该方法为同步调用。
+     * - 该方法为异步调用。
      * - 修改房间的状态属性后，无法立即通过 {@link #getRoomState() getRoomState} 获取最新的房间状态。此时，如果需要立即获取最新的房间状态，可以调用 {@link #getRoomState(Promise)} 获取。
      *
      * @param promise `Promise<RoomState>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getRoomState` 的调用结果：
@@ -842,6 +841,9 @@ public class Room extends Displayer {
      * 切换至指定的场景。
      * <p>
      * 方法调用成功后，房间内的所有用户看到的白板都会切换到指定场景。
+     *
+     * @note
+     * 该方法为异步调用。
      * <p>
      * 场景切换失败可能有以下原因：
      * - 路径不合法，请确保场景路径以 "/"，由场景组和场景名构成。
@@ -936,7 +938,6 @@ public class Room extends Displayer {
     /**
      * 删除场景或者场景组。
      *
-     * @param dirOrPath 场景组路径或者场景路径。如果传入的是场景组，则会删除该场景组下的所有场景。
      * @note
      * - 互动白板实时房间内必须至少有一个场景。当删除所有的场景后，SDK 会自动生成一个路径为 `/init` 初始场景（房间初始化时的默认场景）。
      * - 如果删除白板当前所在场景，白板会展示被删除场景所在场景组的最后一个场景
@@ -948,6 +949,8 @@ public class Room extends Displayer {
      *    如果存在，则将场景切换至当前场景组路径下的第一个场景（index 为 0）。
      *    3. 如果当前场景组路径下 `dirA` 后没有场景组，也不存在任何场景，则查看 `dirA` 前面是否存在场景组 `dirC`；如果存在，则选择 `dirC` 中的第一个场景（index 为 0）。
      *    4. 以上都不满足，则继续向上递归执行该逻辑。
+     *
+     * @param dirOrPath 场景组路径或者场景路径。如果传入的是场景组，则会删除该场景组下的所有场景。
      */
     public void removeScenes(String dirOrPath) {
         bridge.callHandler("room.removeScenes", new Object[]{dirOrPath});
@@ -1030,7 +1033,7 @@ public class Room extends Displayer {
      * <p>
      * 该方法设置是否禁止白板响应用户的操作，包括：
      * - `CameraTransform`：移动、缩放视角。
-     * - `DeviceInputs`：使用教具输入。
+     * - `DeviceInputs`：使用白板工具输入。
      *
      * @param disableOperations 允许/禁止白板响应用户任何操作。
      *                          - `true`：不响应用户操作。
@@ -1103,13 +1106,13 @@ public class Room extends Displayer {
     }
 
     /**
-     * 禁止/允许用户操作教具。
+     * 禁止/允许用户操作白板工具。
      *
      * @since 2.2.0
      *
-     * @param disableOperations 是否禁止用户操作教具：
-     *                          - `true`：禁止用户操作教具操作。
-     *                          - `false`：（默认）允许用户操作教具输入操作。
+     * @param disableOperations 是否禁止用户操作白板工具：
+     *                          - `true`：禁止用户操作白板工具操作。
+     *                          - `false`：（默认）允许用户操作白板工具输入操作。
      */
     public void disableDeviceInputs(final boolean disableOperations) {
         bridge.callHandler("room.disableDeviceInputs", new Object[]{disableOperations});
@@ -1119,11 +1122,11 @@ public class Room extends Displayer {
     //region Delay API
 
     /**
-     * 设置远端白板画面同步延时。
+     * 设置将本地用户的白板内容向远端同步的延时。
      * <p>
-     * 调用该方法后，SDK 会延迟同步远端白板画面。
+     * 调用该方法后，SDK 会根据设置的时长延迟将本地用户的白板内容同步给远端用户。
      * <p>
-     * 在 CDN 直播场景，设置远端白板画面同步延时，可以防止用户感知错位。
+     * 在 CDN 直播场景，设置白板延时，有助于白板内容和音视频内容同步。
      *
      * @note 该方法不影响本地白板画面的显示，即用户在本地白板上的操作，会立即在本地白板上显示。
      *

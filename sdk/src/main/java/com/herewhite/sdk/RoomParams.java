@@ -66,8 +66,8 @@ public class RoomParams extends WhiteObject {
      * 设置用户是否以互动模式加入白板房间。
      * <p>
      * 用户可以以以下模式加入互动白板实时房间：
-     * - 互动模式：对白板具有读写权限，会出现在房间的成员列表中。
-     * - 订阅模式：对白板具有只读权限，不会出现在房间的成员列表中，其他用户无法得知该用户的存在。
+     * - 互动模式：对白板具有读写权限，会出现在房间的成员列表中，对其他用户可见。
+     * - 订阅模式：对白板具有只读权限，不会出现在房间的成员列表中，对其他用户不可见。
      *
      * @param writable 用户是否以互动模式加入白板房间：
      *                 - `true`：（默认）以互动模式加入白板房间。
@@ -116,26 +116,26 @@ public class RoomParams extends WhiteObject {
     private boolean disableEraseImage = false;
 
     /**
-     * 获取是否禁止教具响应用户输入。
+     * 获取是否禁止白板工具响应用户输入。
      *
-     * @return 是否禁止教具响应用户输入：
-     * - `true`：禁止教具响应用户输入。
-     * - `false`：允许教具响应用户输入。
+     * @return 是否禁止白板工具响应用户输入：
+     * - `true`：禁止白板工具响应用户输入。
+     * - `false`：允许白板工具响应用户输入。
      */
     public boolean isDisableDeviceInputs() {
         return disableDeviceInputs;
     }
 
     /**
-     * 开启/禁止教具响应用户输入。
+     * 开启/禁止白板工具响应用户输入。
      *
      * @since 2.5.0
      *
      * @note 该方法会覆盖 {@link WhiteSdkConfiguration#setDisableDeviceInputs(boolean) setDisableDeviceInputs} 的设置。
      *
-     * @param disableDeviceInputs 是否禁止教具响应用户输入：
-     *   - `true`：禁止教具响应用户输入。
-     *   - `false`：（默认）允许教具响应用户输入。
+     * @param disableDeviceInputs 是否禁止白板工具响应用户输入：
+     *   - `true`：禁止白板工具响应用户输入。
+     *   - `false`：（默认）允许白板工具响应用户输入。
      */
     public void setDisableDeviceInputs(boolean disableDeviceInputs) {
         this.disableDeviceInputs = disableDeviceInputs;
@@ -159,7 +159,7 @@ public class RoomParams extends WhiteObject {
      *
      * @deprecated 该方法已废弃。请使用 {@link #setDisableDeviceInputs(boolean) setDisableDeviceInputs} 和 {@link #setDisableCameraTransform(boolean) setDisableCameraTransform}。
      * <p>
-     * 禁止白板响应用户任何操作后，用户无法使用教具输入内容，也无法对白板进行视角缩放和视角移动。
+     * 禁止白板响应用户任何操作后，用户无法使用白板工具输入内容，也无法对白板进行视角缩放和视角移动。
      *
      * @param disableOperations 是否禁止白板响应用户的操作：
      *  - `true`：禁止白板响应用户的操作。
@@ -279,14 +279,12 @@ public class RoomParams extends WhiteObject {
      *
      * @since 2.0.0
      *
-     * @note
-     * - 必须使用 {@link WhiteObject} 子类，以保证字段结构正确
-     * - 自定义的用户信息会被完整透传。
-     * <p>
-     * 如果要在白板房间中显示用户头像，请在 `userPayload` 中传入 `avatar` 字段并添加用户头像的地址，例如 `"avatar", "https://example.com/user.png")`。
-     * 从 {@link MemberInformation MemberInformation} 迁移，只需要在 `userPayload` 中，传入相同字段即可。
+     * 你可以在 `userPayload` 中传入自定义的用户信息，例如用户ID，昵称和头像，然后调用此方法将信息发送给应用程序。
      *
-     * @param userPayload 自定义的用户信息，必须为 key-value 结构。
+     * @note
+     * 为确保传入的 `userPayload` 格式正确，必须使用 {@link WhiteObject} 子类。
+     *
+     * @param userPayload 自定义的用户信息，必须为 key-value 结构，例如，`"avatar", "https://example.com/user.png")`。
      */
     public void setUserPayload(Object userPayload) {
         this.userPayload = userPayload;
@@ -297,8 +295,8 @@ public class RoomParams extends WhiteObject {
     /**
      * 初始化房间配置参数。
      *
-     * @param uuid      房间 UUID， 即房间唯一标识符。
-     * @param roomToken 用于鉴权的 Room Token。生成该 Room Token 的房间 UUID 必须和上面传入的房间 UUID 一致。
+     * @param uuid      房间 UUID， 即房间唯一标识符。传入的房间 UUID 必须和生成 Room Token 时填入的房间 UUID 一致。
+     * @param roomToken 用于鉴权的 Room Token。
      */
     public RoomParams(String uuid, String roomToken) {
         this(uuid, roomToken, (Object) null);
@@ -309,10 +307,10 @@ public class RoomParams extends WhiteObject {
      *
      * @deprecated 该方法已经废弃。请使用 {@link RoomParams(String, String, Object) RoomParams}。
      *
-     * @param uuid       房间 UUID， 即房间唯一标识符。
-     * @param roomToken  用于鉴权的 Room Token。生成该 Room Token 的房间 UUID 必须和上面传入的房间 UUID 一致。
-     * @param memberInfo 用户信息。{@link MemberInformation MemberInformation} 类已经废弃。请使用 {@link #RoomParams(String, String, Object)} 传入用户信息。
-     * @deprecated 该方法已经废弃。请使用 {@link RoomParams(String, String, Object) RoomParams}。
+     * @param uuid       房间 UUID， 即房间唯一标识符。传入的房间 UUID 必须和生成 Room Token 时填入的房间 UUID 一致。
+     * @param roomToken  用于鉴权的 Room Token。
+     * @param memberInfo 自定义用户信息，详见 {@link MemberInformation MemberInformation}。
+     *
      */
     @Deprecated
     public RoomParams(String uuid, String roomToken, MemberInformation memberInfo) {
@@ -326,8 +324,8 @@ public class RoomParams extends WhiteObject {
      *
      * @since 2.0.0
      *
-     * @param uuid        房间 UUID， 即房间唯一标识符。
-     * @param roomToken   用于鉴权的 Room Token。生成该 Room Token 的房间 UUID 必须和上面传入的房间 UUID 一致。
+     * @param uuid        房间 UUID， 即房间唯一标识符。传入的房间 UUID 必须和生成 Room Token 时填入的房间 UUID 一致。
+     * @param roomToken   用于鉴权的 Room Token。
      * @param userPayload 自定义用户信息，必须为 {@link WhiteObject} 子类。
      */
     public RoomParams(String uuid, String roomToken, Object userPayload) {

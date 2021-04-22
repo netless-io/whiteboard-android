@@ -60,11 +60,9 @@ public interface RoomListener {
     void onCanRedoStepsUpdate(long canRedoSteps);
 
     /**
-     * 同步用户行为发生错误回调。
+     * 同步用户操作发生错误回调。
      *
-     * @note 该回调通常是可以忽略的，你可以根据业务情况自行决定是否监听。
-     *
-     * @param userId 用户 ID。
+     * @param userId 用户 ID，表明在同步哪个用户的操作时发生了错误。
      * @param error  错误原因。
      */
     void onCatchErrorWhenAppendFrame(long userId, Exception error);

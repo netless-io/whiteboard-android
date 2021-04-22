@@ -1,7 +1,7 @@
 package com.herewhite.sdk.combinePlayer;
 
 /**
- * 本地视频播放器接口。
+ * `NativePlayer` 接口。
  *
  * @since 2.4.23
  */

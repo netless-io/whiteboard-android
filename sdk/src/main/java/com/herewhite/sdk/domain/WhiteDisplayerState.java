@@ -50,9 +50,12 @@ public class WhiteDisplayerState extends WhiteObject {
     }
 
     /**
-     * 获取房间中所有的互动模式（具有读写权限）的用户。
+     * 获取房间的用户列表。
      *
-     * @return 互动模式（具有读写权限）的用户列表，详见 {@link RoomMember}。
+     * @note
+     * 房间的用户列表仅包含互动模式（具有读写权限）的用户，不包含订阅模式（只读权限）的用户。
+     *
+     * @return 用户列表，详见 {@link RoomMember RoomMember}。
      */
     public RoomMember[] getRoomMembers() {
         return roomMembers;

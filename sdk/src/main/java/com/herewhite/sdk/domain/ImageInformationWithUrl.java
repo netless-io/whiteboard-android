@@ -1,7 +1,7 @@
 package com.herewhite.sdk.domain;
 
 /**
- * 图片信息及图片的 URL 地址。
+ * 图片的位置和尺寸信息及图片的 URL 地址。
  */
 public class ImageInformationWithUrl extends WhiteObject {
 

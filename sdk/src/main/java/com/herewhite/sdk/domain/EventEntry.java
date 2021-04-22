@@ -1,7 +1,7 @@
 package com.herewhite.sdk.domain;
 
 /**
- * `EventEntry` 类。该类包含 SDK 可以触发的自定义事件回调。
+ * `EventEntry` 类，用于获取自定义事件。
  */
 public class EventEntry extends WhiteObject {
     private String eventName;

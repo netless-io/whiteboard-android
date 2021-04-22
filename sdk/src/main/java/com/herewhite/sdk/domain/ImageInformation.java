@@ -18,10 +18,8 @@ public class ImageInformation extends WhiteObject {
     /**
      * 获取是否锁定图片。
      *
-     * 图片被锁定后，用户无法移动或缩放图片。
-     *
      * @return 是否锁定图片：
-     * - `true`：锁定。
+     * - `true`：锁定。图片被锁定后，用户无法移动或缩放图片。
      * - `false`：不锁定。
      */
     public Boolean getLocked() {

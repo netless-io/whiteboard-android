@@ -203,7 +203,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
     /**
      * FIXME: 该 API 会 {@link RoomParams#setDisableDeviceInputs(boolean)} 覆盖，需要删除。
-     * 禁止教具输入，使用该功能后，终端客户无法使用教具书写内容
+     * 禁止白板工具输入，使用该功能后，终端客户无法使用白板工具书写内容
      *
      * @param disableDeviceInputs
      * @since 2.9.0

@@ -15,20 +15,20 @@ public class PlayerConfiguration extends WhiteObject {
     private Long step = 500L;
 
     /**
-     * 获取待回放的互动白板房间所在的数据中心。
+     * 获取 `Player` 实例的数据中心。
      *
-     * @return 待回放的互动白板房间所在的数据中心。，详见 {@link Region Region}。
+     * @return `Player` 实例的数据中心。详见 {@link Region Region}。
      */
     public Region getRegion() {
         return region;
     }
 
     /**
-     * 设置待回放的互动白板房间所在的数据中心。
+     * 设置 `Player` 实例的数据中心。
      *
-     * 该方法设置的数据中心必须与初始化互动白板房间实例时设置的数据中心一致。
+     * 如果你不调用该方法，SDK 默认使用 {@link com.herewhite.sdk.WhiteSdkConfiguration WhiteSdkConfiguration} 中设置的数据中心。
      *
-     * @param region 待回放的互动白板房间所在的数据中心，详见 {@link Region Region}。
+     * @param region `Player` 实例的数据中心。详见 {@link Region Region}。
      */
     public void setRegion(Region region) {
         this.region = region;
@@ -39,8 +39,8 @@ public class PlayerConfiguration extends WhiteObject {
     /**
      * 回放房间的构造方法，用于初始化回放房间实例。
      *
-     * @param room      房间 UUID，即房间唯一标识符，必须和初始化互动白板房间实例时设置的房间 UUID 一致。
-     * @param roomToken 用于鉴权的 Room Token，必须和初始化互动白板房间实例时设置的 Room Token 一致。
+     * @param room      房间 UUID，即房间唯一标识符，必须和加入互动白板房间实例时设置的房间 UUID 一致。
+     * @param roomToken 用于鉴权的 Room Token，必须是使用上面传入的房间 UUID 生成的 Room Token。
      */
     public PlayerConfiguration(String room, String roomToken) {
         this.room = room;
@@ -48,7 +48,7 @@ public class PlayerConfiguration extends WhiteObject {
     }
 
     /**
-     * 获取本地用户观看回放时的视角边界。
+     * 获取本地用户的视角边界。
      *
      * @return 视角边界，详见 {@link CameraBound CameraBound}。
      */
@@ -57,7 +57,7 @@ public class PlayerConfiguration extends WhiteObject {
     }
 
     /**
-     * 设置本地用户观看回放时的视角边界。
+     * 设置本地用户的视角边界。
      *
      * 该方法设置的视角边界必须和 {@link com.herewhite.sdk.RoomParams#setCameraBound(CameraBound)} 中设置视角边界一致。
      *
@@ -140,7 +140,7 @@ public class PlayerConfiguration extends WhiteObject {
     }
 
     /**
-     * 白板回放的起始时间。
+     * 获取白板回放的起始时间。
      *
      * @return Unix 时间戳（毫秒），表示回放的起始 UTC 时间。
      */
@@ -151,16 +151,14 @@ public class PlayerConfiguration extends WhiteObject {
     /***
      * 设置白板回放的起始时间。
      *
-     * 在该方法中，你需要传入单位为毫秒的 Unix 时间戳，表示 UTC 时间，例如，如果要将回放的起始时间设为 2021-03-10 18:03:34 GMT+0800，你需要传入 `1615370614269`。
-     *
-     * @param beginTimestamp Unix 时间戳（毫秒），表示回放的起始 UTC 时间。例如，`1615370614269` 表示 2021-03-10 18:03:34 GMT+0800。
+     * @param beginTimestamp Unix 时间戳（毫秒），表示回放的起始 UTC 时间。例如，如果要将回放的起始时间设为 2021-03-10 18:03:34 GMT+0800，你需要传入 `1615370614269`。
      */
     public void setBeginTimestamp(Long beginTimestamp) {
         this.beginTimestamp = beginTimestamp;
     }
 
     /**
-     * 设置回放的持续时长。
+     * 获取回放的持续时长。
      *
      * @return 回放的持续时长，单位为毫秒。
      */
