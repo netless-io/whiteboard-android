@@ -1,7 +1,10 @@
 # 版本更新记录
+## [2.12.21] - 2021-04-22
 - 支持 Converter V5
 - 变更 Converter.ConvertType 为独立 ConvertType, 影响 ConvertedFiles `getType`
 - 变更 RoomListener 及 PlayerListener 由主线程回调
+- 更新`white-web-sdk`至 2.12.13
+- 更新`@netless/iframe-bridge`至 2.12.17,优化回放时 iframe 插件逻辑
 ## [2.12.20] - 2021-04-17
 - 更新`white-web-sdk`至 2.12.12
 ## [2.12.19] - 2021-04-14
