@@ -1,6 +1,6 @@
 # 版本更新记录
 ## [2.12.21] - 2021-04-22
-- 支持 Converter V5
+- 接入 V5 版本的 PPT 转换，支持生成 PPT 预览图，静态图片缩放。具体参考 ConverterV5
 - 变更 Converter.ConvertType 为独立 ConvertType, 影响 ConvertedFiles `getType`
 - 变更 RoomListener 及 PlayerListener 由主线程回调
 - 更新`white-web-sdk`至 2.12.13
