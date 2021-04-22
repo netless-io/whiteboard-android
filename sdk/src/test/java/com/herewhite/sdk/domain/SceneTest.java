@@ -16,7 +16,7 @@ public class SceneTest {
                 .create();
 
 
-        String old = "[{\"componentsCount\":null,\"ppt\":{\"height\":500,\"width\":500,\"src\":\"https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/alin-rusu-1239275-unsplash_opt.jpg\"},\"name\":\"page1\"},{\"ppt\":{\"height\":600,\"width\":600,\"src\":\"https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/alin-rusu-1239275-unsplash_opt.jpg\"},\"componentsCount\":null,\"name\":\"page2\"}]";
+        String old = "[{\"componentsCount\":null,\"ppt\":{\"preview\":null,\"height\":500,\"width\":500,\"src\":\"https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/alin-rusu-1239275-unsplash_opt.jpg\"},\"name\":\"page1\"},{\"ppt\":{\"preview\":null,\"height\":600,\"width\":600,\"src\":\"https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/alin-rusu-1239275-unsplash_opt.jpg\"},\"componentsCount\":null,\"name\":\"page2\"}]";
         Scene[] s = new Scene[]{
                 new Scene("page1", new PptPage("https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/alin-rusu-1239275-unsplash_opt.jpg", 500d, 500d)),
                 new Scene("page2", new PptPage("https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/alin-rusu-1239275-unsplash_opt.jpg", 600d, 600d))

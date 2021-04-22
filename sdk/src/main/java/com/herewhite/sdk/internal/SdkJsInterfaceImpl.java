@@ -1,18 +1,21 @@
-package com.herewhite.sdk;
+package com.herewhite.sdk.internal;
 
 import android.webkit.JavascriptInterface;
 
+import androidx.annotation.Nullable;
+
+import com.google.gson.Gson;
+import com.herewhite.sdk.CommonCallback;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
-import com.herewhite.sdk.internal.Logger;
 
 import org.json.JSONObject;
 
 import java.util.Map;
 
-import androidx.annotation.Nullable;
+public class SdkJsInterfaceImpl {
+    private final static Gson gson = new Gson();
 
-class SdkJsInterfaceImpl {
     @Nullable
     private CommonCallback commonCallback;
     @Nullable
@@ -22,7 +25,7 @@ class SdkJsInterfaceImpl {
         this.commonCallback = commonCallback;
     }
 
-    public void setCommonCallbacks(@Nullable CommonCallbacks commonCallbacks) {
+    public void setCommonCallbacks(@Nullable CommonCallback commonCallbacks) {
         this.commonCallback = commonCallbacks;
     }
 
@@ -47,7 +50,7 @@ class SdkJsInterfaceImpl {
 
     @JavascriptInterface
     public void throwError(Object args) {
-        Logger.info("WhiteSDK JS error: " + Utils.fromJson(String.valueOf(args), Map.class));
+        Logger.info("WhiteSDK JS error: " + gson.fromJson(String.valueOf(args), Map.class));
         if (commonCallback != null) {
             commonCallback.throwError(args);
         }
@@ -55,7 +58,7 @@ class SdkJsInterfaceImpl {
 
     @JavascriptInterface
     public void logger(Object args) {
-        Logger.info("WhiteSDK logger: " + Utils.fromJson(String.valueOf(args), Map.class));
+        Logger.info("WhiteSDK logger: " + gson.fromJson(String.valueOf(args), Map.class));
     }
 
     @JavascriptInterface

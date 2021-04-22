@@ -13,6 +13,17 @@ public class ConversionInfo extends WhiteObject {
         Fail
     }
 
+    enum ServerConversionStep {
+        // 资源提取
+        Extracting,
+        // 资源打包
+        Packaging,
+        // 生成预览图
+        GeneratingPreview,
+        // 媒体转码
+        MediaTranscode,
+    }
+
     public PptPage[] getConvertedFileList() {
         return convertedFileList;
     }
@@ -23,6 +34,10 @@ public class ConversionInfo extends WhiteObject {
 
     public ServerConversionStatus getConvertStatus() {
         return convertStatus;
+    }
+
+    public void setConvertStatus(ServerConversionStatus status) {
+        convertStatus = status;
     }
 
     public String getPrefix() {
@@ -48,4 +63,5 @@ public class ConversionInfo extends WhiteObject {
     private Integer totalPageSize;
     private Integer convertedPageSize;
     private Double convertedPercentage;
+    private ServerConversionStep currentStep;
 }

@@ -58,6 +58,10 @@ public class DemoAPI {
         return demoUUID;
     }
 
+    public String getSdkToken() {
+        return sdkToken;
+    }
+
     private OkHttpClient client = new OkHttpClient();
     private Gson gson = new Gson();
 

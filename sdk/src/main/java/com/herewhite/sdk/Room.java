@@ -1,5 +1,7 @@
 package com.herewhite.sdk;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.AkkoEvent;
@@ -22,12 +24,12 @@ import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.SceneState;
 import com.herewhite.sdk.domain.ViewMode;
 import com.herewhite.sdk.internal.Logger;
+import com.herewhite.sdk.internal.RoomDelegate;
 
 import org.json.JSONObject;
 
 import java.util.UUID;
 
-import androidx.annotation.Nullable;
 import wendu.dsbridge.OnReturnValue;
 
 /**
@@ -1141,37 +1143,47 @@ public class Room extends Displayer {
 
         @Override
         public void fireCanUndoStepsUpdate(long canUndoSteps) {
-            if (roomListener != null) {
-                roomListener.onCanUndoStepsUpdate(canUndoSteps);
-            }
+            post(() -> {
+                if (roomListener != null) {
+                    roomListener.onCanUndoStepsUpdate(canUndoSteps);
+                }
+            });
         }
 
         @Override
         public void onCanRedoStepsUpdate(long canRedoSteps) {
-            if (roomListener != null) {
-                roomListener.onCanRedoStepsUpdate(canRedoSteps);
-            }
+            post(() -> {
+                if (roomListener != null) {
+                    roomListener.onCanRedoStepsUpdate(canRedoSteps);
+                }
+            });
         }
 
         @Override
         public void fireKickedWithReason(String reason) {
-            if (roomListener != null) {
-                roomListener.onKickedWithReason(reason);
-            }
+            post(() -> {
+                if (roomListener != null) {
+                    roomListener.onKickedWithReason(reason);
+                }
+            });
         }
 
         @Override
         public void fireDisconnectWithError(Exception exception) {
-            if (roomListener != null) {
-                roomListener.onDisconnectWithError(exception);
-            }
+            post(() -> {
+                if (roomListener != null) {
+                    roomListener.onDisconnectWithError(exception);
+                }
+            });
         }
 
         @Override
         public void fireCatchErrorWhenAppendFrame(long userId, Exception exception) {
-            if (roomListener != null) {
-                roomListener.onCatchErrorWhenAppendFrame(userId, exception);
-            }
+            post(() -> {
+                if (roomListener != null) {
+                    roomListener.onCatchErrorWhenAppendFrame(userId, exception);
+                }
+            });
         }
 
         @Override

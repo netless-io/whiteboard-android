@@ -1,4 +1,4 @@
-package com.herewhite.sdk;
+package com.herewhite.sdk.internal;
 
 import android.webkit.JavascriptInterface;
 
@@ -7,18 +7,17 @@ import com.google.gson.JsonObject;
 import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.PlayerPhase;
 import com.herewhite.sdk.domain.SDKError;
-import com.herewhite.sdk.internal.JsCallWrapper;
 
 /**
  * Created by buhe on 2018/8/12.
  */
 
-class PlayerJsInterfaceImpl {
+public class PlayerJsInterfaceImpl {
     private final static Gson gson = new Gson();
 
     private PlayerDelegate player;
 
-    void setPlayer(PlayerDelegate player) {
+    public void setPlayer(PlayerDelegate player) {
         this.player = player;
     }
 

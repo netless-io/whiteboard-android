@@ -15,5 +15,20 @@ public enum Region {
      * 美国硅谷。
      */
     @SerializedName("us-sv")
-    us;
+    us,
+    /**
+     * 新加坡。
+     */
+    @SerializedName("sg")
+    sg,
+    /**
+     * 印度孟买。
+     */
+    @SerializedName("in-mum")
+    in_mum,
+    /**
+     * 英国伦敦。
+     */
+    @SerializedName("gb-lon")
+    gb_lon;
 }
