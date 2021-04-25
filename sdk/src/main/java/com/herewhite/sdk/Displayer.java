@@ -35,7 +35,8 @@ import androidx.annotation.VisibleForTesting;
 import wendu.dsbridge.OnReturnValue;
 
 /**
- * `Displayer` 类。该类为白板房间的基类。
+ * `Displayer` 类。该类为 {@link com.herewhite.sdk.Room Room} 类和 {@link com.herewhite.sdk.Player Player} 类的父类。
+ * `Room` 和 `Player` 类可以继承该类下的方法。
  */
 public class Displayer {
     protected final static Gson gson = new Gson();
@@ -94,8 +95,6 @@ public class Displayer {
      * 向 iframe 插件发送 key-value 格式的信息。
      *
      * @since 2.11.4
-     *
-     * 你可以通过创建 WhiteObject 的子类来创建一个 key-value 格式的信息。
      *
      * @param object key-value 格式的信息，必须为 {@link com.herewhite.sdk.domain.WhiteObject WhiteObject} 的子类。
      *
@@ -223,7 +222,7 @@ public class Displayer {
     /**
      * 转换白板上点的坐标。
      * <p>
-     * 该方法可以将 Android 内部坐标系（以屏幕左上角为原点，横轴为 X 轴，正方向向右，纵轴为 Y 轴，正方向向下）中的坐标转换为世界坐标系（以白板初始化时的中点为原点，横轴为 X 轴，正方向向右，纵轴为 Y 轴，正方向向下）坐标。
+     * 该方法可以将 Android 内部坐标系（以屏幕左上角为原点）中的坐标转换为世界坐标系（以白板初始化时的中点为原点）坐标。
      *
      * @param x       点在 Android 坐标系中的 X 轴坐标。
      * @param y       点在 Android 坐标系中的 Y 轴坐标。
@@ -262,7 +261,7 @@ public class Displayer {
     }
 
     /**
-     * 设置白板背景色。
+     * 设置白板的背景色。
      *
      * @since 2.4.14
      *
@@ -270,7 +269,7 @@ public class Displayer {
      *
      * @note 该方法仅对本地白板有效，不会影响房间内其他用户白板的背景色。
      *
-     * @param intColor 白板的背景色，格式为 16 进制 ARGB 定义下的 Hex 值。。注意 A 属性不能达到使白板透明的效果。
+     * @param intColor 白板的背景色，格式为 16 进制 RGBA 定义下的 Hex 值。注意 A 属性不能达到使白板透明的效果。
      */
     @Deprecated
     public void setBackgroundColor(@ColorInt int intColor) {
@@ -293,8 +292,6 @@ public class Displayer {
      * @since 2.4.0
      *
      * @deprecated 该方法已废弃。
-     *
-     * @note 该方法仅对本地白板有效，不会影响房间内其他用户白板的背景色。
      *
      * @return 本地白板的背景色，格式为 16 进制 ARGB 定义下的 Hex 值。
      */
