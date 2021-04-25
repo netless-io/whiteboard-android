@@ -68,10 +68,10 @@ public class ContentModeConfig extends WhiteObject {
      * @param scale 视角边界的缩放比例，默认值为 1.0，即保持视角边界的原始大小。
      *
      * @note 该方法仅在以下缩放模式下生效：
-     * - {@link ScaleMode#CENTER}
-     * - {@link ScaleMode#CENTER_INSIDE}
-     * - {@link ScaleMode#CENTER_INSIDE_SCALE}
-     * - {@link ScaleMode#CENTER_CROP_SPACE}
+     * - `CENTER`
+     * - `CENTER_INSIDE`
+     * - `CENTER_INSIDE_SCALE`
+     * - `CENTER_CROP_SPACE`
      */
     public void setScale(Double scale) {
         this.scale = scale;
@@ -89,7 +89,7 @@ public class ContentModeConfig extends WhiteObject {
     /**
      * 设置在视角边界的四周填充的空白空间。
      *
-     * @note 该方法仅在 {@link ScaleMode#CENTER_INSIDE_SPACE} 缩放模式下生效。
+     * @note 该方法仅在 `CENTER_INSIDE_SPACE` 缩放模式下生效。
      *
      * @param space 在视角边界的四周填充的空白空间，单位为像素，默认值为 0。
      *
@@ -101,7 +101,7 @@ public class ContentModeConfig extends WhiteObject {
     /**
      * 获取视角边界的缩放模式。
      *
-     * @return 视角边界的缩放模式，详见 {@link ScaleMode ScaleMode}。
+     * @return 视角边界的缩放模式，详见 {@link com.herewhite.sdk.domain.ContentModeConfig#ScaleMode ScaleMode}。
      */
     public ScaleMode getMode() {
         return mode;
@@ -110,7 +110,7 @@ public class ContentModeConfig extends WhiteObject {
     /**
      * 设置视角边界的缩放模式。
      *
-     * @param mode 视角边界的缩放模式，详见 {@link ScaleMode ScaleMode}。
+     * @param mode 视角边界的缩放模式，详见 {@link com.herewhite.sdk.domain.ContentModeConfig#ScaleMode ScaleMode}。
      */
     public void setMode(ScaleMode mode) {
         this.mode = mode;

@@ -35,7 +35,7 @@ import androidx.annotation.VisibleForTesting;
 import wendu.dsbridge.OnReturnValue;
 
 /**
- * Displayer 类。该类为白板房间的基类。
+ * `Displayer` 类。该类为白板房间的基类。
  */
 public class Displayer {
     protected final static Gson gson = new Gson();
@@ -52,6 +52,7 @@ public class Displayer {
     @VisibleForTesting
     ConcurrentHashMap<String, FrequencyEventListener> frequencyEventListenerMap = new ConcurrentHashMap<>();
 
+    /// @cond test
     /**
      * Displayer 类的构造函数。
      *
@@ -65,6 +66,7 @@ public class Displayer {
         this.bridge = bridge;
         this.densityDpi = densityDpi;
     }
+    /// @endcond
 
     private Handler getHandler() {
         if (handler == null) {
@@ -95,7 +97,7 @@ public class Displayer {
      *
      * 你可以通过创建 WhiteObject 的子类来创建一个 key-value 格式的信息。
      *
-     * @param object key-value 格式的信息，必须为 {@link WhiteObject} 的子类。
+     * @param object key-value 格式的信息，必须为 {@link com.herewhite.sdk.domain.WhiteObject WhiteObject} 的子类。
      *
      */
     public void postIframeMessage(WhiteObject object) {
@@ -108,8 +110,8 @@ public class Displayer {
      * 你可以在该方法中指定想要查询的场景路径，SDK 会返回该路径对应的场景类型。
      *
      * @param path    想要查询的场景路径。
-     * @param promise `Promise<WhiteScenePathType>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getScenePathType` 方法的调用结果：
-     *                - 如果方法调用成功，将返回场景路径类型。
+     * @param promise `Promise<WhiteScenePathType>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `getScenePathType` 方法的调用结果：
+     *                - 如果方法调用成功，将返回场景路径类型。详见 {@link com.herewhite.sdk.domain.WhiteScenePathType WhiteScenePathType}。
      *                - 如果方法调用失败，将返回错误信息。
      */
     public void getScenePathType(String path, final Promise<WhiteScenePathType> promise) {
@@ -126,7 +128,7 @@ public class Displayer {
     /**
      * 获取当前房间内所有场景的信息。
      *
-     * @param promise `Promise<Map<String, Scene[]>>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getEntireScenes` 方法的调用结果：
+     * @param promise `Promise<Map<String, Scene[]>>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `getEntireScenes` 方法的调用结果：
      *                - 如果方法调用成功，将返回当前房间内所有场景的信息。
      *                - 如果方法调用失败，将返回错误信息。
      */
@@ -165,7 +167,7 @@ public class Displayer {
      *
      * @since 2.4.28
      *
-     * @param mode 视角调整时的动画模式，详见 {@link AnimationMode}。
+     * @param mode 视角调整时的动画模式，详见 {@link com.herewhite.sdk.domain.AnimationMode AnimationMode}。
      */
     public void scalePptToFit(AnimationMode mode) {
         String modeString = gson.fromJson(gson.toJson(mode), String.class);
@@ -180,7 +182,7 @@ public class Displayer {
      * @note 对于同名的自定义事件，SDK 仅支持触发一个回调。
      *
      * @param eventName     想要监听的自定义事件名称。
-     * @param eventListener 自定义事件回调，详见 {@link EventListener}。如果添加多个同名的事件回调，则之前添加的回调会被覆盖。
+     * @param eventListener 自定义事件回调，详见 {@link com.herewhite.sdk.domain.EventListener EventListener}。如果添加多个同名的事件回调，则之前添加的回调会被覆盖。
      *
      */
     public void addMagixEventListener(String eventName, EventListener eventListener) {
@@ -196,7 +198,7 @@ public class Displayer {
      * @note 对于同名的自定义事件，SDK 仅支持触发一个回调。
      *
      * @param eventName     想要监听的自定义事件名称。
-     * @param eventListener 自定义事件回调，详见 {@link FrequencyEventListener}。如果添加多个同名的事件回调，则之前添加的回调会被覆盖。
+     * @param eventListener 自定义事件回调，详见 {@link com.herewhite.sdk.domain.FrequencyEventListener FrequencyEventListener}。如果添加多个同名的事件回调，则之前添加的回调会被覆盖。
      * @param fireInterval  SDK 触发回调的频率，单位为毫秒。该参数最小值为 500 ms，如果设置为低于该值会被重置为 500 ms。
      */
     public void addHighFrequencyEventListener(String eventName, FrequencyEventListener eventListener, Integer fireInterval) {
@@ -225,8 +227,8 @@ public class Displayer {
      *
      * @param x       点在 Android 坐标系中的 X 轴坐标。
      * @param y       点在 Android 坐标系中的 Y 轴坐标。
-     * @param promise 'Promise<Point>' 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `convertToPointInWorld` 的调用结果：
-     *                - 如果方法调用成功，将返回点在世界坐标系上的坐标。
+     * @param promise `Promise<Point>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `convertToPointInWorld` 的调用结果：
+     *                - 如果方法调用成功，将返回点在世界坐标系上的坐标。详见 {@link com.herewhite.sdk.domain.Point Point}。
      *                - 如果方法调用失败，将返回错误信息。
      */
     public void convertToPointInWorld(double x, double y, final Promise<Point> promise) {
@@ -253,7 +255,7 @@ public class Displayer {
      *
      * @since 2.5.0
      *
-     * @param bound 视角边界，详见 {@link CameraBound}。
+     * @param bound 视角边界，详见 {@link com.herewhite.sdk.domain.CameraBound CameraBound}。
      */
     public void setCameraBound(CameraBound bound) {
         this.bridge.callHandler("displayer.setCameraBound", new Object[]{bound});
@@ -264,7 +266,7 @@ public class Displayer {
      *
      * @since 2.4.14
      *
-     * @deprecated 该方法已废弃，请改用 {@link WhiteboardView#setBackgroundColor(int)}。
+     * @deprecated 该方法已废弃，请改用 Android 系统的 [setBackgroundColor](https://developer.android.com/reference/android/view/View#setBackgroundColor(int)) 方法。
      *
      * @note 该方法仅对本地白板有效，不会影响房间内其他用户白板的背景色。
      *
@@ -290,6 +292,8 @@ public class Displayer {
      *
      * @since 2.4.0
      *
+     * @deprecated 该方法已废弃。
+     *
      * @note 该方法仅对本地白板有效，不会影响房间内其他用户白板的背景色。
      *
      * @return 本地白板的背景色，格式为 16 进制 ARGB 定义下的 Hex 值。
@@ -299,12 +303,12 @@ public class Displayer {
     }
 
     /**
-     * 获取特定场景的预览图。
+     * 获取指定场景的预览图。
      *
      * @since 2.3.0
      *
      * @param scenePath 场景路径。
-     * @param promise   `Promise<Bitmap>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getScenePreviewImage` 方法的调用结果：
+     * @param promise   `Promise<Bitmap>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `getScenePreviewImage` 方法的调用结果：
      *                  - 如果方法调用成功，将返回指定场景的预览图。
      *                  - 如果方法调用失败，将返回错误码。
      */
@@ -326,12 +330,12 @@ public class Displayer {
     }
 
     /**
-     * 获取特定场景的截图。
+     * 获取指定场景的截图。
      *
      * @since 2.3.0
      *
      * @param scenePath 场景路径。
-     * @param promise   `Promise<Bitmap>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getSceneSnapshotImage` 方法的调用结果：
+     * @param promise   `Promise<Bitmap>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `getSceneSnapshotImage` 方法的调用结果：
      *                  - 如果方法调用成功，将返回指定场景的截图。
      *                  - 如果方法调用失败，将返回错误信息。
      */
@@ -382,7 +386,7 @@ public class Displayer {
      *
      * 调用该方法后，SDK 会根据传入的参数调整视角。
      *
-     * @param camera 视角的参数配置，详见 {@link CameraConfig}。
+     * @param camera 视角的参数配置，详见 {@link com.herewhite.sdk.domain.CameraConfig CameraConfig}。
      */
     public void moveCamera(CameraConfig camera) {
         this.bridge.callHandler("displayer.moveCamera", new Object[]{camera});
@@ -393,7 +397,7 @@ public class Displayer {
      *
      * @since 2.2.0
      *
-     * @param rectangle 视觉矩形的参数设置，详见 {@link RectangleConfig}。
+     * @param rectangle 视觉矩形的参数设置，详见 {@link com.herewhite.sdk.domain.RectangleConfig RectangleConfig}。
      */
     public void moveCameraToContainer(RectangleConfig rectangle) {
         this.bridge.callHandler("displayer.moveCameraToContain", new Object[]{rectangle});

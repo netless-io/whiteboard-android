@@ -11,6 +11,13 @@ public class PlayerTimeInfo {
     private int framesCount;
     private long beginTimestamp;
 
+    /**
+     * `PlayerTimeInfo` 构造方法。
+     * @param scheduleTime 当前的回放进度，单位为毫秒。
+     * @param timeDuration 回放的总时长。
+     * @param framesCount 预留参数。
+     * @param beginTimestamp 白板回放的起始时间，Unix 时间戳，单位为毫秒。
+     */
     public PlayerTimeInfo(long scheduleTime, long timeDuration, int framesCount, long beginTimestamp) {
         this.scheduleTime = scheduleTime;
         this.timeDuration = timeDuration;
@@ -36,12 +43,14 @@ public class PlayerTimeInfo {
         return timeDuration;
     }
 
+    /// @cond test
     /**
      * 文档中隐藏
      */
     public int getFramesCount() {
         return framesCount;
     }
+    /// @endcond
 
     /**
      * 获取白板回放的起始时间。

@@ -21,7 +21,7 @@ public interface CommonCallback {
     void throwError(Object args);
 
     /**
-     * 图片拦截回调。
+     * 拦截图片 URL 回调。
      *
      * @since 2.9.14
      *

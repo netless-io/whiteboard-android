@@ -9,6 +9,7 @@ public class EventEntry extends WhiteObject {
     private String scope;
     private long authorId;
 
+    /// @cond test
     /**
      * 文档中隐藏
      * 对外能修改，用户只应该查看 eventName 和 payload
@@ -16,6 +17,7 @@ public class EventEntry extends WhiteObject {
     public String getScope() {
         return scope;
     }
+    /// @endcond
 
     /**
      * 获取事件触发者的用户 ID。

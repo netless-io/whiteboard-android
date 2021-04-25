@@ -65,7 +65,7 @@ public class MemberState extends WhiteObject {
     /**
      * 设置线条粗细。
      *
-     * @param strokeWidth 线条粗细。// TODO 单位？
+     * @param strokeWidth 线条粗细。
      */
     public void setStrokeWidth(double strokeWidth) {
         this.strokeWidth = strokeWidth;
@@ -84,7 +84,7 @@ public class MemberState extends WhiteObject {
     /**
      * 设置字体大小。
      *
-     * @param textSize 字体大小。Chrome 浏览器对于小于 12 的字体会自动调整为 12。// TODO 单位？
+     * @param textSize 字体大小。Chrome 浏览器对于小于 12 的字体会自动调整为 12。
      */
     public void setTextSize(double textSize) {
         this.textSize = textSize;

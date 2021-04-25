@@ -18,11 +18,13 @@ public interface PlayerListener {
      */
     void onLoadFirstFrame();
 
+    /// @cond test
     /**
      * 分片切换回调，需要了解分片机制。目前无实际用途。
      * 文档中隐藏
      */
     void onSliceChanged(String slice);
+    /// @endcond
 
     /**
      * 回放状态发生变化的回调，只会包含实际发生改变的属性。

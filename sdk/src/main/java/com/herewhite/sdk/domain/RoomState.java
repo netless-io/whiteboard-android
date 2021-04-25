@@ -34,6 +34,8 @@ public class RoomState extends WhiteDisplayerState {
     /**
      * 获取互动白板实时房间内当前的视角缩放比例。
      *
+     * @deprecated 该方法已废弃。
+     *
      * @return 视角缩放比例。
      */
     public Double getZoomScale() {

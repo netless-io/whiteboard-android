@@ -72,7 +72,7 @@ public class AbstractCommonCallbacks implements CommonCallbacks {
      *
      * @note 不保证所有用户都能接收到该回调。
      *
-     * @param object JSON 格式的消息。只有当消息为 JSON 格式时，本地用户才能收到。
+     * @param message JSON 格式的消息。只有当消息为 JSON 格式时，本地用户才能收到。
      */
     @Override
     public void onMessage(JSONObject message) {

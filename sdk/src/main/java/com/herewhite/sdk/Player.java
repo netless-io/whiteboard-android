@@ -26,7 +26,7 @@ public class Player extends Displayer {
     private int framesCount;
 
     /**
-     * 获取白板回放的倍速。该方法为同步调用。
+     * 获取白板回放的倍速。
      *
      * @since 2.5.2
      *
@@ -55,7 +55,7 @@ public class Player extends Displayer {
     }
 
     /**
-     * 获取白板回放的倍速。该方法为异步调用。
+     * 获取白板回放的倍速。
      *
      * @since 2.5.2
      *
@@ -64,7 +64,7 @@ public class Player extends Displayer {
      * - 该方法获取的是播放倍速。例如，当返回值为 `2.0` 时，表示当前得播放速度是原速的 2 倍。
      * - 回放暂停时，返回值也不会为 0。
      *
-     * @param promise Promise<Double> 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getPlaybackSpeed` 的调用结果：
+     * @param promise Promise<Double> 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `getPlaybackSpeed` 的调用结果：
      * - 如果获取成功，将返回白板回放的倍速。
      * - 如果获取失败，将返回错误信息。
      */
@@ -81,6 +81,7 @@ public class Player extends Displayer {
 
     private PlayerPhase playerPhase = PlayerPhase.waitingFirstFrame;
 
+    /// @cond test
     /**
      * 文档中隐藏，SDK 内部使用
      * Instantiates a new Player.
@@ -94,6 +95,7 @@ public class Player extends Displayer {
         syncPlayerState = new SyncDisplayerState(PlayerState.class, "{}", true);
         syncPlayerState.setListener(localPlayStateListener);
     }
+    /// @endcond
 
     void setPlayerTimeInfo(PlayerTimeInfo playerTimeInfo) {
         this.scheduleTime = playerTimeInfo.getScheduleTime();
@@ -141,7 +143,7 @@ public class Player extends Displayer {
     /**
      * 设置白板回放的查看模式。
      *
-     * @param mode 白板回放的查看模式，详见 {@link PlayerObserverMode}。
+     * @param mode 白板回放的查看模式，详见 {@link com.herewhite.sdk.domain.PlayerObserverMode PlayerObserverMode}。
      */
     public void setObserverMode(PlayerObserverMode mode) {
         bridge.callHandler("player.setObserverMode", new Object[]{mode.name()});
@@ -161,7 +163,7 @@ public class Player extends Displayer {
      * - 成功调用 {@link #stop()}、{@link #play()} 或 {@link #pause()} 等方法均会影响白板回放的阶段，但是通过该方法无法立即获取最新的白板回放阶段。
      * 此时，你可以调用 {@link getPhase(final Promise<PlayerPhase> promise) getPhase} 获取最新的回放阶段。
      *
-     * @return 白板回放的阶段，详见 {@link PlayerPhase}。
+     * @return 白板回放的阶段，详见 {@link com.herewhite.sdk.domain.PlayerPhase PlayerPhase}。
      *
      */
     public PlayerPhase getPlayerPhase() {
@@ -178,7 +180,7 @@ public class Player extends Displayer {
      * - 成功调用 {@link #stop()}、{@link #play()} 或 {@link #pause()} 等方法后，你无法通过 {@link #getPlayerPhase() getPlayerPhase} 立即获取最新的白板回放阶段。
      * 此时，你可以调用 {@link getPhase(final Promise<PlayerPhase> promise) getPhase}。
      *
-     * @param promise `Promise<PlayerPhase>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getPhase` 方法的调用结果：
+     * @param promise `Promise<PlayerPhase>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `getPhase` 方法的调用结果：
      *                - 如果方法调用成功，将返回白板回放的阶段。
      *                - 如果方法调用失败，将返回错误信息。
      */
@@ -210,7 +212,7 @@ public class Player extends Displayer {
      * - 该方法为同步调用。
      * - 如果白板回放处于 `waitingFirstFrame` 阶段，则该方法返回 `null`。
      *
-     * @return 白板回放的状态，详见 {@link PlayerState}。
+     * @return 白板回放的状态，详见 {@link com.herewhite.sdk.domain.PlayerState PlayerState}。
      *
      */
     public PlayerState getPlayerState() {
@@ -227,8 +229,8 @@ public class Player extends Displayer {
      * - 该方法为异步调用。我们推荐你仅在调试或问题排查时使用。一般情况下可以使用同步方法 {@link #getPlayerState() getPlayerState}[1/2] 获取。
      * - 如果白板回放处于 `waitingFirstFrame` 阶段，则该方法返回 `null`。
      *
-     * @param promise `Promise<PlayerState>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getPlayerState` 方法调用的结果：
-     *                - 如果方法调用成功，将返回白板回放状态，详见 {@link PlayerState}。
+     * @param promise `Promise<PlayerState>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `getPlayerState` 方法调用的结果：
+     *                - 如果方法调用成功，将返回白板回放状态，详见 {@link com.herewhite.sdk.domain.PlayerState PlayerState}。
      *                - 如果方法调用失败，将返回错误信息。
      */
     public void getPlayerState(final Promise<PlayerState> promise) {
@@ -262,7 +264,7 @@ public class Player extends Displayer {
      * - 该方法为同步调用。
      * - 该方法获取的当前播放进度可能不准确。
      *
-     * @return 白板回放的时间信息，详见 {@link PlayerTimeInfo}。
+     * @return 白板回放的时间信息，详见 {@link com.herewhite.sdk.domain.PlayerTimeInfo PlayerTimeInfo}。
      */
     public PlayerTimeInfo getPlayerTimeInfo() {
         return new PlayerTimeInfo(this.scheduleTime, this.timeDuration, this.framesCount, this.beginTimestamp);
@@ -275,8 +277,8 @@ public class Player extends Displayer {
      *
      * @note 该方法为异步调用。我们推荐你仅在调试或问题排查时使用。一般情况下可以使用同步方法 {@link #getPlayerTimeInfo() getPlayerTimeInfo} 进行获取。
      *
-     * @param promise `Promise<PlayerTimeInfo>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getPlayerTimeInfo` 方法的调用结果：
-     *                - 如果方法调用成功，将返回白板回放的时间信息，详见 {@link PlayerTimeInfo}。
+     * @param promise `Promise<PlayerTimeInfo>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `getPlayerTimeInfo` 方法的调用结果：
+     *                - 如果方法调用成功，将返回白板回放的时间信息，详见 {@link com.herewhite.sdk.domain.PlayerTimeInfo PlayerTimeInfo}。
      *                - 如果方法调用失败，将返回错误信息。
      */
     public void getPlayerTimeInfo(final Promise<PlayerTimeInfo> promise) {

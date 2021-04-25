@@ -15,6 +15,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class PlayerSyncManager {
 
+    /**
+     * `Callbacks` 接口，用于监听 `PlayerSyncManager` 对象的事件。
+     */
     public interface Callbacks {
         /**
          * 开始缓冲。
@@ -250,7 +253,7 @@ public class PlayerSyncManager {
     /**
      * 更新白板回放播放器的播放状态。
      *
-     * @param phase `whitePlayer` 的播放状态，详见 {@link PlayerPhase} 的播放状态。
+     * @param phase 白板回放播放器的播放状态，详见 {@link com.herewhite.sdk.domain.PlayerPhase PlayerPhase}。
      */
     public void updateWhitePlayerPhase(PlayerPhase phase) {
         if (phase == PlayerPhase.buffering || phase == PlayerPhase.waitingFirstFrame) {

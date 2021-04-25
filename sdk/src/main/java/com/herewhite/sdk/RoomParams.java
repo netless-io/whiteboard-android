@@ -28,7 +28,7 @@ public class RoomParams extends WhiteObject {
      * - 该方法设置的数据中心必须与要加入的互动白板实时房间所在数据中心一致，否则无法加入房间。
      * - 该方法与 `WhiteSdkConfiguration` 类中的 {@link WhiteSdkConfiguration#setRegion(Region) setRegion} 方法作用相同，两个方法只需要调用其中的一个。如果同时调用，该方法会覆盖 `WhiteSdkConfiguration` 类中的 {@link WhiteSdkConfiguration#setRegion(Region) setRegion}。
      *
-     * @param region 数据中心，详见 {@link Region Region}。
+     * @param region 数据中心，详见 {@link com.herewhite.sdk.domain.Region Region}。
      */
     public void setRegion(Region region) {
         this.region = region;
@@ -37,7 +37,7 @@ public class RoomParams extends WhiteObject {
     /**
      * 获取设置的数据中心。
      *
-     * @return 设置的数据中心，详见 {@link Region Region}。
+     * @return 设置的数据中心，详见 {@link com.herewhite.sdk.domain.Region Region}。
      */
     public Region getRegion() {
         return region;
@@ -131,8 +131,6 @@ public class RoomParams extends WhiteObject {
      *
      * @since 2.5.0
      *
-     * @note 该方法会覆盖 {@link WhiteSdkConfiguration#setDisableDeviceInputs(boolean) setDisableDeviceInputs} 的设置。
-     *
      * @param disableDeviceInputs 是否禁止白板工具响应用户输入：
      *   - `true`：禁止白板工具响应用户输入。
      *   - `false`：（默认）允许白板工具响应用户输入。
@@ -224,6 +222,13 @@ public class RoomParams extends WhiteObject {
     private boolean disableCameraTransform = false;
     private boolean disableBezier = false;
 
+    /**
+     * 获取是否关闭笔锋效果。
+     *
+     * @return 是否关闭笔锋效果：
+     * - true: 关闭笔锋效果。
+     * - false: 开启笔锋效果。
+     */
     public boolean isDisableNewPencil() {
         return disableNewPencil;
     }
@@ -264,12 +269,17 @@ public class RoomParams extends WhiteObject {
      *
      * @since 2.5.0
      *
-     * @param cameraBound 视角边界，详见 {@link CameraBound CameraBound}。
+     * @param cameraBound 视角边界，详见 {@link com.herewhite.sdk.domain.CameraBound CameraBound}。
      */
     public void setCameraBound(CameraBound cameraBound) {
         this.cameraBound = cameraBound;
     }
 
+    /**
+     * 获取自定义用户信息。
+     *
+     * @return 自定义用户信息。
+     */
     public Object getUserPayload() {
         return userPayload;
     }
@@ -282,7 +292,7 @@ public class RoomParams extends WhiteObject {
      * 你可以在 `userPayload` 中传入自定义的用户信息，例如用户ID，昵称和头像，然后调用此方法将信息发送给应用程序。
      *
      * @note
-     * 为确保传入的 `userPayload` 格式正确，必须使用 {@link WhiteObject} 子类。
+     * 为确保传入的 `userPayload` 格式正确，必须使用 {@link com.herewhite.sdk.domain.WhiteObject WhiteObject} 子类。
      *
      * @param userPayload 自定义的用户信息，必须为 key-value 结构，例如，`"avatar", "https://example.com/user.png")`。
      */
@@ -305,11 +315,11 @@ public class RoomParams extends WhiteObject {
     /**
      * 初始化房间配置参数并传入用户信息。
      *
-     * @deprecated 该方法已经废弃。请使用 {@link RoomParams(String, String, Object) RoomParams}。
+     * @deprecated 该方法已经废弃。请使用 {@link RoomParams(String, String, Object) RoomParams}[2/2]。
      *
      * @param uuid       房间 UUID， 即房间唯一标识符。传入的房间 UUID 必须和生成 Room Token 时填入的房间 UUID 一致。
      * @param roomToken  用于鉴权的 Room Token。
-     * @param memberInfo 自定义用户信息，详见 {@link MemberInformation MemberInformation}。
+     * @param memberInfo 自定义用户信息，详见 {@link com.herewhite.sdk.domain.MemberInformation MemberInformation}。
      *
      */
     @Deprecated
@@ -326,7 +336,7 @@ public class RoomParams extends WhiteObject {
      *
      * @param uuid        房间 UUID， 即房间唯一标识符。传入的房间 UUID 必须和生成 Room Token 时填入的房间 UUID 一致。
      * @param roomToken   用于鉴权的 Room Token。
-     * @param userPayload 自定义用户信息，必须为 {@link WhiteObject} 子类。
+     * @param userPayload 自定义用户信息，必须为 {@link com.herewhite.sdk.domain.WhiteObject WhiteObject} 子类。
      */
     public RoomParams(String uuid, String roomToken, Object userPayload) {
         this.uuid = uuid;
@@ -339,7 +349,7 @@ public class RoomParams extends WhiteObject {
      *
      * @deprecated 该方法已废弃。请使用 {@link #getUserPayload() getUserPayload}。
      *
-     * @return 自定义用户信息，详见 {@link MemberInformation}。
+     * @return 自定义用户信息，详见 {@link com.herewhite.sdk.domain.MemberInformation MemberInformation}。
      */
     @Deprecated
     public MemberInformation getMemberInfo() {
@@ -354,7 +364,7 @@ public class RoomParams extends WhiteObject {
      *
      * @deprecated 该方法已废弃。请使用 {@link #getUserPayload() getUserPayload}。
      *
-     * @param memberInfo 用户信息，详见 {@link MemberInformation MemberInformation}。
+     * @param memberInfo 用户信息，详见 {@link com.herewhite.sdk.domain.MemberInformation MemberInformation}。
      */
     @Deprecated
     public void setMemberInfo(MemberInformation memberInfo) {

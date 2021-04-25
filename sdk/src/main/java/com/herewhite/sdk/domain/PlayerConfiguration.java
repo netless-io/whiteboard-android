@@ -78,12 +78,14 @@ public class PlayerConfiguration extends WhiteObject {
     }
 
 
+    /// @cond test
     /**
      * 文档中隐藏
      * 音频地址，暂不支持视频。
      * Player 会自动与音视频播放做同步，保证同时播放，当一方缓冲时，会暂停。
      */
     private String mediaURL;
+    /// @endcond
 
     /**
      * 获取待回放的互动白板房间的 UUID。
@@ -121,6 +123,7 @@ public class PlayerConfiguration extends WhiteObject {
         this.roomToken = roomToken;
     }
 
+    /// @cond test
     /**
      * 文档中隐藏
      *
@@ -129,7 +132,9 @@ public class PlayerConfiguration extends WhiteObject {
     public String getSlice() {
         return slice;
     }
+    /// @endcond
 
+    /// @cond test
     /**
      * 文档中隐藏
      *
@@ -138,6 +143,7 @@ public class PlayerConfiguration extends WhiteObject {
     public void setSlice(String slice) {
         this.slice = slice;
     }
+    /// @endcond
 
     /**
      * 获取白板回放的起始时间。
@@ -175,6 +181,7 @@ public class PlayerConfiguration extends WhiteObject {
         this.duration = duration;
     }
 
+    /// @cond test
     /**
      * 文档中隐藏
      * @return
@@ -182,7 +189,9 @@ public class PlayerConfiguration extends WhiteObject {
     public String getMediaURL() {
         return mediaURL;
     }
+    /// @endcond
 
+    /// @cond test
     /**
      * 文档中隐藏
      * @param mediaURL
@@ -190,4 +199,5 @@ public class PlayerConfiguration extends WhiteObject {
     public void setMediaURL(String mediaURL) {
         this.mediaURL = mediaURL;
     }
+    /// @endcond
 }

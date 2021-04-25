@@ -50,6 +50,7 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
         }
     }
 
+    /// @cond test
     /**
      * 设置视图大小切换时自动发送事件至js端
      * 文档中隐藏
@@ -58,8 +59,10 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
     public void setAutoResize(boolean autoResize) {
         this.autoResize = autoResize;
     }
+    /// @endcond
 
 
+    /// @cond test
     /**
      * 兼容 API 文档中隐藏
      */
@@ -70,6 +73,7 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
             return context;
         }
     }
+    /// @endcond
 
     private void init() {
         getSettings().setMediaPlaybackRequiresUserGesture(false);

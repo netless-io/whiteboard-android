@@ -44,15 +44,18 @@ public class WhiteSdkConfiguration extends WhiteObject {
         canvas,
     }
 
-    /***
+    /**
      * `PptParams` 类，用于设置动态 PPT 参数。
      */
     public static class PptParams extends WhiteObject {
+        /// @cond test
         /** 文档中隐藏 */
         public String getScheme() {
             return scheme;
         }
+        /// @endcond
 
+        /// @cond test
         /**
          * 更改动态 ppt 请求时的请求协议，可以将 https://www.exmaple.com/1.pptx 更改成 scheme://www.example.com/1.pptx
          * Android 端该方法无需使用
@@ -63,6 +66,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
         public void setScheme(String scheme) {
             this.scheme = scheme;
         }
+        /// @endcond
 
         private String scheme;
 
@@ -94,10 +98,12 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
         private boolean useServerWrap;
 
+        /// @cond test
         /** 文档中隐藏 */
         public PptParams(String scheme) {
             this.scheme = scheme;
         }
+        /// @endcond
     }
 
 
@@ -153,7 +159,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     /**
      * 获取设置的数据中心。
      *
-     * @return 数据中心，详见 {@link Region}。
+     * @return 数据中心，详见 {@link com.herewhite.sdk.domain.Region Region}。
      */
     public Region getRegion() {
         return region;
@@ -164,7 +170,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
      *
      * @note 该方法设置的数据中心必须与要加入的互动白板实时房间所在数据中心一致；否则，SDK 将无法连接到房间 。
      *
-     * @param region 数据中心，详见 {@link Region}。
+     * @param region 数据中心，详见 {@link com.herewhite.sdk.domain.Region Region}。
      */
     public void setRegion(Region region) {
         this.region = region;
@@ -174,6 +180,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
         return enableRtcIntercept;
     }
 
+    /// @cond test
     /**
      * 设置是否启用 RTC SDK 的混音方法播放动态 PPT 中的音频。
      *
@@ -192,7 +199,9 @@ public class WhiteSdkConfiguration extends WhiteObject {
     void setEnableRtcIntercept(boolean enableRtcIntercept) {
         this.enableRtcIntercept = enableRtcIntercept;
     }
+    /// @endcond
 
+    /// @cond test
     /**
      * 文档中隐藏
      * @return
@@ -200,7 +209,9 @@ public class WhiteSdkConfiguration extends WhiteObject {
     public boolean isDisableDeviceInputs() {
         return disableDeviceInputs;
     }
+    /// @endcond
 
+    /// @cond test
     /**
      * FIXME: 该 API 会 {@link RoomParams#setDisableDeviceInputs(boolean)} 覆盖，需要删除。
      * 禁止白板工具输入，使用该功能后，终端客户无法使用白板工具书写内容
@@ -212,6 +223,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     public void setDisableDeviceInputs(boolean disableDeviceInputs) {
         this.disableDeviceInputs = disableDeviceInputs;
     }
+    /// @endcond
 
     /**
      * 设置绘图的渲染模式。
@@ -342,7 +354,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     /**
      * 获取设置的日志选项。
      *
-     * @return 设置的日志选项，详见 {@link LoggerOptions LoggerOptions}。
+     * @return 设置的日志选项，详见 {@link com.herewhite.sdk.domain.LoggerOptions LoggerOptions}。
      */
     public LoggerOptions getLoggerOptions() {
         return loggerOptions;
@@ -353,12 +365,13 @@ public class WhiteSdkConfiguration extends WhiteObject {
      *
      * @since 2.4.2
      *
-     * @param loggerOptions 日志选择，详见 {@link LoggerOptions LoggerOptions}。
+     * @param loggerOptions 日志选择，详见 {@link com.herewhite.sdk.domain.LoggerOptions LoggerOptions}。
      */
     public void setLoggerOptions(LoggerOptions loggerOptions) {
         this.loggerOptions = loggerOptions;
     }
 
+    /// @cond test
     /**
      * 文档中隐藏
      *
@@ -367,7 +380,9 @@ public class WhiteSdkConfiguration extends WhiteObject {
     public boolean isRouteBackup() {
         return routeBackup;
     }
+    /// @endcond
 
+    /// @cond test
     /**
      * 是否启用双路由功能，同时向两个网址请求数据，选择最快的应答。会造成一定的额外开销，默认关闭
      * 文档中隐藏
@@ -377,7 +392,9 @@ public class WhiteSdkConfiguration extends WhiteObject {
     public void setRouteBackup(boolean routeBackup) {
         this.routeBackup = routeBackup;
     }
+    /// @endcond
 
+    /// @cond test
     /**
      * 文档中隐藏
      * @return
@@ -385,11 +402,13 @@ public class WhiteSdkConfiguration extends WhiteObject {
     public DeviceType getDeviceType() {
         return deviceType;
     }
+    /// @endcond
 
     /**
      * 设置是否显示用户头像。
      * <p>
-     * 要显示用户头像，请确保你在 `userPayload` 对象中传入了头像的键值对，并在调用{@link com.herewhite.sdk.RoomParams.setUserPayload（Object userPayload）}
+     * 要显示用户头像，请确保你在 `userPayload` 对象中传入了头像的键值对，
+     * 并在调用{@link com.herewhite.sdk.RoomParams#setUserPayload(Object userPayload) setUserPayload}。
      *
      * @param userCursor 是否显示用户头像：
      *                   - `true`：显示。
@@ -434,12 +453,14 @@ public class WhiteSdkConfiguration extends WhiteObject {
         this.onlyCallbackRemoteStateModify = onlyCallbackRemoteStateModify;
     }
 
+    /// @cond test
     /**
      * 文档中隐藏
      */
     public void setDeviceType(DeviceType deviceType) {
         this.deviceType = deviceType;
     }
+    /// @endcond
 
     /**
      * 获取是否开启调试日志打印。

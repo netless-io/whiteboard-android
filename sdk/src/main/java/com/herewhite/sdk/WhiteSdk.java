@@ -98,10 +98,10 @@ public class WhiteSdk {
      * <p>
      * 请确保在调用其他 API 前先调用 `WhiteSdk` 创建并初始化白板 SDK 实例。
      *
-     * @param bridge                白板界面，详见 {@link WhiteboardView WhiteboardView}。
+     * @param bridge                白板界面，详见 {@link com.herewhite.sdk.WhiteboardView WhiteboardView}。
      * @param context               安卓活动 (Android Activity) 的上下文。
-     * @param whiteSdkConfiguration SDK 实例的配置，详见 {@link WhiteSdkConfiguration WhiteSdkConfiguration}。
-     * @param urlInterrupter        图片 URL 拦截设置，详见 {@link UrlInterrupter}。@deprecated 该参数已废弃。请改用 `CommonCallbacks` 接口中的 {@link CommonCallbacks#urlInterrupter(String) urlInterrupter} 方法。
+     * @param whiteSdkConfiguration SDK 实例的配置，详见 {@link com.herewhite.sdk.WhiteSdkConfiguration WhiteSdkConfiguration}。
+     * @param urlInterrupter        图片 URL 拦截设置，详见 {@link com.herewhite.sdk.domain.UrlInterrupter UrlInterrupter}。@deprecated 该参数已废弃。请改用 `CommonCallbacks` 接口中的 {@link CommonCallbacks#urlInterrupter(String) urlInterrupter} 方法。
      */
     public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, UrlInterrupter urlInterrupter) {
         this(bridge, context, whiteSdkConfiguration);
@@ -113,11 +113,11 @@ public class WhiteSdk {
      * <p>
      * 请确保在调用其他 API 前先调用 `WhiteSdk` 创建并初始化白板 SDK 实例。
      *
-     * @param bridge                白板界面，详见 {@link WhiteboardView WhiteboardView}。
+     * @param bridge                白板界面，详见 {@link com.herewhite.sdk.WhiteboardView WhiteboardView}。
      * @param context               安卓活动 (Android Activity) 的上下文。
-     * @param whiteSdkConfiguration SDK 实例的配置，详见 {@link WhiteSdkConfiguration WhiteSdkConfiguration}。
-     * @param commonCallback        通用事件回调，详见 {@link CommonCallback CommonCallback}。
-     * @param audioMixerBridge      混音设置，详见 {@link AudioMixerBridge AudioMixerBridge}。当你同时使用 Agora RTC SDK 和互动白板 SDK, 且白板中展示的动态 PPT 中包含音频文件时，你可以调用 `AudioMixerBridge` 接口，将动态 PPT 中的所有音频交给 Agora RTC SDK 进行混音播放。
+     * @param whiteSdkConfiguration SDK 实例的配置，详见 {@link com.herewhite.sdk.WhiteSdkConfiguration WhiteSdkConfiguration}。
+     * @param commonCallback        通用事件回调，详见 {@link com.herewhite.sdk.CommonCallback CommonCallback}。
+     * @param audioMixerBridge      混音设置，详见 {@link com.herewhite.sdk.AudioMixerBridge AudioMixerBridge}。当你同时使用 Agora RTC SDK 和互动白板 SDK, 且白板中展示的动态 PPT 中包含音频文件时，你可以调用 `AudioMixerBridge` 接口，将动态 PPT 中的所有音频交给 Agora RTC SDK 进行混音播放。
      */
     public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, @Nullable CommonCallback commonCallback, @Nullable AudioMixerBridge audioMixerBridge) {
         this.bridge = bridge;
@@ -152,7 +152,7 @@ public class WhiteSdk {
      * 加入互动白板实时房间。
      *
      * @param roomParams  互动白板实时房间的参数配置，详见 {@link RoomParams RoomParams}。
-     * @param roomPromise 'Promise<Room>' 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `joinRoom` 的调用结果：
+     * @param roomPromise 'Promise<Room>' 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `joinRoom` 的调用结果：
      * - 如果方法调用成功，将返回房间对象，详见 {@link Room}。
      * - 如果方法调用失败，将返回错误信息。
      */
@@ -165,7 +165,7 @@ public class WhiteSdk {
      *
      * @param roomParams   互动白板实时房间的参数配置，详见 {@link RoomParams RoomParams}。
      * @param roomListener 房间事件回调，详见 {@link RoomListener RoomListener}。在重连时，如果不传 `roomListener` 参数，则会使用上一次设置的 `roomListener`。如果要释放 `roomListener`，可以调用 {@link #releaseRoom(String) releaseRoom}。
-     * @param roomPromise  `Promise<Room>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `joinRoom` 的调用结果：
+     * @param roomPromise  `Promise<Room>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `joinRoom` 的调用结果：
      * - 如果方法调用成功，则返回房间对象，详见 {@link Room}。
      * - 如果方法调用失败，则返回错误信息。
      */
@@ -203,9 +203,9 @@ public class WhiteSdk {
     /**
      * 创建互动白板回放房间。
      *
-     * @param playerConfiguration 白板回放的参数配置，详见 {@link PlayerConfiguration PlayerConfiguration}。
-     * @param playerPromise       `Promise<Player>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `createPlayer` 的调用结果：
-     * - 如果方法调用成功，将返回新创建的回放房间对象，详见 {@link Player}。
+     * @param playerConfiguration 白板回放的参数配置，详见 {@link com.herewhite.sdk.domain.PlayerConfiguration PlayerConfiguration}。
+     * @param playerPromise       `Promise<Player>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `createPlayer` 的调用结果：
+     * - 如果方法调用成功，将返回新创建的回放房间对象，详见 {@link com.herewhite.sdk.Player Player}。
      * - 如果方法调用失败，将返回错误信息。
      */
     public void createPlayer(final PlayerConfiguration playerConfiguration, final Promise<Player> playerPromise) {
@@ -215,10 +215,10 @@ public class WhiteSdk {
     /**
      * 创建互动白板回放房间。
      *
-     * @param playerConfiguration 白板回放的参数配置，详见 {@link PlayerConfiguration PlayerConfiguration}。
-     * @param listener            白板回放事件的回调，详见 {@link PlayerEventListener}。
-     * @param playerPromise       `Promise<Player>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `createPlayer` 的调用结果：
-     *  - 如果方法调用成功，将返回新创建的回放房间对象，详见 {@link Player}。
+     * @param playerConfiguration 白板回放的参数配置，详见 {@link com.herewhite.sdk.domain.PlayerConfiguration PlayerConfiguration}。
+     * @param listener            白板回放事件的回调，详见 {@link com.herewhite.sdk.PlayerEventListener PlayerEventListener}。
+     * @param playerPromise       `Promise<Player>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `createPlayer` 的调用结果：
+     *  - 如果方法调用成功，将返回新创建的回放房间对象，详见 {@link com.herewhite.sdk.Player Player}。
      *  - 如果方法调用失败，将返回错误信息。
      */
     public void createPlayer(final PlayerConfiguration playerConfiguration, final PlayerListener listener, final Promise<Player> playerPromise) {
@@ -254,8 +254,8 @@ public class WhiteSdk {
      *
      * @since 2.11.0
      *
-     * @param playerConfiguration 白板回放的参数配置，详见 {@link PlayerConfiguration PlayerConfiguration}。
-     * @param playablePromise     `Promise<Boolean>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `isPlayable` 的调用结果：
+     * @param playerConfiguration 白板回放的参数配置，详见 {@link com.herewhite.sdk.domain.PlayerConfiguration PlayerConfiguration}。
+     * @param playablePromise     `Promise<Boolean>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `isPlayable` 的调用结果：
      *                            - 如果方法调用成功，则返回 `true`。
      *                            - 如果方法调用失败，则返回 `false`。
      */
@@ -284,21 +284,21 @@ public class WhiteSdk {
      * - 每次调用该方法都会覆盖原来的字体声明。
      * - 请勿同时调用该方法和 `loadFontFaces` 方法。否则，无法预期行为。
      *
-     * @param fontFaces `FontFace` 实例，详见 {@link FontFace FontFace}。
+     * @param fontFaces `FontFace` 实例，详见 {@link com.herewhite.sdk.domain.FontFace FontFace}。
      */
     public void setupFontFaces(FontFace[] fontFaces) {
         bridge.callHandler("sdk.updateNativeFontFaceCSS", new Object[]{fontFaces});
     }
 
     /**
-     * 声明在本地白板中可用的字体并预加载。
+     * 声明并预加载在本地白板中可用的字体。
      *
      * @since 2.11.2
      *
      * <p>
      * 调用该方法预加载的字体可以用于显示 PPT 中的文字和白板工具输入的文字。
      * <p>
-     * 该方法和 {@link #loadFontFaces loadFontFaces} 都可以声明在本地白板中可用的字体，区别是 `setupFontFaces` 没有回调，因为无法判断字体声明是否正确；`loadFontFaces` 会触发回调，报告每一种的预加载结果。
+     * 该方法和 {@link #setupFontFaces(FontFace[] fontFaces) setupFontFaces} 都可以声明在本地白板中可用的字体，区别是 `setupFontFaces` 没有回调，因为无法判断字体声明是否正确；`loadFontFaces` 会触发回调，报告每一种的预加载结果。
      *
      * @note
      * - 该方法只对本地白板生效，不影响远端白板的字体显示。
@@ -307,9 +307,9 @@ public class WhiteSdk {
      * - 通过该方法预加载的字体无法删除，每次调用都会在原来的基础上新增。
      * - 请勿同时调用该方法和 `setupFontFaces` 方法。否则，无法预期行为。
      *
-     * @param fontFaces   指定的字体，详见 {@link FontFace}。
-     * @param loadPromise `Promise<JSONObject>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `loadFontFaces` 的调用结果：
-     *                    - 如果方法调用成功，则返回 `FontFace` 对象
+     * @param fontFaces   指定的字体，详见 {@link com.herewhite.sdk.domain.FontFace FontFace}。
+     * @param loadPromise `Promise<JSONObject>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `loadFontFaces` 的调用结果：
+     *                    - 如果方法调用成功，则返回 `FontFace` 对象。
      *                    - 如果方法调用失败，则返回错误信息。
      */
     public void loadFontFaces(FontFace[] fontFaces, final Promise<JSONObject> loadPromise) {

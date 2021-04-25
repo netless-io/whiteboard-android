@@ -71,6 +71,7 @@ public class Room extends Displayer {
     private Integer timeDelay;
     private Long observerId;
 
+    /// @cond test
     /**
      * 文档中隐藏，只有 sdk 内部初始化才有意义
      */
@@ -80,6 +81,7 @@ public class Room extends Displayer {
         this.syncRoomState = new SyncDisplayerState<>(RoomState.class, "{}", disableCallbackWhilePutting);
         this.syncRoomState.setListener(localRoomStateListener);
     }
+    /// @endcond
 
     void setSyncRoomState(String stateJSON) {
         syncRoomState.syncDisplayerState(stateJSON);
@@ -115,7 +117,7 @@ public class Room extends Displayer {
      * 实时房间的 `globalState` 属性为公共全局变量，房间内所有用户都可以读取 `globalState`，互动模式用户可以修改 `globalState`。
      * 修改后的 `globalState` 会立即同步给所有用户。
      *
-     * @param globalState 房间公共全局状态，详见 {@link GlobalState GlobalState}.
+     * @param globalState 房间公共全局状态，详见 {@link com.herewhite.sdk.domain.GlobalState GlobalState}.
      */
     public void setGlobalState(GlobalState globalState) {
         syncRoomState.putProperty("globalState", globalState);
@@ -125,10 +127,10 @@ public class Room extends Displayer {
     /**
      * 修改房间内的白板工具状态。
      * <p>
-     * 调用该方法会立刻更新房间的 {@link MemberState MemberState}。
+     * 调用该方法会立刻更新房间的 {@link com.herewhite.sdk.domain.MemberState MemberState}。
      * 你可以调用 {@link #getMemberState() getMemberState} 获取最新设置的白板工具状态。
      *
-     * @param memberState 需要修改的白板工具状态，详见 {@link MemberState MemberState}。
+     * @param memberState 需要修改的白板工具状态，详见 {@link com.herewhite.sdk.domain.MemberState MemberState}。
      */
     public void setMemberState(MemberState memberState) {
         syncRoomState.putProperty("memberState", memberState);
@@ -257,9 +259,9 @@ public class Room extends Displayer {
      * - 当一个用户的视角设置为主播模式后，房间内其他所有用户（包括新加入房间的用户）的视角会被自动设置为跟随模式。
      * - 当跟随模式的用户进行白板操作时，其视角会自动切换为自由模式。你可以调用 {@link #disableOperations(boolean) disableOperations}(true) 禁止跟随模式的用户操作白板，以保证其保持跟随模式。
      *
-     * 该方法是异步操作。调用该方法后，你可以使用 {@link #getBroadcastState(Promise) getBroadcastState} 获取最新设置的视角模式。
+     * 该方法是异步操作。调用该方法后，你可以使用 {@link #getBroadcastState(Promise<BroadcastState> promise) getBroadcastState}[2/2] 获取最新设置的视角模式。
      *
-     * @param viewMode 视角模式，详见 {@link ViewMode ViewMode}。
+     * @param viewMode 视角模式，详见 {@link com.herewhite.sdk.domain.ViewMode ViewMode}。
      */
     public void setViewMode(ViewMode viewMode) {
         bridge.callHandler("room.setViewMode", new Object[]{viewMode.name()});
@@ -272,7 +274,7 @@ public class Room extends Displayer {
      * <p>
      * 该方法会把与当前房间实例相关的所有资源释放掉。如果要再次加入房间，需要重新调用 `joinRoom`。
      *
-     * @note 调用该方法不会触发回调。如果需要收到断开连接的回调，请使用 {@link #disconnect(Promise) disconnect}。
+     * @note 调用该方法不会触发回调。如果需要收到断开连接的回调，请使用 {@link #disconnect(@Nullable Promise<Object> promise) disconnect}[2/2]。
      */
     public void disconnect() {
         disconnect(null);
@@ -285,7 +287,7 @@ public class Room extends Displayer {
      * <p>
      * 你可以在该方法中传入 'Promise<Object>' 接口实例，以获取方法调用结果。
      *
-     * @param promise 'Promise<Object>' 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `disconnect` 的调用结果：
+     * @param promise 'Promise<Object>' 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `disconnect` 的调用结果：
      *                - 如果方法调用成功，则返回房间的全局状态。
      *                - 如果方法调用失败，则返回错误信息。
      */
@@ -314,14 +316,14 @@ public class Room extends Displayer {
     //region image
 
     /**
-     * 插入图片显示区域
+     * 插入图片显示区域。
      *
      * SDK 会根据你传入的 `ImageInformation` 在白板上设置并插入图片的显示区域。
      * 调用该方法后，还需要调用 {@link #completeImageUpload(String, String) completeImageUpload} 传入图片的 Url 地址，以在该显示区域插入并展示图片。
      *
      * @note 你也可以调用 {@link #insertImage(ImageInformationWithUrl) insertImage} 方法同时传入图片信息和图片的 Url 地址，在白板中插入并展示图片。
      *
-     * @param imageInfo 图片信息，详见 {@link ImageInformation ImageInformation}。
+     * @param imageInfo 图片信息，详见 {@link com.herewhite.sdk.domain.ImageInformation ImageInformation}。
      */
     public void insertImage(ImageInformation imageInfo) {
         bridge.callHandler("room.insertImage", new Object[]{imageInfo});
@@ -334,7 +336,7 @@ public class Room extends Displayer {
      *
      * @note 调用该方法前，请确保你已经调用 {@link #insertImage(ImageInformation) insertImage} 方法在白板上插入了图片的显示区域。
      *
-     * @param uuid 图片显示区域的 UUID, 即在 {@link #insertImage(ImageInformation) insertImage} 方法的 {@link ImageInformation ImageInformation} 中传入的图片 UUID。
+     * @param uuid 图片显示区域的 UUID, 即在 {@link #insertImage(ImageInformation) insertImage} 方法的 {@link com.herewhite.sdk.domain.ImageInformation ImageInformation} 中传入的图片 UUID。
      * @param url  图片的 URL 地址。必须确保 app 客户端能访问该 URL，否则无法正常展示图片。
      */
     public void completeImageUpload(String uuid, String url) {
@@ -342,12 +344,12 @@ public class Room extends Displayer {
     }
 
     /**
-     * 插入并展示图片
+     * 插入并展示图片。
      * <p>
      * 该方法封装了 {@link #insertImage(ImageInformation) insertImage} 和 {@link #completeImageUpload(String, String) completeImageUpload} 方法。
      * 你可以在该方法中同时传入图片信息和图片的 URL，直接在白板中插入图片的显示区域并展示图片。
      *
-     * @param imageInformationWithUrl 图片信息及图片的 URL 地址，详见 {@link ImageInformationWithUrl ImageInformationWithUrl}。
+     * @param imageInformationWithUrl 图片信息及图片的 URL 地址，详见 {@link com.herewhite.sdk.domain.ImageInformationWithUrl ImageInformationWithUrl}。
      */
     public void insertImage(ImageInformationWithUrl imageInformationWithUrl) {
         ImageInformation imageInformation = new ImageInformation();
@@ -365,15 +367,16 @@ public class Room extends Displayer {
     //region GET API
 
     /**
-     * 获取房间的全局状态。该方法为同步调用。
+     * 获取房间的全局状态。
      *
      * @since 2.4.0
      *
      * @note
-     * - 对于通过 {@link com.herewhite.sdk.domain.WhiteDisplayerState#setCustomGlobalStateClass(Class) setCustomGlobalStateClass} 方法设置的自定义 `GlobalState`，在获取后，可以直接进行强转。
-     * - 调用 {@link #setGlobalState(GlobalState)} 方法后，可以立刻调用该方法。
+     * - 该方法为同步调用。
+     * - 对于通过 {@link com.herewhite.sdk.domain.WhiteDisplayerState#setCustomGlobalStateClass(Class<T> classOfT) setCustomGlobalStateClass} 方法设置的自定义 `GlobalState`，在获取后，可以直接进行强转。
+     * - 调用 {@link #setGlobalState(GlobalState) setGlobalState} 方法后，可以立刻调用该方法。
      *
-     * @return 房间的全局状态，详见 {@link GlobalState GlobalState}。
+     * @return 房间的全局状态，详见 {@link com.herewhite.sdk.domain.GlobalState GlobalState}。
      *
      */
     public GlobalState getGlobalState() {
@@ -381,14 +384,16 @@ public class Room extends Displayer {
     }
 
     /**
-     * 获取房间全局状态。该方法为异步调用。
+     * 获取房间全局状态。
      *
-     * @deprecated 该方法已废弃。请使用 {@link #getGlobalState() getGlobalState}。
+     * @deprecated 该方法已废弃。请使用 {@link #getGlobalState() getGlobalState}[1/2]。
      *
-     * @note 对于通过 {@link com.herewhite.sdk.domain.WhiteDisplayerState#setCustomGlobalStateClass(Class) setCustomGlobalStateClass} 方法设置的自定义 `GlobalState`，在获取后，可以直接进行强转。
+     * @note
+     * - 该方法为异步调用。
+     * - 对于通过 {@link com.herewhite.sdk.domain.WhiteDisplayerState#setCustomGlobalStateClass(Class<T> classOfT) setCustomGlobalStateClass} 方法设置的自定义 `GlobalState`，在获取后，可以直接进行强转。
      *
-     * @param promise `Promise<GlobalState>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getGlobalState` 的调用结果：
-     *                - 如果方法调用成功，则返回 `GlobalState` 对象，详见 {@link GlobalState GlobalState}。
+     * @param promise `Promise<GlobalState>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `getGlobalState` 的调用结果：
+     *                - 如果方法调用成功，则返回 `GlobalState` 对象，详见 {@link com.herewhite.sdk.domain.GlobalState GlobalState}。
      *                - 如果方法调用失败，则返回错误信息。
      */
     public void getGlobalState(final Promise<GlobalState> promise) {
@@ -442,9 +447,9 @@ public class Room extends Displayer {
      *
      * @note
      * - 该方法为同步调用。
-     * - 调用 {@link #setMemberState(MemberState)} 方法后，可以立即调用 {@link #getMemberState() getMemberState} 获取最新的白板工具状态。
+     * - 调用 {@link #setMemberState(MemberState) setMemberState} 方法后，可以立即调用 {@link #getMemberState() getMemberState} 获取最新的白板工具状态。
      *
-     * @return 当前的白板工具状态，详见 {@link MemberState}。
+     * @return 当前的白板工具状态，详见 {@link com.herewhite.sdk.domain.MemberState MemberState}。
      *
      */
     public MemberState getMemberState() {
@@ -456,8 +461,8 @@ public class Room extends Displayer {
      *
      * @note 该方法为异步调用。
      *
-     * @param promise `Promise<MemberState>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getMemberState` 的调用结果：
-     *                - 如果方法调用成功，则返回白板工具状态，详见 {@link MemberState MemberState}。
+     * @param promise `Promise<MemberState>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `getMemberState` 的调用结果：
+     *                - 如果方法调用成功，则返回白板工具状态，详见 {@link com.herewhite.sdk.domain.MemberState MemberState}。
      *                - 如果方法调用失败，则返回错误信息。
      */
     public void getMemberState(final Promise<MemberState> promise) {
@@ -480,13 +485,13 @@ public class Room extends Displayer {
     }
 
     /**
-     * 获取实时房间用户列表。
+     * 获取房间的用户列表。
      *
      * @note
      * - 该方法为同步调用。
      * - 房间的用户列表仅包含互动模式（具有读写权限）的用户，不包含订阅模式（只读权限）的用户。
      *
-     * @return 用户列表，详见 {@link RoomMember RoomMember}。
+     * @return 用户列表，详见 {@link com.herewhite.sdk.domain.RoomMember RoomMember}。
      *
      */
     public RoomMember[] getRoomMembers() {
@@ -494,14 +499,14 @@ public class Room extends Displayer {
     }
 
     /**
-     * 获取实时房间用户列表。
+     * 获取房间的用户列表。
      *
      * @note
      * - 该方法为异步调用。
      * - 房间的用户列表仅包含互动模式（具有读写权限）的用户，不包含订阅模式（只读权限）的用户。
      *
-     * @param promise `Promise<RoomMember[]>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getRoomMembers` 的调用结果：
-     *                - 如果方法调用成功，则返回用户列表，详见 {@link RoomMember RoomMember}。
+     * @param promise `Promise<RoomMember[]>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `getRoomMembers` 的调用结果：
+     *                - 如果方法调用成功，则返回用户列表，详见 {@link com.herewhite.sdk.domain.RoomMember RoomMember}。
      *                - 如果方法调用失败，则返回错误信息。
      */
     public void getRoomMembers(final Promise<RoomMember[]> promise) {
@@ -524,16 +529,16 @@ public class Room extends Displayer {
     }
 
     /**
-     * 获取用户视角状态。
+     * 获取用户的视角状态。
      *
      * @since 2.4.0
      *
      * @note
      * - 该方法为同步调用。
-     * - 调用 {@link #setViewMode(ViewMode)} 修改用户视角模式后，无法立刻通过 {@link #getBroadcastState getBroadcastState} 获取最新的用户视角状态。
-     * 如果需要立即获取最新的用户视角状态，可以调用 {@link #getBroadcastState(Promise)}。
+     * - 调用 {@link #setViewMode(ViewMode)} 修改用户视角模式后，无法立刻通过 {@link #getBroadcastState() getBroadcastState}[1/2] 获取最新的用户视角状态。
+     * 如果需要立即获取最新的用户视角状态，可以调用 {@link #getBroadcastState(Promise<BroadcastState> promise) getBroadcastState}[2/2]。
      *
-     * @return 用户视角状态，详见 {@link BroadcastState BroadcastState}。
+     * @return 用户视角状态，详见 {@link com.herewhite.sdk.domain.BroadcastState BroadcastState}。
      *
      */
     public BroadcastState getBroadcastState() {
@@ -545,11 +550,11 @@ public class Room extends Displayer {
      *
      * @note
      * - 该方法为异步调用。
-     * - 调用 {@link #setViewMode(ViewMode)} 修改用户视角模式后，无法立刻通过 {@link #getBroadcastState getBroadcastState} 获取最新的用户视角状态。如果需要
-     * 立即获取最新的用户视角状态，可以调用 {@link #getBroadcastState(Promise)}。
+     * - 调用 {@link #setViewMode(ViewMode)} 修改用户视角模式后，无法立刻通过 {@link #getBroadcastState getBroadcastState}[1/2] 获取最新的用户视角状态。如果需要
+     * 立即获取最新的用户视角状态，可以调用 {@link #getBroadcastState(Promise<BroadcastState> promise) getBroadcastState}[2/2]。
      *
-     * @param promise `Promise<BroadcastState>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getBroadcastState` 的调用结果：
-     *                - 如果方法调用成功，则返回用户视角状态，详见 {@link BroadcastState BroadcastState}。
+     * @param promise `Promise<BroadcastState>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `getBroadcastState` 的调用结果：
+     *                - 如果方法调用成功，则返回用户视角状态，详见 {@link com.herewhite.sdk.domain.BroadcastState BroadcastState}。
      *                - 如果方法调用失败，则返回错误信息。
      */
     public void getBroadcastState(final Promise<BroadcastState> promise) {
@@ -578,12 +583,12 @@ public class Room extends Displayer {
      *
      * @note
      * - 该方法为同步调用。
-     * - 调用以下方法修改或新增场景后，无法通过 {@link #getSceneState() getSceneState} 立即获取最新的场景状态。此时，如果需要立即获取最新的场景状态，可以调用 {@link #getSceneState(Promise)}。
-     * - {@link #setScenePath(String, Promise)}
-     * - {@link #setScenePath(String)}
-     * - {@link #putScenes(String, Scene[], int)}
+     * - 调用以下方法修改或新增场景后，无法通过 {@link #getSceneState() getSceneState}[1/2] 立即获取最新的场景状态。此时，如果需要立即获取最新的场景状态，可以调用 {@link #getSceneState(Promise<SceneState> promise) getSceneState}[2/2]。
+     *   - {@link #setScenePath(String path) setScenePath}[1/2]
+     *   - {@link #setScenePath(String path, Promise<Boolean> promise) setScenePath}[2/2]
+     *   - {@link #putScenes(String, Scene[], int)}
      *
-     * @return 当前场景组下的场景状态，详见 {@link SceneState SceneState}。
+     * @return 当前场景组下的场景状态，详见 {@link com.herewhite.sdk.domain.SceneState SceneState}。
      */
     public SceneState getSceneState() {
         return syncRoomState.getDisplayerState().getSceneState();
@@ -594,13 +599,13 @@ public class Room extends Displayer {
      *
      * @note
      * - 该方法为异步调用。
-     * - 调用以下方法修改或新增场景后，你可以通过 {@link #getSceneState(Promise)} 立即获取最新的场景状态。
-     * - {@link #setScenePath(String, Promise)}
-     * - {@link #setScenePath(String)}
-     * - {@link #putScenes(String, Scene[], int)}
+     * - 调用以下方法修改或新增场景后，你可以通过 {@link #getSceneState(Promise<SceneState> promise) getSceneState} 立即获取最新的场景状态。
+     *   - {@link #setScenePath(String path) setScenePath}[1/2]
+     *   - {@link #setScenePath(String path, Promise<Boolean> promise) setScenePath}[2/2]
+     *   - {@link #putScenes(String, Scene[], int)}
      *
-     * @param promise `Promise<SceneState>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getSceneState` 的调用结果：
-     *                - 如果方法调用成功，则返回场景状态，详见 {@link SceneState SceneState}。
+     * @param promise `Promise<SceneState>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `getSceneState` 的调用结果：
+     *                - 如果方法调用成功，则返回场景状态，详见 {@link com.herewhite.sdk.domain.SceneState SceneState}。
      *                - 如果方法调用失败，则返回错误信息。
      *
      */
@@ -630,12 +635,13 @@ public class Room extends Displayer {
      *
      * @note
      * - 该方法为同步调用。
-     * - 调用以下方法修改或新增场景后，无法通过 {@link #getScenes() getScenes} 立即获取最新的场景列表。此时，如果需要立即获取最新的场景列表，可以调用 {@link #getScenes(Promise)}。
-     * - {@link #setScenePath(String, Promise)}
-     * - {@link #setScenePath(String)}
-     * - {@link #putScenes(String, Scene[], int)}
+     * - 调用以下方法修改或新增场景后，无法通过 {@link #getScenes() getScenes}[1/2] 立即获取最新的场景列表。
+     * 此时，如果需要立即获取最新的场景列表，可以调用 {@link #getScenes(Promise<Scene[]> promise) getScenes}[2/2]。
+     *   - {@link #setScenePath(String path) setScenePath}[1/2]
+     *   - {@link #setScenePath(String path, Promise<Boolean> promise) setScenePath}[2/2]
+     *   - {@link #putScenes(String, Scene[], int) putScenes}
      *
-     * @return 当前场景组下的场景列表，详见 {@link Scene Scene}。
+     * @return 当前场景组下的场景列表，详见 {@link com.herewhite.sdk.domain.Scene Scene}。
      */
     public Scene[] getScenes() {
         return this.getSceneState().getScenes();
@@ -646,13 +652,13 @@ public class Room extends Displayer {
      *
      * @note
      * - 该方法为异步调用。
-     * - 调用以下方法修改或新增场景后，可以调用 {@link #getScenes(Promise)}，立即获取最新的场景列表。
-     * - {@link #setScenePath(String, Promise)}
-     * - {@link #setScenePath(String)}
-     * - {@link #putScenes(String, Scene[], int)}
+     * - 调用以下方法修改或新增场景后，可以调用 {@link #getScenes(Promise<Scene[]> promise) getScenes}，立即获取最新的场景列表。
+     *   - {@link #setScenePath(String path) setScenePath}[1/2]
+     *   - {@link #setScenePath(String path, Promise<Boolean> promise) setScenePath}[2/2]
+     *   - {@link #putScenes(String, Scene[], int) putScenes}
      *
-     * @param promise `Promise<Scene[]>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getScenes` 的调用结果：
-     *                - 如果方法调用成功，则返回场景列表，详见 {@link Scene Scene}。
+     * @param promise `Promise<Scene[]>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `getScenes` 的调用结果：
+     *                - 如果方法调用成功，则返回场景列表，详见 {@link com.herewhite.sdk.domain.Scene Scene}。
      *                - 如果方法调用失败，则返回错误信息。
      *
      */
@@ -681,9 +687,12 @@ public class Room extends Displayer {
      *
      * @since 2.4.0
      *
+     * @deprecated 该方法已废弃。
+     *
      * @note
      * - 该方法为同步调用。
-     * - 调用 {@link #zoomChange(double)} 或 {@link #moveCamera(CameraConfig)} 调整视角缩放比例后，无法通过 {@link #getZoomScale() getZoomScale} 立即获取最新的缩放比例。此时，如果需要立即获取最新的缩放比例，可以调用 {@link #getZoomScale(Promise)}。
+     * - 调用 {@link #zoomChange(double) zoomChange} 或 {@link #moveCamera(CameraConfig) moveCamera} 调整视角缩放比例后，无法通过 {@link #getZoomScale() getZoomScale}[1/2] 立即获取最新的缩放比例。
+     * 此时，如果需要立即获取最新的缩放比例，可以调用 {@link #getZoomScale(Promise<Number> promise) getZoomScale}[2/2]。
      *
      * @return 视角缩放比例。
      */
@@ -694,11 +703,13 @@ public class Room extends Displayer {
     /**
      * 获取当前用户的视角缩放比例。
      *
+     * @deprecated 该方法已废弃。
+     *
      * @note
      * - 该方法为异步调用。
-     * - 调用 {@link #zoomChange(double)} 或 {@link #moveCamera(CameraConfig)} 调整视角缩放比例后，如果需要立即获取最新的缩放比例，可以调用 {@link #getZoomScale(Promise)}。
+     * - 调用 {@link #zoomChange(double) zoomChange} 或 {@link #moveCamera(CameraConfig) moveCamera} 调整视角缩放比例后，如果需要立即获取最新的缩放比例，可以调用 {@link #getZoomScale(Promise<Number> promise) getZoomScale}[2/2]。
      *
-     * @param promise `Promise<Number>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getZoomScale` 的调用结果：
+     * @param promise `Promise<Number>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `getZoomScale` 的调用结果：
      *                - 如果方法调用成功，则返回视角缩放比例。
      *                - 如果方法调用失败，则返回错误信息。
      */
@@ -722,31 +733,31 @@ public class Room extends Displayer {
     }
 
     /**
-     * 获取房间连接状态。
+     * 获取房间的连接状态。
      *
      * @since 2.4.0
      *
      * @note
      * - 该方法为同步调用。
-     * - 调用 {@link #disconnect()} 或 {@link #disconnect(Promise)} 断开 SDK 与实时房间的连接后，无法立即通过 {@link #getRoomPhase() getRoomPhase} 获取最新的房间连接状态。
-     * 此时，你可以调用 {@link #getRoomPhase()} 立即获取最新的房间连接状态。
+     * - 调用 {@link #disconnect() disconnect}[1/2] 或 {@link #disconnect(@Nullable Promise<Object> promise) disconnect}[2/2] 断开 SDK 与实时房间的连接后，无法立即通过 {@link #getRoomPhase() getRoomPhase}[1/2] 获取最新的房间连接状态。
+     * 此时，你可以调用 {@link #getRoomPhase(Promise<RoomPhase> promise) getRoomPhase}[2/2] 立即获取最新的房间连接状态。
      *
-     * @return 房间的连接状态，详见 {@link RoomPhase RoomPhase}。
+     * @return 房间的连接状态，详见 {@link com.herewhite.sdk.domain.RoomPhase RoomPhase}。
      */
     public RoomPhase getRoomPhase() {
         return this.roomPhase;
     }
 
     /**
-     * 获取房间连接状态。
+     * 获取房间的连接状态。
      *
      * @note
      * - 该方法为异步调用。
-     * - 调用 {@link #disconnect()} 或 {@link #disconnect(Promise)} 断开 SDK 与实时房间的连接后，无法立即通过 {@link #getRoomPhase() getRoomPhase} 获取最新的房间连接状态。
-     * 此时，你可以调用 {@link #getRoomPhase()} 立即获取最新的房间连接状态。
+     * - 调用 {@link #disconnect() disconnect}[1/2] 或 {@link #disconnect(@Nullable Promise<Object> promise) disconnect}[2/2] 断开 SDK 与实时房间的连接后，无法立即通过 {@link #getRoomPhase() getRoomPhase}[1/2] 获取最新的房间连接状态。
+     * 此时，你可以调用 {@link #getRoomPhase(Promise<RoomPhase> promise) getRoomPhase}[2/2] 立即获取最新的房间连接状态。
      *
-     * @param promise `Promise<RoomPhase>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getRoomPhase` 的调用结果：
-     *                - 如果方法调用成功，则返回房间连接状态，详见 {@link RoomPhase RoomPhase}。
+     * @param promise `Promise<RoomPhase>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `getRoomPhase` 的调用结果：
+     *                - 如果方法调用成功，则返回房间连接状态，详见 {@link com.herewhite.sdk.domain.RoomPhase RoomPhase}。
      *                - 如果方法调用失败，则返回错误信息。
      */
     public void getRoomPhase(final Promise<RoomPhase> promise) {
@@ -769,15 +780,15 @@ public class Room extends Displayer {
     }
 
     /**
-     * 获取实时房间所有状态。
+     * 获取房间的所有状态。
      *
      * @since 2.4.0
      *
      * @note
      * - 该方法为同步调用。
-     * - 修改房间的状态属性后，无法立即通过 {@link #getRoomState() getRoomState} 获取最新的房间状态。此时，如果需要立即获取最新的房间状态，可以调用 {@link #getRoomState(Promise)} 获取。
+     * - 修改房间的状态属性后，无法立即通过 {@link #getRoomState() getRoomState}[1/2] 获取最新的房间状态。此时，如果需要立即获取最新的房间状态，可以调用 {@link #getRoomState(Promise<RoomState> promise) getRoomState}[2/2] 获取。
      *
-     * @return 房间当前的所有状态，详见 {@link RoomState RoomState}。
+     * @return 房间当前的所有状态，详见 {@link com.herewhite.sdk.domain.RoomState RoomState}。
      *
      */
     public RoomState getRoomState() {
@@ -785,14 +796,14 @@ public class Room extends Displayer {
     }
 
     /**
-     * 获取实时房间所有状态。
+     * 获取房间的所有状态。
      *
      * @note
      * - 该方法为异步调用。
-     * - 修改房间的状态属性后，无法立即通过 {@link #getRoomState() getRoomState} 获取最新的房间状态。此时，如果需要立即获取最新的房间状态，可以调用 {@link #getRoomState(Promise)} 获取。
+     * - 修改房间的状态属性后，无法立即通过 {@link #getRoomState() getRoomState} 获取最新的房间状态。此时，如果需要立即获取最新的房间状态，可以调用 {@link #getRoomState(Promise<RoomState> promise) getRoomState}[2/2] 获取。
      *
-     * @param promise `Promise<RoomState>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `getRoomState` 的调用结果：
-     *                - 如果方法调用成功，则返回房间所有状态，详见 {@link RoomState RoomState}。
+     * @param promise `Promise<RoomState>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `getRoomState` 的调用结果：
+     *                - 如果方法调用成功，则返回房间所有状态，详见 {@link com.herewhite.sdk.domain.RoomState RoomState}。
      *                - 如果方法调用失败，则返回错误信息。
      */
     public void getRoomState(final Promise<RoomState> promise) {
@@ -824,7 +835,7 @@ public class Room extends Displayer {
      *
      * @note
      * - 该方法为同步调用。
-     * - 如需获取方法调用回调，请使用 {@link #setScenePath(String, Promise)}。
+     * - 如需获取方法调用回调，请使用 {@link #setScenePath(String path, Promise<Boolean> promise) setScenePath}[2/2]。
      *
      * 场景切换失败可能有以下原因：
      * - 路径不合法，请确保场景路径以 "/"，由场景组和场景名构成。
@@ -851,7 +862,7 @@ public class Room extends Displayer {
      * - 传入的路径是场景组的路径，而不是场景路径。
      *
      * @param path    想要切换到的场景的场景路径，请确保场景路径以 "/"，由场景组和场景名构成，例如，`/math/classA`.
-     * @param promise `Promise<Boolean>` 接口，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `setScenePath` 的调用结果：
+     * @param promise `Promise<Boolean>` 接口，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `setScenePath` 的调用结果：
      *                - 如果方法调用成功，则返回 `true`.
      *                - 如果方法调用失败，则返回错误信息。
      */
@@ -876,7 +887,7 @@ public class Room extends Displayer {
      * 指定的场景必须在当前场景组中，否则，方法调用会失败。
      *
      * @param index   目标场景在当前场景组下的索引号。
-     * @param promise `Promise<Boolean>` 接口，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `setSceneIndex` 的调用结果：
+     * @param promise `Promise<Boolean>` 接口，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `setSceneIndex` 的调用结果：
      *                - 如果方法调用成功，则返回 `true`.
      *                - 如果方法调用失败，则返回错误信息。
      */
@@ -900,10 +911,10 @@ public class Room extends Displayer {
     /**
      * 在指定场景组下插入多个场景。
      *
-     * @note 调用该方法插入多个场景后不会切换到新插入的场景。如果要切换至新插入的场景，需要调用 {@link #setScenePath(String)}。
+     * @note 调用该方法插入多个场景后不会切换到新插入的场景。如果要切换至新插入的场景，需要调用 `setScenePath`。
      *
      * @param dir    场景组名称，必须以 `/` 开头。不能为场景路径。
-     * @param scenes 由多个场景构成的数组。单个场景的字段详见 {@link Scene Scene}。
+     * @param scenes 由多个场景构成的数组。单个场景的字段详见 {@link com.herewhite.sdk.domain.Scene Scene}。
      * @param index  待插入的多个场景中，第一个场景在该场景组的索引号。如果传入的索引号大于该场景组已有场景总数，新插入的场景会排在现有场景的最后。场景的索引号从 0 开始。
      *
      * <pre>
@@ -1012,7 +1023,7 @@ public class Room extends Displayer {
      *
      * @since 2.6.2
      *
-     * @param promise `Promise<JSONObject>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `debugInfo` 的调用结果：
+     * @param promise `Promise<JSONObject>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `debugInfo` 的调用结果：
      *                - 如果方法调用成功，则返回调试日志信息。
      *                - 如果方法调用失败，则返回错误信息。
      */
@@ -1045,14 +1056,14 @@ public class Room extends Displayer {
     }
 
     /**
-     * 设置用户在房间中是否为互动模式
+     * 设置用户在房间中是否为互动模式。
      *
      * @since 2.6.1
      *
      * @param writable 用户在房间中是否为互动模式：
      *                 - `true`：互动模式，即具有读写权限。
      *                 - `false`：订阅模式，即具有只读权限。
-     * @param promise  `Promise<Boolean>` 接口实例，详见 {@link Promise<> Promise<T>}。你可以通过该接口获取 `setWritable` 的调用结果：
+     * @param promise  `Promise<Boolean>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `setWritable` 的调用结果：
      *                 - 如果方法调用成功，则返回用户在房间中的读写状态。
      *                 - 如果方法调用失败，则返回错误信息。
      */
@@ -1152,7 +1163,7 @@ public class Room extends Displayer {
      *
      * @note 所有注册监听该事件的用户都会收到通知。
      *
-     * @param eventEntry 自定义事件内容，详见 {@link AkkoEvent}。
+     * @param eventEntry 自定义事件内容，详见 {@link com.herewhite.sdk.domain.AkkoEvent AkkoEvent}。
      */
     public void dispatchMagixEvent(AkkoEvent eventEntry) {
         bridge.callHandler("room.dispatchMagixEvent", new Object[]{eventEntry});
@@ -1200,6 +1211,7 @@ public class Room extends Displayer {
             }
         }
 
+        /// @cond test
         /**
          * 文档中隐藏。
          *
@@ -1212,6 +1224,7 @@ public class Room extends Displayer {
                 eventListener.onEvent(eventEntries);
             }
         }
+        /// @endcond
 
         @Override
         public void firePhaseChanged(RoomPhase valueOf) {

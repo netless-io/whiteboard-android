@@ -22,7 +22,7 @@ public class WhiteDisplayerState extends WhiteObject {
      * <p>
      * 设置后，所有 `GlobalState` 都会转换为该类的实例。
      *
-     * @param <T>      类型约束，自定义的 'GlobalState' 类必须继承 {@link GlobalState GlobalState} 类。
+     * @param <T>      类型约束，自定义的 'GlobalState' 类必须继承 {@link com.herewhite.sdk.domain.GlobalState GlobalState} 类。
      * @param classOfT 自定义的 'GlobalState' 类。
      */
     public static <T extends GlobalState> void setCustomGlobalStateClass(Class<T> classOfT) {

@@ -14,7 +14,7 @@ public interface RoomListener {
     /**
      * 房间连接状态变化回调。
      *
-     * @param phase 房间的连接状态，详见 {@link RoomPhase RoomPhase}。
+     * @param phase 房间的连接状态，详见 {@link com.herewhite.sdk.domain.RoomPhase RoomPhase}。
      */
     void onPhaseChanged(RoomPhase phase);
 
@@ -37,7 +37,7 @@ public interface RoomListener {
      * <p>
      * 该回调仅返回发生变化的房间状态属性，未发生变化的房间状态字段，均未空。
      *
-     * @param modifyState 发生变化的房间状态属性，详见 {@link RoomState RoomState}。
+     * @param modifyState 发生变化的房间状态属性，详见 {@link com.herewhite.sdk.domain.RoomState RoomState}。
      */
     void onRoomStateChanged(RoomState modifyState);
 
