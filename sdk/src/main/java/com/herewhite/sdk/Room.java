@@ -734,7 +734,7 @@ public class Room extends Displayer {
      * - 修改房间的状态属性后，无法立即通过 {@link #getRoomState() getRoomState} 获取最新的房间状态。此时，如果需要立即获取最新的房间状态，可以调用 {@link #getRoomState(Promise)} 获取。
      */
     public void getRoomState(final Promise<RoomState> promise) {
-        bridge.callHandler("room.state.getDisplayerState", new OnReturnValue<Object>() {
+        bridge.callHandler("room.state.getRoomState", new OnReturnValue<Object>() {
             @Override
             public void onValue(Object o) {
                 try {
