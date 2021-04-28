@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.12.25] - 2021-04-28
+- 更新`@netless/white-audio-plugin2`,`@netless/white-video-plugin2`插件，修复显示问题
 ## [2.12.24] - 2021-04-27
 - 修复`getRoomState`异步API，没有回调的问题
 - 更新`@netless/white-audio-plugin` 至 1.2.23，修复回放时，音频文件显示问题。
