@@ -15,7 +15,7 @@ public class PptPage extends WhiteObject {
     private String src;
     private Double width;
     private Double height;
-    @SerializedName(value = "preview")
+    @SerializedName(value = "previewURL", alternate = {"preview"})
     private String preview;
 
     /**
@@ -105,5 +105,18 @@ public class PptPage extends WhiteObject {
      */
     public void setHeight(double height) {
         this.height = height;
+    }
+
+    /**
+     * 获取背景预览图。
+     *
+     * @return 背景预览图的 URL 地址。
+     */
+    public String getPreview() {
+        return preview;
+    }
+
+    public void setPreview(String preview) {
+        this.preview = preview;
     }
 }
