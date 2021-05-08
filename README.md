@@ -1,54 +1,44 @@
-# white sdk android [![Release](https://jitpack.io/v/netless-io/white-sdk-android.svg)](http://developer.herewhite.com)
+# white sdk android [![Release](https://jitpack.io/v/netless-io/whiteboard-android.svg)](https://jitpack.io/#netless-io/whiteboard-android)
 
-[最新release](https://github.com/netless-io/whiteboard-android/releases/latest)
-[外部版本列表](https://jitpack.io/com/github/netless-io/whiteboard-android/)
+[last release](https://github.com/netless-io/whiteboard-android/releases/latest)
 
-# Demo运行
-1. 阅读[项目及权限](https://developer.netless.link/document-zh/home/project-and-authority)，申请 APP Identifier 及 获取 SDK Token
-2. 配置 app 目录下 string_white_sdk_config.xml 中相应参数
+[jitpack release](https://jitpack.io/com/github/netless-io/whiteboard-android/)
 
+## Run Demo
+1. Read [Projects and permissions](https://developer.netless.link/document-en/home/project-and-authority)，Gain **APP Identifier** and **SDK Token**
+2. Config **app/string_white_sdk_config.xml**
 
-# 项目集成
-
-## 前提条件
+## Integrate the SDK
+### Prerequisites
 1. Android Studio 
 2. API 19+
+3. A valid **APP Identifier** and **SDK Token**
 
-## 获取所需要的信息
-1. 阅读 应用与权限，获取 SDK Token
-2. 阅读 APP Identifier，获取 App Identifier
-
-## 集成 SDK 到项目中
-
-### 配置 build.gradle
-打开根目录下的 build.gradle 进行如下标准配置：
+### Config build.gradle
+Add the following line in the **build.gradle** file of your project:
 ```groovy
 allprojects {
     repositories {
-        jcenter()
-        // 添加以下内容
+        // Add jitpack repository
         maven { url 'https://jitpack.io' }
     }
 }
 ```
 
-然后打开 app 目录下的 build.gradle 进行如下配置：
+add dependency of whiteboard in the **app/build.gradle** file
+
 ```groovy
 dependencies {
-    // 数字请根据最新版自行添加
-    implementation 'com.github.netless-io:whiteboard-android:2.12.6'
+    // Get the latest version number through the release notes.
+    implementation 'com.github.netless-io:whiteboard-android:$last-version'
 }
 ```
+Our [change log](https://developer.netless.link/android-en/home/android-changelog) has release history.
 
-> 最新版本请查看[版本历史](https://developer.netless.link/android-zh/home/android-changelog)
+The latest release is available on [jitpack](https://jitpack.io/v/netless-io/whiteboard-android)
 
-这时你会看到 Android Studio 在编辑器的顶部有一行提示
-```sh
-gradle files have changed since last project sync. a project sync may be necessary for the IDE to work properly
-```
-点击 Sync Now 按钮后提示变为 Gradle project sync in process... ，稍等一段时间（依你的网络环境而定）后提示消失，则集成完毕。
-
-### Proguard 配置
+### Config Proguard
+Add the following line in the **app/proguard-rules.pro** file to prevent obfuscating the code
 ```bash
 # SDK model
 -keep class com.herewhite.** { *; }
