@@ -71,7 +71,8 @@ public class LoggerOptions extends WhiteObject {
     /**
      * 开启/关闭日志上报。
      *
-     * @deprecated 该方法已废弃。请使用 {@link #getReportDebugLogMode()}、{@link #getReportQualityMode()} 和 {@link #getReportLevelMask()}。
+     * @deprecated 该方法已废弃。请使用 {@link #getReportDebugLogMode() getReportDebugLogMode}、
+     * {@link #getReportQualityMode() getReportQualityMode} 和 {@link #getReportLevelMask() getReportLevelMask}。
      *
      * @param disableReportLog 是否关闭日志上报；
      *                         - `true`：关闭。

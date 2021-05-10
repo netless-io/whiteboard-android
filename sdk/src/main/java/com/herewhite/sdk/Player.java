@@ -160,7 +160,7 @@ public class Player extends Displayer {
      *
      * @note
      * - 该方法为同步调用。
-     * - 成功调用 {@link #stop()}、{@link #play()} 或 {@link #pause()} 等方法均会影响白板回放的阶段，但是通过该方法无法立即获取最新的白板回放阶段。
+     * - 成功调用 {@link #stop() stop}、{@link #play() play} 或 {@link #pause() pause} 等方法均会影响白板回放的阶段，但是通过该方法无法立即获取最新的白板回放阶段。
      * 此时，你可以调用 {@link getPhase(final Promise<PlayerPhase> promise) getPhase} 获取最新的回放阶段。
      *
      * @return 白板回放的阶段，详见 {@link com.herewhite.sdk.domain.PlayerPhase PlayerPhase}。
@@ -177,7 +177,7 @@ public class Player extends Displayer {
      *
      * @note
      * - 该方法为异步调用。我们推荐你仅在调试或问题排查时使用。一般情况下可以使用同步方法 {@link #getPlayerPhase() getPlayerPhase} 获取回放阶段。
-     * - 成功调用 {@link #stop()}、{@link #play()} 或 {@link #pause()} 等方法后，你无法通过 {@link #getPlayerPhase() getPlayerPhase} 立即获取最新的白板回放阶段。
+     * - 成功调用 {@link #stop() stop}、{@link #play() play} 或 {@link #pause() pause} 等方法后，你无法通过 {@link #getPlayerPhase() getPlayerPhase} 立即获取最新的白板回放阶段。
      * 此时，你可以调用 {@link getPhase(final Promise<PlayerPhase> promise) getPhase}。
      *
      * @param promise `Promise<PlayerPhase>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `getPhase` 方法的调用结果：

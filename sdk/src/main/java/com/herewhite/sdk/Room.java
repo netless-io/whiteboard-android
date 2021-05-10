@@ -373,7 +373,8 @@ public class Room extends Displayer {
      *
      * @note
      * - 该方法为同步调用。
-     * - 对于通过 {@link com.herewhite.sdk.domain.WhiteDisplayerState#setCustomGlobalStateClass(Class<T> classOfT) setCustomGlobalStateClass} 方法设置的自定义 `GlobalState`，在获取后，可以直接进行强转。
+     * - 对于通过 {@link com.herewhite.sdk.domain.WhiteDisplayerState#setCustomGlobalStateClass(Class<T> classOfT) setCustomGlobalStateClass}
+     * 方法设置的自定义 `GlobalState`，在获取后，可以直接进行强转。
      * - 调用 {@link #setGlobalState(GlobalState) setGlobalState} 方法后，可以立刻调用该方法。
      *
      * @return 房间的全局状态，详见 {@link com.herewhite.sdk.domain.GlobalState GlobalState}。
@@ -535,7 +536,7 @@ public class Room extends Displayer {
      *
      * @note
      * - 该方法为同步调用。
-     * - 调用 {@link #setViewMode(ViewMode)} 修改用户视角模式后，无法立刻通过 {@link #getBroadcastState() getBroadcastState}[1/2] 获取最新的用户视角状态。
+     * - 调用 {@link #setViewMode(ViewMode) setViewMode} 修改用户视角模式后，无法立刻通过 {@link #getBroadcastState() getBroadcastState}[1/2] 获取最新的用户视角状态。
      * 如果需要立即获取最新的用户视角状态，可以调用 {@link #getBroadcastState(Promise<BroadcastState> promise) getBroadcastState}[2/2]。
      *
      * @return 用户视角状态，详见 {@link com.herewhite.sdk.domain.BroadcastState BroadcastState}。
@@ -550,7 +551,7 @@ public class Room extends Displayer {
      *
      * @note
      * - 该方法为异步调用。
-     * - 调用 {@link #setViewMode(ViewMode)} 修改用户视角模式后，无法立刻通过 {@link #getBroadcastState getBroadcastState}[1/2] 获取最新的用户视角状态。如果需要
+     * - 调用 {@link #setViewMode(ViewMode) setViewMode} 修改用户视角模式后，无法立刻通过 {@link #getBroadcastState getBroadcastState}[1/2] 获取最新的用户视角状态。如果需要
      * 立即获取最新的用户视角状态，可以调用 {@link #getBroadcastState(Promise<BroadcastState> promise) getBroadcastState}[2/2]。
      *
      * @param promise `Promise<BroadcastState>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `getBroadcastState` 的调用结果：
@@ -583,7 +584,8 @@ public class Room extends Displayer {
      *
      * @note
      * - 该方法为同步调用。
-     * - 调用以下方法修改或新增场景后，无法通过 {@link #getSceneState() getSceneState}[1/2] 立即获取最新的场景状态。此时，如果需要立即获取最新的场景状态，可以调用 {@link #getSceneState(Promise<SceneState> promise) getSceneState}[2/2]。
+     * - 调用以下方法修改或新增场景后，无法通过 {@link #getSceneState() getSceneState}[1/2] 立即获取最新的场景状态。此时，如果需要立即获取最新的场景状态，
+     * 可以调用 {@link #getSceneState(Promise<SceneState> promise) getSceneState}[2/2]。
      *   - {@link #setScenePath(String path) setScenePath}[1/2]
      *   - {@link #setScenePath(String path, Promise<Boolean> promise) setScenePath}[2/2]
      *   - {@link #putScenes(String, Scene[], int)}
@@ -786,7 +788,8 @@ public class Room extends Displayer {
      *
      * @note
      * - 该方法为同步调用。
-     * - 修改房间的状态属性后，无法立即通过 {@link #getRoomState() getRoomState}[1/2] 获取最新的房间状态。此时，如果需要立即获取最新的房间状态，可以调用 {@link #getRoomState(Promise<RoomState> promise) getRoomState}[2/2] 获取。
+     * - 修改房间的状态属性后，无法立即通过 {@link #getRoomState() getRoomState}[1/2] 获取最新的房间状态。
+     * 此时，如果需要立即获取最新的房间状态，可以调用 {@link #getRoomState(Promise<RoomState> promise) getRoomState}[2/2] 获取。
      *
      * @return 房间当前的所有状态，详见 {@link com.herewhite.sdk.domain.RoomState RoomState}。
      *
