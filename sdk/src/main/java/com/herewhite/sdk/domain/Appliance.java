@@ -48,4 +48,13 @@ public class Appliance {
      * 激光笔
      */
     public final static String LASER_POINTER = "laserPointer";
+    /**
+     * 点击
+     */
+    public final static String CLICKER = "clicker";
+
+    /**
+     * 形状
+     */
+    public final static String SHAPE = "shape";
 }
