@@ -214,7 +214,7 @@ public class RoomTest extends TestCase {
 
     public void testGetRoomState() {
         mRoom.getRoomState(IGNORE_PROMISE);
-        verify(mockJsBridgeInterface).callHandler(eq("room.state.getDisplayerState"), (OnReturnValue<Object>) any());
+        verify(mockJsBridgeInterface).callHandler(eq("room.state.getRoomState"), (OnReturnValue<Object>) any());
     }
 
     public void testSetScenePath() {
@@ -300,6 +300,12 @@ public class RoomTest extends TestCase {
         verify(mockJsBridgeInterface).callHandler("room.setTimeDelay", new Object[]{1234_000});
         assertEquals(Integer.valueOf(1234), mRoom.getTimeDelay());
     }
+
+    public void testSyncBlockTimestamp() {
+        mRoom.syncBlockTimestamp(1234L);
+        verify(mockJsBridgeInterface).callHandler("room.sync.syncBlockTimstamp", new Object[]{1234L});
+    }
+
 
     public void testDispatchMagixEvent() {
         AkkoEvent akkoEvent = new AkkoEvent("eventName", "{}");

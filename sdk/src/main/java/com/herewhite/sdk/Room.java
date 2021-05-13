@@ -1,7 +1,5 @@
 package com.herewhite.sdk;
 
-import androidx.annotation.Nullable;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.AkkoEvent;
@@ -30,6 +28,7 @@ import org.json.JSONObject;
 
 import java.util.UUID;
 
+import androidx.annotation.Nullable;
 import wendu.dsbridge.OnReturnValue;
 
 /**
@@ -1070,6 +1069,15 @@ public class Room extends Displayer {
         return this.timeDelay;
     }
     //endregion
+
+    /**
+     * 同步时间戳
+     *
+     * @param utcMs 单位 ms
+     */
+    public void syncBlockTimestamp(long utcMs) {
+        bridge.callHandler("room.sync.syncBlockTimstamp", new Object[]{utcMs});
+    }
 
     /**
      * 发送自定义事件。
