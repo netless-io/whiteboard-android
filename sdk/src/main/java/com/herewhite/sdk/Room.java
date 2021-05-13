@@ -22,6 +22,7 @@ import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.SceneState;
 import com.herewhite.sdk.domain.ViewMode;
 import com.herewhite.sdk.internal.Logger;
+import com.herewhite.sdk.internal.RoomDelegate;
 
 import org.json.JSONObject;
 
@@ -810,7 +811,7 @@ public class Room extends Displayer {
      *                - 如果方法调用失败，则返回错误信息。
      */
     public void getRoomState(final Promise<RoomState> promise) {
-        bridge.callHandler("room.state.getDisplayerState", new OnReturnValue<Object>() {
+        bridge.callHandler("room.state.getRoomState", new OnReturnValue<Object>() {
             @Override
             public void onValue(Object o) {
                 try {
@@ -1162,6 +1163,15 @@ public class Room extends Displayer {
     //endregion
 
     /**
+     * 同步时间戳
+     *
+     * @param utcMs 单位 ms
+     */
+    public void syncBlockTimestamp(long utcMs) {
+        bridge.callHandler("room.sync.syncBlockTimstamp", new Object[]{utcMs});
+    }
+
+    /**
      * 发送自定义事件。
      *
      * @note 所有注册监听该事件的用户都会收到通知。
@@ -1236,37 +1246,47 @@ public class Room extends Displayer {
 
         @Override
         public void fireCanUndoStepsUpdate(long canUndoSteps) {
-            if (roomListener != null) {
-                roomListener.onCanUndoStepsUpdate(canUndoSteps);
-            }
+            post(() -> {
+                if (roomListener != null) {
+                    roomListener.onCanUndoStepsUpdate(canUndoSteps);
+                }
+            });
         }
 
         @Override
         public void onCanRedoStepsUpdate(long canRedoSteps) {
-            if (roomListener != null) {
-                roomListener.onCanRedoStepsUpdate(canRedoSteps);
-            }
+            post(() -> {
+                if (roomListener != null) {
+                    roomListener.onCanRedoStepsUpdate(canRedoSteps);
+                }
+            });
         }
 
         @Override
         public void fireKickedWithReason(String reason) {
-            if (roomListener != null) {
-                roomListener.onKickedWithReason(reason);
-            }
+            post(() -> {
+                if (roomListener != null) {
+                    roomListener.onKickedWithReason(reason);
+                }
+            });
         }
 
         @Override
         public void fireDisconnectWithError(Exception exception) {
-            if (roomListener != null) {
-                roomListener.onDisconnectWithError(exception);
-            }
+            post(() -> {
+                if (roomListener != null) {
+                    roomListener.onDisconnectWithError(exception);
+                }
+            });
         }
 
         @Override
         public void fireCatchErrorWhenAppendFrame(long userId, Exception exception) {
-            if (roomListener != null) {
-                roomListener.onCatchErrorWhenAppendFrame(userId, exception);
-            }
+            post(() -> {
+                if (roomListener != null) {
+                    roomListener.onCatchErrorWhenAppendFrame(userId, exception);
+                }
+            });
         }
 
         @Override

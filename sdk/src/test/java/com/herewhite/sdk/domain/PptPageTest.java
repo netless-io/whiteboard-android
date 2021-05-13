@@ -12,7 +12,7 @@ public class PptPageTest {
     public void serialization() {
         Gson gson = new GsonBuilder().serializeNulls().create();
 
-        String expected = "{\"src\":\"url\",\"width\":400.0,\"height\":400.0}";
+        String expected = "{\"src\":\"url\",\"width\":400.0,\"height\":400.0,\"previewURL\":null}";
         PptPage pptPage = new PptPage("url", 400.0, 400.0);
 
         assertEquals(expected, gson.toJson(pptPage));

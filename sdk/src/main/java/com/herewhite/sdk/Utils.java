@@ -14,10 +14,10 @@ import java.util.Arrays;
 import java.util.List;
 
 class Utils {
-    private final static Gson gsonLog = new Gson();
+    private final static Gson gson = new Gson();
 
     public static <T> T fromJson(String json, Class<T> classOfT) throws JsonSyntaxException {
-        return gsonLog.fromJson(json, classOfT);
+        return gson.fromJson(json, classOfT);
     }
 
     /**
@@ -37,8 +37,6 @@ class Utils {
     }
 
     // region bridge data convert
-    // 保持元逻辑，后续看是否需要将此处理移至独立处理类
-    private final static Gson gsonConvert = new Gson();
 
     /**
      * 转换成DWebView中需要类型
@@ -89,7 +87,7 @@ class Utils {
             }
             return list;
         } else {
-            return gsonConvert.toJson(object);
+            return gson.toJson(object);
         }
     }
     // region end

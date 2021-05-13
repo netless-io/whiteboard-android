@@ -11,6 +11,7 @@ import com.herewhite.sdk.domain.PlayerTimeInfo;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.internal.Logger;
+import com.herewhite.sdk.internal.PlayerDelegate;
 
 import wendu.dsbridge.OnReturnValue;
 
@@ -309,49 +310,61 @@ public class Player extends Displayer {
     }
 
     private SyncDisplayerState.Listener<PlayerState> localPlayStateListener = modifyState -> {
-        if (listener != null) {
-            listener.onPlayerStateChanged(modifyState);
-        }
+        post(() -> {
+            if (listener != null) {
+                listener.onPlayerStateChanged(modifyState);
+            }
+        });
     };
 
 
     private class PlayerDelegateImpl implements PlayerDelegate {
         @Override
         public void fireMagixEvent(EventEntry eventEntry) {
-            EventListener eventListener = eventListenerMap.get(eventEntry.getEventName());
-            if (eventListener != null) {
-                eventListener.onEvent(eventEntry);
-            }
+            post(() -> {
+                EventListener eventListener = eventListenerMap.get(eventEntry.getEventName());
+                if (eventListener != null) {
+                    eventListener.onEvent(eventEntry);
+                }
+            });
         }
 
         @Override
         public void fireHighFrequencyEvent(EventEntry[] eventEntries) {
-            FrequencyEventListener eventListener = frequencyEventListenerMap.get(eventEntries[0].getEventName());
-            if (eventListener != null) {
-                eventListener.onEvent(eventEntries);
-            }
+            post(() -> {
+                FrequencyEventListener eventListener = frequencyEventListenerMap.get(eventEntries[0].getEventName());
+                if (eventListener != null) {
+                    eventListener.onEvent(eventEntries);
+                }
+            });
         }
 
         @Override
         public void setPlayerPhase(PlayerPhase playerPhase) {
             Player.this.playerPhase = playerPhase;
-            if (listener != null) {
-                listener.onPhaseChanged(playerPhase);
-            }
+            post(() -> {
+                if (listener != null) {
+                    listener.onPhaseChanged(playerPhase);
+                }
+            });
         }
 
         @Override
         public void onLoadFirstFrame() {
-            if (listener != null) {
-                listener.onLoadFirstFrame();
-            }
+            post(() -> {
+                if (listener != null) {
+                    listener.onLoadFirstFrame();
+                }
+            });
         }
 
         @Override
         public void onSliceChanged(String slice) {
-            if (listener != null) {
-                listener.onSliceChanged(slice);
-            }
+            post(() -> {
+                if (listener != null) {
+                    listener.onSliceChanged(slice);
+                }
+            });
         }
 
         @Override
@@ -363,31 +376,39 @@ public class Player extends Displayer {
 
         @Override
         public void onStoppedWithError(SDKError error) {
-            if (listener != null) {
-                listener.onStoppedWithError(error);
-            }
+            post(() -> {
+                if (listener != null) {
+                    listener.onStoppedWithError(error);
+                }
+            });
         }
 
         @Override
         public void setScheduleTime(long scheduleTime) {
             Player.this.scheduleTime = scheduleTime;
-            if (listener != null) {
-                listener.onScheduleTimeChanged(scheduleTime);
-            }
+            post(() -> {
+                if (listener != null) {
+                    listener.onScheduleTimeChanged(scheduleTime);
+                }
+            });
         }
 
         @Override
         public void onCatchErrorWhenAppendFrame(SDKError error) {
-            if (listener != null) {
-                listener.onCatchErrorWhenAppendFrame(error);
-            }
+            post(() -> {
+                if (listener != null) {
+                    listener.onCatchErrorWhenAppendFrame(error);
+                }
+            });
         }
 
         @Override
         public void onCatchErrorWhenRender(SDKError error) {
-            if (listener != null) {
-                listener.onCatchErrorWhenRender(error);
-            }
+            post(() -> {
+                if (listener != null) {
+                    listener.onCatchErrorWhenRender(error);
+                }
+            });
         }
     }
 }

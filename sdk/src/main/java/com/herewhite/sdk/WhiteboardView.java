@@ -20,6 +20,7 @@ import wendu.dsbridge.OnReturnValue;
 public class WhiteboardView extends DWebView implements JsBridgeInterface {
 
     private boolean autoResize = true;
+    private RefreshViewSizeStrategy delayStrategy;
 
     /**
      * 初始化白板界面。
@@ -46,11 +47,17 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
     protected void onSizeChanged(int w, int h, int ow, int oh) {
         super.onSizeChanged(w, h, ow, oh);
         if (autoResize) {
-            callHandler("displayer.refreshViewSize", new Object[]{});
+            delayStrategy.refreshViewSize();
         }
     }
 
     /// @cond test
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        delayStrategy.onDetachedFromWindow();
+    }
+
     /**
      * 设置视图大小切换时自动发送事件至js端
      * 文档中隐藏
@@ -79,6 +86,8 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
         getSettings().setMediaPlaybackRequiresUserGesture(false);
         loadUrl("file:///android_asset/whiteboard/index.html");
         setWebChromeClient(new FixWebChromeClient());
+        // 100ms，减少用户体验问题，防止动画过程中频繁调用问题
+        delayStrategy = new RefreshViewSizeStrategy(100);
     }
 
     @Override
@@ -112,6 +121,24 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
             } catch (Exception e) {
                 return super.getDefaultVideoPoster();
             }
+        }
+    }
+
+    private class RefreshViewSizeStrategy {
+        private final int delay;
+        private Runnable refreshViewSize = () -> callHandler("displayer.refreshViewSize", new Object[]{});
+
+        RefreshViewSizeStrategy(int delay) {
+            this.delay = delay;
+        }
+
+        public void refreshViewSize() {
+            removeCallbacks(refreshViewSize);
+            postDelayed(refreshViewSize, delay);
+        }
+
+        public void onDetachedFromWindow() {
+            removeCallbacks(refreshViewSize);
         }
     }
 }

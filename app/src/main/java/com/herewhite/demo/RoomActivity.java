@@ -27,6 +27,9 @@ import com.herewhite.sdk.RoomParams;
 import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
 import com.herewhite.sdk.WhiteboardView;
+import com.herewhite.sdk.converter.ConvertType;
+import com.herewhite.sdk.converter.ConverterV5;
+import com.herewhite.sdk.converter.ImageFormat;
 import com.herewhite.sdk.domain.AkkoEvent;
 import com.herewhite.sdk.domain.AnimationMode;
 import com.herewhite.sdk.domain.Appliance;
@@ -533,6 +536,35 @@ public class RoomActivity extends BaseActivity {
                 logAction(String.valueOf(progress));
             }
         });
+
+        // ConvertV5
+        ConverterV5.Builder builder = new ConverterV5.Builder();
+        ConverterV5 converter = builder
+                .setResource("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/LightWaves.pdf")
+                .setType(ConvertType.Static)
+                .setScale(1.5)
+                .setOutputFormat(ImageFormat.JPEG)
+                .setSdkToken(demoAPI.getSdkToken())
+                .setTaskUuid(null)
+                .setTaskToken(null)
+                .setCallback(new ConverterCallbacks() {
+                    @Override
+                    public void onProgress(Double progress, ConversionInfo convertInfo) {
+
+                    }
+
+                    @Override
+                    public void onFinish(ConvertedFiles ppt, ConversionInfo convertInfo) {
+
+                    }
+
+                    @Override
+                    public void onFailure(ConvertException e) {
+
+                    }
+                })
+                .build();
+        converter.startConvertTask();
     }
 
     public void dynamicConvert(MenuItem item) {
@@ -555,6 +587,34 @@ public class RoomActivity extends BaseActivity {
                 logAction(String.valueOf(progress));
             }
         });
+
+        // ConvertV5
+        ConverterV5.Builder builder = new ConverterV5.Builder();
+        ConverterV5 converter = builder
+                .setResource("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/-1/1.pptx")
+                .setType(ConvertType.Dynamic)
+                .setPreview(true)
+                .setSdkToken(demoAPI.getSdkToken())
+                .setTaskUuid(null)
+                .setTaskToken(null)
+                .setCallback(new ConverterCallbacks() {
+                    @Override
+                    public void onProgress(Double progress, ConversionInfo convertInfo) {
+
+                    }
+
+                    @Override
+                    public void onFinish(ConvertedFiles ppt, ConversionInfo convertInfo) {
+
+                    }
+
+                    @Override
+                    public void onFailure(ConvertException e) {
+
+                    }
+                })
+                .build();
+        converter.startConvertTask();
     }
 
     public void broadcast(MenuItem item) {
@@ -701,6 +761,18 @@ public class RoomActivity extends BaseActivity {
         MemberState memberState = new MemberState();
         memberState.setStrokeColor(new int[]{200, 200, 200});
         memberState.setCurrentApplianceName(Appliance.PENCIL);
+        memberState.setStrokeWidth(4);
+        memberState.setTextSize(10);
+        mRoom.setMemberState(memberState);
+    }
+
+    public void shape(MenuItem item) {
+        logAction();
+        MemberState memberState = new MemberState();
+        memberState.setStrokeColor(new int[]{200, 200, 200});
+        // defalut Shape Triangle
+        memberState.setCurrentApplianceName(Appliance.SHAPE);
+        // memberState.setShapeType(ShapeType.Rhombus);
         memberState.setStrokeWidth(4);
         memberState.setTextSize(10);
         mRoom.setMemberState(memberState);

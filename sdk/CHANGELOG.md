@@ -1,4 +1,41 @@
 # 版本更新记录
+## [2.12.26] - 2021-05-13
+- 更新`white-web-sdk`至 2.12.17
+- `MemberState`新增`点击``形状`教具，具体可以查看`com.herewhite.sdk.domain.Appliance`文件。形状教具类型查看`com.herewhite.sdk.domain.ShapeType`
+- `Room`新增`syncBlockTimestamp`接口
+## [2.12.25] - 2021-04-28
+- 更新`@netless/white-audio-plugin2`,`@netless/white-video-plugin2`插件，修复显示问题
+## [2.12.24] - 2021-04-27
+- 修复`getRoomState`异步API，没有回调的问题
+- 更新`@netless/white-audio-plugin` 至 1.2.23，修复回放时，音频文件显示问题。
+- 支持`@netless/white-audio-plugin2`,`@netless/white-video-plugin2`插件同步支持，需要在 web 端，调用 insertPlugin 时，注册对应的 `audio2`,`video2` 。
+## [2.12.22] - 2021-04-22
+- 更新`white-web-sdk`至 2.12.14
+## [2.12.21] - 2021-04-22
+- 接入 V5 版本的 PPT 转换，支持生成 PPT 预览图，静态图片缩放。具体参考 ConverterV5
+- 变更 Converter.ConvertType 为独立 ConvertType, 影响 ConvertedFiles `getType`
+- 变更 RoomListener 及 PlayerListener 由主线程回调
+- 更新`white-web-sdk`至 2.12.13
+- 更新`@netless/iframe-bridge`至 2.12.17,优化回放时 iframe 插件逻辑
+## [2.12.20] - 2021-04-17
+- 更新`white-web-sdk`至 2.12.12
+## [2.12.19] - 2021-04-14
+- 更新`@netless/iframe-bridge`至 2.0.14，优化 iframe 插件
+- pptParams 提供新的构造方法，不需要配置 scheme 参数
+## [2.12.18] - 2021-04-12
+- 更新`@netless/iframe-bridge`至 2.0.13，优化消息通知
+## [2.12.17] - 2021-04-12
+- 更新`@netless/iframe-bridge`至 2.0.11，优化 Android 端显示问题
+## [2.12.16] - 2021-04-09
+- 更新`@netless/iframe-bridge`至 2.0.10，优化 Android 端显示问题
+## [2.12.15] - 2021-04-10
+- 更新`white-web-sdk`至 2.12.9
+## [2.12.14] - 2021-04-09
+- 更新`@netless/iframe-bridge`至 2.0.9，修复 h5 课件显示问题
+## [2.12.13] - 2021-04-09
+- 恢复 Displayer `scaleIframeToFit`API
+## [2.12.12] - 2021-04-09
+- 更新`@netless/iframe-bridge`至 2.0.8，修复 h5 课件显示问题
 ## [2.12.11] - 2021-04-06
 - 更新`white-web-sdk`至 2.12.8，修复 follower 视角可能无法立即同步的问题
 ## [2.12.10] - 2021-04-02
