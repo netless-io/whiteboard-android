@@ -1,7 +1,7 @@
 package com.herewhite.sdk.domain;
 
 /**
- * 用户信息类。
+ * `MemberInformation` 类，用于自定义用户信息。
  *
  * @deprecated 该类已废弃。请使用 {@link com.herewhite.sdk.RoomParams#setUserPayload(Object)} 自定义用户信息。
  */
@@ -29,8 +29,6 @@ public class MemberInformation extends WhiteObject {
 
     /**
      * 获取 long 型的用户 ID。
-     * <p>
-     * 该方法用于自定义的用户 ID。
      *
      * @return long 型的用户 ID。
      */
@@ -40,8 +38,6 @@ public class MemberInformation extends WhiteObject {
 
     /**
      * 设置 long 型的用户 ID。
-     * <p>
-     * 该方法用于设置自定义的用户 ID。
      *
      * @param id long 型的用户 ID。
      */
@@ -76,14 +72,30 @@ public class MemberInformation extends WhiteObject {
         this.userId = userId;
     }
 
+    /**
+     * 设置用户昵称。
+     *
+     * @param nickName 用户昵称。
+     */
     public void setNickName(String nickName) {
         this.nickName = nickName;
     }
 
+    /**
+     * 获取用户头像。
+     *
+     * @return 用户头像的 URL 地址。
+     */
     public String getAvatar() {
         return avatar;
     }
 
+    /**
+     * 设置用户头像。
+     *
+     * @param avatar 用户头像 URL 地址。
+     *
+     */
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }

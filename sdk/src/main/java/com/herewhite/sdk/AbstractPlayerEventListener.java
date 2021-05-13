@@ -10,7 +10,7 @@ import com.herewhite.sdk.domain.SDKError;
  * <p>
  * `PlayerEventListener` 接口的缺省（空）实现。详见 {@link PlayerEventListener PlayerEventListener}。
  *
- * @deprecated 空实现类由用户应用处理
+ * @deprecated 已废弃。空实现类由用户应用处理。
  */
 @Deprecated
 public abstract class AbstractPlayerEventListener implements PlayerEventListener {

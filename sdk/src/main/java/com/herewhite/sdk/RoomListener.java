@@ -5,14 +5,16 @@ import com.herewhite.sdk.domain.RoomState;
 
 /**
  * Created by buhe on 2018/8/12.
- * 房间状态回调接口
+ */
+/**
+ * 房间事件回调接口。
  */
 public interface RoomListener {
 
     /**
      * 房间连接状态变化回调。
      *
-     * @param phase 房间的连接状态，详见 {@link RoomPhase RoomPhase}。
+     * @param phase 房间的连接状态，详见 {@link com.herewhite.sdk.domain.RoomPhase RoomPhase}。
      */
     void onPhaseChanged(RoomPhase phase);
 
@@ -35,7 +37,7 @@ public interface RoomListener {
      * <p>
      * 该回调仅返回发生变化的房间状态属性，未发生变化的房间状态字段，均未空。
      *
-     * @param modifyState 发生变化的房间状态属性，详见 {@link RoomState RoomState}。
+     * @param modifyState 发生变化的房间状态属性，详见 {@link com.herewhite.sdk.domain.RoomState RoomState}。
      */
     void onRoomStateChanged(RoomState modifyState);
 
@@ -58,11 +60,10 @@ public interface RoomListener {
     void onCanRedoStepsUpdate(long canRedoSteps);
 
     /**
-     * 同步用户行为发生错误回调。
+     * 同步用户操作发生错误回调。
      *
-     * @param userId 用户 ID。
+     * @param userId 用户 ID，表明在同步哪个用户的操作时发生了错误。
      * @param error  错误原因。
-     * @note 该回调通常是可以忽略的，你可以根据业务情况自行决定是否监听。
      */
     void onCatchErrorWhenAppendFrame(long userId, Exception error);
 }

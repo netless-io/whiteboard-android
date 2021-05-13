@@ -5,46 +5,49 @@ import com.herewhite.sdk.domain.PlayerState;
 import com.herewhite.sdk.domain.SDKError;
 
 /**
- * 回放房间事件回调接口
+ * 白板回放的事件回调接口。
  */
 public interface PlayerListener {
     /**
-     * 播放状态切换回调
+     * 播放状态切换回调。
      */
     void onPhaseChanged(PlayerPhase phase);
 
     /**
-     * 首帧加载回调
+     * 首帧加载回调。
      */
     void onLoadFirstFrame();
 
+    /// @cond test
     /**
-     * 分片切换回调，需要了解分片机制。目前无实际用途
+     * 分片切换回调，需要了解分片机制。目前无实际用途。
+     * 文档中隐藏
      */
     void onSliceChanged(String slice);
+    /// @endcond
 
     /**
-     * 播放中，状态出现变化的回调，只会包含实际发生改变的属性
+     * 回放状态发生变化的回调，只会包含实际发生改变的属性。
      */
     void onPlayerStateChanged(PlayerState modifyState);
 
     /**
-     * 出错暂停
+     * 出错导致回放暂停的回调。
      */
     void onStoppedWithError(SDKError error);
 
     /**
-     * 进度时间变化
+     * 回放进度发生变化回调。
      */
     void onScheduleTimeChanged(long time);
 
     /**
-     * 添加帧出错
+     * 添加帧出错的回调。
      */
     void onCatchErrorWhenAppendFrame(SDKError error);
 
     /**
-     * 渲染时，出错
+     * 渲染时出错的回调。
      */
     void onCatchErrorWhenRender(SDKError error);
 }

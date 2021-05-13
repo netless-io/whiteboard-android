@@ -14,6 +14,9 @@ import wendu.dsbridge.OnReturnValue;
  * white on 2018/8/10.
  */
 
+/**
+ * `WhiteboardView` 类，用于配置白板界面。
+ */
 public class WhiteboardView extends DWebView implements JsBridgeInterface {
 
     private boolean autoResize = true;
@@ -33,7 +36,7 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
      * 初始化白板界面。
      *
      * @param context 安卓活动 (Android Activity) 的上下文。
-     * @param attrs   自定义控件属性，详见 Android 文档。
+     * @param attrs   自定义白板界面属性，[AttributeSet](https://developer.android.com/reference/android/util/AttributeSet).
      */
     public WhiteboardView(Context context, AttributeSet attrs) {
         super(getFixedContext(context), attrs);
@@ -48,6 +51,7 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
         }
     }
 
+    /// @cond test
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -56,14 +60,16 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
 
     /**
      * 设置视图大小切换时自动发送事件至js端
-     *
+     * 文档中隐藏
      * @param autoResize
      */
     public void setAutoResize(boolean autoResize) {
         this.autoResize = autoResize;
     }
+    /// @endcond
 
 
+    /// @cond test
     /**
      * 兼容 API 文档中隐藏
      */
@@ -74,6 +80,7 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
             return context;
         }
     }
+    /// @endcond
 
     private void init() {
         getSettings().setMediaPlaybackRequiresUserGesture(false);

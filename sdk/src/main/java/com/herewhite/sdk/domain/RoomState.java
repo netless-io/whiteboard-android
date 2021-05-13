@@ -14,27 +14,29 @@ public class RoomState extends WhiteDisplayerState {
     private Double zoomScale;
 
     /**
-     * 获取房间的教具状态。
+     * 获取互动白板实时房间内当前的白板工具状态。
      *
-     * @return 房间的教具状态，详见 {@link MemberState MemberState}。
+     * @return 白板工具状态，详见 {@link MemberState MemberState}。
      */
     public MemberState getMemberState() {
         return memberState;
     }
 
     /**
-     * 获取房间的视角状态。
+     * 获取互动白板实时房间内当前的视角状态。
      *
-     * @return
+     * @return 视角状态，详见 {@link BroadcastState BroadcastState}。
      */
     public BroadcastState getBroadcastState() {
         return broadcastState;
     }
 
     /**
-     * 获取房间的缩放比例。
+     * 获取互动白板实时房间内当前的视角缩放比例。
      *
-     * @return 房间的缩放比例。
+     * @deprecated 该方法已废弃。
+     *
+     * @return 视角缩放比例。
      */
     public Double getZoomScale() {
         return zoomScale;

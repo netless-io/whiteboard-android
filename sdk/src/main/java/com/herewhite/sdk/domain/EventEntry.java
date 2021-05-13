@@ -1,7 +1,7 @@
 package com.herewhite.sdk.domain;
 
 /**
- * `EventEntry` 类。该类包含 SDK 可以触发的自定义事件回调。
+ * `EventEntry` 类，用于获取自定义事件。
  */
 public class EventEntry extends WhiteObject {
     private String eventName;
@@ -9,6 +9,7 @@ public class EventEntry extends WhiteObject {
     private String scope;
     private long authorId;
 
+    /// @cond test
     /**
      * 文档中隐藏
      * 对外能修改，用户只应该查看 eventName 和 payload
@@ -16,6 +17,7 @@ public class EventEntry extends WhiteObject {
     public String getScope() {
         return scope;
     }
+    /// @endcond
 
     /**
      * 获取事件触发者的用户 ID。

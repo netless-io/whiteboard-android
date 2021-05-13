@@ -17,21 +17,22 @@ public class WhiteDisplayerState extends WhiteObject {
 
     /**
      * 设置自定义 `GlobalState`类。
+     *
+     * @since 2.4.8
      * <p>
      * 设置后，所有 `GlobalState` 都会转换为该类的实例。
      *
-     * @param <T>      类型约束，自定义的 'GlobalState' 类必须继承 {@link GlobalState GlobalState} 类。
+     * @param <T>      类型约束，自定义的 'GlobalState' 类必须继承 {@link com.herewhite.sdk.domain.GlobalState GlobalState} 类。
      * @param classOfT 自定义的 'GlobalState' 类。
-     * @since 2.4.8
      */
     public static <T extends GlobalState> void setCustomGlobalStateClass(Class<T> classOfT) {
         customClass = classOfT;
     }
 
     /**
-     * 全局状态，所有用户可见，实时房间时，可读可写；回放房间只读。返回内容为 sdk 默认全局状态
+     * 获取房间的全局状态。
      *
-     * @return 全局状态
+     * @return 房间的全局状态。
      */
     public GlobalState getGlobalState() {
         String str = gson.toJson(globalState);
@@ -49,20 +50,21 @@ public class WhiteDisplayerState extends WhiteObject {
     }
 
     /**
-     * 获取房间中所有用户列表
+     * 获取房间的用户列表。
      *
-     * @return 用户成员状态列表 [ ]
-     * @see RoomMember
+     * @note
+     * 房间的用户列表仅包含互动模式（具有读写权限）的用户，不包含订阅模式（只读权限）的用户。
+     *
+     * @return 用户列表，详见 {@link RoomMember RoomMember}。
      */
     public RoomMember[] getRoomMembers() {
         return roomMembers;
     }
 
     /**
-     * 获取当前场景目录下的场景状态
+     * 获取当前场景组下的场景状态。
      *
-     * @return 当前场景目录下的场景状态
-     * @see SceneState
+     * @return 当前场景组下的场景状态，详见 {@link SceneState}。
      */
     public SceneState getSceneState() {
         return sceneState;
@@ -72,6 +74,11 @@ public class WhiteDisplayerState extends WhiteObject {
     private RoomMember[] roomMembers;
     private SceneState sceneState;
 
+    /**
+     * 获取视角状态。
+     *
+     * @return 视角状态，详见 {@link CameraState}。
+     */
     public CameraState getCameraState() {
         return cameraState;
     }

@@ -5,7 +5,7 @@ package com.herewhite.sdk.domain;
  */
 
 /**
- * `MemberState` 类，用于设置互动白板实时房间的教具状态。
+ * `MemberState` 类，用于设置互动白板实时房间的白板工具状态。
  */
 public class MemberState extends WhiteObject {
     private String currentApplianceName;
@@ -18,18 +18,18 @@ public class MemberState extends WhiteObject {
     }
 
     /**
-     * 获取互动白板实时房间内当前使用的教具名称。
+     * 获取互动白板实时房间内当前使用的白板工具名称。
      *
-     * @return 互动白板实时房间内当前使用的教具名称。
+     * @return 互动白板实时房间内当前使用的白板工具名称。
      */
     public String getCurrentApplianceName() {
         return currentApplianceName;
     }
 
     /**
-     * 设置互动白板实时房间内使用的教具。
+     * 设置互动白板实时房间内使用的白板工具。
      *
-     * @param currentApplianceName 教具名称，详见 {@link Appliance Appliance}。
+     * @param currentApplianceName 白板工具名称，详见 {@link Appliance}。
      */
     public void setCurrentApplianceName(String currentApplianceName) {
         this.setCurrentApplianceName(currentApplianceName, null);
@@ -63,7 +63,7 @@ public class MemberState extends WhiteObject {
     /**
      * 获取用户设置的线条颜色。
      *
-     * @return 线条颜色，为 RGB 格式，例如，[0, 0, 255] 表示蓝色。
+     * @return 线条颜色，为 RGB 格式，例如，(0, 0, 255) 表示蓝色。
      */
     public int[] getStrokeColor() {
         return strokeColor;
@@ -72,7 +72,7 @@ public class MemberState extends WhiteObject {
     /**
      * 设置线条颜色。
      *
-     * @param strokeColor 线条颜色，为 RGB 格式，例如，[0, 0, 255] 表示蓝色。
+     * @param strokeColor 线条颜色，为 RGB 格式，例如，(0, 0, 255) 表示蓝色。
      */
     public void setStrokeColor(int[] strokeColor) {
         this.strokeColor = strokeColor;
