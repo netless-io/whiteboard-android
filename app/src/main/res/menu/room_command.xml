@@ -67,8 +67,8 @@
         android:onClick="insertPPT"
         android:title="@string/insert_ppt_command" />
     <item
-        android:onClick="nextScene"
         android:id="@+id/next_scene"
+        android:onClick="nextScene"
         android:title="@string/next_scene" />
     <item
         android:id="@+id/static_ppt"
@@ -142,6 +142,10 @@
         android:id="@+id/color"
         android:onClick="color"
         android:title="@string/color_command" />
+    <item
+        android:id="@+id/shape"
+        android:onClick="shape"
+        android:title="@string/shape_command" />
     <item
         android:id="@+id/convertPoint"
         android:onClick="convertPoint"

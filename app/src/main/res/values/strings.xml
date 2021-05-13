@@ -28,6 +28,7 @@
     <string name="externalEvent_command">外部设备输入</string>
     <string name="zoomChange_command">缩放</string>
     <string name="color_command">颜色</string>
+    <string name="shape_command">形状</string>
     <string name="getTimeInfo_command">获取时间信息</string>
     <string name="getPlayState_command">获取播放信息</string>
     <string name="getPhase_command">获取播放状态</string>

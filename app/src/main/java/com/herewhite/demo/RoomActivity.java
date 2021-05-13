@@ -13,8 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import androidx.annotation.VisibleForTesting;
-
 import com.alibaba.sdk.android.httpdns.HttpDns;
 import com.alibaba.sdk.android.httpdns.HttpDnsService;
 import com.google.gson.Gson;
@@ -29,9 +27,9 @@ import com.herewhite.sdk.RoomParams;
 import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
 import com.herewhite.sdk.WhiteboardView;
+import com.herewhite.sdk.converter.ConvertType;
 import com.herewhite.sdk.converter.ConverterV5;
 import com.herewhite.sdk.converter.ImageFormat;
-import com.herewhite.sdk.converter.ConvertType;
 import com.herewhite.sdk.domain.AkkoEvent;
 import com.herewhite.sdk.domain.AnimationMode;
 import com.herewhite.sdk.domain.Appliance;
@@ -64,6 +62,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
+import androidx.annotation.VisibleForTesting;
 import wendu.dsbridge.DWebView;
 
 
@@ -762,6 +761,18 @@ public class RoomActivity extends BaseActivity {
         MemberState memberState = new MemberState();
         memberState.setStrokeColor(new int[]{200, 200, 200});
         memberState.setCurrentApplianceName(Appliance.PENCIL);
+        memberState.setStrokeWidth(4);
+        memberState.setTextSize(10);
+        mRoom.setMemberState(memberState);
+    }
+
+    public void shape(MenuItem item) {
+        logAction();
+        MemberState memberState = new MemberState();
+        memberState.setStrokeColor(new int[]{200, 200, 200});
+        // defalut Shape Triangle
+        memberState.setCurrentApplianceName(Appliance.SHAPE);
+        // memberState.setShapeType(ShapeType.Rhombus);
         memberState.setStrokeWidth(4);
         memberState.setTextSize(10);
         mRoom.setMemberState(memberState);
