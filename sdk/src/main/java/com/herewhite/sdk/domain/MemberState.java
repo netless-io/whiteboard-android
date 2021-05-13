@@ -9,6 +9,7 @@ package com.herewhite.sdk.domain;
  */
 public class MemberState extends WhiteObject {
     private String currentApplianceName;
+    private ShapeType shapeType;
     private int[] strokeColor;
     private Double strokeWidth;
     private Double textSize;
@@ -31,7 +32,26 @@ public class MemberState extends WhiteObject {
      * @param currentApplianceName 教具名称，详见 {@link Appliance Appliance}。
      */
     public void setCurrentApplianceName(String currentApplianceName) {
+        this.setCurrentApplianceName(currentApplianceName, null);
+    }
+
+    public void setCurrentApplianceName(String currentApplianceName, ShapeType shapeType) {
         this.currentApplianceName = currentApplianceName;
+
+        if (Appliance.SHAPE.equals(currentApplianceName)) {
+            if (shapeType == null) {
+                this.shapeType = ShapeType.Triangle;
+            }
+        }
+    }
+
+    public void setShapeType(ShapeType shapeType) {
+        this.currentApplianceName = Appliance.SHAPE;
+        this.shapeType = shapeType;
+    }
+
+    public ShapeType getShapeType() {
+        return shapeType;
     }
 
     /**
