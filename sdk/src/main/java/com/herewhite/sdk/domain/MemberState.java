@@ -35,6 +35,12 @@ public class MemberState extends WhiteObject {
         this.setCurrentApplianceName(currentApplianceName, null);
     }
 
+    /**
+     * 设置互动白板实时房间内使用的教具。
+     *
+     * @param currentApplianceName 教具名称，详见 {@link Appliance Appliance}。
+     * @param shapeType            未设置默认使用 ShapeType.Triangle
+     */
     public void setCurrentApplianceName(String currentApplianceName, ShapeType shapeType) {
         this.currentApplianceName = currentApplianceName;
 
