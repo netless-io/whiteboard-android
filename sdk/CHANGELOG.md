@@ -1,4 +1,8 @@
 # 版本更新记录
+## [2.12.26] - 2021-05-13
+- 更新`white-web-sdk`至 2.12.17
+- `MemberState`新增`点击``形状`教具，具体可以查看`com.herewhite.sdk.domain.Appliance`文件。形状教具类型查看`com.herewhite.sdk.domain.ShapeType`
+- `Room`新增`syncBlockTimestamp`接口
 ## [2.12.25] - 2021-04-28
 - 更新`@netless/white-audio-plugin2`,`@netless/white-video-plugin2`插件，修复显示问题
 ## [2.12.24] - 2021-04-27
