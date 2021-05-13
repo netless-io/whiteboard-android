@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public enum ShapeType {
     /**
-     * 三角形
+     * 三角形（默认）
      */
     @SerializedName("triangle")
     Triangle,
