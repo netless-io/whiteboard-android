@@ -59,7 +59,9 @@ public class Scene extends WhiteObject {
      * 获取场景中的笔画数。
      *
      * @return 场景中的笔画数。
+     * @deprecated 弃用字段，调用返回null
      */
+    @Deprecated
     public Long getComponentsCount() {
         return componentsCount;
     }

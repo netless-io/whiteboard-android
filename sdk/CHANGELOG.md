@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.12.27] - 2021-05-17
+- 更新`white-web-sdk`至 2.12.18
+- 默认开启服务器端排版本，同时加载服务器端裁剪字体。具体参考`PptParams`的`useServerWrap`属性注释。
 ## [2.12.26] - 2021-05-13
 - 更新`white-web-sdk`至 2.12.17
 - `MemberState`新增`点击``形状`教具，具体可以查看`com.herewhite.sdk.domain.Appliance`文件。形状教具类型查看`com.herewhite.sdk.domain.ShapeType`

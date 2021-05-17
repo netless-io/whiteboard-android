@@ -49,6 +49,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
      */
     public static class PptParams extends WhiteObject {
         /// @cond test
+
         /** 文档中隐藏 */
         public String getScheme() {
             return scheme;
@@ -56,6 +57,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
         /// @endcond
 
         /// @cond test
+
         /**
          * 更改动态 ppt 请求时的请求协议，可以将 https://www.exmaple.com/1.pptx 更改成 scheme://www.example.com/1.pptx
          * Android 端该方法无需使用
@@ -89,23 +91,24 @@ public class WhiteSdkConfiguration extends WhiteObject {
          * 自 2021 年 2 月 10 日起，将 PPTX 文件转换为 HTML 网页时，Agora Interactive 白板服务端支持对 PPTX 文件进行排版，以确保 PPTX 文件的文本在各个平台上的呈现保持一致。
          *
          * @param useServerWrap 是否开启服务端排版功能：
-         *                      - `true`：开启。
-         *                      - `false`：（默认）关闭。
+         *                      - `true`：（默认）开启 @since 2.12.27。
+         *                      - `false`：关闭。
          */
         public void setUseServerWrap(boolean useServerWrap) {
             this.useServerWrap = useServerWrap;
         }
 
-        private boolean useServerWrap;
+        private boolean useServerWrap = true;
 
         /// @cond test
+
         /** 文档中隐藏 */
         public PptParams(String scheme) {
             this.scheme = scheme;
         }
         /// @endcond
-  
-        public  PptParams() {
+
+        public PptParams() {
 
         }
     }
@@ -133,7 +136,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     /**
      * pptParams 动态 ppt 专用参数
      */
-    private PptParams pptParams;
+    private PptParams pptParams = new PptParams();
     private HashMap<String, String> fonts;
 
     /**
@@ -185,6 +188,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
     /// @cond test
+
     /**
      * 设置是否启用 RTC SDK 的混音方法播放动态 PPT 中的音频。
      *
@@ -206,6 +210,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     /// @endcond
 
     /// @cond test
+
     /**
      * 文档中隐藏
      * @return
@@ -216,6 +221,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     /// @endcond
 
     /// @cond test
+
     /**
      * FIXME: 该 API 会 {@link RoomParams#setDisableDeviceInputs(boolean)} 覆盖，需要删除。
      * 禁止白板工具输入，使用该功能后，终端客户无法使用白板工具书写内容
@@ -376,6 +382,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
     /// @cond test
+
     /**
      * 文档中隐藏
      *
@@ -387,6 +394,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     /// @endcond
 
     /// @cond test
+
     /**
      * 是否启用双路由功能，同时向两个网址请求数据，选择最快的应答。会造成一定的额外开销，默认关闭
      * 文档中隐藏
@@ -399,6 +407,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     /// @endcond
 
     /// @cond test
+
     /**
      * 文档中隐藏
      * @return
@@ -458,6 +467,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
     /// @cond test
+
     /**
      * 文档中隐藏
      */
