@@ -303,7 +303,7 @@ public class RoomTest extends TestCase {
 
     public void testSyncBlockTimestamp() {
         mRoom.syncBlockTimestamp(1234L);
-        verify(mockJsBridgeInterface).callHandler("room.sync.syncBlockTimstamp", new Object[]{1234L});
+        verify(mockJsBridgeInterface).callHandler("room.sync.syncBlockTimestamp", new Object[]{1234L});
     }
 
 
