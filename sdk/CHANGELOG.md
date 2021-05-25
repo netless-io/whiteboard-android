@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.12.30] - 2021-05-25
+- 更新`@netless/cursor-tool`至 0.0.9
 ## [2.12.29] - 2021-05-24
 - 更新`white-web-sdk`至 2.12.20
 - 添加`@netless/video-js-plugin`插件支持
