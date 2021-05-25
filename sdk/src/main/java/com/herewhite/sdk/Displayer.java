@@ -151,18 +151,18 @@ public class Displayer {
     public void refreshViewSize() {
         bridge.callHandler("displayer.refreshViewSize", new Object[]{});
     }
-  
+
     /**
-     * 如果有自定义 h5 课件，则等比例缩放，保证内容铺满容器
+     * 以渐变模式调整视角，以保证完整显示 H5 课件的内容。
      *
      * @since 2.12.13
      */
     public void scaleIframeToFit() {
         bridge.callHandler("displayer.scaleIframeToFit", new Object[]{});
     }
-  
+
     /**
-     * 以渐变模式调整视角，以保证完整显示 PPT 的内容
+     * 以渐变模式调整视角，以保证完整显示 PPT 的内容。
      *
      * @since 2.4.22
      */

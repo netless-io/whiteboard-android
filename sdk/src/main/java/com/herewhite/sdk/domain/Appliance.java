@@ -1,8 +1,10 @@
 package com.herewhite.sdk.domain;
 
+/// @cond
 /**
  * Created by buhe on 2018/8/18.
  */
+/// @endcond
 
 /**
  * 白板工具名称。
@@ -49,12 +51,11 @@ public class Appliance {
      */
     public final static String LASER_POINTER = "laserPointer";
     /**
-     * 点击
+     * 点选工具。目前主要用于 H5 课件。
      */
     public final static String CLICKER = "clicker";
-
     /**
-     * 形状
+     * 图形工具。
      */
     public final static String SHAPE = "shape";
 }

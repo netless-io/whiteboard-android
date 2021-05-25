@@ -124,6 +124,7 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
         }
     }
 
+
     private class RefreshViewSizeStrategy {
         private final int delay;
         private Runnable refreshViewSize = () -> callHandler("displayer.refreshViewSize", new Object[]{});

@@ -74,7 +74,6 @@ public class Room extends Displayer {
     private Long observerId;
 
     /// @cond test
-
     /**
      * 文档中隐藏，只有 sdk 内部初始化才有意义
      */
@@ -1164,10 +1163,13 @@ public class Room extends Displayer {
     }
     //endregion
 
+
     /**
-     * 同步时间戳
+     * 设置白板同步延时。
      *
-     * @param utcMs 单位 ms
+     * 在同时使用白板和实时音视频的场景中，你可以根据实时音视频的延迟，设置发送白板的延时，以确保音视频与白板内容同步。
+     *
+     * @param utcMs 白板同步延时，为 UNIX 时间戳，单位为毫秒。
      */
     public void syncBlockTimestamp(long utcMs) {
         bridge.callHandler("room.sync.syncBlockTimestamp", new Object[]{utcMs});
@@ -1227,7 +1229,6 @@ public class Room extends Displayer {
         }
 
         /// @cond test
-
         /**
          * 文档中隐藏。
          *

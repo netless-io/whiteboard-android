@@ -2,12 +2,16 @@ package com.herewhite.sdk.domain;
 
 import com.google.gson.annotations.SerializedName;
 
+/// @cond test
 /**
  * Created by buhe on 2018/8/15.
  */
+/// @endcond
 
 /**
- * `PptPage` 类，用于在初始化场景时配置场景的背景图。
+ * `PptPage` 类，用于配置待插入场景的图片或动态 PPT 页的参数。
+ *
+ * 你可以在场景初始化时传入 `PptPage` 实例，以在白板上展示图片或动态 PPT。
  */
 public class PptPage extends WhiteObject {
 
@@ -19,31 +23,37 @@ public class PptPage extends WhiteObject {
     private String preview;
 
     /**
-     * `PptPage` 构造方法，用于创建背景图实例。
-     * <p>
-     * 该方法只能在场景初始化的时候调用。
-     * <p>
-     * 场景背景图的中心点默认为世界坐标系的原点，背景图无法移动，即无法改变背景图在白板内部的位置。
+     * `PptPage` 构造方法，用于创建待插入场景的图片或动态 PPT 实例。
      *
-     * @param src    图片的 URL 地址。
-     * @param width  图片在白板中的宽度，单位为像素。
-     * @param height 图片在白板中的高度，单位为像素。
+     * @note
+     * - 该方法只能在场景初始化的时候调用。
+     * - 每个场景中只能插入一张图片和一页动态 PPT。
+     * - 场景中展示的图片或动态 PPT 中心点默认为白板内部坐标系得原点且无法移动，即无法改变图片或动态 PPT 在白板内部的位置。
+     *
+     * @param src 图片或动态 PPT 页的地址，支持的格式如下：
+     * - 图片：URL 地址，可以是你自己生成的 URL 地址，也可以是通过文档转换功能生成的 URL 地址，例如，`"https://docs-test-xxx.oss-cn-hangzhou.aliyuncs.com/staticConvert/2fdxxxxx67e/1.jpeg"`。
+     * - 动态 PPT 页：通过文档转换功能生成的 URI 地址，例如，`"pptx://cover.herewhite.com/dynamicConvert/6a212c90fa5311ea8b9c074232aaccd4/1.slide"`，即[动态文档转换任务的查询结果](https://docs.agora.io/cn/whiteboard/whiteboard_file_conversion?platform=RESTful#查询转换任务的进度（get）)中 `conversionFileUrl` 字段的值。
+     * @param width  图片或动态 PPT 在白板中的宽度，单位为像素。
+     * @param height 图片或动态 PPT 在白板中的高度，单位为像素。
      */
     public PptPage(String src, Double width, Double height) {
         this(src, width, height, null);
     }
 
     /**
-     * `PptPage` 构造方法，用于创建背景图实例。
-     * <p>
-     * 该方法只能在场景初始化的时候调用。
-     * <p>
-     * 场景背景图的中心点默认为白板内部坐标系得原点，背景图无法移动，即无法改变背景图在白板内部的位置。
+     * `PptPage` 构造方法，用于创建待插入场景的图片或动态 PPT 实例。
      *
-     * @param src     图片的 URL 地址。
-     * @param width   图片在白板中的宽度，单位为像素。
-     * @param height  图片在白板中的高度，单位为像素。
-     * @param preview 图片预览图。
+     * @note
+     * - 该方法只能在场景初始化的时候调用。
+     * - 每个场景中只能插入一张图片或一页动态 PPT。
+     * - 场景中展示的图片或动态 PPT 中心点默认为白板内部坐标系得原点且无法移动，即无法改变图片或动态 PPT 在白板内部的位置。
+     *
+     * @param src 图片或动态 PPT 页的地址，支持的格式如下：
+     * - 图片：URL 地址，可以是你自己生成的 URL 地址，也可以是通过文档转换功能生成的 URL 地址，例如，`"https://docs-test-xxx.oss-cn-hangzhou.aliyuncs.com/staticConvert/2fdxxxxx67e/1.jpeg"`。
+     * - 动态 PPT 页：通过文档转换功能生成的 URI 地址，例如，`"pptx://cover.herewhite.com/dynamicConvert/6a212c90fa5311ea8b9c074232aaccd4/1.slide"`，即[动态文档转换任务的查询结果](https://docs.agora.io/cn/whiteboard/whiteboard_file_conversion?platform=RESTful#查询转换任务的进度（get）)中 `conversionFileUrl` 字段的值。
+     * @param width   图片或动态 PPT 在白板中的宽度，单位为像素。
+     * @param height  图片或动态 PPT 在白板中的高度，单位为像素。
+     * @param preview 图片或动态 PPT 预览图的 URL 地址。动态 PPT 预览图的 URL 地址可以从[文档转换任务的查询结果](https://docs.agora.io/cn/whiteboard/whiteboard_file_conversion?platform=RESTful#查询转换任务的进度（get）)中的 `preview` 字段获取，例如，"https://docs-test-xxx.oss-cn-hangzhou.aliyuncs.com/dynamicConvert/2fdxxxxx67e/preview/1.png"。
      */
     public PptPage(String src, Double width, Double height, String preview) {
         this.src = src;
@@ -54,68 +64,77 @@ public class PptPage extends WhiteObject {
 
 
     /**
-     * 获取场景背景图的 URL 地址。
+     * 获取场景图片或动态 PPT 的地址。
      *
-     * @return 背景图的 URL 地址。
+     * @return 图片的 URL 地址或动态 PPT 的 URI 地址。
      */
     public String getSrc() {
         return src;
     }
 
     /**
-     * 通过设置 URL 指定背景图。
+     * 指定待插入场景的图片或动态 PPT。
      *
-     * @param src 背景图的 URL 地址。
+     * @param src 图片或动态 PPT 页的地址，支持的格式如下：
+     * - 图片：URL 地址，可以是你自己生成的 URL 地址，也可以是通过文档转换功能生成的 URL 地址，例如，`"https://docs-test-xxx.oss-cn-hangzhou.aliyuncs.com/staticConvert/2fdxxxxx67e/1.jpeg"`。
+     * - 动态 PPT 页：通过文档转换功能生成的 URI 地址，例如，`"pptx://cover.herewhite.com/dynamicConvert/6a212c90fa5311ea8b9c074232aaccd4/1.slide"`，即[动态文档转换任务的查询结果](https://docs.agora.io/cn/whiteboard/whiteboard_file_conversion?platform=RESTful#查询转换任务的进度（get）)中 `conversionFileUrl` 字段的值。
      */
     public void setSrc(String src) {
         this.src = src;
     }
 
     /**
-     * 获取背景图在白板中的宽度。
+     * 获取图片或动态 PPT 在白板中的宽度。
      *
-     * @return 背景图在白板中的宽度，单位为像素。
+     * @return 图片或动态 PPT 在白板中的宽度，单位为像素。
      */
     public double getWidth() {
         return width;
     }
 
     /**
-     * 设置背景图在白板中的宽度。
+     * 设置图片或动态 PPT 在白板中的宽度。
      *
-     * @param width 背景图在白板中的宽度，单位为像素。
+     * @param width 图片或动态 PPT 在白板中的宽度，单位为像素。
      */
     public void setWidth(double width) {
         this.width = width;
     }
 
     /**
-     * 获取背景图在白板中的高度。
+     * 获取图片或动态 PPT 在白板中的高度。
      *
-     * @return 背景图在白板中的高度，单位为像素。
+     * @return 图片或动态 PPT 在白板中的高度，单位为像素。
      */
     public double getHeight() {
         return height;
     }
 
     /**
-     * 设置背景图在白板中的高度。
+     * 设置图片或动态 PPT 在白板中的高度。
      *
-     * @return 背景图在白板中的高度，单位为像素。
+     * @return 图片或动态 PPT 在白板中的高度，单位为像素。
      */
     public void setHeight(double height) {
         this.height = height;
     }
 
     /**
-     * 获取背景预览图。
+     * 获取图片或动态 PPT 预览图的 URL 地址。
      *
-     * @return 背景预览图的 URL 地址。
+     * @return 图片的或动态 PPT 预览图的 URL 地址。
      */
     public String getPreview() {
         return preview;
     }
 
+    /**
+     * 指定图片或 PPT 预览图。
+     *
+     * 通过该方法指定的预览图会展示在白板右侧的页面预览中。
+     *
+     * @param preview 图片或动态 PPT 预览图的 URL 地址。动态 PPT 预览图的 URL 地址可以从[文档转换任务的查询结果](https://docs.agora.io/cn/whiteboard/whiteboard_file_conversion?platform=RESTful#查询转换任务的进度（get）)中的 `preview` 字段获取，例如，"https://docs-test-xxx.oss-cn-hangzhou.aliyuncs.com/dynamicConvert/2fdxxxxx67e/preview/1.png"。
+     */
     public void setPreview(String preview) {
         this.preview = preview;
     }

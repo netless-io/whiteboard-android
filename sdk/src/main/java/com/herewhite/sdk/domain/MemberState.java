@@ -1,8 +1,6 @@
 package com.herewhite.sdk.domain;
 
-/**
- * Created by buhe on 2018/8/11.
- */
+// Created by buhe on 2018/8/11.
 
 /**
  * `MemberState` 类，用于设置互动白板实时房间的白板工具状态。

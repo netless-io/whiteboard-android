@@ -1,25 +1,27 @@
 package com.herewhite.sdk.domain;
 
 import com.google.gson.annotations.SerializedName;
-
+/**
+ * 图形工具。
+ */
 public enum ShapeType {
     /**
-     * 三角形（默认）
+     * `Triangle`：（默认）三角形。
      */
     @SerializedName("triangle")
     Triangle,
     /**
-     * 菱形
+     * `Rhombus`：菱形。
      */
     @SerializedName("rhombus")
     Rhombus,
     /**
-     * 五角星
+     * `Pentagram`：五角星。
      */
     @SerializedName("pentagram")
     Pentagram,
     /**
-     * 说话泡泡
+     * `SpeechBalloon`：对话气泡。
      */
     @SerializedName("speechBalloon")
     SpeechBalloon,
