@@ -8,9 +8,8 @@ import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.PlayerPhase;
 import com.herewhite.sdk.domain.SDKError;
 
-/**
- * Created by buhe on 2018/8/12.
- */
+
+// Created by buhe on 2018/8/12.
 
 public class PlayerJsInterfaceImpl {
     private final static Gson gson = new Gson();

@@ -2,11 +2,8 @@ package com.herewhite.sdk.domain;
 
 import com.google.gson.annotations.SerializedName;
 
-/// @cond test
-/**
- * Created by buhe on 2018/8/15.
- */
-/// @endcond
+
+// Created by buhe on 2018/8/15.
 
 /**
  * `PptPage` 类，用于配置待插入场景的图片或动态 PPT 页的参数。

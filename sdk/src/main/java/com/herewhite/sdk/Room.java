@@ -287,9 +287,9 @@ public class Room extends Displayer {
      * <p>
      * 该方法会把与当前房间实例相关的所有资源释放掉。如果要再次加入房间，需要重新调用 `joinRoom`。
      * <p>
-     * 你可以在该方法中传入 'Promise<Object>' 接口实例，以获取方法调用结果。
+     * 你可以在该方法中传入 `Promise<Object>` 接口实例，以获取方法调用结果。
      *
-     * @param promise 'Promise<Object>' 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `disconnect` 的调用结果：
+     * @param promise `Promise<Object>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `disconnect` 的调用结果：
      *                - 如果方法调用成功，则返回房间的全局状态。
      *                - 如果方法调用失败，则返回错误信息。
      */

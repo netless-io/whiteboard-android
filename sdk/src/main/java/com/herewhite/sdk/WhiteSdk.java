@@ -156,7 +156,7 @@ public class WhiteSdk {
      * 加入互动白板实时房间。
      *
      * @param roomParams  互动白板实时房间的参数配置，详见 {@link RoomParams RoomParams}。
-     * @param roomPromise 'Promise<Room>' 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `joinRoom` 的调用结果：
+     * @param roomPromise `Promise<Room>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `joinRoom` 的调用结果：
      * - 如果方法调用成功，将返回房间对象，详见 {@link Room}。
      * - 如果方法调用失败，将返回错误信息。
      */

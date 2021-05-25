@@ -1,10 +1,7 @@
 package com.herewhite.sdk.domain;
 
-/// @cond
-/**
- * Created by buhe on 2018/8/18.
- */
-/// @endcond
+
+// Created by buhe on 2018/8/18.
 
 /**
  * 白板工具名称。

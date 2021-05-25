@@ -196,7 +196,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
      * <p>
      * 当同时使用 Agora RTC SDK 和互动白板 SDK, 且互动白板中展示的动态 PPT 中包含音频文件时，你可以调用 RTC SDK 的混音方法播放动态 PPT 中的音频，以保证音频正常播放。
      *
-     * @note 初始化 `WhiteSdk` 时，如果你实现并传入 {@link AudioMixerBridge AudioMixerBridge} 类，SDK 会自动设置 'setEnableRtcIntercept(true)'。你无需主动调用该方法。
+     * @note 初始化 `WhiteSdk` 时，如果你实现并传入 {@link AudioMixerBridge AudioMixerBridge} 类，SDK 会自动设置 `setEnableRtcIntercept(true)`。你无需主动调用该方法。
      *
      * @param enableRtcIntercept 是否启用 RTC SDK 的混音方法播放动态 PPT 中的音频：
      *                           - `true`：启用。
@@ -238,7 +238,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
      *
      * @since 2.8.0
      * <p>
-     * 为优化白板上绘图的渲染，自 2.8.0 版本起，白板 SDK 新增 'canvas' 渲染模式，并从 2.9.0 版本起，将 'canvas' 渲染模式作为默认的渲染模式。
+     * 为优化白板上绘图的渲染，自 2.8.0 版本起，白板 SDK 新增 `canvas` 渲染模式，并从 2.9.0 版本起，将 `canvas` 渲染模式作为默认的渲染模式。
      *
      * @note 由于部分 Android 6.1 至 Android 8.1 设备无法支持 `canvas` 渲染模式，SDK 会自动将默认的渲染模式切换为 `svg` 渲染模式。
      *
