@@ -15,9 +15,9 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".test.ConvertV5Activity" android:exported="true">
-
-        </activity>
+        <activity
+            android:name=".test.ConvertV5Activity"
+            android:exported="true" />
         <activity
             android:name=".PureReplayActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
@@ -39,6 +39,10 @@
         <activity
             android:name=".RoomActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name=".test.RatioChangeActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>
