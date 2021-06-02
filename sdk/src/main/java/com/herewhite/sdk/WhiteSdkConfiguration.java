@@ -416,7 +416,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
      * 设置是否显示用户头像。
      * <p>
      * 要显示用户头像，请确保你在 `userPayload` 对象中传入了头像的键值对，
-     * 并在调用{@link com.herewhite.sdk.RoomParams#setUserPayload(Object userPayload) setUserPayload}。
+     * 并在调用 {@link com.herewhite.sdk.RoomParams#setUserPayload(Object userPayload) setUserPayload}。
      *
      * @param userCursor 是否显示用户头像：
      *                   - `true`：显示。

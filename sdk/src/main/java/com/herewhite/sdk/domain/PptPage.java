@@ -9,6 +9,11 @@ import com.google.gson.annotations.SerializedName;
  * `PptPage` 类，用于配置待插入场景的图片或动态 PPT 页的参数。
  *
  * 你可以在场景初始化时传入 `PptPage` 实例，以在白板上展示图片或动态 PPT。
+ *
+ * 场景中可插入的图片或动态 PPT 包括：
+ * - PNG、JPG/JPEG、WEBP 格式的图片，或由 PPT、PPTX、DOC、DOCX、PDF 格式的文件转换成 PNG、JPG/JPEG、WEBP 格式的图片。
+ * - 使用 [Agora 互动文档转换功能](https://docs.agora.io/cn/whiteboard/file_conversion_overview?platform=RESTful) 转换过的 PPTX 文件。
+ *
  */
 public class PptPage extends WhiteObject {
 

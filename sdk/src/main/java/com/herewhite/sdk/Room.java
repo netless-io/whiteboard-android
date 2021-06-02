@@ -843,11 +843,11 @@ public class Room extends Displayer {
      * - 如需获取方法调用回调，请使用 {@link #setScenePath(String path, Promise<Boolean> promise) setScenePath}[2/2]。
      *
      * 场景切换失败可能有以下原因：
-     * - 路径不合法，请确保场景路径以 "/"，由场景组和场景名构成。
+     * - 路径不合法，请确保场景路径以 `/` 开头，由场景组和场景名构成。
      * - 场景路径对应的场景不存在。
      * - 传入的路径是场景组的路径，而不是场景路径。
      *
-     * @param path 想要切换到的场景的场景路径，请确保场景路径以 "/"，由场景组和场景名构成，例如，`/math/classA`.
+     * @param path 想要切换到的场景的场景路径，请确保场景路径以 `/` 开头，由场景组和场景名构成，例如，`/math/classA`.
      */
     public void setScenePath(String path) {
         bridge.callHandler("room.setScenePath", new Object[]{path});
@@ -893,7 +893,7 @@ public class Room extends Displayer {
      *
      * @param index   目标场景在当前场景组下的索引号。
      * @param promise `Promise<Boolean>` 接口，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `setSceneIndex` 的调用结果：
-     *                - 如果方法调用成功，则返回 `true`.
+     *                - 如果方法调用成功，则返回 `true`。
      *                - 如果方法调用失败，则返回错误信息。
      */
     public void setSceneIndex(Integer index, @Nullable final Promise<Boolean> promise) {
@@ -922,6 +922,7 @@ public class Room extends Displayer {
      * @param scenes 由多个场景构成的数组。单个场景的字段详见 {@link com.herewhite.sdk.domain.Scene Scene}。
      * @param index  待插入的多个场景中，第一个场景在该场景组的索引号。如果传入的索引号大于该场景组已有场景总数，新插入的场景会排在现有场景的最后。场景的索引号从 0 开始。
      *
+     * **Example**
      * <pre>
      * {@code
      * room.putScenes("ppt", new Scene[]{new Scene("page1", new PptPage("https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/alin-rusu-1239275-unsplash_opt.jpg", 1024d, 768d))}, 0);

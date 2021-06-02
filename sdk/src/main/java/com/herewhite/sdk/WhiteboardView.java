@@ -10,9 +10,8 @@ import android.webkit.WebChromeClient;
 import wendu.dsbridge.DWebView;
 import wendu.dsbridge.OnReturnValue;
 
-/**
- * white on 2018/8/10.
- */
+// white on 2018/8/10.
+
 
 /**
  * `WhiteboardView` 类，用于配置白板界面。
@@ -43,6 +42,7 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
         init();
     }
 
+    /// @cond test
     @Override
     protected void onSizeChanged(int w, int h, int ow, int oh) {
         super.onSizeChanged(w, h, ow, oh);
@@ -50,6 +50,7 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
             delayStrategy.refreshViewSize();
         }
     }
+    /// @endcond
 
     /// @cond test
     @Override
