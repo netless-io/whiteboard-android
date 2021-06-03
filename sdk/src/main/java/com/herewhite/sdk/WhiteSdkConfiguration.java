@@ -49,7 +49,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
      */
     public static class PptParams extends WhiteObject {
         /// @cond test
-
         /** 文档中隐藏 */
         public String getScheme() {
             return scheme;
@@ -57,7 +56,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
         /// @endcond
 
         /// @cond test
-
         /**
          * 更改动态 ppt 请求时的请求协议，可以将 https://www.exmaple.com/1.pptx 更改成 scheme://www.example.com/1.pptx
          * Android 端该方法无需使用
@@ -90,9 +88,11 @@ public class WhiteSdkConfiguration extends WhiteObject {
          *
          * 自 2021 年 2 月 10 日起，将 PPTX 文件转换为 HTML 网页时，Agora Interactive 白板服务端支持对 PPTX 文件进行排版，以确保 PPTX 文件的文本在各个平台上的呈现保持一致。
          *
+         * @note Note: 自 2.12.27 版本起，`useServerWrap` 的默认值由 `false` 改为 `true`。
+         *
          * @param useServerWrap 是否开启服务端排版功能：
-         *                      - `true`：（默认）开启 @since 2.12.27。
-         *                      - `false`：关闭。
+         * - `true`：（默认）开启。
+         * - `false`：关闭。
          */
         public void setUseServerWrap(boolean useServerWrap) {
             this.useServerWrap = useServerWrap;
@@ -101,16 +101,17 @@ public class WhiteSdkConfiguration extends WhiteObject {
         private boolean useServerWrap = true;
 
         /// @cond test
-
         /** 文档中隐藏 */
         public PptParams(String scheme) {
             this.scheme = scheme;
         }
         /// @endcond
 
+        /// @cond test
         public PptParams() {
 
         }
+        /// @endcond
     }
 
 
@@ -188,7 +189,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
     /// @cond test
-
     /**
      * 设置是否启用 RTC SDK 的混音方法播放动态 PPT 中的音频。
      *
@@ -196,7 +196,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
      * <p>
      * 当同时使用 Agora RTC SDK 和互动白板 SDK, 且互动白板中展示的动态 PPT 中包含音频文件时，你可以调用 RTC SDK 的混音方法播放动态 PPT 中的音频，以保证音频正常播放。
      *
-     * @note 初始化 `WhiteSdk` 时，如果你实现并传入 {@link AudioMixerBridge AudioMixerBridge} 类，SDK 会自动设置 'setEnableRtcIntercept(true)'。你无需主动调用该方法。
+     * @note 初始化 `WhiteSdk` 时，如果你实现并传入 {@link AudioMixerBridge AudioMixerBridge} 类，SDK 会自动设置 `setEnableRtcIntercept(true)`。你无需主动调用该方法。
      *
      * @param enableRtcIntercept 是否启用 RTC SDK 的混音方法播放动态 PPT 中的音频：
      *                           - `true`：启用。
@@ -210,7 +210,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
     /// @endcond
 
     /// @cond test
-
     /**
      * 文档中隐藏
      * @return
@@ -221,7 +220,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
     /// @endcond
 
     /// @cond test
-
     /**
      * FIXME: 该 API 会 {@link RoomParams#setDisableDeviceInputs(boolean)} 覆盖，需要删除。
      * 禁止白板工具输入，使用该功能后，终端客户无法使用白板工具书写内容
@@ -240,7 +238,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
      *
      * @since 2.8.0
      * <p>
-     * 为优化白板上绘图的渲染，自 2.8.0 版本起，白板 SDK 新增 'canvas' 渲染模式，并从 2.9.0 版本起，将 'canvas' 渲染模式作为默认的渲染模式。
+     * 为优化白板上绘图的渲染，自 2.8.0 版本起，白板 SDK 新增 `canvas` 渲染模式，并从 2.9.0 版本起，将 `canvas` 渲染模式作为默认的渲染模式。
      *
      * @note 由于部分 Android 6.1 至 Android 8.1 设备无法支持 `canvas` 渲染模式，SDK 会自动将默认的渲染模式切换为 `svg` 渲染模式。
      *
@@ -382,7 +380,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
     /// @cond test
-
     /**
      * 文档中隐藏
      *
@@ -394,7 +391,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
     /// @endcond
 
     /// @cond test
-
     /**
      * 是否启用双路由功能，同时向两个网址请求数据，选择最快的应答。会造成一定的额外开销，默认关闭
      * 文档中隐藏
@@ -407,7 +403,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
     /// @endcond
 
     /// @cond test
-
     /**
      * 文档中隐藏
      * @return
@@ -421,7 +416,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
      * 设置是否显示用户头像。
      * <p>
      * 要显示用户头像，请确保你在 `userPayload` 对象中传入了头像的键值对，
-     * 并在调用{@link com.herewhite.sdk.RoomParams#setUserPayload(Object userPayload) setUserPayload}。
+     * 并在调用 {@link com.herewhite.sdk.RoomParams#setUserPayload(Object userPayload) setUserPayload}。
      *
      * @param userCursor 是否显示用户头像：
      *                   - `true`：显示。
@@ -467,7 +462,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
     /// @cond test
-
     /**
      * 文档中隐藏
      */

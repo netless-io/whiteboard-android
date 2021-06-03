@@ -2,9 +2,8 @@ package com.herewhite.sdk.domain;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by buhe on 2018/8/11.
- */
+
+// Created by buhe on 2018/8/11.
 
 /**
  * 视角模式。

@@ -30,7 +30,7 @@ public class Scene extends WhiteObject {
      * `Scene` 构造方法，用于初始化场景实例。
      *
      * @param name 场景名称。
-     * @param ppt  场景背景图实例配置。详见 {@link PptPage PptPage}。
+     * @param ppt 在场景中展示的图片或动态 PPT 的参数配置。详见 {@link PptPage PptPage}。
      */
     public Scene(String name, PptPage ppt) {
         this.name = name;
@@ -59,7 +59,7 @@ public class Scene extends WhiteObject {
      * 获取场景中的笔画数。
      *
      * @return 场景中的笔画数。
-     * @deprecated 弃用字段，调用返回null
+     * @deprecated 该方法已废弃。如果调用，会返回 `null`。
      */
     @Deprecated
     public Long getComponentsCount() {
@@ -67,18 +67,18 @@ public class Scene extends WhiteObject {
     }
 
     /**
-     * 获取场景背景图的配置信息。
+     * 获取在场景中展示的图片或动态 PPT 的参数配置。
      *
-     * @return 场景背景图的配置信息，详见 {@link PptPage PptPage}。
+     * @return 在场景中展示的图片或动态 PPT 的参数配置，详见 {@link PptPage PptPage}。
      */
     public PptPage getPpt() {
         return ppt;
     }
 
     /**
-     * 设置场景背景图。
+     * 设置在场景中展示的图片或动态 PPT 的参数。
      *
-     * @param ppt 场景背景图实例的配置信息，详见 {@link PptPage PptPage}。
+     * @param ppt 在场景中展示的图片或动态 PPT 的参数配置，详见 {@link PptPage PptPage}。
      */
     public void setPpt(PptPage ppt) {
         this.ppt = ppt;

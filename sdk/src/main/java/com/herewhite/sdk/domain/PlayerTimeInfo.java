@@ -14,7 +14,7 @@ public class PlayerTimeInfo {
     /**
      * `PlayerTimeInfo` 构造方法。
      * @param scheduleTime 当前的回放进度，单位为毫秒。
-     * @param timeDuration 回放的总时长。
+     * @param timeDuration 回放的总时长，单位为毫秒。
      * @param framesCount 预留参数。
      * @param beginTimestamp 白板回放的起始时间，Unix 时间戳，单位为毫秒。
      */

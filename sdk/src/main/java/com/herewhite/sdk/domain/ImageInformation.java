@@ -1,8 +1,7 @@
 package com.herewhite.sdk.domain;
 
-/**
- * Created by buhe on 2018/8/15.
- */
+
+// Created by buhe on 2018/8/15.
 
 /**
  * 图片信息。

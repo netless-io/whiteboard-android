@@ -122,7 +122,7 @@ public class CameraBound extends WhiteObject {
     /**
      * 获取用户将视角移出视角边界时感受到的阻力。
      *
-     * @return 用户将视角移出视角边界时感受到的阻力。
+     * @return 用户将视角移出视角边界时感受到的阻力。返回值范围为 [0.0,1.0]。数值越大，用户感受到的阻力越大。
      */
     public Double getDamping() {
         return damping;

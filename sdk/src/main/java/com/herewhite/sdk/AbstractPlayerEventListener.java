@@ -5,9 +5,8 @@ import com.herewhite.sdk.domain.PlayerPhase;
 import com.herewhite.sdk.domain.PlayerState;
 import com.herewhite.sdk.domain.SDKError;
 
+// Created by buhe on 2018/8/12.
 /**
- * Created by buhe on 2018/8/12.
- * <p>
  * `PlayerEventListener` 接口的缺省（空）实现。详见 {@link PlayerEventListener PlayerEventListener}。
  *
  * @deprecated 已废弃。空实现类由用户应用处理。

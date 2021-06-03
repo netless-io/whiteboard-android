@@ -7,9 +7,8 @@ import com.herewhite.sdk.domain.WhiteObject;
 
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by buhe on 2018/8/11.
- */
+
+// Created by buhe on 2018/8/11.
 
 /**
  * `RoomParams` 类，用于配置实时房间的参数。

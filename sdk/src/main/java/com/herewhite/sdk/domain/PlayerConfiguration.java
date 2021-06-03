@@ -154,7 +154,7 @@ public class PlayerConfiguration extends WhiteObject {
         return beginTimestamp;
     }
 
-    /***
+    /**
      * 设置白板回放的起始时间。
      *
      * @param beginTimestamp Unix 时间戳（毫秒），表示回放的起始 UTC 时间。例如，如果要将回放的起始时间设为 2021-03-10 18:03:34 GMT+0800，你需要传入 `1615370614269`。

@@ -32,7 +32,7 @@ public class LoggerOptions extends WhiteObject {
          */
         warn,
         /**
-         * 报错日志：报错日志：直接导致 SDK 无法正常运行的错误。
+         * 报错日志：直接导致 SDK 无法正常运行的错误。
          */
         error,
     }

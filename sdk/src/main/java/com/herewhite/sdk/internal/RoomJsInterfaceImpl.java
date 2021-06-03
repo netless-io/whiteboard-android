@@ -9,9 +9,9 @@ import com.herewhite.sdk.domain.RoomPhase;
 
 import androidx.annotation.Nullable;
 
-/**
- * Created by buhe on 2018/8/12.
- */
+
+// Created by buhe on 2018/8/12.
+
 public class RoomJsInterfaceImpl {
     private final static Gson gson = new Gson();
     @Nullable
