@@ -2,6 +2,8 @@ package com.herewhite.sdk;
 
 import android.content.Context;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.herewhite.sdk.domain.FontFace;
@@ -18,7 +20,7 @@ import com.herewhite.sdk.internal.SdkJsInterfaceImpl;
 
 import org.json.JSONObject;
 
-import androidx.annotation.Nullable;
+import wendu.dsbridge.DWebView;
 import wendu.dsbridge.OnReturnValue;
 
 /**
@@ -194,6 +196,7 @@ public class WhiteSdk {
                     room.setWritable(isWritable);
                     room.setRoomPhase(RoomPhase.connected);
 
+                    ((DWebView) bridge).evaluateJavascript("room.autoResize = true;");
                     roomPromise.then(room);
                 }
             });
@@ -243,6 +246,7 @@ public class WhiteSdk {
                     PlayerTimeInfo playerTimeInfo = gson.fromJson(timeInfo.toString(), PlayerTimeInfo.class);
 
                     player.setPlayerTimeInfo(playerTimeInfo);
+                    ((DWebView) bridge).evaluateJavascript("player.autoResize = true;");
                     playerPromise.then(player);
                 }
             });
