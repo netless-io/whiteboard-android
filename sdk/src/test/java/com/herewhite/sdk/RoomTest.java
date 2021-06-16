@@ -298,7 +298,7 @@ public class RoomTest extends TestCase {
     public void testSetAndGetTimeDelay() {
         mRoom.setTimeDelay(1234);
         verify(mockJsBridgeInterface).callHandler("room.setTimeDelay", new Object[]{1234_000});
-        assertEquals(Integer.valueOf(1234), mRoom.getTimeDelay());
+        assertEquals(1234.0, mRoom.getTimeDelay(), 0.001);
     }
 
     public void testSyncBlockTimestamp() {
