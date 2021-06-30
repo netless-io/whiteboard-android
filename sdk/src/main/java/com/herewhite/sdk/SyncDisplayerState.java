@@ -27,10 +27,9 @@ class SyncDisplayerState<T> {
     private JsonObject stateJSON;
     private Listener<T> listener;
 
-    public SyncDisplayerState(Class<T> clazz, String stateJSON, boolean disableCallbackWhilePutting) {
+    public SyncDisplayerState(Class<T> clazz, boolean disableCallbackWhilePutting) {
         this.clazz = clazz;
         this.disableCallbackWhilePutting = disableCallbackWhilePutting;
-        this.syncDisplayerState(stateJSON);
     }
 
     public interface Listener<T> {

@@ -2,13 +2,14 @@ package com.herewhite.sdk;
 
 import android.content.Context;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.herewhite.sdk.domain.FontFace;
 import com.herewhite.sdk.domain.PlayerConfiguration;
 import com.herewhite.sdk.domain.PlayerTimeInfo;
 import com.herewhite.sdk.domain.Promise;
-import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
 import com.herewhite.sdk.internal.PlayerJsInterfaceImpl;
@@ -18,7 +19,6 @@ import com.herewhite.sdk.internal.SdkJsInterfaceImpl;
 
 import org.json.JSONObject;
 
-import androidx.annotation.Nullable;
 import wendu.dsbridge.OnReturnValue;
 
 /**
@@ -192,7 +192,6 @@ public class WhiteSdk {
                     room.setSyncRoomState(jsonState.toString());
                     room.setObserverId(observerId);
                     room.setWritable(isWritable);
-                    room.setRoomPhase(RoomPhase.connected);
 
                     roomPromise.then(room);
                 }

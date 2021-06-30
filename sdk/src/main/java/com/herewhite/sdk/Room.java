@@ -80,7 +80,7 @@ public class Room extends Displayer {
     Room(String uuid, JsBridgeInterface bridge, int densityDpi, boolean disableCallbackWhilePutting) {
         super(uuid, bridge, densityDpi);
         this.timeDelay = 0;
-        this.syncRoomState = new SyncDisplayerState<>(RoomState.class, "{}", disableCallbackWhilePutting);
+        this.syncRoomState = new SyncDisplayerState<>(RoomState.class, disableCallbackWhilePutting);
         this.syncRoomState.setListener(localRoomStateListener);
     }
     /// @endcond
