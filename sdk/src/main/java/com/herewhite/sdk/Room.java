@@ -70,16 +70,17 @@ public class Room extends Displayer {
     }
 
     private Boolean writable;
-    private Integer timeDelay;
+    private Double timeDelay;
     private Long observerId;
 
     /// @cond test
+
     /**
      * 文档中隐藏，只有 sdk 内部初始化才有意义
      */
     Room(String uuid, JsBridgeInterface bridge, int densityDpi, boolean disableCallbackWhilePutting) {
         super(uuid, bridge, densityDpi);
-        this.timeDelay = 0;
+        this.timeDelay = 0.0;
         this.syncRoomState = new SyncDisplayerState<>(RoomState.class, disableCallbackWhilePutting);
         this.syncRoomState.setListener(localRoomStateListener);
     }
@@ -1149,8 +1150,8 @@ public class Room extends Displayer {
      *
      * @param delaySec 延时时长，单位为秒。
      */
-    public void setTimeDelay(Integer delaySec) {
-        bridge.callHandler("room.setTimeDelay", new Object[]{delaySec * 1000});
+    public void setTimeDelay(double delaySec) {
+        bridge.callHandler("room.setTimeDelay", new Object[]{(int) (delaySec * 1000)});
         this.timeDelay = delaySec;
     }
 
@@ -1159,7 +1160,7 @@ public class Room extends Displayer {
      *
      * @return 延时时长，单位为秒。
      */
-    public Integer getTimeDelay() {
+    public Double getTimeDelay() {
         return this.timeDelay;
     }
     //endregion
@@ -1230,6 +1231,7 @@ public class Room extends Displayer {
         }
 
         /// @cond test
+
         /**
          * 文档中隐藏。
          *
