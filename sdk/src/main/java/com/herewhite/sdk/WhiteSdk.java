@@ -66,7 +66,7 @@ public class WhiteSdk {
      * @return 当前的 SDK 版本号，格式为字符串，如 `"2.12.28"`。
      */
     public static String Version() {
-        return "2.12.36";
+        return "2.12.37";
     }
 
     /**
