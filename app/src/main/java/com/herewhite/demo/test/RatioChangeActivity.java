@@ -90,11 +90,6 @@ public class RatioChangeActivity extends BaseActivity {
         // 使用阿里云的 HttpDns，避免 DNS 污染等问题
         useHttpDnsService(false);
 
-        // 使用 LocalFileWebViewClient 对 动态 ppt 拦截进行替换，先查看本地是否有，如果没有再发出网络请求
-        LocalFileWebViewClient client = new LocalFileWebViewClient();
-        client.setPptDirectory(getCacheDir().getAbsolutePath());
-        mWhiteboardView.setWebViewClient(client);
-
         getRoomToken(demoAPI.getDemoUUID());
 
         initSystemUI();

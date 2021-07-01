@@ -40,6 +40,9 @@
             android:name=".RoomActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
         <activity
+            android:name=".test.PptResourceCacheActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
+        <activity
             android:name=".test.RatioChangeActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:screenOrientation="landscape" />
