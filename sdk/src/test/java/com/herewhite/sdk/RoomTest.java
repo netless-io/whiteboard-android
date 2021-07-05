@@ -56,7 +56,7 @@ public class RoomTest extends TestCase {
     public void tearDown() throws Exception {
     }
 
-    private static final String ROOM_INITIAL_STATES = "{\"roomPhase\":\"connecting\",\"disconnectedBySelf\":false,\"writable\":null,\"timeDelay\":0,\"observerId\":null,\"localRoomStateListener\":{},\"roomDelegate\":null,\"backgroundColor\":-1,\"uuid\":\"7e7c8f007a4011eba97639a3a8d1dde1\",\"densityDpi\":3,\"eventListenerMap\":{},\"frequencyEventListenerMap\":{}}";
+    private static final String ROOM_INITIAL_STATES = "{\"roomPhase\":\"connecting\",\"disconnectedBySelf\":false,\"writable\":null,\"timeDelay\":0.0,\"observerId\":null,\"localRoomStateListener\":{},\"roomDelegate\":null,\"backgroundColor\":-1,\"uuid\":\"7e7c8f007a4011eba97639a3a8d1dde1\",\"densityDpi\":3,\"eventListenerMap\":{},\"frequencyEventListenerMap\":{}}";
 
     public void testInitialStatesBySerialization() {
         Gson gson = new GsonBuilder()

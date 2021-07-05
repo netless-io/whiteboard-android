@@ -55,6 +55,9 @@ class SyncDisplayerState<T> {
     }
 
     void putProperty(String key, Object value) {
+        if (stateJSON == null) {
+            stateJSON = new JsonObject();
+        }
         JsonElement originalValue = this.stateJSON.get(key);
 
         if (originalValue != null) {
