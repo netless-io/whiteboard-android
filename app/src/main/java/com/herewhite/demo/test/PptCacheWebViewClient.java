@@ -19,9 +19,8 @@ public class PptCacheWebViewClient extends WebViewClient {
     @SuppressWarnings(value = "deprecation")
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-        WebResourceResponse response = null;
         if (pptResourceManager != null) {
-            response = pptResourceManager.intercept(url);
+            WebResourceResponse response = pptResourceManager.intercept(url);
             if (response != null) {
                 return response;
             }
@@ -31,9 +30,8 @@ public class PptCacheWebViewClient extends WebViewClient {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-        WebResourceResponse response = null;
         if (pptResourceManager != null) {
-            response = pptResourceManager.intercept(request);
+            WebResourceResponse response = pptResourceManager.intercept(request);
             if (response != null) {
                 return response;
             }

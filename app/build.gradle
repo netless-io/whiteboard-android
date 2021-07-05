@@ -35,7 +35,9 @@ android {
 dependencies {
     implementation project(':sdk')
     // implementation 'com.github.netless-io:whiteboard-android:2.12.36'
-    implementation 'com.github.netless-io:dynamic-ppt-download-android:1.0.0'
+    implementation('com.github.netless-io:dynamic-ppt-download-android:1.0.0') {
+        exclude group: 'com.github.netless-io', module: 'whiteboard-android'
+    }
 
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
     implementation 'com.google.code.gson:gson:2.8.6'
