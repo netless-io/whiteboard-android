@@ -63,8 +63,8 @@ while true; do
         * ) echo "Please answer yes or no.";;
     esac
 done
-# git push -v netless refs/heads/master:refs/heads/master
-# git push -v origin refs/heads/master:refs/heads/master
+git push -v netless refs/heads/master:refs/heads/master
+git push -v origin refs/heads/master:refs/heads/master
 
 # Tag
 while true; do
@@ -75,10 +75,12 @@ while true; do
         * ) echo "Please answer yes or no.";;
     esac
 done
-# git tag $WHITE_TAG
-# git push origin $WHITE_TAG
-# git push netless $WHITE_TAG
+git tag $WHITE_TAG
+git push origin $WHITE_TAG
+git push netless $WHITE_TAG
 
-# FETCH jitpack
-# curl "https://jitpack.io/com/github/duty-os/white-sdk-android/$WHITE_TAG"
-# curl "https://jitpack.io/com/github/netless-io/whiteboard-android/$WHITE_TAG"
+# Fetch Jitpack
+curl "https://jitpack.io/com/github/duty-os/white-sdk-android/$WHITE_TAG"
+curl "https://jitpack.io/com/github/netless-io/whiteboard-android/$WHITE_TAG"
+
+exit 0
