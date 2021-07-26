@@ -25,6 +25,8 @@ import wendu.dsbridge.OnReturnValue;
  * `WhiteSdk` 类。
  */
 public class WhiteSdk {
+    private final static String SDK_VERSION = "2.13.18";
+
     private final static Gson gson = new Gson();
 
     private final JsBridgeInterface bridge;
@@ -66,7 +68,7 @@ public class WhiteSdk {
      * @return 当前的 SDK 版本号，格式为字符串，如 `"2.12.28"`。
      */
     public static String Version() {
-        return "2.13.17";
+        return SDK_VERSION;
     }
 
     /**
