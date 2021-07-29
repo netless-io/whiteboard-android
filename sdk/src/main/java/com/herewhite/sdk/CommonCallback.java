@@ -18,7 +18,9 @@ public interface CommonCallback {
      *
      * @param args 错误信息。
      */
-    void throwError(Object args);
+    default void throwError(Object args) {
+
+    }
 
     /**
      * 拦截图片 URL 回调。
@@ -35,21 +37,27 @@ public interface CommonCallback {
      *
      * @return 替换后的图片地址。请确保在返回值中进行传参。
      */
-    String urlInterrupter(String sourceUrl);
+    default String urlInterrupter(String sourceUrl) {
+        return sourceUrl;
+    }
 
     /**
      * 播放动态 PPT 中的音视频回调。
      *
      * @since 2.9.13
      */
-    void onPPTMediaPlay();
+    default void onPPTMediaPlay() {
+
+    }
 
     /**
      * 暂停播放动态 PPT 中的音视频回调。
      *
      * @since 2.9.13
      */
-    void onPPTMediaPause();
+    default void onPPTMediaPause() {
+
+    }
 
     /**
      * 接收到网页发送的消息回调。
@@ -62,7 +70,9 @@ public interface CommonCallback {
      *
      * @param object JSON 格式的消息。只有当消息为 JSON 格式时，本地用户才能收到。
      */
-    void onMessage(JSONObject object);
+    default void onMessage(JSONObject object) {
+
+    }
 
     /**
      * SDK 初始化失败回调。
@@ -75,5 +85,16 @@ public interface CommonCallback {
      * - 传入了不合法的 App Identifier。
      *
      */
-    void sdkSetupFail(SDKError error);
+    default void sdkSetupFail(SDKError error) {
+
+    }
+
+    /**
+     * SDK 日志回调
+     *
+     * @param object JSON 格式的消息，分类名 "funName"， 参数名 "params"
+     */
+    default void onLogger(JSONObject object) {
+
+    }
 }

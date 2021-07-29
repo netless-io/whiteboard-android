@@ -13,12 +13,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.alibaba.sdk.android.httpdns.HttpDns;
 import com.alibaba.sdk.android.httpdns.HttpDnsService;
 import com.google.gson.Gson;
 import com.herewhite.demo.utils.MapBuilder;
 import com.herewhite.sdk.AbstractRoomCallbacks;
-import com.herewhite.sdk.CommonCallbacks;
+import com.herewhite.sdk.CommonCallback;
 import com.herewhite.sdk.Converter;
 import com.herewhite.sdk.ConverterCallbacks;
 import com.herewhite.sdk.Room;
@@ -62,7 +64,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
-import androidx.annotation.VisibleForTesting;
 import wendu.dsbridge.DWebView;
 
 
@@ -186,7 +187,7 @@ public class RoomActivity extends BaseActivity {
         mWhiteSdk = new WhiteSdk(mWhiteboardView, this, configuration);
 
         //图片替换 API，需要在 whiteSDKConfig 中先行调用 setHasUrlInterrupterAPI，进行设置，否则不会被回调。
-        mWhiteSdk.setCommonCallbacks(new CommonCallbacks() {
+        mWhiteSdk.setCommonCallbacks(new CommonCallback() {
             @Override
             public String urlInterrupter(String sourceUrl) {
                 return sourceUrl;
@@ -216,8 +217,11 @@ public class RoomActivity extends BaseActivity {
             public void onPPTMediaPause() {
                 logAction();
             }
-            // 如果用户需要用到 rtc 混音功能来解决回声和声音抑制问题，那么必须要在 whiteSDK 之前初始化 rtcEngine
-            // AudioMixerBridgeImpl 在传入 sdk 后，ppt 内的音视频就全部使用 rtc 混音的方式播放
+
+            @Override
+            public void onLogger(JSONObject object) {
+                logAction(object.toString());
+            }
         });
 
         FontFace fontFace = new FontFace("example", "url(https://white-pan.oss-cn-shanghai.aliyuncs.com/Pacifico-Regular.ttf)");

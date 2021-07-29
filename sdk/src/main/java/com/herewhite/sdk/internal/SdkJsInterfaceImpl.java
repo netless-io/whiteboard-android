@@ -59,16 +59,15 @@ public class SdkJsInterfaceImpl {
     @JavascriptInterface
     public void logger(Object args) {
         Logger.info("WhiteSDK logger: " + gson.fromJson(String.valueOf(args), Map.class));
+        if (commonCallback != null && args instanceof JSONObject) {
+            commonCallback.onLogger((JSONObject) args);
+        }
     }
 
     @JavascriptInterface
     public void postMessage(Object args) {
-        if (commonCallback != null) {
-            try {
-                JSONObject object = new JSONObject((String) args);
-                commonCallback.onMessage(object);
-            } catch (Throwable throwable) {
-            }
+        if (commonCallback != null && args instanceof JSONObject) {
+            commonCallback.onMessage((JSONObject) args);
         }
     }
 
