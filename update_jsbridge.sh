@@ -8,6 +8,10 @@ then
    exit -1
 fi
 
+BASEDIR=$(cd $(dirname "$0"); pwd -P)
+set -exo pipefail
+cd $BASEDIR
+
 # 版本号
 WHITE_TAG=$1
 # 更新日志
