@@ -11,8 +11,6 @@ import com.herewhite.sdk.domain.UrlInterrupter;
 
 import org.json.JSONObject;
 
-import java.util.Map;
-
 public class SdkJsInterfaceImpl {
     private final static Gson gson = new Gson();
 
@@ -50,7 +48,7 @@ public class SdkJsInterfaceImpl {
 
     @JavascriptInterface
     public void throwError(Object args) {
-        Logger.info("WhiteSDK JS error: " + gson.fromJson(String.valueOf(args), Map.class));
+        Logger.info("WhiteSDK throwError: " + args);
         if (commonCallback != null) {
             commonCallback.throwError(args);
         }
@@ -58,16 +56,19 @@ public class SdkJsInterfaceImpl {
 
     @JavascriptInterface
     public void logger(Object args) {
-        Logger.info("WhiteSDK logger: " + gson.fromJson(String.valueOf(args), Map.class));
-        if (commonCallback != null && args instanceof JSONObject) {
-            commonCallback.onLogger((JSONObject) args);
+        Logger.info("WhiteSDK logger: " + args);
+        JSONObject jsonObject = convertToJsonOrNull(args);
+        if (commonCallback != null && jsonObject != null) {
+            commonCallback.onLogger(jsonObject);
         }
     }
 
     @JavascriptInterface
     public void postMessage(Object args) {
-        if (commonCallback != null && args instanceof JSONObject) {
-            commonCallback.onMessage((JSONObject) args);
+        Logger.info("WhiteSDK postMessage: " + args);
+        JSONObject jsonObject = convertToJsonOrNull(args);
+        if (commonCallback != null && jsonObject != null) {
+            commonCallback.onMessage(jsonObject);
         }
     }
 
@@ -86,10 +87,21 @@ public class SdkJsInterfaceImpl {
     }
 
     @JavascriptInterface
-    public void setupFail(Object object) {
-        if (commonCallback != null && object instanceof JSONObject) {
-            SDKError sdkError = SDKError.parseError((JSONObject) object);
+    public void setupFail(Object args) {
+        JSONObject jsonObject = convertToJsonOrNull(args);
+        if (commonCallback != null && jsonObject != null) {
+            SDKError sdkError = SDKError.parseError(jsonObject);
             commonCallback.sdkSetupFail(sdkError);
         }
+    }
+
+    private JSONObject convertToJsonOrNull(Object args) {
+        JSONObject result = null;
+        try {
+            result = new JSONObject(String.valueOf(args));
+        } catch (Exception e) {
+            Logger.error("convertToJson exception", e);
+        }
+        return result;
     }
 }

@@ -195,12 +195,12 @@ public class RoomActivity extends BaseActivity {
 
             @Override
             public void onMessage(JSONObject message) {
-                Log.d(TAG, message.toString());
+                Log.d(TAG, "onMessage " + message.toString());
             }
 
             @Override
             public void sdkSetupFail(SDKError error) {
-                Log.e(TAG, "sdkSetupFail " + error.toString());
+                Log.e(TAG, "sdkSetupFail " + error);
             }
 
             @Override

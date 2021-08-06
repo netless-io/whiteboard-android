@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.13.20] - 2021-08-06
+- 修复 CommonCallback `onLogger` `onMessage` 等接口无回调问题
 ## [2.13.19] - 2021-08-05
 - CommonCallback 添加日志回调接口`onLogger`
 - 更新`white-web-sdk`至 2.13.14
