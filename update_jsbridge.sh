@@ -84,7 +84,7 @@ git push origin $WHITE_TAG
 git push netless $WHITE_TAG
 
 # Fetch Jitpack, Should End With "/"
-curl "https://jitpack.io/com/github/duty-os/white-sdk-android/$WHITE_TAG/"
-curl "https://jitpack.io/com/github/netless-io/whiteboard-android/$WHITE_TAG/"
+curl "https://jitpack.io/com/github/duty-os/white-sdk-android/${WHITE_TAG}/"
+curl "https://jitpack.io/com/github/netless-io/whiteboard-android/${WHITE_TAG}/"
 
 exit 0
