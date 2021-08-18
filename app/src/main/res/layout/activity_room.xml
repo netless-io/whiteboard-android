@@ -1,16 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".RoomActivity">
+    android:layout_height="match_parent">
 
-    <com.herewhite.sdk.WhiteboardView
-        android:id="@+id/white"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible" />
+        android:orientation="vertical"
+        tools:context=".RoomActivity">
 
-</LinearLayout>
+        <com.herewhite.sdk.WhiteboardView
+            android:id="@+id/white"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/sendSync"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp"
+        android:text="sync State" />
+
+    <com.herewhite.demo.DragView
+        android:id="@+id/dragView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#defabb"
+        android:gravity="center"
+        android:minWidth="100dp"
+        android:minHeight="100dp"
+        android:paddingHorizontal="10dp"
+        android:text="CurrentTime 12:13"
+        android:textColor="#e54304" />
+</FrameLayout>

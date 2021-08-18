@@ -129,6 +129,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private boolean disableDeviceInputs = false;
     private boolean enableIFramePlugin = false;
     private boolean enableRtcIntercept = false;
+    private boolean enableSyncedStore = true;
 
     private LoggerOptions loggerOptions;
 

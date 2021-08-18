@@ -406,4 +406,16 @@ public class RoomParams extends WhiteObject {
         this.roomToken = roomToken;
     }
 
+    /**
+     * 多窗口支持
+     */
+    private Boolean useMultiViews = true;
+
+    public Boolean getUseMultiViews() {
+        return useMultiViews;
+    }
+
+    public void setUseMultiViews(Boolean useMultiViews) {
+        this.useMultiViews = useMultiViews;
+    }
 }

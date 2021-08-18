@@ -22,6 +22,7 @@ import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.SceneState;
+import com.herewhite.sdk.domain.SyncedState;
 import com.herewhite.sdk.domain.ViewMode;
 import com.herewhite.sdk.internal.Logger;
 import com.herewhite.sdk.internal.RoomDelegate;
@@ -1189,6 +1190,36 @@ public class Room extends Displayer {
     }
     //endregion
 
+    /**
+     * 动态APP
+     *
+     * @return
+     */
+    public void addApp(String dir, boolean dynamic) {
+        bridge.callHandler("room.addApp", new Object[]{dir, dynamic});
+    }
+
+    public void safeSetAttributes(SyncedState state) {
+        bridge.callHandler("room.safeSetAttributes", new Object[]{state});
+    }
+
+    public void safeUpdateAttributes(String[] keys, SyncedState state) {
+        bridge.callHandler("room.safeUpdateAttributes", new Object[]{keys, state});
+    }
+
+    public void calibrationTimestamp(@Nullable final Promise<Long> promise) {
+        bridge.callHandler("room.calibrationTimestamp", new Object[]{}, new OnReturnValue<Long>() {
+            @Override
+            public void onValue(Long timestamp) {
+                try {
+                    promise.then(timestamp);
+                } catch (Exception e) {
+                    Logger.error("An JsonSyntaxException occurred while parse json from disconnect", e);
+                }
+            }
+        });
+    }
+
     // region roomListener
     // 关于此处的回调在JsBridge线程，请考虑/讨论确定是否在主执行
     private RoomListener roomListener;
@@ -1292,6 +1323,15 @@ public class Room extends Displayer {
             post(() -> {
                 if (roomListener != null) {
                     roomListener.onCatchErrorWhenAppendFrame(userId, exception);
+                }
+            });
+        }
+
+        @Override
+        public void fireAttributesUpdate(String valueOf) {
+            post(() -> {
+                if (roomListener != null) {
+                    roomListener.onAttributesUpdate(valueOf);
                 }
             });
         }

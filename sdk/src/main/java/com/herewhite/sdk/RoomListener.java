@@ -66,4 +66,6 @@ public interface RoomListener {
      * @param error  错误原因。
      */
     void onCatchErrorWhenAppendFrame(long userId, Exception error);
+
+    default void onAttributesUpdate(String valueOf) {}
 }
