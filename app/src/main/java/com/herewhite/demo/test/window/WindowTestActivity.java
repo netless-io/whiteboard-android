@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
@@ -32,31 +31,20 @@ import com.herewhite.sdk.domain.WhiteDisplayerState;
 
 import org.json.JSONObject;
 
-import java.util.Date;
-
 import wendu.dsbridge.DWebView;
 
 
 public class WindowTestActivity extends AppCompatActivity {
-    static final String TAG = WindowTestActivity.class.getSimpleName();
-
     private static final String ROOM_INFO = "RoomInfo";
     private static final String ROOM_ACTION = "RoomAction";
 
     final Gson gson = new Gson();
     final DemoAPI demoAPI = new DemoAPI();
 
-    // Room Params
-    private String uuid;
-    private String token;
-
     WhiteboardView mWhiteboardView;
-    @VisibleForTesting
     WhiteSdk mWhiteSdk;
-    @VisibleForTesting
     Room mRoom;
     FrameLayout mWhiteboardParent;
-
     DragViewPlugin dragViewPlugin;
     UserSyncedState state = new UserSyncedState();
 
@@ -70,30 +58,35 @@ public class WindowTestActivity extends AppCompatActivity {
 
         mWhiteboardView = findViewById(R.id.white);
         mWhiteboardView.getSettings().setAllowUniversalAccessFromFileURLs(true);
-        mWhiteboardParent = findViewById(R.id.whiteParent);
-
         // 使用 LocalFileWebViewClient 对 动态 ppt 拦截进行替换，先查看本地是否有，如果没有再发出网络请求
         LocalFileWebViewClient client = new LocalFileWebViewClient();
         client.setPptDirectory(getCacheDir().getAbsolutePath());
         mWhiteboardView.setWebViewClient(client);
 
-        joinRoom(demoAPI.getDemoUUID(), demoAPI.getDemoToken());
+        mWhiteboardParent = findViewById(R.id.whiteParent);
 
+        // 插入静态场景
         findViewById(R.id.insertStatic).setOnClickListener(v -> {
+            // 由转换后信息序列化
             String ppts = "[{\"name\":\"1\",\"ppt\":{\"height\":1010.0,\"src\":\"https://convertcdn.netless.link/staticConvert/0764816000c411ecbfbbb9230f6dd80f/1.png\",\"width\":714.0}},{\"name\":\"2\",\"ppt\":{\"height\":1010.0,\"src\":\"https://convertcdn.netless.link/staticConvert/0764816000c411ecbfbbb9230f6dd80f/2.png\",\"width\":714.0}},{\"name\":\"3\",\"ppt\":{\"height\":1010.0,\"src\":\"https://convertcdn.netless.link/staticConvert/0764816000c411ecbfbbb9230f6dd80f/3.png\",\"width\":714.0}},{\"name\":\"4\",\"ppt\":{\"height\":1010.0,\"src\":\"https://convertcdn.netless.link/staticConvert/0764816000c411ecbfbbb9230f6dd80f/4.png\",\"width\":714.0}}]";
             Scene[] scenes = gson.fromJson(ppts, Scene[].class);
 
             mRoom.addApp("/static", scenes, "static");
         });
+
+        // 插入动态场景
         findViewById(R.id.insertDynamic).setOnClickListener(v -> {
+            // 由转换后信息序列化
             String ppts = "[{\"name\":\"1\",\"ppt\":{\"height\":720.0,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/preview/1.png\",\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/1.slide\",\"width\":960.0}},{\"name\":\"2\",\"ppt\":{\"height\":720.0,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/preview/2.png\",\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/2.slide\",\"width\":960.0}},{\"name\":\"3\",\"ppt\":{\"height\":720.0,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/preview/3.png\",\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/3.slide\",\"width\":960.0}},{\"name\":\"4\",\"ppt\":{\"height\":720.0,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/preview/4.png\",\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/4.slide\",\"width\":960.0}},{\"name\":\"5\",\"ppt\":{\"height\":720.0,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/preview/5.png\",\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/5.slide\",\"width\":960.0}},{\"name\":\"6\",\"ppt\":{\"height\":720.0,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/preview/6.png\",\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/6.slide\",\"width\":960.0}},{\"name\":\"7\",\"ppt\":{\"height\":720.0,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/preview/7.png\",\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/7.slide\",\"width\":960.0}},{\"name\":\"8\",\"ppt\":{\"height\":720.0,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/preview/8.png\",\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/8.slide\",\"width\":960.0}},{\"name\":\"9\",\"ppt\":{\"height\":720.0,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/preview/9.png\",\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/9.slide\",\"width\":960.0}}]";
             Scene[] scenes = gson.fromJson(ppts, Scene[].class);
 
             mRoom.addApp("/dynamic", scenes, "dynamic");
         });
 
+        // 插入本地同步信息
         findViewById(R.id.insertLocal).setOnClickListener(v -> {
             if (mRoom != null) {
+                // 插入方初始化状态
                 state = new UserSyncedState();
                 state.dragViewState.w = 0.3f;
                 state.dragViewState.h = 0.2f;
@@ -104,12 +97,16 @@ public class WindowTestActivity extends AppCompatActivity {
             dragViewPlugin.startTimer(120_000);
         });
 
+        // 16:9 限定
         findViewById(R.id.lockRatio).setOnClickListener(v -> {
             lockRatio();
         });
+
+        joinRoom(demoAPI.getDemoUUID(), demoAPI.getDemoToken());
     }
 
     long lastUpdate = 0;
+
     private void safeUpdateAttributes() {
         if (mRoom != null && System.currentTimeMillis() - lastUpdate > 50) {
             lastUpdate = System.currentTimeMillis();
@@ -143,34 +140,19 @@ public class WindowTestActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    //region room
-    private void getRoomToken(final String uuid) {
-        demoAPI.getRoomToken(uuid, new DemoAPI.Result() {
-            @Override
-            public void success(String uuid, String roomToken) {
-                joinRoom(uuid, roomToken);
-            }
-
-            @Override
-            public void fail(String message) {
-                // alert("获取房间 token 失败", message);
-            }
-        });
+        if (mRoom != null) {
+            mRoom.disconnect();
+        }
     }
 
     private void joinRoom(String uuid, String token) {
         logRoomInfo("room uuid: " + uuid + "\nroom token: " + token);
-
-        this.uuid = uuid;
-        this.token = token;
-
         WhiteSdkConfiguration configuration = new WhiteSdkConfiguration(demoAPI.getAppId(), true);
         /*显示用户头像*/
         configuration.setUserCursor(true);
         //动态 ppt 需要的自定义字体，如果没有使用，无需调用
         configuration.setFonts(new MapBuilder<String, String>().put("宋体", "https://your-cdn.com/Songti.ttf").build());
+        configuration.setEnableSyncedStore(true);
 
         mWhiteSdk = new WhiteSdk(mWhiteboardView, this, configuration);
         mWhiteSdk.setCommonCallbacks(new CommonCallback() {
@@ -185,9 +167,8 @@ public class WindowTestActivity extends AppCompatActivity {
 
         // 如需支持用户头像，请在设置 WhiteSdkConfiguration 后，再调用 setUserPayload 方法，传入符合用户信息
         RoomParams roomParams = new RoomParams(uuid, token);
+        roomParams.setUseMultiViews(true);
 
-        final Date joinDate = new Date();
-        logRoomInfo("native join " + joinDate);
         mWhiteSdk.joinRoom(roomParams, new RoomListener() {
             @Override
             public void onCanUndoStepsUpdate(long canUndoSteps) {
@@ -208,13 +189,6 @@ public class WindowTestActivity extends AppCompatActivity {
             public void onPhaseChanged(RoomPhase phase) {
                 //在此处可以处理断连后的重连逻辑
                 logRoomInfo("onPhaseChanged: " + phase.name());
-                if (phase == RoomPhase.connected) {
-                    try {
-                        mRoom.getMemberState().getStrokeColor();
-                    } catch (Exception e) {
-                        Log.e("Aderan", "getStrokeColor Exception");
-                    }
-                }
                 showToast(phase.name());
             }
 

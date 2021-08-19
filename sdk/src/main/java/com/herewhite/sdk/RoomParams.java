@@ -409,7 +409,7 @@ public class RoomParams extends WhiteObject {
     /**
      * 多窗口支持
      */
-    private Boolean useMultiViews = true;
+    private Boolean useMultiViews = false;
 
     public Boolean getUseMultiViews() {
         return useMultiViews;

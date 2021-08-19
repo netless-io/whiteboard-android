@@ -11,8 +11,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.VisibleForTesting;
@@ -31,6 +29,9 @@ import com.herewhite.sdk.RoomParams;
 import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
 import com.herewhite.sdk.WhiteboardView;
+import com.herewhite.sdk.converter.ConvertType;
+import com.herewhite.sdk.converter.ConverterV5;
+import com.herewhite.sdk.converter.ImageFormat;
 import com.herewhite.sdk.domain.AkkoEvent;
 import com.herewhite.sdk.domain.AnimationMode;
 import com.herewhite.sdk.domain.Appliance;
@@ -109,11 +110,6 @@ public class RoomActivity extends BaseActivity {
         String one;
     }
 
-    DragView dragView;
-
-    UserSyncedState state = new UserSyncedState();
-    long lastUpdate = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -139,43 +135,6 @@ public class RoomActivity extends BaseActivity {
         } else {
             getRoomToken(uuid);
         }
-
-        findViewById(R.id.sendSync).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mRoom != null) {
-                    state = new UserSyncedState();
-                    state.clockState.w = 0.2f;
-                    state.clockState.h = 0.2f;
-                    mRoom.safeSetAttributes(state);
-                }
-            }
-        });
-
-
-        dragView = findViewById(R.id.dragView);
-        dragView.setListener((x, y) -> {
-            float offX = (float) (x * 1.0 / mWhiteboardView.getWidth());
-            float offY = (float) (y * 1.0 / mWhiteboardView.getHeight());
-            state.clockState.offX = offX;
-            state.clockState.offY = offY;
-
-            if (mRoom != null && System.currentTimeMillis() - lastUpdate > 50) {
-                lastUpdate = System.currentTimeMillis();
-                mRoom.safeUpdateAttributes(new String[]{"clockState"}, state.clockState);
-            }
-        });
-    }
-
-    private void updateDragView() {
-        if (dragView.isDragging()) {
-            return;
-        }
-        dragView.setTranslation(state.clockState.offX * mWhiteboardView.getWidth(), state.clockState.offY * mWhiteboardView.getHeight());
-        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) dragView.getLayoutParams();
-        layoutParams.width = (int) (state.clockState.w * mWhiteboardView.getWidth());
-        layoutParams.height = (int) (state.clockState.h * mWhiteboardView.getHeight());
-        dragView.setLayoutParams(layoutParams);
     }
 
     @Override
@@ -236,12 +195,12 @@ public class RoomActivity extends BaseActivity {
 
             @Override
             public void onMessage(JSONObject message) {
-                Log.d(TAG, "onMessage " + message.toString());
+                Log.d(TAG, message.toString());
             }
 
             @Override
             public void sdkSetupFail(SDKError error) {
-                Log.e(TAG, "sdkSetupFail " + error);
+                Log.e(TAG, "sdkSetupFail " + error.toString());
             }
 
             @Override
@@ -311,13 +270,6 @@ public class RoomActivity extends BaseActivity {
                 mRoomCallbackHock.onPhaseChanged(phase);
                 //在此处可以处理断连后的重连逻辑
                 logRoomInfo("onPhaseChanged: " + phase.name());
-                if (phase == RoomPhase.connected) {
-                    try {
-                        mRoom.getMemberState().getStrokeColor();
-                    } catch (Exception e) {
-                        Log.e("Aderan", "getStrokeColor Exception");
-                    }
-                }
                 showToast(phase.name());
             }
 
@@ -337,13 +289,6 @@ public class RoomActivity extends BaseActivity {
             public void onRoomStateChanged(RoomState modifyState) {
                 mRoomCallbackHock.onRoomStateChanged(modifyState);
                 logRoomInfo("onRoomStateChanged:" + gson.toJson(modifyState));
-            }
-
-            @Override
-            public void onAttributesUpdate(String valueOf) {
-                state = gson.fromJson(valueOf, UserSyncedState.class);
-                logRoomInfo("onAttributesUpdate:" + state);
-                updateDragView();
             }
         }, new Promise<Room>() {
             @Override
@@ -585,69 +530,8 @@ public class RoomActivity extends BaseActivity {
 
             @Override
             public void onFinish(ConvertedFiles ppt, ConversionInfo convertInfo) {
-//                mRoom.putScenes("/static", ppt.getScenes(), 0);
-//                mRoom.setScenePath("/static/1");
-
-//                mRoom.putScenes("/static", ppt.getScenes(), 0);
-//                mRoom.addApp("/static", true);
-
-                logAction(convertInfo.toString());
-            }
-
-            @Override
-            public void onProgress(Double progress, ConversionInfo convertInfo) {
-                logAction(String.valueOf(progress));
-            }
-        });
-
-//        // ConvertV5
-//        ConverterV5.Builder builder = new ConverterV5.Builder();
-//        ConverterV5 converter = builder
-//                .setResource("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/LightWaves.pdf")
-//                .setType(ConvertType.Static)
-//                .setScale(1.5)
-//                .setOutputFormat(ImageFormat.JPEG)
-//                .setSdkToken(demoAPI.getSdkToken())
-//                .setTaskUuid(null)
-//                .setTaskToken(null)
-//                .setCallback(new ConverterCallbacks() {
-//                    @Override
-//                    public void onProgress(Double progress, ConversionInfo convertInfo) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onFinish(ConvertedFiles ppt, ConversionInfo convertInfo) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onFailure(ConvertException e) {
-//
-//                    }
-//                })
-//                .build();
-//        converter.startConvertTask();
-    }
-
-    public void dynamicConvert(MenuItem item) {
-        mRoom.addApp("/dynamic", true);
-        if (true) {
-            return;
-        }
-        Converter c = new Converter(this.token);
-        c.startConvertTask("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/-1/1.pptx", Converter.ConvertType.Dynamic, new ConverterCallbacks() {
-            @Override
-            public void onFailure(ConvertException e) {
-                logAction(e.getMessage());
-            }
-
-            @Override
-            public void onFinish(ConvertedFiles ppt, ConversionInfo convertInfo) {
-                mRoom.putScenes("/dynamic", ppt.getScenes(), 0);
-                // mRoom.setScenePath("/dynamic/1");
-
-                mRoom.addApp("/dynamic", true);
+                mRoom.putScenes("/static", ppt.getScenes(), 0);
+                mRoom.setScenePath("/static/1");
                 logAction(convertInfo.toString());
             }
 
@@ -658,32 +542,83 @@ public class RoomActivity extends BaseActivity {
         });
 
         // ConvertV5
-//        ConverterV5.Builder builder = new ConverterV5.Builder();
-//        ConverterV5 converter = builder
-//                .setResource("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/-1/1.pptx")
-//                .setType(ConvertType.Dynamic)
-//                .setPreview(true)
-//                .setSdkToken(demoAPI.getSdkToken())
-//                .setTaskUuid(null)
-//                .setTaskToken(null)
-//                .setCallback(new ConverterCallbacks() {
-//                    @Override
-//                    public void onProgress(Double progress, ConversionInfo convertInfo) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onFinish(ConvertedFiles ppt, ConversionInfo convertInfo) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onFailure(ConvertException e) {
-//
-//                    }
-//                })
-//                .build();
-//        converter.startConvertTask();
+        ConverterV5.Builder builder = new ConverterV5.Builder();
+        ConverterV5 converter = builder
+                .setResource("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/LightWaves.pdf")
+                .setType(ConvertType.Static)
+                .setScale(1.5)
+                .setOutputFormat(ImageFormat.JPEG)
+                .setSdkToken(demoAPI.getSdkToken())
+                .setTaskUuid(null)
+                .setTaskToken(null)
+                .setCallback(new ConverterCallbacks() {
+                    @Override
+                    public void onProgress(Double progress, ConversionInfo convertInfo) {
+
+                    }
+
+                    @Override
+                    public void onFinish(ConvertedFiles ppt, ConversionInfo convertInfo) {
+
+                    }
+
+                    @Override
+                    public void onFailure(ConvertException e) {
+
+                    }
+                })
+                .build();
+        converter.startConvertTask();
+    }
+
+    public void dynamicConvert(MenuItem item) {
+        Converter c = new Converter(this.token);
+        c.startConvertTask("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/-1/1.pptx", Converter.ConvertType.Dynamic, new ConverterCallbacks() {
+            @Override
+            public void onFailure(ConvertException e) {
+                logAction(e.getMessage());
+            }
+
+            @Override
+            public void onFinish(ConvertedFiles ppt, ConversionInfo convertInfo) {
+                mRoom.putScenes("/dynamic", ppt.getScenes(), 0);
+                mRoom.setScenePath("/dynamic/1");
+                logAction(convertInfo.toString());
+            }
+
+            @Override
+            public void onProgress(Double progress, ConversionInfo convertInfo) {
+                logAction(String.valueOf(progress));
+            }
+        });
+
+        // ConvertV5
+        ConverterV5.Builder builder = new ConverterV5.Builder();
+        ConverterV5 converter = builder
+                .setResource("https://white-cn-edge-doc-convert.oss-cn-hangzhou.aliyuncs.com/-1/1.pptx")
+                .setType(ConvertType.Dynamic)
+                .setPreview(true)
+                .setSdkToken(demoAPI.getSdkToken())
+                .setTaskUuid(null)
+                .setTaskToken(null)
+                .setCallback(new ConverterCallbacks() {
+                    @Override
+                    public void onProgress(Double progress, ConversionInfo convertInfo) {
+
+                    }
+
+                    @Override
+                    public void onFinish(ConvertedFiles ppt, ConversionInfo convertInfo) {
+
+                    }
+
+                    @Override
+                    public void onFailure(ConvertException e) {
+
+                    }
+                })
+                .build();
+        converter.startConvertTask();
     }
 
     public void broadcast(MenuItem item) {
