@@ -2,6 +2,7 @@ package com.herewhite.sdk;
 
 import androidx.annotation.Nullable;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.AkkoEvent;
@@ -1190,34 +1191,31 @@ public class Room extends Displayer {
     }
     //endregion
 
-    /**
-     * 动态APP
-     *
-     * @return
-     */
-    public void addApp(String dir, boolean dynamic) {
-        bridge.callHandler("room.addApp", new Object[]{dir, dynamic});
+
+    // 添加窗口
+    public void addApp(String dir, Scene[] scenes, String title) {
+        bridge.callHandler("room.addApp", new Object[]{dir, scenes, title});
     }
 
+    // 获取状态数据
+    public <T> void getSyncedState(Class<T> stateClass, Promise<Object> promise) {
+        bridge.callHandler("room.getSyncedState", new Object[]{}, (OnReturnValue<String>) value -> {
+            try {
+                promise.then(gson.fromJson(value, stateClass));
+            } catch (Exception e) {
+                Logger.error("parse json error", e);
+            }
+        });
+    }
+
+    // 设置状态数据
     public void safeSetAttributes(SyncedState state) {
         bridge.callHandler("room.safeSetAttributes", new Object[]{state});
     }
 
+    // 更新状态数据
     public void safeUpdateAttributes(String[] keys, SyncedState state) {
         bridge.callHandler("room.safeUpdateAttributes", new Object[]{keys, state});
-    }
-
-    public void calibrationTimestamp(@Nullable final Promise<Long> promise) {
-        bridge.callHandler("room.calibrationTimestamp", new Object[]{}, new OnReturnValue<Long>() {
-            @Override
-            public void onValue(Long timestamp) {
-                try {
-                    promise.then(timestamp);
-                } catch (Exception e) {
-                    Logger.error("An JsonSyntaxException occurred while parse json from disconnect", e);
-                }
-            }
-        });
     }
 
     // region roomListener
