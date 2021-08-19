@@ -63,4 +63,6 @@ dependencies {
     androidTestImplementation 'androidx.test:rules:1.2.0'
     androidTestImplementation "androidx.test:runner:${rootProject.testRunnerVersion}"
     androidTestImplementation "androidx.test.espresso:espresso-core:${rootProject.espressoVersion}"
+
+    implementation 'com.github.iwgang:countdownview:2.1.6'
 }

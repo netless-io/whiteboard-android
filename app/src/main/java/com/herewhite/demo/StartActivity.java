@@ -9,6 +9,8 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.herewhite.demo.test.window.WindowTestActivity;
+
 public class StartActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "com.example.whiteSDKDemo.UUID";
 
@@ -107,4 +109,13 @@ public class StartActivity extends AppCompatActivity {
         }
     }
 
+    public void windowTest(View view) {
+        if (!demoAPI.validateToken()) {
+            tokenAlert();
+            return;
+        }
+
+        Intent intent = new Intent(this, WindowTestActivity.class);
+        startActivity(intent);
+    }
 }

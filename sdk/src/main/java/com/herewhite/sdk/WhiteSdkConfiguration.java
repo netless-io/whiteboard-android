@@ -19,7 +19,6 @@ import java.util.HashMap;
  * @note 成功初始化 `WhiteSdk` 后，无法再调用 `WhiteSdkConfiguration` 类中的任何方法修改 `WhiteSdk` 的配置。
  */
 public class WhiteSdkConfiguration extends WhiteObject {
-
     /**
      * 白板上绘画的渲染模式。
      *
@@ -545,4 +544,12 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
     private boolean enableImgErrorCallback;
+
+    public boolean isEnableSyncedStore() {
+        return enableSyncedStore;
+    }
+
+    public void setEnableSyncedStore(boolean enableSyncedStore) {
+        this.enableSyncedStore = enableSyncedStore;
+    }
 }
