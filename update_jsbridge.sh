@@ -72,7 +72,7 @@ git push -v origin refs/heads/master:refs/heads/master
 
 # Tag
 while true; do
-    read -p "Tag: Do you wish to tag and push to remote? " yn
+    read -p "Tag: Do you wish to tag and push to remote? $WHITE_TAG" yn
     case $yn in
         [Yy]* ) break;;
         [Nn]* ) echo "cancel push tag!!!" && exit;;
@@ -83,8 +83,10 @@ git tag $WHITE_TAG
 git push origin $WHITE_TAG
 git push netless $WHITE_TAG
 
-# Fetch Jitpack, Should End With "/"
-curl "https://jitpack.io/com/github/duty-os/white-sdk-android/${WHITE_TAG}/"
-curl "https://jitpack.io/com/github/netless-io/whiteboard-android/${WHITE_TAG}/"
+# Fetch Jitpack
+DUTY_OS_URL=https://jitpack.io/com/github/duty-os/white-sdk-android/${WHITE_TAG}
+NETLESS_URL=https://jitpack.io/com/github/netless-io/whiteboard-android/${WHITE_TAG}
+curl $DUTY_OS_URL
+curl $NETLESS_URL
 
 exit 0
