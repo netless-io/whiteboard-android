@@ -2,7 +2,6 @@ package com.herewhite.sdk;
 
 import androidx.annotation.Nullable;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.AkkoEvent;
@@ -25,6 +24,7 @@ import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.SceneState;
 import com.herewhite.sdk.domain.SyncedState;
 import com.herewhite.sdk.domain.ViewMode;
+import com.herewhite.sdk.domain.WindowAppParam;
 import com.herewhite.sdk.internal.Logger;
 import com.herewhite.sdk.internal.RoomDelegate;
 
@@ -1191,10 +1191,19 @@ public class Room extends Displayer {
     }
     //endregion
 
-
     // 添加窗口
-    public void addApp(String dir, Scene[] scenes, String title) {
-        bridge.callHandler("room.addApp", new Object[]{dir, scenes, title});
+    public void addApp(WindowAppParam appParam, Promise<String> promise) {
+        String kind = appParam.getKind();
+        WindowAppParam.Options options = appParam.getOptions();
+        WindowAppParam.Attributes attributes = appParam.getAttributes();
+        bridge.callHandler("room.addApp", new Object[]{kind, options, attributes}, new OnReturnValue<String>() {
+            @Override
+            public void onValue(String value) {
+                if (promise != null) {
+                    promise.then(value);
+                }
+            }
+        });
     }
 
     // 获取状态数据

@@ -28,6 +28,7 @@ import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.WhiteDisplayerState;
+import com.herewhite.sdk.domain.WindowAppParam;
 
 import org.json.JSONObject;
 
@@ -65,13 +66,30 @@ public class WindowTestActivity extends AppCompatActivity {
 
         mWhiteboardParent = findViewById(R.id.whiteParent);
 
+        // 插入播放器
+        findViewById(R.id.insertPlayer).setOnClickListener(v -> {
+            WindowAppParam appParam = WindowAppParam.createMediaPlayerApp("https://white-pan.oss-cn-shanghai.aliyuncs.com/101/oceans.mp4", "player");
+            mRoom.addApp(appParam, new Promise<String>() {
+                @Override
+                public void then(String appId) {
+                    logRoomInfo("create App id " + appId);
+                }
+
+                @Override
+                public void catchEx(SDKError t) {
+
+                }
+            });
+        });
+
         // 插入静态场景
         findViewById(R.id.insertStatic).setOnClickListener(v -> {
             // 由转换后信息序列化
             String ppts = "[{\"name\":\"1\",\"ppt\":{\"height\":1010.0,\"src\":\"https://convertcdn.netless.link/staticConvert/0764816000c411ecbfbbb9230f6dd80f/1.png\",\"width\":714.0}},{\"name\":\"2\",\"ppt\":{\"height\":1010.0,\"src\":\"https://convertcdn.netless.link/staticConvert/0764816000c411ecbfbbb9230f6dd80f/2.png\",\"width\":714.0}},{\"name\":\"3\",\"ppt\":{\"height\":1010.0,\"src\":\"https://convertcdn.netless.link/staticConvert/0764816000c411ecbfbbb9230f6dd80f/3.png\",\"width\":714.0}},{\"name\":\"4\",\"ppt\":{\"height\":1010.0,\"src\":\"https://convertcdn.netless.link/staticConvert/0764816000c411ecbfbbb9230f6dd80f/4.png\",\"width\":714.0}}]";
             Scene[] scenes = gson.fromJson(ppts, Scene[].class);
 
-            mRoom.addApp("/static", scenes, "static");
+            WindowAppParam param = WindowAppParam.createDocsViewerApp("/static", scenes, "static");
+            mRoom.addApp(param, null);
         });
 
         // 插入动态场景
@@ -80,7 +98,8 @@ public class WindowTestActivity extends AppCompatActivity {
             String ppts = "[{\"name\":\"1\",\"ppt\":{\"height\":720.0,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/preview/1.png\",\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/1.slide\",\"width\":960.0}},{\"name\":\"2\",\"ppt\":{\"height\":720.0,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/preview/2.png\",\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/2.slide\",\"width\":960.0}},{\"name\":\"3\",\"ppt\":{\"height\":720.0,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/preview/3.png\",\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/3.slide\",\"width\":960.0}},{\"name\":\"4\",\"ppt\":{\"height\":720.0,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/preview/4.png\",\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/4.slide\",\"width\":960.0}},{\"name\":\"5\",\"ppt\":{\"height\":720.0,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/preview/5.png\",\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/5.slide\",\"width\":960.0}},{\"name\":\"6\",\"ppt\":{\"height\":720.0,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/preview/6.png\",\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/6.slide\",\"width\":960.0}},{\"name\":\"7\",\"ppt\":{\"height\":720.0,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/preview/7.png\",\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/7.slide\",\"width\":960.0}},{\"name\":\"8\",\"ppt\":{\"height\":720.0,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/preview/8.png\",\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/8.slide\",\"width\":960.0}},{\"name\":\"9\",\"ppt\":{\"height\":720.0,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/preview/9.png\",\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/9e9d482000ae11ecbfbbb9230f6dd80f/9.slide\",\"width\":960.0}}]";
             Scene[] scenes = gson.fromJson(ppts, Scene[].class);
 
-            mRoom.addApp("/dynamic", scenes, "dynamic");
+            WindowAppParam param = WindowAppParam.createDocsViewerApp("/dynamic", scenes, "dynamic");
+            mRoom.addApp(param, null);
         });
 
         // 插入本地同步信息

@@ -25,6 +25,13 @@
         android:orientation="horizontal">
 
         <Button
+            android:id="@+id/insertPlayer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="player" />
+
+        <Button
             android:id="@+id/insertStatic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
