@@ -5,6 +5,7 @@ import com.herewhite.sdk.domain.MemberInformation;
 import com.herewhite.sdk.domain.Region;
 import com.herewhite.sdk.domain.WhiteObject;
 
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 
@@ -417,5 +418,15 @@ public class RoomParams extends WhiteObject {
 
     public void setUseMultiViews(Boolean useMultiViews) {
         this.useMultiViews = useMultiViews;
+    }
+
+    private HashMap<String, String> collectionStyle;
+
+    public HashMap<String, String> getCollectionStyle() {
+        return collectionStyle;
+    }
+
+    public void setCollectionStyle(HashMap<String, String> collectionStyle) {
+        this.collectionStyle = collectionStyle;
     }
 }

@@ -32,6 +32,8 @@ import com.herewhite.sdk.domain.WindowAppParam;
 
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
 import wendu.dsbridge.DWebView;
 
 
@@ -187,6 +189,11 @@ public class WindowTestActivity extends AppCompatActivity {
         // 如需支持用户头像，请在设置 WhiteSdkConfiguration 后，再调用 setUserPayload 方法，传入符合用户信息
         RoomParams roomParams = new RoomParams(uuid, token);
         roomParams.setUseMultiViews(true);
+
+        HashMap<String, String> map = new HashMap<>();
+        map.put("backgroundColor", "red");
+        map.put("bottom", "100px");
+        roomParams.setCollectionStyle(map);
 
         mWhiteSdk.joinRoom(roomParams, new RoomListener() {
             @Override
