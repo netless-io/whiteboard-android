@@ -1137,6 +1137,19 @@ public class Room extends Displayer {
     public void disableDeviceInputs(final boolean disableOperations) {
         bridge.callHandler("room.disableDeviceInputs", new Object[]{disableOperations});
     }
+
+    /**
+     * 禁止/允许窗口操作。
+     *
+     * @since 2.2.0
+     *
+     * @param disableWindowOperation 是否禁止窗口操作：
+     *                          - `true`：禁止窗口操作。
+     *                          - `false`：（默认）允许窗口操作。
+     */
+    public void disableWindowOperation(final boolean disableWindowOperation) {
+        bridge.callHandler("room.disableWindowOperation", new Object[]{disableWindowOperation});
+    }
     //endregion
 
     //region Delay API

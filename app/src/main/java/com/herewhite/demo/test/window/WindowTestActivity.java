@@ -124,6 +124,12 @@ public class WindowTestActivity extends AppCompatActivity {
             lockRatio();
         });
 
+        findViewById(R.id.disableOperation).setOnClickListener(v -> {
+            if (mRoom != null) {
+                mRoom.disableWindowOperation(true);
+            }
+        });
+
         joinRoom(demoAPI.getDemoUUID(), demoAPI.getDemoToken());
     }
 
