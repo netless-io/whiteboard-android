@@ -4,8 +4,8 @@ import com.herewhite.sdk.domain.CameraBound;
 import com.herewhite.sdk.domain.MemberInformation;
 import com.herewhite.sdk.domain.Region;
 import com.herewhite.sdk.domain.WhiteObject;
+import com.herewhite.sdk.domain.WindowParams;
 
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 
@@ -420,13 +420,16 @@ public class RoomParams extends WhiteObject {
         this.useMultiViews = useMultiViews;
     }
 
-    private HashMap<String, String> collectionStyle;
+    /**
+     * 多窗口属性
+     */
+    private WindowParams windowParams;
 
-    public HashMap<String, String> getCollectionStyle() {
-        return collectionStyle;
+    public WindowParams getWindowParams() {
+        return windowParams;
     }
 
-    public void setCollectionStyle(HashMap<String, String> collectionStyle) {
-        this.collectionStyle = collectionStyle;
+    public void setWindowParams(WindowParams windowParams) {
+        this.windowParams = windowParams;
     }
 }

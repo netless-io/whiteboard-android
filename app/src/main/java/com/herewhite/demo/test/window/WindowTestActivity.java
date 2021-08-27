@@ -29,6 +29,7 @@ import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.WhiteDisplayerState;
 import com.herewhite.sdk.domain.WindowAppParam;
+import com.herewhite.sdk.domain.WindowParams;
 
 import org.json.JSONObject;
 
@@ -190,10 +191,16 @@ public class WindowTestActivity extends AppCompatActivity {
         RoomParams roomParams = new RoomParams(uuid, token);
         roomParams.setUseMultiViews(true);
 
-        HashMap<String, String> map = new HashMap<>();
-        map.put("backgroundColor", "red");
-        map.put("bottom", "100px");
-        roomParams.setCollectionStyle(map);
+        HashMap<String, String> styleMap = new HashMap<>();
+        styleMap.put("backgroundColor", "red");
+        styleMap.put("bottom", "100px");
+
+        WindowParams windowParams = new WindowParams()
+                .setContainerSizeRatio(1F)
+                .setChessboard(false)
+                .setDebug(true)
+                .setCollectionStyle(styleMap);
+        roomParams.setWindowParams(windowParams);
 
         mWhiteSdk.joinRoom(roomParams, new RoomListener() {
             @Override
