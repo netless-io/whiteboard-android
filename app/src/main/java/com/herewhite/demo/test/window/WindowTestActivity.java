@@ -202,10 +202,10 @@ public class WindowTestActivity extends AppCompatActivity {
         styleMap.put("bottom", "100px");
 
         WindowParams windowParams = new WindowParams()
-                .setContainerSizeRatio(1F)
-                .setChessboard(false)
+                .setContainerSizeRatio(3f / 4)
+                .setChessboard(true)
                 .setDebug(true)
-                .setCollectionStyle(styleMap);
+                .setCollectorStyles(styleMap);
         roomParams.setWindowParams(windowParams);
 
         mWhiteSdk.joinRoom(roomParams, new RoomListener() {

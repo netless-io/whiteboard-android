@@ -14,7 +14,7 @@ public class WindowParams extends WhiteObject {
     /**
      * 驼峰形式的 CSS，透传给多窗口时，最小化 div 的 css
      */
-    private HashMap<String, String> collectionStyle;
+    private HashMap<String, String> collectorStyles;
     /**
      * 是否在网页控制台打印日志
      */
@@ -35,8 +35,8 @@ public class WindowParams extends WhiteObject {
         return this;
     }
 
-    public WindowParams setCollectionStyle(HashMap<String, String> collectionStyle) {
-        this.collectionStyle = collectionStyle;
+    public WindowParams setCollectorStyles(HashMap<String, String> collectorStyles) {
+        this.collectorStyles = collectorStyles;
         return this;
     }
 }
