@@ -16,6 +16,10 @@ public class WindowParams extends WhiteObject {
      */
     private HashMap<String, String> collectorStyles;
     /**
+     * 窗口样式覆盖
+     */
+    private String overwriteStyles;
+    /**
      * 是否在网页控制台打印日志
      */
     private Boolean debug;
@@ -37,6 +41,11 @@ public class WindowParams extends WhiteObject {
 
     public WindowParams setCollectorStyles(HashMap<String, String> collectorStyles) {
         this.collectorStyles = collectorStyles;
+        return this;
+    }
+
+    public WindowParams setOverwriteStyles(String overwriteStyles) {
+        this.overwriteStyles = overwriteStyles;
         return this;
     }
 }

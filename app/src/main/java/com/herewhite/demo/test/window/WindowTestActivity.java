@@ -33,6 +33,11 @@ import com.herewhite.sdk.domain.WindowParams;
 
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 import wendu.dsbridge.DWebView;
@@ -199,51 +204,56 @@ public class WindowTestActivity extends AppCompatActivity {
 
         HashMap<String, String> styleMap = new HashMap<>();
         styleMap.put("backgroundColor", "red");
-        styleMap.put("bottom", "100px");
+        styleMap.put("bottom", "12px");
+        styleMap.put("left", "60px");
+        styleMap.put("position", "fixed");
 
+        String darkMode = darkModeStyle();
         WindowParams windowParams = new WindowParams()
                 .setContainerSizeRatio(3f / 4)
                 .setChessboard(true)
                 .setDebug(true)
+                .setOverwriteStyles(darkMode)
                 .setCollectorStyles(styleMap);
+        // optional
         roomParams.setWindowParams(windowParams);
 
         mWhiteSdk.joinRoom(roomParams, new RoomListener() {
-            @Override
-            public void onCanUndoStepsUpdate(long canUndoSteps) {
-                logRoomInfo("canUndoSteps: " + canUndoSteps);
-            }
-
-            @Override
-            public void onCanRedoStepsUpdate(long canRedoSteps) {
-                logRoomInfo("onCanRedoStepsUpdate: " + canRedoSteps);
-            }
-
-            @Override
-            public void onCatchErrorWhenAppendFrame(long userId, Exception error) {
-                logRoomInfo("onCatchErrorWhenAppendFrame: " + userId + " error " + error.getMessage());
-            }
 
             @Override
             public void onPhaseChanged(RoomPhase phase) {
-                //在此处可以处理断连后的重连逻辑
                 logRoomInfo("onPhaseChanged: " + phase.name());
                 showToast(phase.name());
             }
 
             @Override
             public void onDisconnectWithError(Exception e) {
-                logRoomInfo("onDisconnectWithError: " + e.getMessage());
+
             }
 
             @Override
-            public void onKickedWithReason(String reason) {
-                logRoomInfo("onKickedWithReason: " + reason);
+            public void onKickedWithReason(String s) {
+
             }
 
             @Override
-            public void onRoomStateChanged(RoomState modifyState) {
-                logRoomInfo("onRoomStateChanged:" + gson.toJson(modifyState));
+            public void onRoomStateChanged(RoomState roomState) {
+
+            }
+
+            @Override
+            public void onCanUndoStepsUpdate(long l) {
+
+            }
+
+            @Override
+            public void onCanRedoStepsUpdate(long l) {
+
+            }
+
+            @Override
+            public void onCatchErrorWhenAppendFrame(long l, Exception e) {
+
             }
 
             @Override
@@ -259,9 +269,8 @@ public class WindowTestActivity extends AppCompatActivity {
             }
 
             @Override
-            public void catchEx(SDKError t) {
-                logRoomInfo("native join fail: " + t.getMessage());
-                showToast(t.getMessage());
+            public void catchEx(SDKError sdkError) {
+
             }
         });
     }
@@ -285,4 +294,25 @@ public class WindowTestActivity extends AppCompatActivity {
         Toast.makeText(this, o.toString(), Toast.LENGTH_SHORT).show();
     }
     //endregion
+
+    private String darkModeStyle() {
+        String style = null;
+        try {
+            style = getStyleFromAsserts("dark-mode.css");
+        } catch (IOException e) {
+        }
+        return style;
+    }
+
+    String getStyleFromAsserts(String path) throws IOException {
+        StringBuilder style = new StringBuilder();
+        InputStream is = getAssets().open(path);
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+            String str;
+            while ((str = br.readLine()) != null) {
+                style.append(str);
+            }
+        }
+        return style.toString();
+    }
 }

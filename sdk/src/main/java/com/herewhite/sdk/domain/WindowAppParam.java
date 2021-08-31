@@ -26,8 +26,8 @@ public class WindowAppParam {
         return attributes;
     }
 
-    public static WindowAppParam createDocsViewerApp(String dir, Scene[] scenes, String title) {
-        DocOptions options = new DocOptions(dir, scenes, title);
+    public static WindowAppParam createDocsViewerApp(String scenePath, Scene[] scenes, String title) {
+        DocOptions options = new DocOptions(scenePath, scenes, title);
         return new WindowAppParam(KIND_DOCSVIEWER, options, null);
     }
 
@@ -38,12 +38,12 @@ public class WindowAppParam {
     }
 
     private static class DocOptions extends Options {
-        private final String dir;
+        private final String scenePath;
         private final Scene[] scenes;
         private final String title;
 
-        public DocOptions(String dir, Scene[] scenes, String title) {
-            this.dir = dir;
+        public DocOptions(String scenePath, Scene[] scenes, String title) {
+            this.scenePath = scenePath;
             this.scenes = scenes;
             this.title = title;
         }
