@@ -64,9 +64,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
-import wendu.dsbridge.DWebView;
-
-
 public class RoomActivity extends BaseActivity {
     static final String TAG = RoomActivity.class.getSimpleName();
 
@@ -116,8 +113,8 @@ public class RoomActivity extends BaseActivity {
         setContentView(R.layout.activity_room);
 
         mWhiteboardView = findViewById(R.id.white);
-        DWebView.setWebContentsDebuggingEnabled(true);
         mWhiteboardView.getSettings().setAllowUniversalAccessFromFileURLs(true);
+        WhiteboardView.setWebContentsDebuggingEnabled(true);
 
         // 使用阿里云的 HttpDns，避免 DNS 污染等问题
         useHttpDnsService(false);
