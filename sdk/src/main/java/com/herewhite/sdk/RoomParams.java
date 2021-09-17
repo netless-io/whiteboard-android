@@ -4,6 +4,7 @@ import com.herewhite.sdk.domain.CameraBound;
 import com.herewhite.sdk.domain.MemberInformation;
 import com.herewhite.sdk.domain.Region;
 import com.herewhite.sdk.domain.WhiteObject;
+import com.herewhite.sdk.domain.WindowParams;
 
 import java.util.concurrent.TimeUnit;
 
@@ -406,4 +407,29 @@ public class RoomParams extends WhiteObject {
         this.roomToken = roomToken;
     }
 
+    /**
+     * 多窗口支持
+     */
+    private Boolean useMultiViews = false;
+
+    public Boolean getUseMultiViews() {
+        return useMultiViews;
+    }
+
+    public void setUseMultiViews(Boolean useMultiViews) {
+        this.useMultiViews = useMultiViews;
+    }
+
+    /**
+     * 多窗口属性
+     */
+    private WindowParams windowParams;
+
+    public WindowParams getWindowParams() {
+        return windowParams;
+    }
+
+    public void setWindowParams(WindowParams windowParams) {
+        this.windowParams = windowParams;
+    }
 }

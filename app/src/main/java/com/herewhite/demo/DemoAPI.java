@@ -58,6 +58,10 @@ public class DemoAPI {
         return demoUUID;
     }
 
+    public String getDemoToken() {
+        return demoRoomToken;
+    }
+
     public String getSdkToken() {
         return sdkToken;
     }

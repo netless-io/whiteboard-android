@@ -22,7 +22,9 @@ import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.SceneState;
+import com.herewhite.sdk.domain.SyncedState;
 import com.herewhite.sdk.domain.ViewMode;
+import com.herewhite.sdk.domain.WindowAppParam;
 import com.herewhite.sdk.internal.Logger;
 import com.herewhite.sdk.internal.RoomDelegate;
 
@@ -1135,6 +1137,19 @@ public class Room extends Displayer {
     public void disableDeviceInputs(final boolean disableOperations) {
         bridge.callHandler("room.disableDeviceInputs", new Object[]{disableOperations});
     }
+
+    /**
+     * 禁止/允许窗口操作。
+     *
+     * @since 2.2.0
+     *
+     * @param disableWindowOperation 是否禁止窗口操作：
+     *                          - `true`：禁止窗口操作。
+     *                          - `false`：（默认）允许窗口操作。
+     */
+    public void disableWindowOperation(final boolean disableWindowOperation) {
+        bridge.callHandler("room.disableWindowOperation", new Object[]{disableWindowOperation});
+    }
     //endregion
 
     //region Delay API
@@ -1188,6 +1203,42 @@ public class Room extends Displayer {
         bridge.callHandler("room.dispatchMagixEvent", new Object[]{eventEntry});
     }
     //endregion
+
+    // 添加窗口
+    public void addApp(WindowAppParam appParam, Promise<String> promise) {
+        String kind = appParam.getKind();
+        WindowAppParam.Options options = appParam.getOptions();
+        WindowAppParam.Attributes attributes = appParam.getAttributes();
+        bridge.callHandler("room.addApp", new Object[]{kind, options, attributes}, new OnReturnValue<String>() {
+            @Override
+            public void onValue(String value) {
+                if (promise != null) {
+                    promise.then(value);
+                }
+            }
+        });
+    }
+
+    // 获取状态数据
+    public <T> void getSyncedState(Class<T> stateClass, Promise<Object> promise) {
+        bridge.callHandler("room.getSyncedState", new Object[]{}, (OnReturnValue<String>) value -> {
+            try {
+                promise.then(gson.fromJson(value, stateClass));
+            } catch (Exception e) {
+                Logger.error("parse json error", e);
+            }
+        });
+    }
+
+    // 设置状态数据
+    public void safeSetAttributes(SyncedState state) {
+        bridge.callHandler("room.safeSetAttributes", new Object[]{state});
+    }
+
+    // 更新状态数据
+    public void safeUpdateAttributes(String[] keys, SyncedState state) {
+        bridge.callHandler("room.safeUpdateAttributes", new Object[]{keys, state});
+    }
 
     // region roomListener
     // 关于此处的回调在JsBridge线程，请考虑/讨论确定是否在主执行
@@ -1292,6 +1343,15 @@ public class Room extends Displayer {
             post(() -> {
                 if (roomListener != null) {
                     roomListener.onCatchErrorWhenAppendFrame(userId, exception);
+                }
+            });
+        }
+
+        @Override
+        public void fireAttributesUpdate(String valueOf) {
+            post(() -> {
+                if (roomListener != null) {
+                    roomListener.onAttributesUpdate(valueOf);
                 }
             });
         }

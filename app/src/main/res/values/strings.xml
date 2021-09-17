@@ -49,6 +49,7 @@
     <string name="rest">重置</string>
     <string name="title_activity_pure_replay">PureReplayActivity</string>
     <string name="pureReplay">纯白板回放</string>
+    <string name="windowTest">多窗口</string>
 
     <!--ijkplayer-->
     <string name="N_A">N/A</string>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center"
+    android:visibility="visible">
+
+    <FrameLayout
+        android:id="@+id/dragView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <cn.iwgang.countdownview.CountdownView
+            android:id="@+id/countdownView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#defabb"
+            android:padding="20dp"
+            app:isHideTimeBackground="true"
+            app:isShowSecond="true"
+            app:isTimeTextBold="true"
+            app:suffixGravity="bottom"
+            app:suffixHour="时"
+            app:suffixMillisecond="毫秒"
+            app:suffixMinute="分"
+            app:suffixSecond="秒"
+            app:suffixTextColor="#000000"
+            app:suffixTextSize="12sp"
+            app:timeTextColor="#e54304"
+            app:timeTextSize="22sp" />
+    </FrameLayout>
+</merge>
