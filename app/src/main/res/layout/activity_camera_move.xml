@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.herewhite.sdk.WhiteboardView
+        android:id="@+id/whiteboardView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/insertImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="insertImage" />
+
+        <Button
+            android:id="@+id/scaleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="scaleSmall" />
+
+        <Button
+            android:id="@+id/scaleCamera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="scaleCamera" />
+
+        <Button
+            android:id="@+id/scaleCameraFill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="scaleCameraFill" />
+
+        <Button
+            android:id="@+id/orientation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="orientation" />
+    </LinearLayout>
+</FrameLayout>

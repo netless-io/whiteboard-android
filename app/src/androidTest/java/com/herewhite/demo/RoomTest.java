@@ -1,6 +1,25 @@
 package com.herewhite.demo;
 
+import static androidx.test.espresso.Espresso.onIdle;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static com.herewhite.demo.TestUtils.downToUp;
+import static com.herewhite.demo.TestUtils.waitFor;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import android.view.View;
+
+import androidx.test.espresso.IdlingRegistry;
+import androidx.test.espresso.IdlingResource;
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.idling.CountingIdlingResource;
+import androidx.test.rule.ActivityTestRule;
 
 import com.herewhite.demo.utils.SimpleViewAction;
 import com.herewhite.sdk.AbstractRoomCallbacks;
@@ -19,30 +38,12 @@ import com.herewhite.sdk.domain.ViewMode;
 import com.herewhite.sdk.domain.WhiteDisplayerState;
 
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
-
-import androidx.test.espresso.IdlingRegistry;
-import androidx.test.espresso.IdlingResource;
-import androidx.test.espresso.UiController;
-import androidx.test.espresso.idling.CountingIdlingResource;
-import androidx.test.rule.ActivityTestRule;
-
-import static androidx.test.espresso.Espresso.onIdle;
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static com.herewhite.demo.TestUtils.downToUp;
-import static com.herewhite.demo.TestUtils.waitFor;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * UI/Integration Test For Room Use RoomActivity
@@ -148,6 +149,58 @@ public class RoomTest {
         onView(withId(R.id.white)).perform(downToUp(300, 400, 500, 600));
         onView(isRoot()).perform(waitFor(500));
     }
+
+    public static final int GRID_NUM = 10;
+    public static final double GRID_SIZE = 200d;
+
+    @Test
+    @Ignore
+    public void testDrawLineNet() {
+        onView(withId(R.id.white)).check(matches(isDisplayed()));
+
+        MemberState memberState = mActivity.mRoom.getMemberState();
+        memberState.setStrokeColor(new int[]{0xEF, 0x3A, 0x48});
+        mActivity.mRoom.setMemberState(memberState);
+
+        drawVLines();
+
+        drawHLines();
+    }
+
+    private void drawVLines() {
+        int centerX = mActivity.mWhiteboardView.getWidth() / 2;
+
+        CameraConfig config = new CameraConfig();
+        config.setScale(0.1);
+        config.setAnimationMode(AnimationMode.Immediately);
+
+        for (int i = -GRID_NUM; i <= GRID_NUM; i++) {
+            config.setCenterX(i * GRID_SIZE);
+            config.setCenterY(0d);
+            mActivity.mRoom.moveCamera(config);
+
+            onView(isRoot()).perform(waitFor(500));
+            onView(withId(R.id.white)).perform(downToUp(centerX, 0, centerX, mActivity.mWhiteboardView.getHeight()));
+        }
+    }
+
+    private void drawHLines() {
+        int centerY = mActivity.mWhiteboardView.getHeight() / 2;
+
+        CameraConfig config = new CameraConfig();
+        config.setScale(0.1);
+        config.setAnimationMode(AnimationMode.Immediately);
+
+        for (int i = -GRID_NUM; i <= GRID_NUM; i++) {
+            config.setCenterX(0d);
+            config.setCenterY(i * GRID_SIZE);
+            mActivity.mRoom.moveCamera(config);
+
+            onView(isRoot()).perform(waitFor(500));
+            onView(withId(R.id.white)).perform(downToUp(0, centerY, mActivity.mWhiteboardView.getWidth(), centerY));
+        }
+    }
+
 
     class FakeRoomCallbacks extends AbstractRoomCallbacks {
         static final String MODIFY_STATE = "modifyState";

@@ -49,7 +49,15 @@
 
         <activity
             android:name=".test.window.WindowTestActivity"
-            android:screenOrientation="landscape"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:screenOrientation="landscape" />
+
+        <activity
+            android:name=".test.CameraMoveActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
+
+        <activity
+            android:name=".test.CameraMoveImageActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
     </application>
 
