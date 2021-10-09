@@ -552,4 +552,17 @@ public class WhiteSdkConfiguration extends WhiteObject {
     public void setEnableSyncedStore(boolean enableSyncedStore) {
         this.enableSyncedStore = enableSyncedStore;
     }
+
+    /**
+     * 多窗口支持
+     */
+    private Boolean useMultiViews = false;
+
+    public Boolean getUseMultiViews() {
+        return useMultiViews;
+    }
+
+    public void setUseMultiViews(Boolean useMultiViews) {
+        this.useMultiViews = useMultiViews;
+    }
 }

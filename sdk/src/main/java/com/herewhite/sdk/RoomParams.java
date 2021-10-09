@@ -406,20 +406,7 @@ public class RoomParams extends WhiteObject {
     public void setRoomToken(String roomToken) {
         this.roomToken = roomToken;
     }
-
-    /**
-     * 多窗口支持
-     */
-    private Boolean useMultiViews = false;
-
-    public Boolean getUseMultiViews() {
-        return useMultiViews;
-    }
-
-    public void setUseMultiViews(Boolean useMultiViews) {
-        this.useMultiViews = useMultiViews;
-    }
-
+    
     /**
      * 多窗口属性
      */

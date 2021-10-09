@@ -186,6 +186,7 @@ public class WindowTestActivity extends AppCompatActivity {
         //动态 ppt 需要的自定义字体，如果没有使用，无需调用
         configuration.setFonts(new MapBuilder<String, String>().put("宋体", "https://your-cdn.com/Songti.ttf").build());
         configuration.setEnableSyncedStore(true);
+        configuration.setUseMultiViews(true);
 
         mWhiteSdk = new WhiteSdk(mWhiteboardView, this, configuration);
         mWhiteSdk.setCommonCallbacks(new CommonCallback() {
@@ -200,7 +201,6 @@ public class WindowTestActivity extends AppCompatActivity {
 
         // 如需支持用户头像，请在设置 WhiteSdkConfiguration 后，再调用 setUserPayload 方法，传入符合用户信息
         RoomParams roomParams = new RoomParams(uuid, token);
-        roomParams.setUseMultiViews(true);
 
         HashMap<String, String> styleMap = new HashMap<>();
         styleMap.put("backgroundColor", "red");
