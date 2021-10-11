@@ -1,6 +1,7 @@
 # 版本更新记录
 ## [2.14.1] - 2021-10-09
-- 更新`white-web-sdk`至 2.14.3，支持多窗口模式。具体见 `WhiteSdkConfiguration` 类中的`useMultiViews` 以及`RoomParams`的`windowParams` 属性注释，多窗口暂时不支持回放。
+- 更新`white-web-sdk`至 2.14.4，支持多窗口模式。具体见 `WhiteSdkConfiguration` 类中的`useMultiViews` 以及`RoomParams`的`windowParams` 属性注释，多窗口暂时不支持回放。
+- 修改 Android 最低支持版本为 21
 ## [2.13.24] - 2021-09-09
 - 更新`white-web-sdk`至 2.13.20
 ## [2.13.23] - 2021-08-20
