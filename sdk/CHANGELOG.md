@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.14.3] - 2021-10-15
+- 更新`white-web-sdk`至 2.14.5
+- 更新`@netlesss/window-manager`至 0.2.5，修复`WhiteSdkConfiguration`中`useMultiViews`为 true 时，`WhiteRoomConfig`的 `disableCameraTransform` true 无法生效的问题。
 ## [2.14.2] - 2021-10-14
 - 更新`@netless/window-manager`至 0.2.3
 ## [2.14.1] - 2021-10-09
