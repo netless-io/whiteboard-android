@@ -3,6 +3,8 @@ package com.herewhite.sdk.domain;
 public class WindowAppParam {
     public static final String KIND_DOCSVIEWER = "DocsViewer";
     public static final String KIND_MEDIAPLAYER = "MediaPlayer";
+    // for kind of new ppt
+    public static final String KIND_SLIDE = "Slide";
 
     private String kind;
     private Options options;
@@ -37,12 +39,29 @@ public class WindowAppParam {
         return new WindowAppParam(KIND_MEDIAPLAYER, options, attributes);
     }
 
+    public static WindowAppParam createSlideApp(String scenePath, Scene[] scenes, String title) {
+        SlideOptions options = new SlideOptions(scenePath, scenes, title);
+        return new WindowAppParam(KIND_SLIDE, options, null);
+    }
+
     private static class DocOptions extends Options {
         private final String scenePath;
         private final Scene[] scenes;
         private final String title;
 
         public DocOptions(String scenePath, Scene[] scenes, String title) {
+            this.scenePath = scenePath;
+            this.scenes = scenes;
+            this.title = title;
+        }
+    }
+
+    private static class SlideOptions extends Options {
+        private final String scenePath;
+        private final Scene[] scenes;
+        private final String title;
+
+        public SlideOptions(String scenePath, Scene[] scenes, String title) {
             this.scenePath = scenePath;
             this.scenes = scenes;
             this.title = title;
