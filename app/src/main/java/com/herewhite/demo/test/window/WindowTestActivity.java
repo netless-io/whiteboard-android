@@ -200,7 +200,7 @@ public class WindowTestActivity extends AppCompatActivity {
         WhiteDisplayerState.setCustomGlobalStateClass(GlobalState.class);
 
         // 如需支持用户头像，请在设置 WhiteSdkConfiguration 后，再调用 setUserPayload 方法，传入符合用户信息
-        RoomParams roomParams = new RoomParams(uuid, token);
+        RoomParams roomParams = new RoomParams(uuid, token, DemoAPI.DEFAULT_UID);
 
         HashMap<String, String> styleMap = new HashMap<>();
         styleMap.put("backgroundColor", "red");

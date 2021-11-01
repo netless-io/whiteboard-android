@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.15.0] - 2021-11-01
+- 更新`white-web-sdk`至 2.15.1
+- 更新`RoomParams`强制依赖 uid
 ## [2.14.4] - 2021-10-28
 - 更新`white-web-sdk`至 2.14.7
 - 添加`@netless/app-slide`插件支持

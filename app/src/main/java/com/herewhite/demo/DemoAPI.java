@@ -32,6 +32,7 @@ import okhttp3.Response;
 public class DemoAPI {
     private static final String TAG = DemoAPI.class.getSimpleName();
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    public static final String DEFAULT_UID = "5e62a5c0-8c15-4b00-a9fc-0e309e91da30";
 
     Context contextRef;
     private static final String host = "https://cloudcapiv4.herewhite.com";

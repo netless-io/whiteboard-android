@@ -20,6 +20,7 @@ public class RoomParams extends WhiteObject {
 
     private String uuid;
     private String roomToken;
+    private String uid;
 
     /**
      * 设置数据中心。
@@ -307,9 +308,10 @@ public class RoomParams extends WhiteObject {
      *
      * @param uuid      房间 UUID， 即房间唯一标识符。传入的房间 UUID 必须和生成 Room Token 时填入的房间 UUID 一致。
      * @param roomToken 用于鉴权的 Room Token。
+     * @param uid 用户标识，可以为任意 string，字符串长度不能超过 1024，2.15.0 后必须填写。
      */
-    public RoomParams(String uuid, String roomToken) {
-        this(uuid, roomToken, (Object) null);
+    public RoomParams(String uuid, String roomToken, String uid) {
+        this(uuid, roomToken, uid, (Object) null);
     }
 
     /**
@@ -319,14 +321,13 @@ public class RoomParams extends WhiteObject {
      *
      * @param uuid       房间 UUID， 即房间唯一标识符。传入的房间 UUID 必须和生成 Room Token 时填入的房间 UUID 一致。
      * @param roomToken  用于鉴权的 Room Token。
+     * @param uid 用户标识，可以为任意 string，字符串长度不能超过 1024，2.15.0 后必须填写。
      * @param memberInfo 自定义用户信息，详见 {@link com.herewhite.sdk.domain.MemberInformation MemberInformation}。
      *
      */
     @Deprecated
-    public RoomParams(String uuid, String roomToken, MemberInformation memberInfo) {
-        this.uuid = uuid;
-        this.roomToken = roomToken;
-        this.userPayload = memberInfo;
+    public RoomParams(String uuid, String roomToken, String uid, MemberInformation memberInfo) {
+        this(uuid, roomToken, uid, (Object) memberInfo);
     }
 
     /**
@@ -336,11 +337,13 @@ public class RoomParams extends WhiteObject {
      *
      * @param uuid        房间 UUID， 即房间唯一标识符。传入的房间 UUID 必须和生成 Room Token 时填入的房间 UUID 一致。
      * @param roomToken   用于鉴权的 Room Token。
+     * @param uid 用户标识，可以为任意 string，字符串长度不能超过 1024, 2.15.0 后必须填写。
      * @param userPayload 自定义用户信息，必须为 {@link com.herewhite.sdk.domain.WhiteObject WhiteObject} 子类。
      */
-    public RoomParams(String uuid, String roomToken, Object userPayload) {
+    public RoomParams(String uuid, String roomToken, String uid, Object userPayload) {
         this.uuid = uuid;
         this.roomToken = roomToken;
+        this.uid = uid;
         this.userPayload = userPayload;
     }
 
@@ -406,7 +409,7 @@ public class RoomParams extends WhiteObject {
     public void setRoomToken(String roomToken) {
         this.roomToken = roomToken;
     }
-    
+
     /**
      * 多窗口属性
      */
