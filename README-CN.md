@@ -25,7 +25,6 @@
 ```groovy
 allprojects {
     repositories {
-        jcenter()
         // 添加以下内容
         maven { url 'https://jitpack.io' }
     }
