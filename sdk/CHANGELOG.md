@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.15.1] - 2021-11-09
+- 更新`white-web-sdk`至 2.15.3
+- 更新`@netlesss/window-manager`至 0.2.17
 ## [2.15.0] - 2021-11-01
 - 更新`white-web-sdk`至 2.15.1
 - 更新`RoomParams`强制依赖 uid
