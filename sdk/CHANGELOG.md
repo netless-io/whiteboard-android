@@ -1,4 +1,8 @@
 # 版本更新记录
+## [2.15.2] - 2021-11-16
+- 更新`white-web-sdk`至 2.15.4
+- 更新`@netlesss/window-manager`至 0.2.19
+- 优化 `useMultiViews` 为 true 时，cameraState 状态回调
 ## [2.15.1] - 2021-11-09
 - 更新`white-web-sdk`至 2.15.3
 - 更新`@netlesss/window-manager`至 0.2.17
