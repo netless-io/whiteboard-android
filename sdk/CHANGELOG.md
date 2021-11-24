@@ -1,19 +1,24 @@
 # 版本更新记录
+
+## [2.15.5] - 2021-11-24
+- 更新`white-web-sdk`至 2.15.7
+- 更新`@netless/window-manager`至 0.3.7
+
 ## [2.15.4] - 2021-11-23
 - 更新`white-web-sdk`至 2.15.6
-- 更新`@netlesss/window-manager`至 0.3.5
+- 更新`@netless/window-manager`至 0.3.5
 - 更新`@netless/app-slide`至 0.0.27
 ## [2.15.3] - 2021-11-22
 - 更新`white-web-sdk`至 2.15.6
-- 更新`@netlesss/window-manager`至 0.3.2
+- 更新`@netless/window-manager`至 0.3.2
 - 更新`@netless/app-slide`至 0.0.25
 ## [2.15.2] - 2021-11-16
 - 更新`white-web-sdk`至 2.15.4
-- 更新`@netlesss/window-manager`至 0.2.19
+- 更新`@netless/window-manager`至 0.2.19
 - 优化 `useMultiViews` 为 true 时，cameraState 状态回调
 ## [2.15.1] - 2021-11-09
 - 更新`white-web-sdk`至 2.15.3
-- 更新`@netlesss/window-manager`至 0.2.17
+- 更新`@netless/window-manager`至 0.2.17
 ## [2.15.0] - 2021-11-01
 - 更新`white-web-sdk`至 2.15.1
 - 更新`RoomParams`强制依赖 uid
@@ -22,7 +27,7 @@
 - 添加`@netless/app-slide`插件支持
 ## [2.14.3] - 2021-10-15
 - 更新`white-web-sdk`至 2.14.5
-- 更新`@netlesss/window-manager`至 0.2.5，修复`WhiteSdkConfiguration`中`useMultiViews`为 true 时，`WhiteRoomConfig`的 `disableCameraTransform` true 无法生效的问题。
+- 更新`@netless/window-manager`至 0.2.5，修复`WhiteSdkConfiguration`中`useMultiViews`为 true 时，`WhiteRoomConfig`的 `disableCameraTransform` true 无法生效的问题。
 ## [2.14.2] - 2021-10-14
 - 更新`@netless/window-manager`至 0.2.3
 ## [2.14.1] - 2021-10-09
