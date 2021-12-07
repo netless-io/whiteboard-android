@@ -38,13 +38,13 @@ android {
 dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
-    api 'com.github.wendux:DSBridge-Android:ac150b630b'
+    api 'com.github.netless-io:DSBridge-Android:nl_v3.0.2'
 
+    implementation "androidx.annotation:annotation:1.1.0"
     testImplementation 'org.json:json:20180130'
     testImplementation "junit:junit:${rootProject.jUnitVersion}"
     testImplementation "androidx.test:core:${rootProject.testCoreVersion}"
     testImplementation 'org.mockito:mockito-core:1.10.19'
-    androidTestImplementation "androidx.annotation:annotation:1.0.0"
     androidTestImplementation "androidx.test.ext:junit:${rootProject.extJUnitVersion}"
 }
 

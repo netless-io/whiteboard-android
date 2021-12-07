@@ -18,9 +18,8 @@ buildscript {
         gradleVersion = "4.1.0"
     }
     repositories {
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
         google()
+        mavenCentral()
     }
     dependencies {
         classpath "com.android.tools.build:gradle:$gradleVersion"
@@ -33,10 +32,11 @@ buildscript {
 
 allprojects {
     repositories {
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
         google()
+        maven { url 'https://jitpack.io' }
+        mavenCentral()
         maven { url 'https://maven.aliyun.com/nexus/content/repositories/releases/' }
+        jcenter()
     }
 }
 

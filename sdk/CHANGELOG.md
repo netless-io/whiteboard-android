@@ -1,9 +1,11 @@
 # 版本更新记录
-
+## [2.15.6] - 2021-12-07
+- 更新`white-web-sdk`至 2.15.11
+- 更新`@netless/window-manager`至 0.3.8
+- 更新`@netless/app-slide`至 0.0.35
 ## [2.15.5] - 2021-11-24
 - 更新`white-web-sdk`至 2.15.7
 - 更新`@netless/window-manager`至 0.3.7
-
 ## [2.15.4] - 2021-11-23
 - 更新`white-web-sdk`至 2.15.6
 - 更新`@netless/window-manager`至 0.3.5
