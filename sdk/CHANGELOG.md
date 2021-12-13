@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.15.8] - 2021-12-13
+- 更新`@netless/app-slide`至 0.0.40
 ## [2.15.7] - 2021-12-09
 - 更新`@netless/window-manager`至 0.3.9
 - 更新`@netless/app-slide`至 0.0.36
