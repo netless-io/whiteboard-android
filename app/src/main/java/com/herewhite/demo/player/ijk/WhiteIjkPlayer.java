@@ -1,10 +1,10 @@
-package com.herewhite.demo.ijk;
+package com.herewhite.demo.player.ijk;
 
 import android.net.Uri;
 import android.util.Log;
 
-import com.herewhite.demo.ijk.widget.media.IMediaController;
-import com.herewhite.demo.ijk.widget.media.IjkVideoView;
+import com.herewhite.demo.player.ijk.widget.media.IMediaController;
+import com.herewhite.demo.player.ijk.widget.media.IjkVideoView;
 import com.herewhite.sdk.combinePlayer.NativePlayer;
 import com.herewhite.sdk.combinePlayer.PlayerSyncManager;
 
@@ -13,9 +13,9 @@ import java.util.concurrent.TimeUnit;
 import androidx.annotation.NonNull;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 
-import static com.herewhite.demo.ijk.widget.media.IjkVideoView.STATE_ERROR;
-import static com.herewhite.demo.ijk.widget.media.IjkVideoView.STATE_IDLE;
-import static com.herewhite.demo.ijk.widget.media.IjkVideoView.STATE_PREPARING;
+import static com.herewhite.demo.player.ijk.widget.media.IjkVideoView.STATE_ERROR;
+import static com.herewhite.demo.player.ijk.widget.media.IjkVideoView.STATE_IDLE;
+import static com.herewhite.demo.player.ijk.widget.media.IjkVideoView.STATE_PREPARING;
 
 public class WhiteIjkPlayer implements NativePlayer,
         IMediaPlayer.OnCompletionListener,
@@ -68,7 +68,7 @@ public class WhiteIjkPlayer implements NativePlayer,
     }
 
     /**
-     * 设置媒体控制器，可参考 {@link com.herewhite.demo.ijk.widget.media.AndroidMediaController}
+     * 设置媒体控制器，可参考 {@link com.herewhite.demo.player.ijk.widget.media.AndroidMediaController}
      *
      * @param mediaController 媒体控制器实例
      */

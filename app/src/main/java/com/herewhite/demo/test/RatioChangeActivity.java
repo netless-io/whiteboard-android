@@ -16,8 +16,7 @@ import com.alibaba.sdk.android.httpdns.HttpDns;
 import com.alibaba.sdk.android.httpdns.HttpDnsService;
 import com.google.gson.Gson;
 import com.herewhite.demo.BaseActivity;
-import com.herewhite.demo.DemoAPI;
-import com.herewhite.demo.LocalFileWebViewClient;
+import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.demo.R;
 import com.herewhite.demo.WhiteWebViewClient;
 import com.herewhite.demo.utils.MapBuilder;
@@ -54,7 +53,7 @@ public class RatioChangeActivity extends BaseActivity {
     private static final String ROOM_ACTION = "RoomAction";
 
     final Gson gson = new Gson();
-    final DemoAPI demoAPI = new DemoAPI();
+    final DemoAPI demoAPI = DemoAPI.get();
 
     WhiteboardView mWhiteboardView;
     @VisibleForTesting
@@ -90,7 +89,7 @@ public class RatioChangeActivity extends BaseActivity {
         // 使用阿里云的 HttpDns，避免 DNS 污染等问题
         useHttpDnsService(false);
 
-        getRoomToken(demoAPI.getDemoUUID());
+        getRoomToken(demoAPI.getRoomUUID());
 
         initSystemUI();
 

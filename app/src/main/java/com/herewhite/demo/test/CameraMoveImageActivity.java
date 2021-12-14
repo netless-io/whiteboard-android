@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import androidx.annotation.Nullable;
 
 import com.herewhite.demo.BaseActivity;
-import com.herewhite.demo.DemoAPI;
+import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.demo.R;
 import com.herewhite.demo.utils.EmptyRoomListener;
 import com.herewhite.sdk.Room;
@@ -31,7 +31,7 @@ import java.net.URL;
 public class CameraMoveImageActivity extends BaseActivity {
     public static final String TEST_IMAGE_URL = "https://placekitten.com/1920/1080";
 
-    private DemoAPI demoAPI = new DemoAPI();
+    private DemoAPI demoAPI = DemoAPI.get();
 
     private WhiteboardView whiteboardView;
     private ImageView imageView;
@@ -97,7 +97,7 @@ public class CameraMoveImageActivity extends BaseActivity {
         WhiteSdkConfiguration configuration = new WhiteSdkConfiguration(demoAPI.getAppId(), true);
         whiteSdk = new WhiteSdk(whiteboardView, this, configuration);
 
-        RoomParams roomParams = new RoomParams(demoAPI.getDemoUUID(), demoAPI.getDemoToken(), DemoAPI.DEFAULT_UID);
+        RoomParams roomParams = new RoomParams(demoAPI.getRoomUUID(), demoAPI.getRoomToken(), DemoAPI.DEFAULT_UID);
         whiteSdk.joinRoom(roomParams, new EmptyRoomListener(), new Promise<Room>() {
             @Override
             public void then(Room room) {

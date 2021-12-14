@@ -18,6 +18,7 @@ import androidx.annotation.VisibleForTesting;
 import com.alibaba.sdk.android.httpdns.HttpDns;
 import com.alibaba.sdk.android.httpdns.HttpDnsService;
 import com.google.gson.Gson;
+import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.demo.utils.MapBuilder;
 import com.herewhite.sdk.AbstractRoomCallbacks;
 import com.herewhite.sdk.CommonCallback;
@@ -76,7 +77,7 @@ public class RoomActivity extends BaseActivity {
     final String SCENE_DIR = "/dir";
 
     final Gson gson = new Gson();
-    final DemoAPI demoAPI = new DemoAPI();
+    final DemoAPI demoAPI = DemoAPI.get();
 
     // Room Params
     private String uuid;
@@ -114,7 +115,6 @@ public class RoomActivity extends BaseActivity {
 
         mWhiteboardView = findViewById(R.id.white);
         mWhiteboardView.getSettings().setAllowUniversalAccessFromFileURLs(true);
-        WhiteboardView.setWebContentsDebuggingEnabled(true);
 
         // 使用阿里云的 HttpDns，避免 DNS 污染等问题
         useHttpDnsService(false);
@@ -126,22 +126,13 @@ public class RoomActivity extends BaseActivity {
 
         // 测试支持
         testMarkIdling(false);
-        String uuid = getIntent().getStringExtra(StartActivity.EXTRA_MESSAGE);
-        if (uuid == null) {
-            createRoom();
-        } else {
-            getRoomToken(uuid);
-        }
+        setupRoom();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
+    private void setupRoom() {
+        String uuid = getIntent().getStringExtra(StartActivity.EXTRA_ROOM_UUID);
 
-    //region room
-    private void createRoom() {
-        demoAPI.getNewRoom(new DemoAPI.Result() {
+        DemoAPI.Result result = new DemoAPI.Result() {
             @Override
             public void success(String uuid, String token) {
                 joinRoom(uuid, token);
@@ -151,23 +142,21 @@ public class RoomActivity extends BaseActivity {
             public void fail(String message) {
                 alert("创建房间失败", message);
             }
-        });
+        };
+
+        if (uuid != null) {
+            demoAPI.getRoomToken(uuid, result);
+        } else {
+            demoAPI.getNewRoom(result);
+        }
     }
 
-    private void getRoomToken(final String uuid) {
-        demoAPI.getRoomToken(uuid, new DemoAPI.Result() {
-            @Override
-            public void success(String uuid, String roomToken) {
-                joinRoom(uuid, roomToken);
-            }
-
-            @Override
-            public void fail(String message) {
-                alert("获取房间 token 失败", message);
-            }
-        });
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
+    //region room
     private void joinRoom(String uuid, String token) {
         logRoomInfo("room uuid: " + uuid + "\nroom token: " + token);
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.herewhite.demo.ijk.services;
+package com.herewhite.demo.player.ijk.services;
 
 import android.app.Service;
 import android.content.Context;

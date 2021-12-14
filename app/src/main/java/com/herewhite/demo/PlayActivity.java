@@ -14,12 +14,15 @@ import android.webkit.WebView;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.util.Util;
 import com.google.gson.Gson;
-import com.herewhite.demo.exo.WhiteExoPlayer;
-import com.herewhite.demo.ijk.WhiteIjkPlayer;
-import com.herewhite.demo.ijk.widget.media.IjkVideoView;
+import com.herewhite.demo.common.DemoAPI;
+import com.herewhite.demo.player.exo.WhiteExoPlayer;
+import com.herewhite.demo.player.ijk.WhiteIjkPlayer;
+import com.herewhite.demo.player.ijk.widget.media.IjkVideoView;
 import com.herewhite.sdk.Player;
 import com.herewhite.sdk.PlayerEventListener;
 import com.herewhite.sdk.WhiteSdk;
@@ -37,14 +40,12 @@ import com.herewhite.sdk.domain.UrlInterrupter;
 
 import java.util.concurrent.TimeUnit;
 
-import androidx.annotation.Nullable;
-
 public class PlayActivity extends BaseActivity implements PlayerEventListener {
     private final String TAG = "player";
     private final String TAG_Native = "nativePlayer";
 
+    private DemoAPI demoAPI = DemoAPI.get();
     Gson gson = new Gson();
-    private DemoAPI demoAPI = new DemoAPI();
 
     protected WhiteboardView mWhiteboardView;
     protected SeekBar mSeekBar;
@@ -143,7 +144,7 @@ public class PlayActivity extends BaseActivity implements PlayerEventListener {
 
     //region override
     protected void setupPlayer() {
-        final String uuid = getIntent().getStringExtra(StartActivity.EXTRA_MESSAGE);
+        final String uuid = getIntent().getStringExtra(StartActivity.EXTRA_ROOM_UUID);
 
         try {
             if (mIsUsedExoPlayer) {

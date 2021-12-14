@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.herewhite.demo.ijk.widget.media;
+package com.herewhite.demo.player.ijk.widget.media;
 
 import android.content.Context;
 import android.view.View;

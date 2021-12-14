@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.herewhite.demo.ijk;
+package com.herewhite.demo.player.ijk;
 
 import android.content.Context;
 import android.content.SharedPreferences;

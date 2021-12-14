@@ -18,7 +18,7 @@ import androidx.annotation.VisibleForTesting;
 
 import com.google.gson.Gson;
 import com.herewhite.demo.BaseActivity;
-import com.herewhite.demo.DemoAPI;
+import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.demo.R;
 import com.herewhite.demo.StartActivity;
 import com.herewhite.demo.utils.MapBuilder;
@@ -76,7 +76,7 @@ public class PptResourceCacheActivity extends BaseActivity {
     final String SCENE_DIR = "/dir";
 
     final Gson gson = new Gson();
-    final DemoAPI demoAPI = new DemoAPI();
+    final DemoAPI demoAPI = DemoAPI.get();
 
     // Room Params
     private String uuid;
@@ -128,7 +128,7 @@ public class PptResourceCacheActivity extends BaseActivity {
 
         // 测试支持
         testMarkIdling(false);
-        String uuid = getIntent().getStringExtra(StartActivity.EXTRA_MESSAGE);
+        String uuid = getIntent().getStringExtra(StartActivity.EXTRA_ROOM_UUID);
         if (uuid == null) {
             createRoom();
         } else {

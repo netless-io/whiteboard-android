@@ -9,12 +9,13 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.demo.test.window.WindowTestActivity;
 
 public class StartActivity extends AppCompatActivity {
-    public static final String EXTRA_MESSAGE = "com.example.whiteSDKDemo.UUID";
+    public static final String EXTRA_ROOM_UUID = "com.herewhite.demo.UUID";
 
-    DemoAPI demoAPI = new DemoAPI();
+    DemoAPI demoAPI = DemoAPI.get();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,7 @@ public class StartActivity extends AppCompatActivity {
             tokenAlert();
             return;
         }
+
         Intent intent = new Intent(this, RoomActivity.class);
         startActivity(intent);
     }
@@ -64,7 +66,7 @@ public class StartActivity extends AppCompatActivity {
         Intent intent = new Intent(this, RoomActivity.class);
         String uuid = getUuid();
         if (uuid.length() > 0) {
-            intent.putExtra(EXTRA_MESSAGE, uuid);
+            intent.putExtra(EXTRA_ROOM_UUID, uuid);
         }
         startActivity(intent);
     }
@@ -76,13 +78,12 @@ public class StartActivity extends AppCompatActivity {
         }
 
         Intent intent = new Intent(this, PlayActivity.class);
-
         String uuid = getUuid();
         if (uuid.length() > 0) {
-            intent.putExtra(EXTRA_MESSAGE, uuid);
+            intent.putExtra(EXTRA_ROOM_UUID, uuid);
             startActivity(intent);
-        } else if (demoAPI.getDemoUUID().length() > 0) {
-            intent.putExtra(EXTRA_MESSAGE, demoAPI.getDemoUUID());
+        } else if (demoAPI.getRoomUUID().length() > 0) {
+            intent.putExtra(EXTRA_ROOM_UUID, demoAPI.getRoomUUID());
             startActivity(intent);
         } else {
             tokenAlert("uuid", "请填入回放用 uuid");
@@ -99,10 +100,10 @@ public class StartActivity extends AppCompatActivity {
 
         String uuid = getUuid();
         if (uuid.length() > 0) {
-            intent.putExtra(EXTRA_MESSAGE, uuid);
+            intent.putExtra(EXTRA_ROOM_UUID, uuid);
             startActivity(intent);
-        } else if (demoAPI.getDemoUUID().length() > 0) {
-            intent.putExtra(EXTRA_MESSAGE, demoAPI.getDemoUUID());
+        } else if (demoAPI.getRoomUUID().length() > 0) {
+            intent.putExtra(EXTRA_ROOM_UUID, demoAPI.getRoomUUID());
             startActivity(intent);
         } else {
             tokenAlert("uuid", "请填入回放用 uuid");

@@ -10,7 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
-import com.herewhite.demo.DemoAPI;
+import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.demo.LocalFileWebViewClient;
 import com.herewhite.demo.R;
 import com.herewhite.demo.utils.MapBuilder;
@@ -42,13 +42,12 @@ import java.util.HashMap;
 
 import wendu.dsbridge.DWebView;
 
-
 public class WindowTestActivity extends AppCompatActivity {
     private static final String ROOM_INFO = "RoomInfo";
     private static final String ROOM_ACTION = "RoomAction";
 
     final Gson gson = new Gson();
-    final DemoAPI demoAPI = new DemoAPI();
+    final DemoAPI demoAPI = DemoAPI.get();
 
     WhiteboardView mWhiteboardView;
     WhiteSdk mWhiteSdk;
@@ -135,7 +134,7 @@ public class WindowTestActivity extends AppCompatActivity {
             }
         });
 
-        joinRoom(demoAPI.getDemoUUID(), demoAPI.getDemoToken());
+        joinRoom(demoAPI.getRoomUUID(), demoAPI.getRoomToken());
     }
 
     long lastUpdate = 0;
@@ -196,7 +195,7 @@ public class WindowTestActivity extends AppCompatActivity {
             }
         });
 
-        /** 设置自定义全局状态，在后续回调中 GlobalState 直接进行类型转换即可 */
+        /* 设置自定义全局状态，在后续回调中 GlobalState 直接进行类型转换即可 */
         WhiteDisplayerState.setCustomGlobalStateClass(GlobalState.class);
 
         // 如需支持用户头像，请在设置 WhiteSdkConfiguration 后，再调用 setUserPayload 方法，传入符合用户信息
@@ -299,7 +298,7 @@ public class WindowTestActivity extends AppCompatActivity {
         String style = null;
         try {
             style = getStyleFromAsserts("dark-mode.css");
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
         return style;
     }

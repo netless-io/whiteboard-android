@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.alibaba.sdk.android.httpdns.HttpDns;
 import com.alibaba.sdk.android.httpdns.HttpDnsService;
 import com.google.gson.Gson;
+import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.sdk.Player;
 import com.herewhite.sdk.PlayerEventListener;
 import com.herewhite.sdk.WhiteSdk;
@@ -45,7 +46,7 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
     protected boolean mUserIsSeeking = false;
     protected SeekBar mSeekBar;
     private final String TAG = "player";
-    private DemoAPI demoAPI = new DemoAPI();
+    private DemoAPI demoAPI = DemoAPI.get();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +62,7 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
     }
 
     protected void setupPlayer() {
-        final String uuid = getIntent().getStringExtra(StartActivity.EXTRA_MESSAGE);
+        final String uuid = getIntent().getStringExtra(StartActivity.EXTRA_ROOM_UUID);
         DemoAPI.Result result = new DemoAPI.Result() {
             @Override
             public void success(String uuid, String roomToken) {

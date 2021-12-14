@@ -1,4 +1,4 @@
-package com.herewhite.demo;
+package com.herewhite.demo.player;
 
 import android.content.Context;
 import android.media.MediaPlayer;
@@ -50,8 +50,7 @@ public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, 
 
     private final String TAG = "nativePlayer info";
 
-
-    NativeMediaPlayer(Context context, String uri) throws IOException {
+    public NativeMediaPlayer(Context context, String uri) throws IOException {
         mMediaPlayer = new MediaPlayer();
 
         Uri mp4 = Uri.parse(uri);

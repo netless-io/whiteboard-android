@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.herewhite.demo.ijk.widget.media;
+package com.herewhite.demo.player.ijk.widget.media;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -36,8 +36,8 @@ import android.widget.FrameLayout;
 import android.widget.MediaController;
 
 import com.herewhite.demo.R;
-import com.herewhite.demo.ijk.Settings;
-import com.herewhite.demo.ijk.services.MediaPlayerService;
+import com.herewhite.demo.player.ijk.Settings;
+import com.herewhite.demo.player.ijk.services.MediaPlayerService;
 
 import java.io.File;
 import java.io.IOException;

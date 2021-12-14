@@ -1,4 +1,4 @@
-package com.herewhite.demo.exo;
+package com.herewhite.demo.player.exo;
 
 import android.content.Context;
 import android.net.Uri;
