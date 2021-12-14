@@ -3,7 +3,8 @@ package com.herewhite.demo.common;
 import android.content.Context;
 import android.util.Log;
 
-import com.herewhite.demo.MainApplication;
+import androidx.annotation.NonNull;
+
 import com.herewhite.demo.R;
 
 import java.io.BufferedInputStream;
@@ -30,11 +31,10 @@ public class DemoAPI {
     public static final String DEFAULT_UID = "5e62a5c0-8c15-4b00-a9fc-0e309e91da30";
 
     private static DemoAPI instance;
-    Context contextRef;
-    private final String sdkToken;
-    private final String appId;
-    private String roomUUID = "";
-    private String roomToken = "";
+    private String sdkToken;
+    private String appId;
+    private String roomUUID;
+    private String roomToken;
 
     public synchronized static DemoAPI get() {
         if (instance == null) {
@@ -44,13 +44,12 @@ public class DemoAPI {
         return instance;
     }
 
-    private DemoAPI() {
-        contextRef = MainApplication.sContext;
-        appId = contextRef.getString(R.string.sdk_app_id);
-        sdkToken = contextRef.getString(R.string.sdk_app_token);
+    public void init(Context context) {
+        appId = context.getString(R.string.sdk_app_id);
+        sdkToken = context.getString(R.string.sdk_app_token);
 
-        roomUUID = contextRef.getString(R.string.room_uuid);
-        roomToken = contextRef.getString(R.string.room_token);
+        roomUUID = context.getString(R.string.room_uuid);
+        roomToken = context.getString(R.string.room_token);
     }
 
     public String getAppId() {
@@ -69,14 +68,12 @@ public class DemoAPI {
         return sdkToken;
     }
 
-    private OkHttpClient client = new OkHttpClient();
-
     public boolean hasDemoInfo() {
         return roomUUID.length() > 0 && roomToken.length() > 0;
     }
 
-    public boolean validateToken() {
-        return hasDemoInfo() || sdkToken.length() > 50;
+    public boolean invalidToken() {
+        return !hasDemoInfo() && sdkToken.length() <= 50;
     }
 
     public interface Result {
@@ -95,18 +92,7 @@ public class DemoAPI {
             @Override
             public void onSuccess(CreateRoomResult data) {
                 roomUUID = data.uuid;
-                ApiService.createRoomToken(sdkToken, data.uuid, new ApiCallback<String>() {
-                    @Override
-                    public void onSuccess(String token) {
-                        roomToken = token;
-                        result.success(data.uuid, token);
-                    }
-
-                    @Override
-                    public void onFailure(String message) {
-                        result.fail(message);
-                    }
-                });
+                getRoomToken(data.uuid, result);
             }
 
             @Override
@@ -117,15 +103,16 @@ public class DemoAPI {
     }
 
     public void getRoomToken(final String uuid, final Result result) {
-        if (uuid.equals(roomUUID)) {
+        if (uuid.equals(roomUUID) && hasDemoInfo()) {
             result.success(roomUUID, roomToken);
             return;
         }
 
-        ApiService.createRoomToken(sdkToken, uuid, new ApiCallback<String>() {
+        ApiService.createRoomToken(sdkToken, uuid, "cn-hz", new ApiCallback<String>() {
             @Override
-            public void onSuccess(String roomToken) {
-                result.success(uuid, roomToken);
+            public void onSuccess(String token) {
+                roomToken = token;
+                result.success(uuid, token);
             }
 
             @Override
@@ -135,17 +122,19 @@ public class DemoAPI {
         });
     }
 
+    private final OkHttpClient client = new OkHttpClient();
+
     public void downloadZip(String zipUrl, String des) {
         Request request = new Request.Builder().url(zipUrl).build();
         Call call = client.newCall(request);
         call.enqueue(new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.e(TAG, "download error: " + e.toString());
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (!response.isSuccessful()) {
                     throw new IOException(("下载失败: " + response));
                 }
@@ -168,29 +157,22 @@ public class DemoAPI {
     }
 
     private static void unzip(File zipFile, File targetDirectory) throws IOException {
-        ZipInputStream zis = new ZipInputStream(new BufferedInputStream(new FileInputStream(zipFile)));
-        try {
+        try (ZipInputStream zis = new ZipInputStream(new BufferedInputStream(new FileInputStream(zipFile)))) {
             ZipEntry ze;
             while ((ze = zis.getNextEntry()) != null) {
                 File file = new File(targetDirectory, ze.getName());
                 File dir = ze.isDirectory() ? file : file.getParentFile();
                 if (!dir.isDirectory() && !dir.mkdirs())
-                    throw new FileNotFoundException("Failed to ensure directory: " +
-                            dir.getAbsolutePath());
+                    throw new FileNotFoundException("Failed to ensure directory: " + dir.getAbsolutePath());
                 if (ze.isDirectory())
                     continue;
-                FileOutputStream fout = new FileOutputStream(file);
-                try {
+                try (FileOutputStream fos = new FileOutputStream(file)) {
                     int count;
                     byte[] buffer = new byte[8192];
                     while ((count = zis.read(buffer)) != -1)
-                        fout.write(buffer, 0, count);
-                } finally {
-                    fout.close();
+                        fos.write(buffer, 0, count);
                 }
             }
-        } finally {
-            zis.close();
         }
     }
 }

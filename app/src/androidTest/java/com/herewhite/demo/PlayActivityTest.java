@@ -22,6 +22,10 @@ import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentat
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+
+import com.herewhite.sdk.domain.Promise;
+import com.herewhite.sdk.domain.SDKError;
 
 public class PlayActivityTest {
     private PlayActivity mActivity;
@@ -64,6 +68,28 @@ public class PlayActivityTest {
 
         onView(withId(R.id.button_play)).perform(click());
         TestUtils.sleep(1000);
+    }
+
+    @Test
+    public void testSetAndGet_PlaybackSpeed() {
+        onView(withId(R.id.white)).check(matches(isDisplayed()));
+        // 参数化测试支持不理想
+        final double[] speeds = new double[]{1.25f, 1.5f, 2.0f};
+        for (double speedTarget : speeds) {
+            mActivity.mPlaybackPlayer.setPlaybackSpeed(speedTarget);
+            assertEquals(speedTarget, mActivity.mPlaybackPlayer.getPlaybackSpeed(), Constants.DOUBLE_DELTA);
+            mActivity.mPlaybackPlayer.getPlaybackSpeed(new Promise<Double>() {
+                @Override
+                public void then(Double speed) {
+                    assertEquals(speed, speed, Constants.DOUBLE_DELTA);
+                }
+
+                @Override
+                public void catchEx(SDKError t) {
+
+                }
+            });
+        }
     }
 
     @After

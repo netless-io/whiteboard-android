@@ -48,7 +48,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
     public void joinNewRoom(View view) {
-        if (!demoAPI.validateToken()) {
+        if (demoAPI.invalidToken()) {
             tokenAlert();
             return;
         }
@@ -58,7 +58,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
     public void joinRoom(View view) {
-        if (!demoAPI.validateToken()) {
+        if (demoAPI.invalidToken()) {
             tokenAlert();
             return;
         }
@@ -72,7 +72,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
     public void replayRoom(View view) {
-        if (!demoAPI.validateToken()) {
+        if (demoAPI.invalidToken()) {
             tokenAlert();
             return;
         }
@@ -91,7 +91,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
     public void pureReplay(View view) {
-        if (!demoAPI.validateToken()) {
+        if (demoAPI.invalidToken()) {
             tokenAlert();
             return;
         }
@@ -111,7 +111,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
     public void windowTest(View view) {
-        if (!demoAPI.validateToken()) {
+        if (demoAPI.invalidToken()) {
             tokenAlert();
             return;
         }
