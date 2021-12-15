@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.15.12] - 2021-12-14
+- 更新`@netless/window-manager`至 0.3.12
+- 更新`@netless/app-slide`至 0.0.44
 ## [2.15.10] - 2021-12-14
 - 优化 native 端截图 API，恢复图片支持，同时支持多窗口模式
 - 更新`@netless/window-manager`至 0.3.11
