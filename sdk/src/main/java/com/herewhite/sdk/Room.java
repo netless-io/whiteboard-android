@@ -1298,8 +1298,8 @@ public class Room extends Displayer {
         /// @endcond
 
         @Override
-        public void firePhaseChanged(RoomPhase valueOf) {
-            setRoomPhase(valueOf);
+        public void firePhaseChanged(RoomPhase roomPhase) {
+            post(() -> setRoomPhase(roomPhase));
         }
 
         @Override

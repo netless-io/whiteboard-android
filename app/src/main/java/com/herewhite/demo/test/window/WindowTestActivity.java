@@ -237,7 +237,9 @@ public class WindowTestActivity extends AppCompatActivity {
 
             @Override
             public void onRoomStateChanged(RoomState roomState) {
-
+                if (roomState.getWindowBoxState() != null) {
+                    logRoomInfo("WindowBoxState " + roomState.getWindowBoxState());
+                }
             }
 
             @Override
