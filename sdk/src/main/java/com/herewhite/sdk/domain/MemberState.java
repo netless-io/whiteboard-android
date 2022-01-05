@@ -43,9 +43,7 @@ public class MemberState extends WhiteObject {
         this.currentApplianceName = currentApplianceName;
 
         if (Appliance.SHAPE.equals(currentApplianceName)) {
-            if (shapeType == null) {
-                this.shapeType = ShapeType.Triangle;
-            }
+            this.shapeType = shapeType != null ? shapeType : ShapeType.Triangle;
         }
     }
 
