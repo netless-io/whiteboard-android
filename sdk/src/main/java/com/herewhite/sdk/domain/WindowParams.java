@@ -24,6 +24,12 @@ public class WindowParams extends WhiteObject {
      */
     private Boolean debug;
 
+    /**
+     * 窗口配色模式
+     */
+    private WindowPrefersColorScheme prefersColorScheme;
+
+
     public WindowParams setContainerSizeRatio(Float containerSizeRatio) {
         this.containerSizeRatio = containerSizeRatio;
         return this;
@@ -47,5 +53,9 @@ public class WindowParams extends WhiteObject {
     public WindowParams setOverwriteStyles(String overwriteStyles) {
         this.overwriteStyles = overwriteStyles;
         return this;
+    }
+
+    public void setPrefersColorScheme(WindowPrefersColorScheme prefersColorScheme) {
+        this.prefersColorScheme = prefersColorScheme;
     }
 }
