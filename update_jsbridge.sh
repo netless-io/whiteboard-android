@@ -84,9 +84,7 @@ git push origin $WHITE_TAG
 git push netless $WHITE_TAG
 
 # Fetch Jitpack
-DUTY_OS_URL=https://jitpack.io/com/github/duty-os/white-sdk-android/${WHITE_TAG}
-NETLESS_URL=https://jitpack.io/com/github/netless-io/whiteboard-android/${WHITE_TAG}
-curl -X GET $DUTY_OS_URL
-curl -X GET $NETLESS_URL
+curl https://jitpack.io/api/builds/com.github.netless-io/whiteboard-android/${WHITE_TAG}
+curl https://jitpack.io/api/builds/com.github.duty-os/white-sdk-android/${WHITE_TAG}
 
 exit 0
