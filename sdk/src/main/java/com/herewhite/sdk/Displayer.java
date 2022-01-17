@@ -233,8 +233,8 @@ public class Displayer {
      * <p>
      * 该方法可以将 Android 内部坐标系（以屏幕左上角为原点）中的坐标转换为世界坐标系（以白板初始化时的中点为原点）坐标。
      *
-     * @param x       点在 Android 坐标系中的 X 轴坐标。
-     * @param y       点在 Android 坐标系中的 Y 轴坐标。
+     * @param x       点在 Android 坐标系中的 X 轴坐标，单位为DP。
+     * @param y       点在 Android 坐标系中的 Y 轴坐标，单位为DP。
      * @param promise `Promise<Point>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `convertToPointInWorld` 的调用结果：
      *                - 如果方法调用成功，将返回点在世界坐标系上的坐标。详见 {@link com.herewhite.sdk.domain.Point Point}。
      *                - 如果方法调用失败，将返回错误信息。
