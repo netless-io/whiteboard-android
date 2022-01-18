@@ -1,13 +1,16 @@
 # 版本更新记录
+## [2.15.23] - 2022-01-18
+- 更新`@netless/window-manager`至 0.3.22
+- 更新`@netless/video-js-plugin`至 0.3.8
 ## [2.15.22] - 2022-01-13
-- 更新@netless/window-manager至 0.3.19
+- 更新`@netless/window-manager`至 0.3.19
 ## [2.15.21] - 2021-01-13
 - 更新`white-web-sdk`至 2.15.15
 ## [2.15.18] - 2021-12-28
-- 更新@netless/window-manager至 0.3.17
+- 更新`@netless/window-manager`至 0.3.17
 ## [2.15.17] - 2021-12-23
-- 更新@netless/window-manager至 0.3.16
-- 更新@netless/app-slide至 0.0.52
+- 更新`@netless/window-manager`至 0.3.16
+- 更新`@netless/app-slide`至 0.0.52
 ## [2.15.15] - 2021-12-20
 - 更新`@netless/app-slide`至 0.0.51
 - 降级`@netless/window-manager`至 0.3.14
