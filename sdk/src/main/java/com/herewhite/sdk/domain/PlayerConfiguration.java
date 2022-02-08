@@ -13,6 +13,10 @@ public class PlayerConfiguration extends WhiteObject {
     private Long duration;
     private CameraBound cameraBound;
     private Long step = 500L;
+    /**
+     * 多窗口属性
+     */
+    private WindowParams windowParams;
 
     /**
      * 获取 `Player` 实例的数据中心。
@@ -200,4 +204,12 @@ public class PlayerConfiguration extends WhiteObject {
         this.mediaURL = mediaURL;
     }
     /// @endcond
+
+    public WindowParams getWindowParams() {
+        return windowParams;
+    }
+
+    public void setWindowParams(WindowParams windowParams) {
+        this.windowParams = windowParams;
+    }
 }

@@ -10,6 +10,7 @@ import com.herewhite.sdk.domain.PlayerState;
 import com.herewhite.sdk.domain.PlayerTimeInfo;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.SDKError;
+import com.herewhite.sdk.domain.WindowParams;
 import com.herewhite.sdk.internal.Logger;
 import com.herewhite.sdk.internal.PlayerDelegate;
 
