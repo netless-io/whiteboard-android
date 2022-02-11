@@ -369,6 +369,16 @@ public class Room extends Displayer {
     }
     //endregion
 
+    /**
+     * 插入文字
+     * @param x
+     * @param y
+     * @param text
+     */
+    public void insertText(int x, int y, String text) {
+        bridge.callHandler("room.insertText", new Object[]{x, y, text});
+    }
+
     //region GET API
 
     /**

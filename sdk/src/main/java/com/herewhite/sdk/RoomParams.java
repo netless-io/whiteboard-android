@@ -255,7 +255,6 @@ public class RoomParams extends WhiteObject {
 
     private boolean disableNewPencil = true;
 
-
     /**
      * 获取视角边界。
      *
@@ -421,5 +420,18 @@ public class RoomParams extends WhiteObject {
 
     public void setWindowParams(WindowParams windowParams) {
         this.windowParams = windowParams;
+    }
+
+    /**
+     * 是否关闭 ``insertText`` 与 ``updateText`` 操作权限
+     */
+    private boolean disableTextOperations = false;
+
+    public boolean isDisableTextOperations() {
+        return disableTextOperations;
+    }
+
+    public void setDisableTextOperations(boolean disableTextOperations) {
+        this.disableTextOperations = disableTextOperations;
     }
 }
