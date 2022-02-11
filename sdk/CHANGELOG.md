@@ -1,4 +1,10 @@
 # 版本更新记录
+## [2.16.0] - 2022-02-11
+- 更新`@netless/window-manager`至 0.4.1
+- 更新`white-web-sdk`至 2.16.7
+- 增加调用日志逻辑。开关跟随`WhiteSdkConfiguration`中的 log 参数（默认关闭），上报等级为 info，上报配置跟随`loggerOptions`配置项。
+- 回放支持多窗口模式，需要在初始化 SDK 时，配置`WhiteSdkConfiguration`开启 useMultipleView 参数。
+- 添加 Room 新增 `insertText` 接口
 ## [2.15.25] - 2022-01-20
 - 更新`@netless/window-manager`至 0.3.25
 - 更新`@netless/app-slide`至 0.0.56
