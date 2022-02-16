@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.16.1] - 2022-02-16
+- 更新`@netless/window-manager`至 0.4.5
+- 更新`white-web-sdk`至 2.16.9
 ## [2.16.0] - 2022-02-11
 - 更新`@netless/window-manager`至 0.4.1
 - 更新`white-web-sdk`至 2.16.7
