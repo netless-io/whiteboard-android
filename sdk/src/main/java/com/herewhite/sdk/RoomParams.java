@@ -434,4 +434,14 @@ public class RoomParams extends WhiteObject {
     public void setDisableTextOperations(boolean disableTextOperations) {
         this.disableTextOperations = disableTextOperations;
     }
+
+    private boolean nativeWebSocket;
+
+    public void setUseNativeWebSocket(boolean nativeWebSocket) {
+        this.nativeWebSocket = nativeWebSocket;
+    }
+
+    public boolean isUseNativeWebSocket() {
+        return nativeWebSocket;
+    }
 }

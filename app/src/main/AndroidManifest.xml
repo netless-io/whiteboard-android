@@ -4,6 +4,7 @@
     package="com.herewhite.demo">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".MainApplication"
@@ -17,6 +18,9 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".test.ConvertV5Activity"
+            android:exported="true" />
+        <activity
+            android:name=".test.WebSocketTestActivity"
             android:exported="true" />
         <activity
             android:name=".PureReplayActivity"
@@ -38,13 +42,15 @@
         </activity>
         <activity
             android:name=".RoomActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
+            android:windowSoftInputMode="adjustPan"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name=".test.PptResourceCacheActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
         <activity
             android:name=".test.RatioChangeActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:exported="true"
             android:screenOrientation="landscape" />
 
         <activity
