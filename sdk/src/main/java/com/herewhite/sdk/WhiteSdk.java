@@ -142,7 +142,7 @@ public class WhiteSdk {
             whiteSdkConfiguration.setEnableRtcIntercept(true);
         }
 
-        bridge.addJavascriptObject(new WsJsInterfaceImpl(bridge), "ws");
+        bridge.addJavascriptObject(new WsJsInterfaceImpl(bridge, context), "ws");
 
         bridge.addJavascriptObject(this.sdkJsInterface, "sdk");
         bridge.addJavascriptObject(this.roomJsInterface, "room");

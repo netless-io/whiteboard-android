@@ -2,7 +2,11 @@ package com.herewhite.sdk.internal;
 
 import static java.net.Proxy.Type.HTTP;
 
+import android.content.Context;
 import android.webkit.JavascriptInterface;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.herewhite.sdk.JsBridgeInterface;
 import com.herewhite.sdk.domain.WhiteObject;
@@ -10,15 +14,18 @@ import com.herewhite.sdk.domain.WhiteObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import io.agora.fpaService.FpaConfig;
-import io.agora.fpaService.FpaService;
-import io.agora.fpaService.LogUtil;
+import io.agora.fpa.proxy.FailedReason;
+import io.agora.fpa.proxy.FpaHttpProxyChainConfig;
+import io.agora.fpa.proxy.FpaProxyConnectionInfo;
+import io.agora.fpa.proxy.FpaProxyService;
+import io.agora.fpa.proxy.FpaProxyServiceConfig;
+import io.agora.fpa.proxy.IFpaServiceListener;
+import io.agora.fpa.proxy.LogLevel;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -31,52 +38,19 @@ public class WsJsInterfaceImpl {
     private static final String KEY_TYPE_STRING = "string";
     private static OkHttpClient client;
 
-    private JsBridgeInterface bridge;
+    private final JsBridgeInterface bridge;
+    private final Context context;
     private WebSocket webSocket;
 
-    public WsJsInterfaceImpl(JsBridgeInterface bridge) {
+    public WsJsInterfaceImpl(JsBridgeInterface bridge, Context context) {
         this.bridge = bridge;
-    }
-
-    private Map<String, Integer> createChainIdTable() {
-        Map<String, Integer> chainIdTable = new HashMap<>();
-        chainIdTable.put("gateway.netless.link:443", 285);
-        return chainIdTable;
-    }
-
-    private Proxy createProxy() {
-        Proxy result = null;
-        try {
-            FpaConfig config = new FpaConfig();
-            config.setAppId("81ae40d666ed4fdc9b883962e9873a0b");
-            config.setToken("81ae40d666ed4fdc9b883962e9873a0b");
-            config.setChainIdTable(createChainIdTable());
-            config.setLogLevel(1);
-            config.setLogFilePath("/sdcard/test.log");
-
-            FpaService fpaService = FpaService.createFpaService(config);
-            result = new Proxy(HTTP, new InetSocketAddress("127.0.0.1", fpaService.getHttpProxyPort()));
-        } catch (Exception e) {
-            Logger.info("ws create fpa service error " + e.toString());
-        }
-        return result;
-    }
-
-    private void setupFpa() {
-        if (client == null) {
-            LogUtil.DEBUG = true;
-            client = new OkHttpClient.Builder()
-                    .readTimeout(300, TimeUnit.SECONDS)
-                    .writeTimeout(300, TimeUnit.SECONDS)
-                    .proxy(createProxy())
-                    .build();
-        }
+        this.context = context;
     }
 
     @JavascriptInterface
     public void setup(Object args) {
-        setupFpa();
         Logger.info("ws interface setup " + args.toString());
+        ensureSetupFpa();
         if (args instanceof JSONObject) {
             try {
                 JSONObject jsonObject = (JSONObject) args;
@@ -91,6 +65,69 @@ public class WsJsInterfaceImpl {
         }
     }
 
+    private void ensureSetupFpa() {
+        if (client == null) {
+            try {
+                setupFpaService();
+                setupChainConfig();
+            } catch (Exception e) {
+                Logger.error("ws create fpa service error ", e);
+            }
+
+            client = new OkHttpClient.Builder()
+                    .readTimeout(300, TimeUnit.SECONDS)
+                    .writeTimeout(300, TimeUnit.SECONDS)
+                    .proxy(createProxy())
+                    .build();
+        }
+    }
+
+    private void setupFpaService() throws Exception {
+        File logFile = new File(context.getCacheDir().getAbsoluteFile() + "/whiteboard/fpa_log_sdk.log");
+        FpaProxyService.getInstance().setListener(new IFpaServiceListener() {
+            @Override
+            public void onConnected(@Nullable FpaProxyConnectionInfo info) {
+                Logger.info("[Fpa] onConnected. info=" + info);
+            }
+
+            @Override
+            public void onAccelerationSuccess(@Nullable FpaProxyConnectionInfo info) {
+                Logger.info("[Fpa] onAccelerationSuccess. info=" + info);
+            }
+
+            @Override
+            public void onConnectionFailed(@Nullable FpaProxyConnectionInfo info, FailedReason reason) {
+                Logger.info("[Fpa] onConnectionFailed. info=" + info + " reason=" + reason);
+            }
+
+            @Override
+            public void onDisconnectedAndFallback(@Nullable FpaProxyConnectionInfo info, FailedReason reason) {
+                Logger.info("[Fpa] onDisconnectedAndFallback. info=" + info + " reason=" + reason);
+            }
+        });
+
+        FpaProxyServiceConfig config = new FpaProxyServiceConfig.Builder(logFile.getAbsolutePath())
+                .setAppId("81ae40d666ed4fdc9b883962e9873a0b")
+                .setLogFileSizeKb(1024)
+                .setLogLevel(LogLevel.LOG_ERROR)
+                .build();
+
+        FpaProxyService.getInstance().start(config);
+    }
+
+    private void setupChainConfig() {
+        FpaHttpProxyChainConfig chainConfig = new FpaHttpProxyChainConfig.Builder()
+                .addChainInfo(285, "gateway.netless.link", 443, true)
+                .fallbackWhenNoChainAvailable(true)
+                .build();
+        FpaProxyService.getInstance().setOrUpdateHttpProxyChainConfig(chainConfig);
+    }
+
+    private Proxy createProxy() {
+        int port = FpaProxyService.getInstance().getHttpProxyPort();
+        return port > 0 ? new Proxy(HTTP, new InetSocketAddress("127.0.0.1", port)) : null;
+    }
+
     @JavascriptInterface
     public void send(Object args) {
         Logger.info("ws interface send " + args.toString());
@@ -101,11 +138,13 @@ public class WsJsInterfaceImpl {
                 String data = jsonObject.getString("data");
                 if (KEY_TYPE_BYTE_BUTTER.equals(type)) {
                     ByteString bs = ByteString.decodeBase64(data);
-                    webSocket.send(bs);
+                    if (bs != null) {
+                        webSocket.send(bs);
+                    }
                 } else if (KEY_TYPE_STRING.equals(type)) {
                     webSocket.send(data);
                 } else {
-                    Logger.error("ws send not support type " + args.toString(), null);
+                    Logger.error("ws send not support type " + args, null);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -134,38 +173,38 @@ public class WsJsInterfaceImpl {
 
     private class WebSocketWrapper implements WebSocket {
         private final int key;
-        private WebSocket realWebSocket;
+        private final WebSocket realWebSocket;
 
         WebSocketWrapper(String url, int key) {
             Request request = new Request.Builder().url(url).build();
             realWebSocket = client.newWebSocket(request, new WebSocketListener() {
                 @Override
-                public void onOpen(WebSocket webSocket, Response response) {
+                public void onOpen(@NonNull WebSocket webSocket, @NonNull Response response) {
                     notifyJsOpen();
                 }
 
                 @Override
-                public void onMessage(WebSocket webSocket, String text) {
+                public void onMessage(@NonNull WebSocket webSocket, @NonNull String text) {
                     notifyJsMessage(text, true);
                 }
 
                 @Override
-                public void onMessage(WebSocket webSocket, ByteString bytes) {
+                public void onMessage(@NonNull WebSocket webSocket, @NonNull ByteString bytes) {
                     notifyJsMessage(bytes.base64(), false);
                 }
 
                 @Override
-                public void onClosing(WebSocket webSocket, int code, String reason) {
+                public void onClosing(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
                     // ignore
                 }
 
                 @Override
-                public void onClosed(WebSocket webSocket, int code, String reason) {
+                public void onClosed(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
                     notifyJsClosed(code, reason);
                 }
 
                 @Override
-                public void onFailure(WebSocket webSocket, Throwable t, Response response) {
+                public void onFailure(@NonNull WebSocket webSocket, @NonNull Throwable t, Response response) {
                     notifyJsClosed(1006, "ws native onFailure called");
                     // notifyJsError(t.getMessage());
                 }
@@ -173,6 +212,7 @@ public class WsJsInterfaceImpl {
             this.key = key;
         }
 
+        @NonNull
         @Override
         public Request request() {
             return realWebSocket.request();
@@ -184,12 +224,12 @@ public class WsJsInterfaceImpl {
         }
 
         @Override
-        public boolean send(String text) {
+        public boolean send(@NonNull String text) {
             return realWebSocket.send(text);
         }
 
         @Override
-        public boolean send(ByteString byteString) {
+        public boolean send(@NonNull ByteString byteString) {
             return realWebSocket.send(byteString);
         }
 
