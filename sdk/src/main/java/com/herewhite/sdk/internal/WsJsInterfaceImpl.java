@@ -130,7 +130,6 @@ public class WsJsInterfaceImpl {
 
     @JavascriptInterface
     public void send(Object args) {
-        Logger.info("ws interface send " + args.toString());
         if (args instanceof JSONObject) {
             try {
                 JSONObject jsonObject = (JSONObject) args;
