@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.herewhite.sdk.domain.AddPageParam;
 import com.herewhite.sdk.domain.AkkoEvent;
 import com.herewhite.sdk.domain.Appliance;
 import com.herewhite.sdk.domain.BroadcastState;
@@ -1022,6 +1023,57 @@ public class Room extends Displayer {
         bridge.callHandler("ppt.previousStep", new Object[]{});
     }
     //endregion
+
+    /**
+     * 添加新页面到场景集最后位置
+     *
+     * @since 2.16.3
+     * <p>
+     */
+    public void addPage() {
+        bridge.callHandler("room.addPage", new Object[]{new AddPageParam()});
+    }
+
+    /**
+     * 添加新页面
+     *
+     * @since 2.16.3
+     * @param scene 场景
+     * @param after true 时添加到当前页面的下一个页面, false 时添加到最后一页
+     *
+     * 添加页面之后不自动切换，需要调用`setSceneIndex`或者 `nextPage` 切换页面
+     */
+    public void addPage(@Nullable Scene scene, boolean after) {
+        bridge.callHandler("room.addPage", new Object[]{new AddPageParam(scene, after)});
+    }
+
+    /**
+     * 切换到下一个页面
+     *
+     * @since 2.16.3
+     * @param promise
+     */
+    public void nextPage(@Nullable Promise<Boolean> promise) {
+        bridge.callHandler("room.nextPage", (OnReturnValue<Boolean>) result -> {
+            if (promise != null) {
+                promise.then(result);
+            }
+        });
+    }
+
+    /**
+     * 切换到上一个页面
+     *
+     * @since 2.16.3
+     * @param promise
+     */
+    public void prevPage(@Nullable Promise<Boolean> promise) {
+        bridge.callHandler("room.prevPage", (OnReturnValue<Boolean>) result -> {
+            if (promise != null) {
+                promise.then(result);
+            }
+        });
+    }
 
     /**
      * 更新视角的缩放比例。

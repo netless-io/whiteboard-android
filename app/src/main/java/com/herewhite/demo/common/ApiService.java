@@ -78,8 +78,8 @@ public class ApiService {
                                        String region,
                                        ApiCallback<String> outCallback) {
         Map<String, Object> roomSpec = new HashMap<>();
-        // unit ms
-        roomSpec.put("lifespan", 3600 * 24 * 1000);
+        // unit ms, one day: 3600 * 24 * 1000
+        roomSpec.put("lifespan", 0);
         roomSpec.put("role", "admin");
         RequestBody body = RequestBody.create(JSON, gson.toJson(roomSpec));
         Request request = new Request.Builder()
