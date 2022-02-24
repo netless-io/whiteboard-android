@@ -7,6 +7,8 @@ public class SceneState extends WhiteObject {
 
     private Scene[] scenes;
     private String scenePath;
+    private String sceneName;
+    private String contextPath;
     private int index;
 
     /**
@@ -36,4 +38,21 @@ public class SceneState extends WhiteObject {
         return index;
     }
 
+    /**
+     * 获取当前场景的名称。
+     *
+     * @return 当前场景的名称
+     */
+    public String getSceneName() {
+        return sceneName;
+    }
+
+    /**
+     * 获取当前场景的目录。
+     *
+     * @return 当前场景的目录
+     */
+    public String getContextPath() {
+        return contextPath;
+    }
 }
