@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.16.3] - 2022-02-24
+- 更新`@netless/window-manager`至 0.4.7
+- 新增 `Room` 接口 `addPage` `nextPage` `prevPage`
 ## [2.16.2] - 2022-02-22
 - 更新`white-web-sdk`至 2.16.10
 - 新增 `RoomParams.nativeWebSocket` 属性，支持网络加速。
