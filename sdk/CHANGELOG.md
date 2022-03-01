@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.16.4] - 2022-03-01
+- 更新`@netless/window-manager`至 0.4.9
+- 修复 多窗口下 `SceneState` 回调异常问题
 ## [2.16.3] - 2022-02-24
 - 更新`@netless/window-manager`至 0.4.7
 - 新增 `Room` 接口 `addPage` `nextPage` `prevPage`
