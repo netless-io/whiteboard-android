@@ -74,6 +74,9 @@ public class WhiteDisplayerState extends WhiteObject {
     private RoomMember[] roomMembers;
     private SceneState sceneState;
 
+    private String windowBoxState;
+    private PageState pageState;
+
     /**
      * 获取视角状态。
      *
@@ -85,4 +88,25 @@ public class WhiteDisplayerState extends WhiteObject {
 
     private CameraState cameraState;
 
+    /**
+     * 获取多窗口下窗口展示状态，为一下值：
+     * maximized: 最大化
+     * minimized: 最小化
+     * normal   : 默认展开
+     *
+     * @experiment
+     * @return 窗口展开状态
+     */
+    public String getWindowBoxState() {
+        return windowBoxState;
+    }
+
+    /**
+     * 获取多窗口下主白板页面状态
+     *
+     * @return 主白板页面状态
+     */
+    public PageState getPageState() {
+        return pageState;
+    }
 }

@@ -12,8 +12,6 @@ public class RoomState extends WhiteDisplayerState {
     private BroadcastState broadcastState;
     private Double zoomScale;
 
-    private String windowBoxState;
-
     /**
      * 获取互动白板实时房间内当前的白板工具状态。
      *
@@ -41,18 +39,5 @@ public class RoomState extends WhiteDisplayerState {
      */
     public Double getZoomScale() {
         return zoomScale;
-    }
-
-    /**
-     * 获取多窗口下窗口展示状态，为一下值：
-     * maximized: 最大化
-     * minimized: 最小化
-     * normal   : 默认展开
-     *
-     * @experiment
-     * @return 窗口展开状态
-     */
-    public String getWindowBoxState() {
-        return windowBoxState;
     }
 }
