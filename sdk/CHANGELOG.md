@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.16.5] - 2022-03-10
+- 更新`@netless/window-manager`至 0.4.11
+- 新增 `RoomState` 新增 `PageState` 属性，用于获取主窗口页面状态。单窗口模式下兼容 `SenceState`
 ## [2.16.4] - 2022-03-01
 - 更新`@netless/window-manager`至 0.4.9
 - 修复 多窗口下 `SceneState` 回调异常问题

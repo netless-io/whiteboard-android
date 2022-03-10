@@ -4,8 +4,13 @@ package com.herewhite.sdk.domain;
  * 页面状态。
  */
 public class PageState extends WhiteObject {
-
+    /**
+     * 当前主窗口页面索引
+     */
     private int index;
+    /**
+     * 当前主窗口页面数量
+     */
     private int length;
 
     public PageState(int index, int length) {
