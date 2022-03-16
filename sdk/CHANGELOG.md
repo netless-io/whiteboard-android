@@ -1,7 +1,7 @@
 # 版本更新记录
 ## [2.16.6] - 2022-03-16
 - 更新`@netless/window-manager`至 0.4.13
-- 修复 多窗口下，在只读状态时 `viewMode` 可以从 `freedom` 切换回 `broadcaster` 跟随视角
+- 修复 多窗口模式下，只读状态时 `viewMode` 无法从 `freedom` 切换回 `broadcaster` 问题
 ## [2.16.5] - 2022-03-10
 - 更新`@netless/window-manager`至 0.4.11
 - 新增 `RoomState` 新增 `PageState` 属性，用于获取主窗口页面状态。单窗口模式下兼容 `SenceState`
