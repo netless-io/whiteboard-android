@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.16.7] - 2022-03-22
+- 更新`@netless/window-manager`至 0.4.14
+- 修复 removeScenes 为 "/" 时， 同步端笔迹依旧存在的问题
 ## [2.16.6] - 2022-03-16
 - 更新`@netless/window-manager`至 0.4.13
 - 修复 多窗口模式下，只读状态时 `viewMode` 无法从 `freedom` 切换回 `broadcaster` 问题
