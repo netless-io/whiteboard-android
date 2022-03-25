@@ -12,6 +12,7 @@ import com.herewhite.sdk.domain.PlayerTimeInfo;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
+import com.herewhite.sdk.domain.WindowRegisterAppParams;
 import com.herewhite.sdk.internal.PlayerJsInterfaceImpl;
 import com.herewhite.sdk.internal.RoomJsInterfaceImpl;
 import com.herewhite.sdk.internal.RtcJsInterfaceImpl;
@@ -327,6 +328,11 @@ public class WhiteSdk {
                 loadPromise.then(retValue);
             }
         });
+    }
+
+
+    public void registerApp(WindowRegisterAppParams params) {
+        bridge.callHandler("sdk.registerApp", new Object[]{params});
     }
 
     /**

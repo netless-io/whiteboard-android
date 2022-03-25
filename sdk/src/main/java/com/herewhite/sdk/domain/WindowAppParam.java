@@ -47,32 +47,28 @@ public class WindowAppParam {
     private static class DocOptions extends Options {
         private final String scenePath;
         private final Scene[] scenes;
-        private final String title;
 
         public DocOptions(String scenePath, Scene[] scenes, String title) {
+            super(title);
             this.scenePath = scenePath;
             this.scenes = scenes;
-            this.title = title;
         }
     }
 
     private static class SlideOptions extends Options {
         private final String scenePath;
         private final Scene[] scenes;
-        private final String title;
 
         public SlideOptions(String scenePath, Scene[] scenes, String title) {
+            super(title);
             this.scenePath = scenePath;
             this.scenes = scenes;
-            this.title = title;
         }
     }
 
     private static class PlayerOptions extends Options {
-        private final String title;
-
         public PlayerOptions(String title) {
-            this.title = title;
+            super(title);
         }
     }
 
@@ -85,7 +81,11 @@ public class WindowAppParam {
     }
 
     public static class Options extends WhiteObject {
+        private String title;
 
+        public Options(String title) {
+            this.title = title;
+        }
     }
 
     public static class Attributes extends WhiteObject {
