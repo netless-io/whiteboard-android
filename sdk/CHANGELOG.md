@@ -1,4 +1,8 @@
 # 版本更新记录
+## [2.16.8] - 2022-03-25
+- 更新`@netless/window-manager`至 0.4.15
+- 修复 removeScenes 为 "/" 时,  切换主白板和 app focus 失效的问题
+- 新增 `WhiteSdk.registerApp` 接口，用于添加用户自定义的 App 组件。
 ## [2.16.7] - 2022-03-22
 - 更新`@netless/window-manager`至 0.4.14
 - 修复 removeScenes 为 "/" 时， 同步端笔迹依旧存在的问题
