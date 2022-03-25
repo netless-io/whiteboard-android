@@ -42,8 +42,8 @@
         </activity>
         <activity
             android:name=".RoomActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".test.PptResourceCacheActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
@@ -55,6 +55,11 @@
 
         <activity
             android:name=".test.window.WindowTestActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:screenOrientation="landscape" />
+
+        <activity
+            android:name=".test.window.WindowRegisterAppActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:screenOrientation="landscape" />
 

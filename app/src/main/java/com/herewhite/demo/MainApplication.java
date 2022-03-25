@@ -11,7 +11,6 @@ public class MainApplication extends Application {
         super.onCreate();
 
         DemoAPI.get().init(getApplicationContext());
-
         WhiteboardView.setWebContentsDebuggingEnabled(true);
     }
 }

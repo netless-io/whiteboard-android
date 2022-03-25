@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.VisibleForTesting;
@@ -127,6 +128,14 @@ public class RoomActivity extends BaseActivity {
         // 测试支持
         testMarkIdling(false);
         setupRoom();
+
+        findViewById(R.id.sendSync).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RectangleConfig config = new RectangleConfig(200d, 400d);
+                mRoom.moveCameraToContainer(config);
+            }
+        });
     }
 
     private void setupRoom() {
