@@ -330,9 +330,18 @@ public class WhiteSdk {
         });
     }
 
+    public void registerApp(WindowRegisterAppParams params, final Promise<Boolean> registerPromise) {
+        bridge.callHandler("sdk.registerApp", new Object[]{params}, (OnReturnValue<String>) retValue -> {
+            if (registerPromise == null) {
+                return;
+            }
 
-    public void registerApp(WindowRegisterAppParams params) {
-        bridge.callHandler("sdk.registerApp", new Object[]{params});
+            if (retValue == null) {
+                registerPromise.then(true);
+            } else {
+                registerPromise.catchEx(SDKError.promiseError(retValue));
+            }
+        });
     }
 
     /**

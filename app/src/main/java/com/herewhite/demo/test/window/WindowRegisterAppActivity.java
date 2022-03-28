@@ -35,8 +35,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 
-import wendu.dsbridge.DWebView;
-
 public class WindowRegisterAppActivity extends AppCompatActivity {
     private static final String ROOM_INFO = "RoomInfo";
     private static final String ROOM_ACTION = "RoomAction";
@@ -129,7 +127,17 @@ public class WindowRegisterAppActivity extends AppCompatActivity {
                 variable,
                 Collections.emptyMap()
         );
-        mWhiteSdk.registerApp(params);
+        mWhiteSdk.registerApp(params, new Promise<Boolean>() {
+            @Override
+            public void then(Boolean result) {
+                logAction();
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+                logAction(t.toString());
+            }
+        });
 
         // register remote script
         String url = "https://cdn.jsdelivr.net/npm/@netless/app-monaco@0.1.13-beta.0/dist/main.iife.js";
@@ -152,7 +160,7 @@ public class WindowRegisterAppActivity extends AppCompatActivity {
                 variable,
                 Collections.emptyMap()
         );
-        mWhiteSdk.registerApp(params);
+        mWhiteSdk.registerApp(params, null);
     }
 
 
