@@ -1,4 +1,8 @@
 # 版本更新记录
+
+## [2.16.11] - 2022-03-28
+- 更新`@netless/window-manager`至 0.4.18
+- 修复单窗口模式下，iframe 不显示的问题## 
 ## [2.16.10] - 2022-03-28
 - 更新`@netless/window-manager`至 0.4.17
 - 修复 removeScenes 为 "/" 没有清理完成完成时添加 app 造成的状态错误
