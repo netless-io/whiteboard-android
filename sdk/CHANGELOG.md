@@ -7,6 +7,7 @@
 - 更新`@netless/window-manager`至 0.4.17
 - 修复 removeScenes 为 "/" 没有清理完成完成时添加 app 造成的状态错误
 - 更新 `WhiteSdk.registerApp` 接口，添加注册结果回调。
+- 升级@netless/app-slide至0.1.0
 ## [2.16.9] - 2022-03-25
 - 修复多窗口下，快速修改 RoomState 内容，会丢失部分状态变化的问题
 ## [2.16.8] - 2022-03-25
