@@ -19,6 +19,7 @@ import java.util.HashMap;
  * @note 成功初始化 `WhiteSdk` 后，无法再调用 `WhiteSdkConfiguration` 类中的任何方法修改 `WhiteSdk` 的配置。
  */
 public class WhiteSdkConfiguration extends WhiteObject {
+
     /**
      * 白板上绘画的渲染模式。
      *
@@ -129,6 +130,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private boolean enableIFramePlugin = false;
     private boolean enableRtcIntercept = false;
     private boolean enableSyncedStore = false;
+    private boolean disableNewPencilStroke = false;
 
     private LoggerOptions loggerOptions;
 
@@ -233,6 +235,20 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
     /// @endcond
 
+    public boolean isDisableNewPencilStroke() {
+        return disableNewPencilStroke;
+    }
+
+    /**
+     * 设置新铅笔笔锋选项
+     *
+     * @param disableNewPencilStroke 是否启用新铅笔笔锋：
+     *                           - `true`：禁用。
+     *                           - `false`：（默认）启用。
+     */
+    public void setDisableNewPencilStroke(boolean disableNewPencilStroke) {
+        this.disableNewPencilStroke = disableNewPencilStroke;
+    }
     /**
      * 设置绘图的渲染模式。
      *
