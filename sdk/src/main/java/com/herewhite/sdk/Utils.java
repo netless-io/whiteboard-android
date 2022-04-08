@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.WhiteObject;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ class Utils {
         if (objects != null) {
             Object[] maps = new Object[objects.length];
             for (int i = 0; i < objects.length; i++) {
-                maps[i] = toJSON(objects[i]);
+                maps[i] = toBridgeJSON(objects[i]);
             }
             return maps;
         } else {
@@ -71,10 +72,12 @@ class Utils {
         return PRIMITIVE_LIST.contains(target.getClass());
     }
 
-    private static Object toJSON(Object object) {
+    private static Object toBridgeJSON(Object object) {
         // TODO: 当 object 内部其实也是标准的 JSON 结构时，最好不把 JSON stringify 成 string，而是保持原有结构传给 web 端
         // 这个改动，需要确认原有 API，之前大部分 web 的 API，都是接受 string 传入的
-        if (object instanceof String[]) {
+        if (object instanceof JSONObject) {
+            return object;
+        } else if (object instanceof String[]) {
             return object;
         } else if (isPrimitiveOrStringOrNull(object)) {
             return object;
@@ -91,4 +94,19 @@ class Utils {
         }
     }
     // region end
+
+    /**
+     * 内部协议约定，类似 iOS，传递字典类型，最终对应 js 端 object
+     * @param json
+     * @return
+     */
+    public static JSONObject asJSONObject(String json) {
+        JSONObject object;
+        try {
+            object = new JSONObject(json);
+        } catch (JSONException e) {
+            object = new JSONObject();
+        }
+        return object;
+    }
 }

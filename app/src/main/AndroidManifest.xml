@@ -59,6 +59,11 @@
             android:screenOrientation="landscape" />
 
         <activity
+            android:name=".test.window.WindowRestoreActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:screenOrientation="landscape" />
+
+        <activity
             android:name=".test.window.WindowRegisterAppActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:screenOrientation="landscape" />

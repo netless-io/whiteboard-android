@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#FFFF00">
+    android:layout_height="match_parent">
 
     <FrameLayout
         android:id="@+id/whiteParent"
@@ -16,54 +15,67 @@
             android:visibility="visible" />
     </FrameLayout>
 
-    <LinearLayout
+    <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="10dp"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal">
+        android:layout_marginBottom="10dp">
 
-        <Button
-            android:id="@+id/insertPlayer"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="player" />
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/insertStatic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="static" />
+            <Button
+                android:id="@+id/insertPlayer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="player" />
 
-        <Button
-            android:id="@+id/insertDynamic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="dynamic" />
+            <Button
+                android:id="@+id/insertStatic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="static" />
 
-        <Button
-            android:id="@+id/insertLocal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="local" />
+            <Button
+                android:id="@+id/insertDynamic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="dynamic" />
 
-        <Button
-            android:id="@+id/lockRatio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="lockRatio" />
+            <Button
+                android:id="@+id/insertLocal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="local" />
 
-        <Button
-            android:id="@+id/disableOperation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="disableOperation" />
-    </LinearLayout>
+            <Button
+                android:id="@+id/lockRatio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="lockRatio" />
+
+            <Button
+                android:id="@+id/disableOperation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="disableOperation" />
+
+
+            <Button
+                android:id="@+id/saveAttributes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="saveAttributes" />
+        </LinearLayout>
+    </HorizontalScrollView>
 </FrameLayout>

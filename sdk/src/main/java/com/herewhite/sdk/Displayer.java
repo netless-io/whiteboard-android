@@ -7,6 +7,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Base64;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.VisibleForTesting;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -30,8 +33,6 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import androidx.annotation.ColorInt;
-import androidx.annotation.VisibleForTesting;
 import wendu.dsbridge.OnReturnValue;
 
 /**
@@ -54,6 +55,7 @@ public class Displayer {
     ConcurrentHashMap<String, FrequencyEventListener> frequencyEventListenerMap = new ConcurrentHashMap<>();
 
     /// @cond test
+
     /**
      * Displayer 类的构造函数。
      *
@@ -123,6 +125,23 @@ public class Displayer {
         });
     }
 
+    /**
+     * 查询场景信息。
+     *
+     * @param path    想要查询的场景路径。
+     * @param promise `Promise<Scene>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。
+     *                - 如果方法调用成功，将返回场景信息。详见 {@link com.herewhite.sdk.domain.Scene Scene}。
+     *                - 如果方法调用失败，将返回错误信息。
+     */
+    public void getScene(String path, final Promise<Scene> promise) {
+        bridge.callHandler("displayer.getScene", new Object[]{path}, new OnReturnValue<String>() {
+            @Override
+            public void onValue(String retValue) {
+                Scene scene = gson.fromJson(retValue, Scene.class);
+                promise.then(scene);
+            }
+        });
+    }
 
     /**
      * 获取当前房间内所有场景的信息。
@@ -407,5 +426,18 @@ public class Displayer {
      */
     public void moveCameraToContainer(RectangleConfig rectangle) {
         this.bridge.callHandler("displayer.moveCameraToContain", new Object[]{rectangle});
+    }
+
+    /**
+     * 获取当前多窗口状态
+     * @param promise
+     */
+    public void getWindowManagerAttributes(final Promise<String> promise) {
+        bridge.callHandler("displayer.getWindowManagerAttributes", new OnReturnValue<JSONObject>() {
+            @Override
+            public void onValue(JSONObject retValue) {
+                promise.then(retValue.toString());
+            }
+        });
     }
 }

@@ -117,7 +117,7 @@ public class StartActivity extends AppCompatActivity {
             return;
         }
 
-        Intent intent = new Intent(this, WindowRegisterAppActivity.class);
+        Intent intent = new Intent(this, WindowTestActivity.class);
         startActivity(intent);
     }
 }

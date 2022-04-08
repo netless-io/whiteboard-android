@@ -1302,6 +1302,14 @@ public class Room extends Displayer {
         bridge.callHandler("room.safeUpdateAttributes", new Object[]{keys, state});
     }
 
+    /**
+     * 恢复当前多窗口状态
+     * @param attributes
+     */
+    public void setWindowManagerAttributes(String attributes) {
+        bridge.callHandler("room.setWindowManagerAttributes", new Object[]{Utils.asJSONObject(attributes)});
+    }
+
     // region roomListener
     // 关于此处的回调在JsBridge线程，请考虑/讨论确定是否在主执行
     private RoomListener roomListener;

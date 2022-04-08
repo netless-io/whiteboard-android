@@ -1,6 +1,7 @@
 
 package com.herewhite.demo.test.window;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ViewGroup;
@@ -10,9 +11,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
-import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.demo.LocalFileWebViewClient;
 import com.herewhite.demo.R;
+import com.herewhite.demo.common.DemoAPI;
+import com.herewhite.demo.utils.FileUtils;
 import com.herewhite.demo.utils.MapBuilder;
 import com.herewhite.sdk.CommonCallback;
 import com.herewhite.sdk.Room;
@@ -34,6 +36,7 @@ import com.herewhite.sdk.domain.WindowParams;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -134,7 +137,34 @@ public class WindowTestActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.saveAttributes).setOnClickListener(v -> {
+            if (mRoom != null) {
+                mRoom.getWindowManagerAttributes(new Promise<String>() {
+                    @Override
+                    public void then(String s) {
+                        File file = new File(getCacheDir(), WindowRestoreActivity.ATTRIBUTES_FILE);
+                        try {
+                            FileUtils.writeStringToFile(file, s);
+                            gotoWindowRestore();
+                        } catch (IOException e) {
+                            showToast("write file error");
+                        }
+                    }
+
+                    @Override
+                    public void catchEx(SDKError t) {
+
+                    }
+                });
+            }
+        });
+
         joinRoom(demoAPI.getRoomUUID(), demoAPI.getRoomToken());
+    }
+
+    private void gotoWindowRestore() {
+        Intent intent = new Intent(this, WindowRestoreActivity.class);
+        startActivity(intent);
     }
 
     long lastUpdate = 0;
