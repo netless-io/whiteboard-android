@@ -1,4 +1,8 @@
 # 版本更新记录
+## [2.16.13] - 2022-04-08
+- 更新 `white-web-sdk` 至 2.16.15
+- 新增 `Displayer.getScene` 方法，获取指定路径场景信息
+- 新增 `WhiteSdkConfiguration.disableNewPencilStroke` 属性。默认 false 启用新铅笔笔锋, true 禁用新铅笔笔锋。
 ## [2.16.12] - 2022-04-01
 - 更新`@netless/window-manager`至 0.4.20
 - 更新`@netless/app-slide`至 0.1.1
