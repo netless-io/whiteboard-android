@@ -1,4 +1,5 @@
-# white sdk android [![Release](https://jitpack.io/v/netless-io/whiteboard-android.svg)](https://jitpack.io/#netless-io/whiteboard-android)
+# white sdk android [![Release](https://jitpack.io/v/netless-io/whiteboard-android.svg)](https://jitpack.io/#netless-io/whiteboard-android) ![bridge-check](https://github.com/netless-io/whiteboard-android/actions/workflows/bridge.yml/badge.svg)
+
 
 [last release](https://github.com/netless-io/whiteboard-android/releases/latest)
 
