@@ -12,6 +12,7 @@ import com.herewhite.sdk.domain.WhiteObject;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * `WhiteSdk` 实例的配置。
@@ -49,6 +50,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
      */
     public static class PptParams extends WhiteObject {
         /// @cond test
+
         /** 文档中隐藏 */
         public String getScheme() {
             return scheme;
@@ -56,6 +58,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
         /// @endcond
 
         /// @cond test
+
         /**
          * 更改动态 ppt 请求时的请求协议，可以将 https://www.exmaple.com/1.pptx 更改成 scheme://www.example.com/1.pptx
          * Android 端该方法无需使用
@@ -101,6 +104,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
         private boolean useServerWrap = true;
 
         /// @cond test
+
         /** 文档中隐藏 */
         public PptParams(String scheme) {
             this.scheme = scheme;
@@ -136,6 +140,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
     private String appIdentifier;
     private HashMap<String, String> __nativeTags = new HashMap<>();
+    private List<String> __netlessUA;
     /**
      * pptParams 动态 ppt 专用参数
      */
@@ -191,6 +196,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
     /// @cond test
+
     /**
      * 设置是否启用 RTC SDK 的混音方法播放动态 PPT 中的音频。
      *
@@ -212,6 +218,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     /// @endcond
 
     /// @cond test
+
     /**
      * 文档中隐藏
      * @return
@@ -222,6 +229,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     /// @endcond
 
     /// @cond test
+
     /**
      * FIXME: 该 API 会 {@link RoomParams#setDisableDeviceInputs(boolean)} 覆盖，需要删除。
      * 禁止白板工具输入，使用该功能后，终端客户无法使用白板工具书写内容
@@ -249,6 +257,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     public void setDisableNewPencilStroke(boolean disableNewPencilStroke) {
         this.disableNewPencilStroke = disableNewPencilStroke;
     }
+
     /**
      * 设置绘图的渲染模式。
      *
@@ -395,7 +404,12 @@ public class WhiteSdkConfiguration extends WhiteObject {
         this.loggerOptions = loggerOptions;
     }
 
+    public void setNetlessUA(List<String> netlessUA) {
+        __netlessUA = netlessUA;
+    }
+
     /// @cond test
+
     /**
      * 文档中隐藏
      *
@@ -407,6 +421,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     /// @endcond
 
     /// @cond test
+
     /**
      * 是否启用双路由功能，同时向两个网址请求数据，选择最快的应答。会造成一定的额外开销，默认关闭
      * 文档中隐藏
@@ -419,6 +434,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     /// @endcond
 
     /// @cond test
+
     /**
      * 文档中隐藏
      * @return
@@ -478,6 +494,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
     /// @cond test
+
     /**
      * 文档中隐藏
      */
