@@ -29,10 +29,17 @@ public class WindowParams extends WhiteObject {
      */
     private WindowPrefersColorScheme prefersColorScheme;
 
+    public Float getContainerSizeRatio() {
+        return containerSizeRatio;
+    }
 
     public WindowParams setContainerSizeRatio(Float containerSizeRatio) {
         this.containerSizeRatio = containerSizeRatio;
         return this;
+    }
+
+    public Boolean getChessboard() {
+        return chessboard;
     }
 
     public WindowParams setChessboard(Boolean chessboard) {
@@ -40,9 +47,17 @@ public class WindowParams extends WhiteObject {
         return this;
     }
 
+    public Boolean getDebug() {
+        return debug;
+    }
+
     public WindowParams setDebug(Boolean debug) {
         this.debug = debug;
         return this;
+    }
+
+    public HashMap<String, String> getCollectorStyles() {
+        return collectorStyles;
     }
 
     public WindowParams setCollectorStyles(HashMap<String, String> collectorStyles) {
@@ -50,9 +65,17 @@ public class WindowParams extends WhiteObject {
         return this;
     }
 
+    public String getOverwriteStyles() {
+        return overwriteStyles;
+    }
+
     public WindowParams setOverwriteStyles(String overwriteStyles) {
         this.overwriteStyles = overwriteStyles;
         return this;
+    }
+
+    public WindowPrefersColorScheme getPrefersColorScheme() {
+        return prefersColorScheme;
     }
 
     public void setPrefersColorScheme(WindowPrefersColorScheme prefersColorScheme) {
