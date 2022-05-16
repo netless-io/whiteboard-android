@@ -1,6 +1,6 @@
 # 版本更新记录
 ## [2.16.19] - 2022-05-16
-- 更新`@netless/window-manager`至 0.4.35。
+- 更新`@netless/window-manager`至 0.4.25。
 - 新增 `Room.setContainerSizeRatio` 方法，用于更新多窗口显示比例。
 - 新增 `Room.setPrefersColorScheme` 方法，用于更改多窗口暗色模式。
 ## [2.16.18] - 2022-05-06
