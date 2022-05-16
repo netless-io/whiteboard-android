@@ -26,6 +26,7 @@ import com.herewhite.sdk.domain.SceneState;
 import com.herewhite.sdk.domain.SyncedState;
 import com.herewhite.sdk.domain.ViewMode;
 import com.herewhite.sdk.domain.WindowAppParam;
+import com.herewhite.sdk.domain.WindowPrefersColorScheme;
 import com.herewhite.sdk.internal.Logger;
 import com.herewhite.sdk.internal.RoomDelegate;
 
@@ -1308,6 +1309,24 @@ public class Room extends Displayer {
      */
     public void setWindowManagerAttributes(String attributes) {
         bridge.callHandler("room.setWindowManagerAttributes", new Object[]{Utils.asJSONObject(attributes)});
+    }
+
+    /**
+     * 设置多窗口显示比例
+     * @param ratio 高与宽比例
+     */
+    public void setContainerSizeRatio(float ratio) {
+        bridge.callHandler("room.setContainerSizeRatio", new Object[]{ratio});
+    }
+
+    /**
+     * 设置设置暗色模式
+     *
+     * @param colorScheme {@link com.herewhite.sdk.domain.WindowPrefersColorScheme WindowPrefersColorScheme}
+     */
+    public void setPrefersColorScheme(WindowPrefersColorScheme colorScheme) {
+        String colorSchemeStr = gson.toJsonTree(colorScheme).getAsString();
+        bridge.callHandler("room.setPrefersColorScheme", new Object[]{colorSchemeStr});
     }
 
     // region roomListener

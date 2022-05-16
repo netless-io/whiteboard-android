@@ -4,6 +4,7 @@ package com.herewhite.demo.test.window;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -32,6 +33,7 @@ import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.WhiteDisplayerState;
 import com.herewhite.sdk.domain.WindowAppParam;
 import com.herewhite.sdk.domain.WindowParams;
+import com.herewhite.sdk.domain.WindowPrefersColorScheme;
 
 import org.json.JSONObject;
 
@@ -41,7 +43,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import wendu.dsbridge.DWebView;
 
@@ -75,6 +79,40 @@ public class WindowTestActivity extends AppCompatActivity {
         mWhiteboardView.setWebViewClient(client);
 
         mWhiteboardParent = findViewById(R.id.whiteParent);
+
+        // 窗口比例
+        findViewById(R.id.radio).setOnClickListener(new View.OnClickListener() {
+            int index = 0;
+            final List<Float> ratios = new ArrayList<Float>() {
+                {
+                    add(1.0f);
+                    add(16f / 9);
+                    add(9f / 16);
+                }
+            };
+
+            @Override
+            public void onClick(View v) {
+                mRoom.setContainerSizeRatio(ratios.get(index++ % ratios.size()));
+            }
+        });
+
+        // 窗口暗色模式
+        findViewById(R.id.colorScheme).setOnClickListener(new View.OnClickListener() {
+            int index = 0;
+            final List<WindowPrefersColorScheme> colorSchemes = new ArrayList<WindowPrefersColorScheme>() {
+                {
+                    add(WindowPrefersColorScheme.Dark);
+                    add(WindowPrefersColorScheme.Light);
+                    add(WindowPrefersColorScheme.Auto);
+                }
+            };
+
+            @Override
+            public void onClick(View v) {
+                mRoom.setPrefersColorScheme(colorSchemes.get(index++ % colorSchemes.size()));
+            }
+        });
 
         // 插入播放器
         findViewById(R.id.insertPlayer).setOnClickListener(v -> {
@@ -233,16 +271,16 @@ public class WindowTestActivity extends AppCompatActivity {
 
         HashMap<String, String> styleMap = new HashMap<>();
         styleMap.put("backgroundColor", "red");
-        styleMap.put("bottom", "12px");
+        styleMap.put("top", "12px");
         styleMap.put("left", "60px");
         styleMap.put("position", "fixed");
 
-        String darkMode = darkModeStyle();
+        // String darkMode = darkModeStyle();
         WindowParams windowParams = new WindowParams()
                 .setContainerSizeRatio(3f / 4)
                 .setChessboard(true)
                 .setDebug(true)
-                .setOverwriteStyles(darkMode)
+                // .setOverwriteStyles(darkMode)
                 .setCollectorStyles(styleMap);
         // optional
         roomParams.setWindowParams(windowParams);
