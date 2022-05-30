@@ -800,7 +800,13 @@ public class RoomActivity extends BaseActivity {
 
     public void zoomChange(MenuItem item) {
         CameraConfig cameraConfig = new CameraConfig();
-        if (mRoom.getZoomScale() != 1) {
+        cameraConfig.setAnimationMode(AnimationMode.Immediately);
+
+        double scale = 1d;
+        if (mRoom.getRoomState().getCameraState() != null) {
+            scale = mRoom.getRoomState().getCameraState().getScale();
+        }
+        if (scale != 1) {
             cameraConfig.setScale(1d);
         } else {
             cameraConfig.setScale(5d);

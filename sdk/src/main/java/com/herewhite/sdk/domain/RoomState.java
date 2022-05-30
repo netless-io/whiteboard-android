@@ -33,11 +33,14 @@ public class RoomState extends WhiteDisplayerState {
     /**
      * 获取互动白板实时房间内当前的视角缩放比例。
      *
-     * @deprecated 该方法已废弃。
+     * @deprecated 该方法已废弃。 使用 {@link #getCameraState() getCameraState} 获取 scale 值 。
      *
      * @return 视角缩放比例。
      */
     public Double getZoomScale() {
-        return zoomScale;
+        if (getCameraState() != null) {
+            return getCameraState().getScale();
+        }
+        return null;
     }
 }

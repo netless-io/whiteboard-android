@@ -1,20 +1,5 @@
 package com.herewhite.demo;
 
-
-import android.view.MenuItem;
-import android.view.View;
-
-import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-
-import androidx.test.espresso.IdlingRegistry;
-import androidx.test.espresso.IdlingResource;
-import androidx.test.espresso.UiController;
-import androidx.test.espresso.idling.CountingIdlingResource;
-import androidx.test.rule.ActivityTestRule;
-
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onIdle;
 import static androidx.test.espresso.Espresso.onView;
@@ -35,6 +20,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import android.view.MenuItem;
+import android.view.View;
+
+import androidx.test.espresso.IdlingRegistry;
+import androidx.test.espresso.IdlingResource;
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.idling.CountingIdlingResource;
+import androidx.test.rule.ActivityTestRule;
+
+import com.herewhite.demo.R;
 import com.herewhite.demo.utils.SimpleViewAction;
 import com.herewhite.sdk.AbstractRoomCallbacks;
 import com.herewhite.sdk.domain.AnimationMode;
@@ -50,6 +45,11 @@ import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.SceneState;
 import com.herewhite.sdk.domain.ViewMode;
 import com.herewhite.sdk.domain.WhiteDisplayerState;
+
+import org.junit.After;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
@@ -361,7 +361,7 @@ public class RoomActivityTest {
         @Override
         public void onRoomStateChanged(RoomState modifyState) {
             this.modifyState = modifyState;
-            if (modifyState.getZoomScale() != null) {
+            if (modifyState.getCameraState() != null && modifyState.getCameraState().getScale() != null) {
                 checkAndMark(MODIFY_STATE_ZOOM);
             }
             if (modifyState.getBroadcastState() != null) {
@@ -756,7 +756,6 @@ public class RoomActivityTest {
 
     @Test
     public void zoomChange() {
-        CountDownLatch latch = new CountDownLatch(1);
         onView(isRoot()).perform(new SimpleViewAction() {
             @Override
             public void perform(UiController uiController, View view) {
@@ -764,27 +763,11 @@ public class RoomActivityTest {
                 config.setScale(2.0);
                 config.setAnimationMode(AnimationMode.Immediately);
                 mActivity.mRoom.moveCamera(config);
-
-                mActivity.mRoom.getZoomScale(new Promise<Number>() {
-                    @Override
-                    public void then(Number number) {
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void catchEx(SDKError t) {
-                        latch.countDown();
-                    }
-                });
             }
         });
 
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            fail();
-        }
-        assertEquals(2.0, mActivity.mRoom.getZoomScale(), Constants.DOUBLE_DELTA);
+        onView(isRoot()).perform(waitFor(1000));
+        assertEquals(2.0, mActivity.mRoom.getRoomState().getCameraState().getScale(), Constants.DOUBLE_DELTA);
     }
 
     @After
