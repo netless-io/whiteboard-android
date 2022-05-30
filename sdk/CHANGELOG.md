@@ -1,4 +1,8 @@
 # 版本更新记录
+## [2.16.20] - 2022-05-20
+- 更新 `white-web-sdk` 至 2.16.24
+- 更新 `@netless/app-slide`至 0.2.1
+- 修复 `Room.sceneState` 不回调问题
 ## [2.16.19] - 2022-05-16
 - 更新`@netless/window-manager`至 0.4.25。
 - 新增 `Room.setContainerSizeRatio` 方法，用于更新多窗口显示比例。
