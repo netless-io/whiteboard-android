@@ -85,6 +85,7 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
 
     private void init() {
         getSettings().setMediaPlaybackRequiresUserGesture(false);
+        getSettings().setTextZoom(100);
         loadUrl("file:///android_asset/whiteboard/index.html");
         setWebChromeClient(new FixWebChromeClient());
         // 100ms，减少用户体验问题，防止动画过程中频繁调用问题
