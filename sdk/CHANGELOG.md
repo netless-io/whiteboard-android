@@ -1,6 +1,6 @@
 # 版本更新记录
 ## [2.15.28] - 2022-06-01
-- 更新`@netless/iframe-bridge`至 2.1.5
+- 更新 `@netless/iframe-bridge` 至 2.1.9
 ## [2.15.27] - 2022-03-09
 - 更新`@netless/window-manager`至 0.3.27
 ## [2.15.26] - 2022-01-20
