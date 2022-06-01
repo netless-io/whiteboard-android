@@ -1,5 +1,7 @@
 package com.herewhite.sdk;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.EventListener;
@@ -10,9 +12,10 @@ import com.herewhite.sdk.domain.PlayerState;
 import com.herewhite.sdk.domain.PlayerTimeInfo;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.SDKError;
-import com.herewhite.sdk.domain.WindowParams;
 import com.herewhite.sdk.internal.Logger;
 import com.herewhite.sdk.internal.PlayerDelegate;
+
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import wendu.dsbridge.OnReturnValue;
 
@@ -84,6 +87,7 @@ public class Player extends Displayer {
     private PlayerPhase playerPhase = PlayerPhase.waitingFirstFrame;
 
     /// @cond test
+
     /**
      * 文档中隐藏，SDK 内部使用
      * Instantiates a new Player.
@@ -163,7 +167,7 @@ public class Player extends Displayer {
      * @note
      * - 该方法为同步调用。
      * - 成功调用 {@link #stop() stop}、{@link #play() play} 或 {@link #pause() pause} 等方法均会影响白板回放的阶段，但是通过该方法无法立即获取最新的白板回放阶段。
-     * 此时，你可以调用 {@link getPhase(final Promise<PlayerPhase> promise) getPhase} 获取最新的回放阶段。
+     * 此时，你可以调用 {@link #getPhase(Promise<PlayerPhase> ) getPhase} 获取最新的回放阶段。
      *
      * @return 白板回放的阶段，详见 {@link com.herewhite.sdk.domain.PlayerPhase PlayerPhase}。
      *
@@ -180,7 +184,7 @@ public class Player extends Displayer {
      * @note
      * - 该方法为异步调用。我们推荐你仅在调试或问题排查时使用。一般情况下可以使用同步方法 {@link #getPlayerPhase() getPlayerPhase} 获取回放阶段。
      * - 成功调用 {@link #stop() stop}、{@link #play() play} 或 {@link #pause() pause} 等方法后，你无法通过 {@link #getPlayerPhase() getPlayerPhase} 立即获取最新的白板回放阶段。
-     * 此时，你可以调用 {@link getPhase(final Promise<PlayerPhase> promise) getPhase}。
+     * 此时，你可以调用 {@link #getPhase(Promise<PlayerPhase>) getPhase}。
      *
      * @param promise `Promise<PlayerPhase>` 接口实例，详见 {@link com.herewhite.sdk.domain.Promise Promise}。你可以通过该接口获取 `getPhase` 方法的调用结果：
      *                - 如果方法调用成功，将返回白板回放的阶段。
@@ -294,10 +298,14 @@ public class Player extends Displayer {
     //endregion
 
     // region PlayerListener
-    private PlayerListener listener;
+    private final CopyOnWriteArrayList<PlayerListener> listeners = new CopyOnWriteArrayList<>();
 
-    void setPlayerEventListener(PlayerListener playerEventListener) {
-        this.listener = playerEventListener;
+    public void addPlayerListener(@NonNull PlayerListener playerListener) {
+        listeners.addIfAbsent(playerListener);
+    }
+
+    public void removePlayerListener(@NonNull PlayerListener playerListener) {
+        listeners.remove(playerListener);
     }
     // endregion
 
@@ -312,7 +320,7 @@ public class Player extends Displayer {
 
     private SyncDisplayerState.Listener<PlayerState> localPlayStateListener = modifyState -> {
         post(() -> {
-            if (listener != null) {
+            for (PlayerListener listener : listeners) {
                 listener.onPlayerStateChanged(modifyState);
             }
         });
@@ -344,7 +352,7 @@ public class Player extends Displayer {
         public void setPlayerPhase(PlayerPhase playerPhase) {
             Player.this.playerPhase = playerPhase;
             post(() -> {
-                if (listener != null) {
+                for (PlayerListener listener : listeners) {
                     listener.onPhaseChanged(playerPhase);
                 }
             });
@@ -353,7 +361,7 @@ public class Player extends Displayer {
         @Override
         public void onLoadFirstFrame() {
             post(() -> {
-                if (listener != null) {
+                for (PlayerListener listener : listeners) {
                     listener.onLoadFirstFrame();
                 }
             });
@@ -362,7 +370,7 @@ public class Player extends Displayer {
         @Override
         public void onSliceChanged(String slice) {
             post(() -> {
-                if (listener != null) {
+                for (PlayerListener listener : listeners) {
                     listener.onSliceChanged(slice);
                 }
             });
@@ -378,7 +386,7 @@ public class Player extends Displayer {
         @Override
         public void onStoppedWithError(SDKError error) {
             post(() -> {
-                if (listener != null) {
+                for (PlayerListener listener : listeners) {
                     listener.onStoppedWithError(error);
                 }
             });
@@ -388,7 +396,7 @@ public class Player extends Displayer {
         public void setScheduleTime(long scheduleTime) {
             Player.this.scheduleTime = scheduleTime;
             post(() -> {
-                if (listener != null) {
+                for (PlayerListener listener : listeners) {
                     listener.onScheduleTimeChanged(scheduleTime);
                 }
             });
@@ -397,7 +405,7 @@ public class Player extends Displayer {
         @Override
         public void onCatchErrorWhenAppendFrame(SDKError error) {
             post(() -> {
-                if (listener != null) {
+                for (PlayerListener listener : listeners) {
                     listener.onCatchErrorWhenAppendFrame(error);
                 }
             });
@@ -406,7 +414,7 @@ public class Player extends Displayer {
         @Override
         public void onCatchErrorWhenRender(SDKError error) {
             post(() -> {
-                if (listener != null) {
+                for (PlayerListener listener : listeners) {
                     listener.onCatchErrorWhenRender(error);
                 }
             });

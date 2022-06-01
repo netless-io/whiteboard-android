@@ -232,7 +232,9 @@ public class WhiteSdk {
      */
     public void createPlayer(final PlayerConfiguration playerConfiguration, final PlayerListener listener, final Promise<Player> playerPromise) {
         Player player = new Player(playerConfiguration.getRoom(), bridge, densityDpi);
-        player.setPlayerEventListener(listener);
+        if (listener != null) {
+            player.addPlayerListener(listener);
+        }
         playerJsInterface.setPlayer(player.getDelegate());
 
         try {
