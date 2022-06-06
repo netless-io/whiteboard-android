@@ -1,5 +1,9 @@
 package com.herewhite.sdk.domain;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.util.UUID;
+
 public class WindowAppParam {
     public static final String KIND_DOCSVIEWER = "DocsViewer";
     public static final String KIND_MEDIAPLAYER = "MediaPlayer";
@@ -44,6 +48,24 @@ public class WindowAppParam {
         return new WindowAppParam(KIND_SLIDE, options, null);
     }
 
+    /**
+     * 构建由新转换服务转换的 App 参数
+     * @param taskUuid
+     * @param prefixUrl
+     * @param title
+     * @return
+     */
+    public static WindowAppParam createSlideApp(String taskUuid, String prefixUrl, String title) {
+        if (!prefixUrl.startsWith("http")) {
+            throw new IllegalArgumentException("params error, check taskUuid and prefixUrl");
+        }
+        return new WindowAppParam(
+                KIND_SLIDE,
+                new ProjectorOptions(String.format("/%s/%s", taskUuid, UUID.randomUUID()), title),
+                new ProjectorAttributes(taskUuid, prefixUrl)
+        );
+    }
+
     private static class DocOptions extends Options {
         private final String scenePath;
         private final Scene[] scenes;
@@ -64,6 +86,12 @@ public class WindowAppParam {
             this.scenePath = scenePath;
             this.scenes = scenes;
         }
+
+        public SlideOptions(String scenePath, String title) {
+            super(title);
+            this.scenePath = scenePath;
+            this.scenes = null;
+        }
     }
 
     private static class PlayerOptions extends Options {
@@ -79,6 +107,28 @@ public class WindowAppParam {
             this.src = src;
         }
     }
+
+    private static class ProjectorOptions extends Options {
+        private final String scenePath;
+
+        public ProjectorOptions(String scenePath, String title) {
+            super(title);
+            this.scenePath = scenePath;
+        }
+    }
+
+    private static class ProjectorAttributes extends Attributes {
+        @SerializedName("taskId")
+        private final String taskUuid;
+        @SerializedName("url")
+        private final String prefixUrl;
+
+        public ProjectorAttributes(String taskUuid, String prefixUrl) {
+            this.taskUuid = taskUuid;
+            this.prefixUrl = prefixUrl;
+        }
+    }
+
 
     public static class Options extends WhiteObject {
         private String title;

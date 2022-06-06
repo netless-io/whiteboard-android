@@ -150,6 +150,15 @@ public class WindowTestActivity extends AppCompatActivity {
             mRoom.addApp(param, null);
         });
 
+        // 插入新的动态PPT
+        findViewById(R.id.insertNewDynamic).setOnClickListener(v -> {
+            // prefixUrl
+            String prefixUrl = "https://convertcdn.netless.link/dynamicConvert";
+            String taskUuid = "a136d855525a48a9844c678ad5027067";
+            WindowAppParam param = WindowAppParam.createSlideApp(taskUuid, prefixUrl, "Projector App");
+            mRoom.addApp(param, null);
+        });
+
         // 插入本地同步信息
         findViewById(R.id.insertLocal).setOnClickListener(v -> {
             if (mRoom != null) {

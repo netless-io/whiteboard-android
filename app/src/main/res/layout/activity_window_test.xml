@@ -63,6 +63,13 @@
                 android:text="dynamic" />
 
             <Button
+                android:id="@+id/insertNewDynamic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="NewDynamic" />
+
+            <Button
                 android:id="@+id/insertLocal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
