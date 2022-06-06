@@ -81,9 +81,12 @@ public class ConverterV5 {
     static ThreadPoolExecutor executorService;
 
     static {
-        executorService =
-                new ThreadPoolExecutor(4, 4, 10L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(),
-                        new ConverterThreadFactory());
+        executorService = new ThreadPoolExecutor(4,
+                4,
+                10L,
+                TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(),
+                new ConverterThreadFactory());
         executorService.allowCoreThreadTimeOut(true);
     }
 
@@ -233,12 +236,12 @@ public class ConverterV5 {
                 } catch (InterruptedException e) {
                 }
             }
+            onFailure(new ConvertException(ConvertErrorCode.CheckTimeout));
+            status = ConverterStatus.Timeout;
         } catch (ConvertException e) {
             onFailure(e);
             status = ConverterStatus.Fail;
         }
-        onFailure(new ConvertException(ConvertErrorCode.CheckTimeout));
-        status = ConverterStatus.Timeout;
     }
 
     // Step 3: 轮询查询
@@ -444,13 +447,6 @@ public class ConverterV5 {
         }
 
         public ConverterV5 build() {
-            if (resource == null) {
-                throw new RuntimeException("resource should not be null");
-            }
-            if (type == null) {
-                throw new RuntimeException("type should not be null");
-            }
-
             if (region == null) {
                 region = Region.cn;
             }
