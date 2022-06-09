@@ -1,5 +1,6 @@
 package com.herewhite.sdk;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.gson.JsonObject;
@@ -17,6 +18,7 @@ import com.herewhite.sdk.domain.ImageInformation;
 import com.herewhite.sdk.domain.ImageInformationWithUrl;
 import com.herewhite.sdk.domain.MemberState;
 import com.herewhite.sdk.domain.Promise;
+import com.herewhite.sdk.domain.RemovePageParam;
 import com.herewhite.sdk.domain.RoomMember;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
@@ -1046,6 +1048,44 @@ public class Room extends Displayer {
      */
     public void addPage(@Nullable Scene scene, boolean after) {
         bridge.callHandler("room.addPage", new Object[]{new AddPageParam(scene, after)});
+    }
+
+    /**
+     * 删除当前页面，多窗口下限定为主白板场景集当前页面
+     *
+     * @since 2.16.23
+     */
+    public void removePage(@Nullable Promise<Boolean> promise) {
+        removePage(new RemovePageParam(), promise);
+    }
+
+    /**
+     * 删除当前场景集指定页面，多窗口下限定为主白板场景集下页面
+     *
+     * @since 2.16.23
+     * @param index 指定页面索引号。
+     */
+    public void removePage(int index, @Nullable Promise<Boolean> promise) {
+        removePage(new RemovePageParam(index), promise);
+    }
+
+    private void removePage(@NonNull RemovePageParam pageParam, @Nullable Promise<Boolean> promise) {
+        bridge.callHandler("room.removePage", new Object[]{pageParam},
+                (OnReturnValue<Object>) retValue -> {
+                    if (promise == null) {
+                        return;
+                    }
+                    if (retValue instanceof Boolean) {
+                        promise.then((Boolean) retValue);
+                        return;
+                    }
+                    SDKError sdkError = SDKError.promiseError(retValue.toString());
+                    if (sdkError != null) {
+                        promise.catchEx(sdkError);
+                    } else {
+                        promise.then(Boolean.valueOf(retValue.toString()));
+                    }
+                });
     }
 
     /**
