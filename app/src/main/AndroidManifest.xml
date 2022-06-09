@@ -75,6 +75,7 @@
         <activity
             android:name=".test.CameraMoveImageActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
+        
         <activity
             android:name=".test.PptOldActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
@@ -82,6 +83,11 @@
 
         <activity
             android:name=".test.ScenesActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:screenOrientation="landscape" />
+
+        <activity
+            android:name=".test.window.WindowPageTestActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:screenOrientation="landscape" />
     </application>

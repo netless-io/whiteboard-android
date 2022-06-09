@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/whiteParent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.herewhite.sdk.WhiteboardView
+            android:id="@+id/white"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible" />
+    </FrameLayout>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/pageInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="pageInfo"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/addPage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="addPage"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/removePage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="removePage"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/prevPage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="prevPage"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/nextPage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="nextPage"
+                android:textAllCaps="false" />
+        </LinearLayout>
+    </HorizontalScrollView>
+</FrameLayout>
