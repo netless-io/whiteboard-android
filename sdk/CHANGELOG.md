@@ -1,7 +1,11 @@
 # 版本更新记录
+## [2.16.23] - 2022-06-09
+- 更新 `@netless/window-manager`至 0.4.30。
+- 添加 `Room.removePage` 接口
 ## [2.16.22] - 2022-06-02
 - 更新 `iframe-bridge`至 2.1.9。
 - 修复多窗口模式下 `sceneState` 变化无回调问题。
+- 添加 `Player.addPlayerListener`, `Player.removePlayerListener` 接口
 ## [2.16.21] - 2022-05-31
 - 更新 `white-web-sdk` 至 2.16.24
 - 更新`@netless/window-manager`至 0.4.26
