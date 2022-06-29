@@ -1,6 +1,6 @@
 # 版本更新记录
-## [2.16.24] - 2022-06-09
-- 更新 `@netless/window-manager`至 0.4.34。修复多人同时调用 WindowManager.mount 有概率出现错误的问题，修复只读用户的重连刷新问题。
+## [2.16.24] - 2022-06-29
+- 更新 `@netless/window-manager`至 0.4.33。修复多人同时调用 WindowManager.mount 有概率出现错误的问题，修复只读用户的重连刷新问题。
 ## [2.16.23] - 2022-06-09
 - 更新 `@netless/window-manager`至 0.4.30。
 - 添加 `Room.removePage` 接口
