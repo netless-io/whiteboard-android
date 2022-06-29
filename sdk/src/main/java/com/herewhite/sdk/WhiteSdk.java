@@ -27,7 +27,7 @@ import wendu.dsbridge.OnReturnValue;
  * `WhiteSdk` 类。
  */
 public class WhiteSdk {
-    private final static String SDK_VERSION = "2.16.23";
+    private final static String SDK_VERSION = "2.16.24";
 
     private final static Gson gson = new Gson();
 
