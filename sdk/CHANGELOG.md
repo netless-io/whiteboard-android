@@ -1,6 +1,14 @@
 # 版本更新记录
+## [2.16.25] - 2022-07-07
+- 更新 `@netless/window-manager`至 0.4.35。 
+  - 降低发送鼠标移动事件的频率 
+  - 修复在 `writable` 进行切换的时候 `mainView` 的 `disableCameraTransform` 丢失 
+  - 修复重连之后 app 没有正确创建的问题 
+  - 修复app 创建之后初始化宽高没有同步的问题
 ## [2.16.24] - 2022-06-29
-- 更新 `@netless/window-manager`至 0.4.33。修复多人同时调用 WindowManager.mount 有概率出现错误的问题，修复只读用户的重连刷新问题。
+- 更新 `@netless/window-manager`至 0.4.33。
+  - 修复多人同时调用 WindowManager.mount 有概率出现错误的问题。 
+  - 修复只读用户的重连刷新问题。
 ## [2.16.23] - 2022-06-09
 - 更新 `@netless/window-manager`至 0.4.30。
 - 添加 `Room.removePage` 接口
