@@ -114,4 +114,11 @@ public class RoomJsInterfaceImpl {
             room.fireAttributesUpdate(String.valueOf(args));
         }
     }
+
+    @JavascriptInterface
+    public void fireSyncedStoreUpdate(Object args) {
+        if (room != null) {
+            room.fireSyncedStoreUpdate(String.valueOf(args));
+        }
+    }
 }

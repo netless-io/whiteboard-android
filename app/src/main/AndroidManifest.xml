@@ -90,6 +90,7 @@
             android:name=".test.window.WindowPageTestActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:screenOrientation="landscape" />
+        <activity android:name=".test.SyncedStoreActivity" />
     </application>
 
 </manifest>

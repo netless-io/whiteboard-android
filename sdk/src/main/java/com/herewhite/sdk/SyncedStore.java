@@ -1,0 +1,132 @@
+package com.herewhite.sdk;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.herewhite.sdk.domain.Promise;
+import com.herewhite.sdk.domain.SDKError;
+
+import java.util.HashMap;
+
+import wendu.dsbridge.OnReturnValue;
+
+public class SyncedStore {
+    private final JsBridgeInterface bridge;
+    private final HashMap<String, JsonObject> storages = new HashMap<>();
+    private final HashMap<String, Class<SyncedStoreObject>> types = new HashMap<>();
+    private final HashMap<String, OnStateChangedListener> listeners = new HashMap<>();
+
+    public SyncedStore(JsBridgeInterface bridge) {
+        this.bridge = bridge;
+    }
+
+    public <T extends SyncedStoreObject> void connectStorage(String name, T data, Promise<T> promise) {
+        types.put(name, (Class<SyncedStoreObject>) data.getClass());
+        bridge.callHandler("store.connectStorage", new Object[]{name, data}, (OnReturnValue<String>) retValue -> {
+            JsonObject state = Utils.fromJson(retValue, JsonObject.class);
+            storages.put(name, state);
+            promise.then(getStorageState(name));
+        });
+    }
+
+    public <T extends SyncedStoreObject> T getStorageState(String name) {
+        return (T) Utils.fromJson(storages.get(name), types.get(name));
+    }
+
+    public <T extends SyncedStoreObject> void getStorageState(String name, Promise<T> promise) {
+        bridge.callHandler("store.getStorageState", new Object[]{name}, (OnReturnValue<String>) retValue -> {
+            try {
+                T state = (T) Utils.fromJson(retValue, types.get(name));
+                promise.then(state);
+            } catch (Exception e) {
+                promise.catchEx(SDKError.promiseError(e.getMessage()));
+            }
+        });
+    }
+
+    public <T extends SyncedStoreObject> void setStorageState(String name, T data) {
+        bridge.callHandler("store.setStorageState", new Object[]{name, data});
+    }
+
+    /**
+     * Destroy the Storage instance. The data will be kept.
+     * @param name : storage name
+     */
+    public void destroyStorage(String name) {
+        bridge.callHandler("store.destroyStorage", new Object[]{name});
+    }
+
+    /**
+     * Empty storage data.
+     * @param name : storage name
+     */
+    public void emptyStorage(String name) {
+        bridge.callHandler("store.emptyStorage", new Object[]{name});
+    }
+
+    /**
+     * Delete storage index with all of its data and destroy the Storage instance.
+     * @param name : storage name
+     */
+    public void deleteStorage(String name) {
+        bridge.callHandler("store.deleteStorage", new Object[]{name});
+    }
+
+    public void fireStorageStateUpdate(String valueOf) {
+        StorageStateUpdate stateUpdate = Utils.fromJson(valueOf, StorageStateUpdate.class);
+        String name = stateUpdate.name;
+        JsonElement data = stateUpdate.data;
+        if (types.containsKey(name) && storages.containsKey(name)) {
+            Class<SyncedStoreObject> storeObjectClass = types.get(name);
+            JsonObject merge = assignObject(storages.get(name).deepCopy(), stateUpdate.data);
+            storages.put(stateUpdate.name, merge);
+
+            SyncedStoreObject current = Utils.fromJson(merge, storeObjectClass);
+            SyncedStoreObject modifyState = Utils.fromJson(data, storeObjectClass);
+            OnStateChangedListener listener = listeners.get(stateUpdate.name);
+            if (listener != null) {
+                listener.onStateChanged(modifyState, current);
+            }
+        }
+    }
+
+    private static JsonObject assignObject(JsonObject object, JsonObject update) {
+        return (JsonObject) assignElement(object, update);
+    }
+
+    @VisibleForTesting
+    static JsonElement assignElement(JsonElement element, JsonElement update) {
+        if (!element.isJsonObject() || !update.isJsonObject()) {
+            return update;
+        }
+        JsonObject obj1 = (JsonObject) element;
+        JsonObject obj2 = (JsonObject) update;
+
+        for (String key : obj2.keySet()) {
+            if (obj1.has(key) && obj1.get(key).isJsonObject()) {
+                // 存在则递归替换
+                JsonElement merge = assignElement(obj1.get(key), obj2.get(key));
+                obj1.add(key, merge);
+            } else {
+                obj1.add(key, obj2.get(key));
+            }
+        }
+        return obj1;
+    }
+
+
+    public <T extends SyncedStoreObject> void setOnStateChangedListener(String name, @NonNull OnStateChangedListener<T> listener) {
+        listeners.put(name, listener);
+    }
+
+    public interface OnStateChangedListener<T extends SyncedStoreObject> {
+        void onStateChanged(T diff, T currentValue);
+    }
+
+    static class StorageStateUpdate {
+        public String name;
+        public JsonObject data;
+    }
+}

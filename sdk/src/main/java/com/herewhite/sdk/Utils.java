@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.DisplayMetrics;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.WhiteObject;
 
@@ -19,6 +20,10 @@ class Utils {
 
     public static <T> T fromJson(String json, Class<T> classOfT) throws JsonSyntaxException {
         return gson.fromJson(json, classOfT);
+    }
+
+    public static <T> T fromJson(JsonElement jsonElement, Class<T> classOfT) throws JsonSyntaxException {
+        return gson.fromJson(jsonElement, classOfT);
     }
 
     /**

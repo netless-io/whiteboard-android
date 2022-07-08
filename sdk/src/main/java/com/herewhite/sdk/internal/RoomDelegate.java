@@ -27,4 +27,6 @@ public interface RoomDelegate {
     void fireCatchErrorWhenAppendFrame(long userId, Exception e);
 
     void fireAttributesUpdate(String valueOf);
+
+    void fireSyncedStoreUpdate(String valueOf);
 }
