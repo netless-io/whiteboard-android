@@ -19,18 +19,18 @@ public class SyncedStoreActivity extends SampleBaseActivity {
     ActivitySyncedStoreBinding binding;
 
     private SyncedStore syncedStore;
-    private MainSyncedStore mainSyncedStore;
+    private MainStorage mainStorage;
 
-    static class MainSyncedStore extends SyncedStoreObject {
+    static class MainStorage extends SyncedStoreObject {
         public Integer intValue;
         public String strValue;
         public ObjValue objValue;
         public Obj2Value obj2Value;
 
-        public MainSyncedStore() {
+        public MainStorage() {
         }
 
-        public MainSyncedStore(Integer intValue, String strValue) {
+        public MainStorage(Integer intValue, String strValue) {
             this.intValue = intValue;
             this.strValue = strValue;
         }
@@ -63,36 +63,46 @@ public class SyncedStoreActivity extends SampleBaseActivity {
 
         });
         binding.getStorageState.setOnClickListener(v -> {
-
+            logRoomInfo("storage main sync state" + syncedStore.getStorageState(MAIN_STORAGE_NAME).toString());
         });
         binding.getStorageStateAsync.setOnClickListener(v -> {
+            syncedStore.getStorageState(MAIN_STORAGE_NAME, new Promise<SyncedStoreObject>() {
+                @Override
+                public void then(SyncedStoreObject syncedStoreObject) {
+                    logRoomInfo("storage main async state" + syncedStoreObject);
+                }
 
+                @Override
+                public void catchEx(SDKError t) {
+
+                }
+            });
         });
         binding.setStorageState.setOnClickListener(new View.OnClickListener() {
             int index = 0;
-            MainSyncedStore[] updates = new MainSyncedStore[4];
+            MainStorage[] updates = new MainStorage[4];
 
             {
-                updates[0] = new MainSyncedStore();
+                updates[0] = new MainStorage();
                 updates[0].intValue = 1;
 
-                updates[1] = new MainSyncedStore();
-                updates[1].objValue = new MainSyncedStore.ObjValue();
+                updates[1] = new MainStorage();
+                updates[1].objValue = new MainStorage.ObjValue();
                 updates[1].objValue.strValue = "native update obj";
 
-                updates[2] = new MainSyncedStore();
-                updates[2].obj2Value = new MainSyncedStore.Obj2Value();
-                updates[2].obj2Value.objValue = new MainSyncedStore.ObjValue();
+                updates[2] = new MainStorage();
+                updates[2].obj2Value = new MainStorage.Obj2Value();
+                updates[2].obj2Value.objValue = new MainStorage.ObjValue();
                 updates[2].obj2Value.objValue.strValue = "native update obj2";
 
-                updates[3] = new MainSyncedStore();
+                updates[3] = new MainStorage();
             }
 
 
             @Override
             public void onClick(View v) {
                 if (updates[3] == null) {
-                    updates[3] = mainSyncedStore;
+                    updates[3] = mainStorage;
                 }
                 if (syncedStore != null) {
                     syncedStore.setStorageState(MAIN_STORAGE_NAME, updates[index++]);
@@ -101,26 +111,29 @@ public class SyncedStoreActivity extends SampleBaseActivity {
             }
         });
         binding.emptyStorage.setOnClickListener(v -> {
-
+            syncedStore.emptyStorage(MAIN_STORAGE_NAME);
+        });
+        binding.destroyStorage.setOnClickListener(v -> {
+            syncedStore.destroyStorage(MAIN_STORAGE_NAME);
         });
     }
 
     @Override
     protected void onJoinRoomSuccess() {
         syncedStore = room.obtainSyncedStore();
-        syncedStore.connectStorage(MAIN_STORAGE_NAME, new MainSyncedStore(), new Promise<MainSyncedStore>() {
+        syncedStore.addOnStateChangedListener(MAIN_STORAGE_NAME, (diff, currentValue) -> {
+            logRoomInfo("storage[main] updated" + "\tdiff:" + diff.toString() + "\tvalue:" + currentValue.toString());
+        });
+        syncedStore.connectStorage(MAIN_STORAGE_NAME, new MainStorage(), new Promise<MainStorage>() {
             @Override
-            public void then(MainSyncedStore mainSyncedStore) {
-                SyncedStoreActivity.this.mainSyncedStore = mainSyncedStore;
+            public void then(MainStorage mainSyncedStore) {
+                SyncedStoreActivity.this.mainStorage = mainSyncedStore;
             }
 
             @Override
             public void catchEx(SDKError t) {
                 alert("connectStorage error", Arrays.toString(t.getStackTrace()));
             }
-        });
-        syncedStore.setOnStateChangedListener(MAIN_STORAGE_NAME, (diff, currentValue) -> {
-            logRoomInfo("syncedStore main updated" + "\tdiff:" + diff.toString() + "\tvalue:" + currentValue.toString());
         });
     }
 }

@@ -29,11 +29,15 @@ public class SyncedStoreTest {
             "{\"intValue\":2,\"strValue\":\"3\"}",
             "{\"objValue\":{\"strValue\":\"33\"}}",
             "{\"obj2Value\":{\"objValue\":{\"strValue\":\"123\"}}}",
+            "{\"obj2Value\":{}}",
+            "{}",
     };
     String[] expectedJsons = new String[]{
             "{\"intValue\":2,\"strValue\":\"3\",\"objValue\":{\"strValue\":\"2\"},\"obj2Value\":{\"objValue\":{\"strValue\":\"3\"}}}",
             "{\"intValue\":1,\"strValue\":\"1\",\"objValue\":{\"strValue\":\"33\"},\"obj2Value\":{\"objValue\":{\"strValue\":\"3\"}}}",
             "{\"intValue\":1,\"strValue\":\"1\",\"objValue\":{\"strValue\":\"2\"},\"obj2Value\":{\"objValue\":{\"strValue\":\"123\"}}}",
+            "{\"intValue\":1,\"strValue\":\"1\",\"objValue\":{\"strValue\":\"2\"},\"obj2Value\":{}}",
+            "{}",
     };
 
     @Test
