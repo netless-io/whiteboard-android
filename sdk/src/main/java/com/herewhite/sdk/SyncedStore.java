@@ -52,19 +52,13 @@ public class SyncedStore {
     }
 
     /**
-     * Destroy the Storage instance. The data will be kept.
+     * Disconnect from synced storage and release listeners
+     *
      * @param name : storage name
      */
-    public void destroyStorage(String name) {
-        bridge.callHandler("store.destroyStorage", new Object[]{name});
-    }
-
-    /**
-     * Empty storage data.
-     * @param name : storage name
-     */
-    public void emptyStorage(String name) {
-        bridge.callHandler("store.emptyStorage", new Object[]{name});
+    public void disconnectStorage(String name) {
+        bridge.callHandler("store.disconnectStorage", new Object[]{name});
+        listenersByName.remove(name);
     }
 
     /**
@@ -73,6 +67,15 @@ public class SyncedStore {
      */
     public void deleteStorage(String name) {
         bridge.callHandler("store.deleteStorage", new Object[]{name});
+    }
+
+    /**
+     * reset storage state to default state
+     *
+     * @param name
+     */
+    public void resetState(String name) {
+        bridge.callHandler("store.resetState", new Object[]{name});
     }
 
     public void fireStorageStateUpdate(String valueOf) {

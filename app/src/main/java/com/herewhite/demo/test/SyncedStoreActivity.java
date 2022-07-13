@@ -110,11 +110,11 @@ public class SyncedStoreActivity extends SampleBaseActivity {
                 }
             }
         });
-        binding.emptyStorage.setOnClickListener(v -> {
-            syncedStore.emptyStorage(MAIN_STORAGE_NAME);
+        binding.disconnectStorage.setOnClickListener(v -> {
+            syncedStore.disconnectStorage(MAIN_STORAGE_NAME);
         });
-        binding.destroyStorage.setOnClickListener(v -> {
-            syncedStore.destroyStorage(MAIN_STORAGE_NAME);
+        binding.resetState.setOnClickListener(v -> {
+            syncedStore.resetState(MAIN_STORAGE_NAME);
         });
     }
 
