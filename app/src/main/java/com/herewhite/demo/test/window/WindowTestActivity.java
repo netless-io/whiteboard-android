@@ -21,6 +21,7 @@ import com.herewhite.sdk.CommonCallback;
 import com.herewhite.sdk.Room;
 import com.herewhite.sdk.RoomListener;
 import com.herewhite.sdk.RoomParams;
+import com.herewhite.sdk.SyncedStore;
 import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
 import com.herewhite.sdk.WhiteboardView;
@@ -52,6 +53,7 @@ import wendu.dsbridge.DWebView;
 public class WindowTestActivity extends AppCompatActivity {
     private static final String ROOM_INFO = "RoomInfo";
     private static final String ROOM_ACTION = "RoomAction";
+    private static final String CUSTOM_UI = "custom_ui";
 
     final Gson gson = new Gson();
     final DemoAPI demoAPI = DemoAPI.get();
@@ -59,8 +61,10 @@ public class WindowTestActivity extends AppCompatActivity {
     WhiteboardView mWhiteboardView;
     WhiteSdk mWhiteSdk;
     Room mRoom;
+    SyncedStore mSyncedStore;
     FrameLayout mWhiteboardParent;
     DragViewPlugin dragViewPlugin;
+
     UserSyncedState state = new UserSyncedState();
 
     @Override
@@ -166,7 +170,7 @@ public class WindowTestActivity extends AppCompatActivity {
                 state = new UserSyncedState();
                 state.dragViewState.w = 0.3f;
                 state.dragViewState.h = 0.2f;
-                mRoom.safeSetAttributes(state);
+                mRoom.getSyncedStore().setStorageState(CUSTOM_UI, state);
             }
 
             updateDragView();
@@ -216,10 +220,10 @@ public class WindowTestActivity extends AppCompatActivity {
 
     long lastUpdate = 0;
 
-    private void safeUpdateAttributes() {
+    private void updateStorage() {
         if (mRoom != null && System.currentTimeMillis() - lastUpdate > 50) {
             lastUpdate = System.currentTimeMillis();
-            mRoom.safeUpdateAttributes(new String[]{"dragViewState"}, state.dragViewState);
+            mRoom.getSyncedStore().setStorageState(CUSTOM_UI, state);
         }
     }
 
@@ -238,7 +242,7 @@ public class WindowTestActivity extends AppCompatActivity {
             dragViewPlugin = new DragViewPlugin(this);
             dragViewPlugin.setListener((dragViewState) -> {
                 state.dragViewState = dragViewState;
-                safeUpdateAttributes();
+                updateStorage();
             });
             mWhiteboardParent.addView(dragViewPlugin, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         }
@@ -333,17 +337,28 @@ public class WindowTestActivity extends AppCompatActivity {
             public void onCatchErrorWhenAppendFrame(long l, Exception e) {
 
             }
-
-            @Override
-            public void onAttributesUpdate(String valueOf) {
-                state = gson.fromJson(valueOf, UserSyncedState.class);
-                logRoomInfo("onAttributesUpdate:" + state);
-                updateDragView();
-            }
         }, new Promise<Room>() {
             @Override
             public void then(Room room) {
                 mRoom = room;
+                mSyncedStore = mRoom.getSyncedStore();
+                mSyncedStore.addOnStateChangedListener(CUSTOM_UI, new SyncedStore.OnStateChangedListener<UserSyncedState>() {
+                    @Override
+                    public void onStateChanged(UserSyncedState value, UserSyncedState diff) {
+                        updateState(value);
+                    }
+                });
+                mSyncedStore.connectStorage(CUSTOM_UI, new UserSyncedState(), new Promise<UserSyncedState>() {
+                    @Override
+                    public void then(UserSyncedState userSyncedState) {
+                        updateState(userSyncedState);
+                    }
+
+                    @Override
+                    public void catchEx(SDKError t) {
+
+                    }
+                });
             }
 
             @Override
@@ -351,6 +366,12 @@ public class WindowTestActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void updateState(UserSyncedState value) {
+        state = value;
+        logRoomInfo("onAttributesUpdate:" + state);
+        updateDragView();
     }
     //endregion
 

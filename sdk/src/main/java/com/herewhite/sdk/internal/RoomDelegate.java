@@ -25,6 +25,4 @@ public interface RoomDelegate {
     void fireRoomStateChanged(String valueOf);
 
     void fireCatchErrorWhenAppendFrame(long userId, Exception e);
-
-    void fireAttributesUpdate(String valueOf);
 }

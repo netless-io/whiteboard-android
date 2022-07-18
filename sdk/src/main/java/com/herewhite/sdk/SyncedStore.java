@@ -77,7 +77,7 @@ public class SyncedStore {
         bridge.callHandler("store.resetState", new Object[]{name});
     }
 
-    public void fireStorageStateUpdate(String valueOf) {
+    void fireStorageStateUpdate(String valueOf) {
         StorageStateUpdate stateUpdate = Utils.fromJson(valueOf, StorageStateUpdate.class);
         String name = stateUpdate.name;
         JsonObject data = stateUpdate.data;

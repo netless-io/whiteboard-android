@@ -1322,27 +1322,6 @@ public class Room extends Displayer {
         });
     }
 
-    // 获取状态数据
-    public <T> void getSyncedState(Class<T> stateClass, Promise<Object> promise) {
-        bridge.callHandler("room.getSyncedState", new Object[]{}, (OnReturnValue<String>) value -> {
-            try {
-                promise.then(gson.fromJson(value, stateClass));
-            } catch (Exception e) {
-                Logger.error("parse json error", e);
-            }
-        });
-    }
-
-    // 设置状态数据
-    public void safeSetAttributes(SyncedState state) {
-        bridge.callHandler("room.safeSetAttributes", new Object[]{state});
-    }
-
-    // 更新状态数据
-    public void safeUpdateAttributes(String[] keys, SyncedState state) {
-        bridge.callHandler("room.safeUpdateAttributes", new Object[]{keys, state});
-    }
-
     /**
      * 恢复当前多窗口状态
      * @param attributes
@@ -1472,15 +1451,6 @@ public class Room extends Displayer {
             post(() -> {
                 if (roomListener != null) {
                     roomListener.onCatchErrorWhenAppendFrame(userId, exception);
-                }
-            });
-        }
-
-        @Override
-        public void fireAttributesUpdate(String valueOf) {
-            post(() -> {
-                if (roomListener != null) {
-                    roomListener.onAttributesUpdate(valueOf);
                 }
             });
         }

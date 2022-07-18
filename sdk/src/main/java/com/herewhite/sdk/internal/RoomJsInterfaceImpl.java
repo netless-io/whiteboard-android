@@ -107,11 +107,4 @@ public class RoomJsInterfaceImpl {
             ).run();
         }
     }
-
-    @JavascriptInterface
-    public void fireAttributesUpdate(Object args) {
-        if (room != null) {
-            room.fireAttributesUpdate(String.valueOf(args));
-        }
-    }
 }
