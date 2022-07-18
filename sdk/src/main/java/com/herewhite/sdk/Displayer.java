@@ -48,6 +48,7 @@ public class Displayer {
     protected String uuid;
     protected int densityDpi;
     private Handler handler;
+    private SyncedStore syncedStore;
 
     @VisibleForTesting
     ConcurrentHashMap<String, EventListener> eventListenerMap = new ConcurrentHashMap<>();
@@ -439,5 +440,12 @@ public class Displayer {
                 promise.then(retValue.toString());
             }
         });
+    }
+
+    public SyncedStore getSyncedStore() {
+        if (syncedStore == null) {
+            syncedStore = new SyncedStore(bridge);
+        }
+        return syncedStore;
     }
 }

@@ -44,7 +44,6 @@ import wendu.dsbridge.OnReturnValue;
 public class Room extends Displayer {
     private SyncDisplayerState<RoomState> syncRoomState;
     private RoomPhase roomPhase = RoomPhase.connecting;
-    private SyncedStore syncedStore;
 
     void setDisconnectedBySelf(Boolean disconnectedBySelf) {
         this.disconnectedBySelf = disconnectedBySelf;
@@ -1370,13 +1369,6 @@ public class Room extends Displayer {
         bridge.callHandler("room.setPrefersColorScheme", new Object[]{colorSchemeStr});
     }
 
-    public SyncedStore obtainSyncedStore() {
-        if (syncedStore == null) {
-            syncedStore = new SyncedStore(bridge);
-        }
-        return syncedStore;
-    }
-
     // region roomListener
     // 关于此处的回调在JsBridge线程，请考虑/讨论确定是否在主执行
     private RoomListener roomListener;
@@ -1492,16 +1484,6 @@ public class Room extends Displayer {
                 }
             });
         }
-
-        @Override
-        public void fireSyncedStoreUpdate(String valueOf) {
-            post(() -> {
-                if (syncedStore != null) {
-                    syncedStore.fireStorageStateUpdate(valueOf);
-                }
-            });
-        }
-
 
         @Override
         public void fireRoomStateChanged(String stateJSON) {

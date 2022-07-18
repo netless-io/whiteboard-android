@@ -120,7 +120,7 @@ public class SyncedStoreActivity extends SampleBaseActivity {
 
     @Override
     protected void onJoinRoomSuccess() {
-        syncedStore = room.obtainSyncedStore();
+        syncedStore = room.getSyncedStore();
         syncedStore.addOnStateChangedListener(MAIN_STORAGE_NAME, (diff, currentValue) -> {
             logRoomInfo("storage[main] updated" + "\tdiff:" + diff.toString() + "\tvalue:" + currentValue.toString());
         });

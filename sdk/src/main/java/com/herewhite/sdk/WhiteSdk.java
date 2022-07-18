@@ -17,6 +17,8 @@ import com.herewhite.sdk.internal.PlayerJsInterfaceImpl;
 import com.herewhite.sdk.internal.RoomJsInterfaceImpl;
 import com.herewhite.sdk.internal.RtcJsInterfaceImpl;
 import com.herewhite.sdk.internal.SdkJsInterfaceImpl;
+import com.herewhite.sdk.internal.StoreDelegate;
+import com.herewhite.sdk.internal.StoreJsInterfaceImpl;
 import com.herewhite.sdk.internal.WsJsInterfaceImpl;
 
 import org.json.JSONObject;
@@ -35,6 +37,7 @@ public class WhiteSdk {
     private final RoomJsInterfaceImpl roomJsInterface;
     private final PlayerJsInterfaceImpl playerJsInterface;
     private final SdkJsInterfaceImpl sdkJsInterface;
+    private final StoreJsInterfaceImpl storeJsInterface;
     private RtcJsInterfaceImpl rtcJsInterface;
 
     private final int densityDpi;
@@ -133,6 +136,7 @@ public class WhiteSdk {
         roomJsInterface = new RoomJsInterfaceImpl();
         playerJsInterface = new PlayerJsInterfaceImpl();
         sdkJsInterface = new SdkJsInterfaceImpl(commonCallback);
+        storeJsInterface = new StoreJsInterfaceImpl();
         onlyCallbackRemoteStateModify = whiteSdkConfiguration.isOnlyCallbackRemoteStateModify();
 
         if (audioMixerBridge != null) {
@@ -148,6 +152,7 @@ public class WhiteSdk {
         bridge.addJavascriptObject(this.sdkJsInterface, "sdk");
         bridge.addJavascriptObject(this.roomJsInterface, "room");
         bridge.addJavascriptObject(this.playerJsInterface, "player");
+        bridge.addJavascriptObject(this.storeJsInterface, "store");
 
         // JavaScript 必须将所有 state 变化回调提供给 native。
         // 该属性的实现在 native 代码中体现。
@@ -183,6 +188,12 @@ public class WhiteSdk {
         Room room = new Room(roomParams.getUuid(), bridge, densityDpi, onlyCallbackRemoteStateModify);
         room.setRoomListener(roomListener);
         roomJsInterface.setRoom(room.getRoomDelegate());
+        storeJsInterface.setStore(new StoreDelegate() {
+            @Override
+            public void fireSyncedStoreUpdate(String value) {
+                room.getSyncedStore().fireStorageStateUpdate(value);
+            }
+        });
 
         try {
             bridge.callHandler("sdk.joinRoom", new Object[]{roomParams}, (OnReturnValue<String>) roomString -> {
@@ -236,6 +247,12 @@ public class WhiteSdk {
             player.addPlayerListener(listener);
         }
         playerJsInterface.setPlayer(player.getDelegate());
+        storeJsInterface.setStore(new StoreDelegate() {
+            @Override
+            public void fireSyncedStoreUpdate(String value) {
+                player.getSyncedStore().fireStorageStateUpdate(value);
+            }
+        });
 
         try {
             bridge.callHandler("sdk.replayRoom", new Object[]{
@@ -369,6 +386,7 @@ public class WhiteSdk {
      */
     public void releaseRoom() {
         roomJsInterface.setRoom(null);
+        storeJsInterface.setStore(null);
     }
 
     /**
@@ -391,6 +409,7 @@ public class WhiteSdk {
      */
     public void releasePlayer() {
         playerJsInterface.setPlayer(null);
+        storeJsInterface.setStore(null);
     }
 
     /**

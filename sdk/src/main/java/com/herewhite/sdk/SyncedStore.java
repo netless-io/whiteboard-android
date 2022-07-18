@@ -1,9 +1,8 @@
 package com.herewhite.sdk;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.VisibleForTesting;
 
-import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.SDKError;
@@ -81,14 +80,15 @@ public class SyncedStore {
     public void fireStorageStateUpdate(String valueOf) {
         StorageStateUpdate stateUpdate = Utils.fromJson(valueOf, StorageStateUpdate.class);
         String name = stateUpdate.name;
-        JsonElement data = stateUpdate.data;
+        JsonObject data = stateUpdate.data;
         if (types.containsKey(name) && storages.containsKey(name)) {
-            Class<SyncedStoreObject> storeObjectClass = types.get(name);
-            JsonObject merge = assignObject(storages.get(name).deepCopy(), stateUpdate.data);
-            storages.put(stateUpdate.name, merge);
+            JsonObject newValueData = getNewValueObject(data);
 
-            SyncedStoreObject current = Utils.fromJson(merge, storeObjectClass);
-            SyncedStoreObject modifyState = Utils.fromJson(data, storeObjectClass);
+            Class<SyncedStoreObject> storeObjectClass = types.get(name);
+            JsonObject merged = mergeUpdate(storages.get(name).deepCopy(), newValueData);
+            storages.put(stateUpdate.name, merged);
+            SyncedStoreObject current = Utils.fromJson(merged, storeObjectClass);
+            SyncedStoreObject modifyState = Utils.fromJson(newValueData, storeObjectClass);
 
             notifyStateChanged(stateUpdate.name, modifyState, current);
         }
@@ -101,40 +101,30 @@ public class SyncedStore {
         }
     }
 
-    private static JsonObject assignObject(JsonObject object, JsonObject update) {
-        return (JsonObject) assignElement(object, update);
-    }
-
     /**
-     * 更新本地存储元素
-     * 如果 update 为空，是为清除存储操作。
-     * 如果 update 非空，使用 update 数据更新已有元，此过程为递归过程
-     * @param element 本地存储元素副本
-     * @param update  更新字段信息
-     * @return 更新后元素
+     * SyncedStore 约定只保证一层数据变更。
+     * update 格式类型 {"key":{"oldValue":{},"newValue":{}}}
+     * @param update
+     * @return
      */
-    @VisibleForTesting
-    static JsonElement assignElement(JsonElement element, JsonElement update) {
-        if (!element.isJsonObject() || !update.isJsonObject()) {
-            return update;
-        }
-        JsonObject obj1 = (JsonObject) element;
-        JsonObject obj2 = (JsonObject) update;
-
-        // empty call
-        if (obj2.keySet().isEmpty()) {
-            return obj2;
-        }
-        for (String key : obj2.keySet()) {
-            if (obj1.has(key) && obj1.get(key).isJsonObject()) {
-                // 存在则递归替换
-                JsonElement merge = assignElement(obj1.get(key), obj2.get(key));
-                obj1.add(key, merge);
+    private static JsonObject getNewValueObject(JsonObject update) {
+        JsonObject result = new JsonObject();
+        for (String key : update.keySet()) {
+            JsonObject updateItem = update.get(key).getAsJsonObject();
+            if (updateItem.has("newValue")) {
+                result.add(key, updateItem.get("newValue"));
             } else {
-                obj1.add(key, obj2.get(key));
+                result.add(key, JsonNull.INSTANCE);
             }
         }
-        return obj1;
+        return result;
+    }
+
+    private static JsonObject mergeUpdate(JsonObject object, JsonObject update) {
+        for (String key : update.keySet()) {
+            object.add(key, update.get(key));
+        }
+        return object;
     }
 
     public <T extends SyncedStoreObject> void addOnStateChangedListener(String name, @NonNull OnStateChangedListener<T> listener) {
@@ -154,7 +144,7 @@ public class SyncedStore {
     }
 
     public interface OnStateChangedListener<T extends SyncedStoreObject> {
-        void onStateChanged(T diff, T newValue);
+        void onStateChanged(T value, T diff);
     }
 
     static class StorageStateUpdate {
