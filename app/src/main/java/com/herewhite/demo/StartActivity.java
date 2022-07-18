@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.herewhite.demo.common.DemoAPI;
-import com.herewhite.demo.test.window.WindowRegisterAppActivity;
 import com.herewhite.demo.test.window.WindowTestActivity;
 
 public class StartActivity extends AppCompatActivity {

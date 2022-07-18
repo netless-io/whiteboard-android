@@ -25,9 +25,39 @@ public class WindowParams extends WhiteObject {
     private Boolean debug;
 
     /**
+     * 多窗口全屏模式
+     */
+    private TeleBoxFullscreen fullscreen;
+
+    /**
      * 窗口配色模式
      */
     private WindowPrefersColorScheme prefersColorScheme;
+
+    /**
+     * Custom styles for telebox manager container
+     */
+    private String containerStyle;
+
+    /**
+     * Custom styles for telebox manager stage
+     */
+    private String stageStyle;
+
+    /**
+     * 自定义多窗口区域（主窗口）样式
+     */
+    private String defaultBoxBodyStyle;
+
+    /**
+     * 自定义独立窗口样式
+     */
+    private String defaultBoxStageStyle;
+
+    /**
+     * 多窗口主题配置
+     */
+    private TeleBoxManagerThemeConfig theme;
 
     public Float getContainerSizeRatio() {
         return containerSizeRatio;
@@ -78,7 +108,62 @@ public class WindowParams extends WhiteObject {
         return prefersColorScheme;
     }
 
-    public void setPrefersColorScheme(WindowPrefersColorScheme prefersColorScheme) {
+    public WindowParams setPrefersColorScheme(WindowPrefersColorScheme prefersColorScheme) {
         this.prefersColorScheme = prefersColorScheme;
+        return this;
+    }
+
+    public TeleBoxFullscreen getFullscreen() {
+        return fullscreen;
+    }
+
+    public WindowParams setFullscreen(TeleBoxFullscreen fullscreen) {
+        this.fullscreen = fullscreen;
+        return this;
+    }
+
+    public String getContainerStyle() {
+        return containerStyle;
+    }
+
+    public WindowParams setContainerStyle(String containerStyle) {
+        this.containerStyle = containerStyle;
+        return this;
+    }
+
+    public String getStageStyle() {
+        return stageStyle;
+    }
+
+    public WindowParams setStageStyle(String stageStyle) {
+        this.stageStyle = stageStyle;
+        return this;
+    }
+
+    public String getDefaultBoxBodyStyle() {
+        return defaultBoxBodyStyle;
+    }
+
+    public WindowParams setDefaultBoxBodyStyle(String defaultBoxBodyStyle) {
+        this.defaultBoxBodyStyle = defaultBoxBodyStyle;
+        return this;
+    }
+
+    public String getDefaultBoxStageStyle() {
+        return defaultBoxStageStyle;
+    }
+
+    public WindowParams setDefaultBoxStageStyle(String defaultBoxStageStyle) {
+        this.defaultBoxStageStyle = defaultBoxStageStyle;
+        return this;
+    }
+
+    public TeleBoxManagerThemeConfig getTheme() {
+        return theme;
+    }
+
+    public WindowParams setTheme(TeleBoxManagerThemeConfig theme) {
+        this.theme = theme;
+        return this;
     }
 }
