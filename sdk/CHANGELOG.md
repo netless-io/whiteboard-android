@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.17.0] - PENDING
+- 更新 `window-manager` 至 1.0.0
+- 添加 `Room.closeApp` 接口
 ## [2.16.26] - 2022-07-19
 - 更新 `white-web-sdk` 至 2.16.27
 - 画笔支持虚线功能，设置 `room.memberState.dottedLine` 为 `true` 开启该功能。该功能需要开启新铅笔后才能使用

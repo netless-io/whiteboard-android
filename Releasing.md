@@ -20,6 +20,7 @@ Cutting a Release
    git add sdk/src/main/assets carrot.yml sdk/src/main/java/com/herewhite/sdk/WhiteSdk.java sdk/CHANGELOG.md
    git commit -m "release $RELEASE_VERSION"
    git tag -a $RELEASE_VERSION -m "Version $RELEASE_VERSION"
-   git push -v origin refs/heads/master:refs/heads/master
+   # git push -v origin refs/heads/master:refs/heads/master
+   git push -v origin refs/heads/window-manager:refs/heads/window-manager
    git push origin $RELEASE_VERSION
    ```
