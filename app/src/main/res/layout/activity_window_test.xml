@@ -70,6 +70,11 @@
                 android:text="NewDynamic" />
 
             <Button
+                android:id="@+id/closeApp"
+                style="@style/TestButton"
+                android:text="closeApp" />
+
+            <Button
                 android:id="@+id/insertLocal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

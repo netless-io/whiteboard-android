@@ -25,7 +25,6 @@ import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.SceneState;
-import com.herewhite.sdk.domain.SyncedState;
 import com.herewhite.sdk.domain.ViewMode;
 import com.herewhite.sdk.domain.WindowAppParam;
 import com.herewhite.sdk.domain.WindowPrefersColorScheme;
@@ -1317,6 +1316,18 @@ public class Room extends Displayer {
             public void onValue(String value) {
                 if (promise != null) {
                     promise.then(value);
+                }
+            }
+        });
+    }
+
+    // 关闭窗口
+    public void closeApp(String appId, Promise<Boolean> promise) {
+        bridge.callHandler("room.closeApp", new Object[]{appId}, new OnReturnValue<Object>() {
+            @Override
+            public void onValue(Object value) {
+                if (promise != null) {
+                    promise.then(true);
                 }
             }
         });
