@@ -11,6 +11,8 @@ public class MemberState extends WhiteObject {
     private int[] strokeColor;
     private Double strokeWidth;
     private Double textSize;
+    private Boolean textCanSelectText;
+    private Boolean dottedLine;
 
     public MemberState() {
     }
@@ -124,5 +126,42 @@ public class MemberState extends WhiteObject {
      */
     public void setTextSize(double textSize) {
         this.textSize = textSize;
+    }
+
+    /**
+     * 获取文本是否可直接选择编辑
+     *
+     * @return 是否开启可选择
+     */
+    public Boolean getTextCanSelectText() {
+        return textCanSelectText;
+    }
+
+    /**
+     * 设置文字可否直接选择并编辑文字
+     *
+     * @param textCanSelectText true 开启该功能
+     */
+    public void setTextCanSelectText(Boolean textCanSelectText) {
+        this.textCanSelectText = textCanSelectText;
+    }
+
+    /**
+     * 获取新铅笔是否画虚线
+     *
+     * @return 是否是虚线
+     */
+    public Boolean getDottedLine() {
+        return dottedLine;
+    }
+
+    /**
+     * 设置新铅笔画虚线
+     * 如需更改此配置，需要在加入房间时设置 {@link com.herewhite.sdk.RoomParams#setDisableNewPencil (false)}}
+     *
+     * @param dottedLine true 画虚线 false 直线
+     */
+    public void setDottedLine(Boolean dottedLine) {
+        this.dottedLine = dottedLine;
     }
 }

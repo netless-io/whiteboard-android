@@ -1,4 +1,9 @@
 # 版本更新记录
+## [2.16.26] - 2022-07-19
+- 更新 `white-web-sdk` 至 2.16.27
+- 画笔支持虚线功能，设置 `room.memberState.dottedLine` 为 `true` 开启该功能。该功能需要开启新铅笔后才能使用
+- 文字工具支持直接选择并编辑文字，设置 `room.memberState.textCanSelectText` 为 `true` 开启该功能
+- 修改箭头、直线工具的交互方式
 ## [2.16.25] - 2022-07-07
 - 更新 `@netless/window-manager`至 0.4.35。 
   - 降低发送鼠标移动事件的频率 
