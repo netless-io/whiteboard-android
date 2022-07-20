@@ -1,6 +1,7 @@
 # 版本更新记录
 ## [2.17.0] - PENDING
 - 更新 `window-manager` 至 1.0.0
+- 添加 `WindowParams.fullscreen`, `WindowParams.theme`, `WindowParams.xxxStyle` 等配置
 - 添加 `Room.closeApp` 接口
 ## [2.16.26] - 2022-07-19
 - 更新 `white-web-sdk` 至 2.16.27
