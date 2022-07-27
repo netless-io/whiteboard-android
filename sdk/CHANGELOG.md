@@ -1,7 +1,9 @@
 # 版本更新记录
-## [2.17.0] - PENDING
-- 更新 `window-manager` 至 1.0.0
-- 添加 `WindowParams.fullscreen`, `WindowParams.theme`, `WindowParams.xxxStyle` 等配置
+## [2.17.0-alpha.3] - PENDING
+- 更新 `@netless/window-manager` 至 1.0.0-canary.46
+- 更新 `@netless/synced-store` 至 2.0.3
+- 新增 `WindowParams.fullscreen` 属性，用于设置全屏模式的样式
+- 新增 `WindowParams.containerStyle`, `WindowParams.stageStyle`, `WindowParams.defaultBoxBodyStyle`, `WindowParams.defaultBoxStageStyle`, `WindowParams.theme` 属性，用于设置窗口样式
 - 添加 `Room.closeApp` 接口
 ## [2.16.26] - 2022-07-19
 - 更新 `white-web-sdk` 至 2.16.27
