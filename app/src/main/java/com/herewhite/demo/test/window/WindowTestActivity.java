@@ -62,11 +62,7 @@ public class WindowTestActivity extends AppCompatActivity {
     WhiteboardView mWhiteboardView;
     WhiteSdk mWhiteSdk;
     Room mRoom;
-    SyncedStore mSyncedStore;
     FrameLayout mWhiteboardParent;
-    DragViewPlugin dragViewPlugin;
-
-    UserSyncedState state = new UserSyncedState();
 
     Stack<String> appIds = new Stack<>();
     private Promise<String> insertPromise = new Promise<String>() {
@@ -180,20 +176,6 @@ public class WindowTestActivity extends AppCompatActivity {
             });
         });
 
-        // 插入本地同步信息
-        findViewById(R.id.insertLocal).setOnClickListener(v -> {
-            if (mRoom != null) {
-                // 插入方初始化状态
-                state = new UserSyncedState();
-                state.dragViewState.w = 0.3f;
-                state.dragViewState.h = 0.2f;
-                mRoom.getSyncedStore().setStorageState(CUSTOM_UI, state);
-            }
-
-            updateDragView();
-            dragViewPlugin.startTimer(120_000);
-        });
-
         // 16:9 限定
         findViewById(R.id.lockRatio).setOnClickListener(v -> {
             lockRatio();
@@ -237,13 +219,6 @@ public class WindowTestActivity extends AppCompatActivity {
 
     long lastUpdate = 0;
 
-    private void updateStorage() {
-        if (mRoom != null && System.currentTimeMillis() - lastUpdate > 50) {
-            lastUpdate = System.currentTimeMillis();
-            mRoom.getSyncedStore().setStorageState(CUSTOM_UI, state);
-        }
-    }
-
     private void lockRatio() {
         ViewGroup.LayoutParams layoutParams = mWhiteboardParent.getLayoutParams();
         int width = mWhiteboardParent.getWidth();
@@ -252,19 +227,6 @@ public class WindowTestActivity extends AppCompatActivity {
         layoutParams.width = (int) (factor * 16);
         layoutParams.height = (int) (factor * 9);
         mWhiteboardParent.setLayoutParams(layoutParams);
-    }
-
-    private void updateDragView() {
-        if (dragViewPlugin == null) {
-            dragViewPlugin = new DragViewPlugin(this);
-            dragViewPlugin.setListener((dragViewState) -> {
-                state.dragViewState = dragViewState;
-                updateStorage();
-            });
-            mWhiteboardParent.addView(dragViewPlugin, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-        }
-
-        dragViewPlugin.updateState(state.dragViewState);
     }
 
     @Override
@@ -357,24 +319,6 @@ public class WindowTestActivity extends AppCompatActivity {
             @Override
             public void then(Room room) {
                 mRoom = room;
-                mSyncedStore = mRoom.getSyncedStore();
-                mSyncedStore.addOnStateChangedListener(CUSTOM_UI, new SyncedStore.OnStateChangedListener<UserSyncedState>() {
-                    @Override
-                    public void onStateChanged(UserSyncedState value, UserSyncedState diff) {
-                        updateState(value);
-                    }
-                });
-                mSyncedStore.connectStorage(CUSTOM_UI, new UserSyncedState(), new Promise<UserSyncedState>() {
-                    @Override
-                    public void then(UserSyncedState userSyncedState) {
-                        updateState(userSyncedState);
-                    }
-
-                    @Override
-                    public void catchEx(SDKError t) {
-
-                    }
-                });
             }
 
             @Override
@@ -382,12 +326,6 @@ public class WindowTestActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    private void updateState(UserSyncedState value) {
-        state = value;
-        logRoomInfo("onAttributesUpdate:" + state);
-        updateDragView();
     }
     //endregion
 
