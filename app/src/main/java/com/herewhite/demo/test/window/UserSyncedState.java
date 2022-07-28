@@ -1,12 +1,12 @@
 package com.herewhite.demo.test.window;
 
-import com.herewhite.sdk.SyncedStoreObject;
+import com.herewhite.sdk.domain.WhiteObject;
 
-public class UserSyncedState extends SyncedStoreObject {
+public class UserSyncedState extends WhiteObject {
     public DragViewState dragViewState = new DragViewState();
 }
 
-class DragViewState extends SyncedStoreObject {
+class DragViewState extends WhiteObject {
     // position
     public float w = 0;
     public float h = 0;

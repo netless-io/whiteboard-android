@@ -6,6 +6,9 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.SDKError;
+import com.herewhite.sdk.domain.WhiteObject;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -15,39 +18,41 @@ import wendu.dsbridge.OnReturnValue;
 public class SyncedStore {
     private final JsBridgeInterface bridge;
     private final HashMap<String, JsonObject> storages = new HashMap<>();
-    private final HashMap<String, Class<SyncedStoreObject>> types = new HashMap<>();
     private final HashMap<String, CopyOnWriteArraySet<OnStateChangedListener>> listenersByName = new HashMap<>();
 
     public SyncedStore(JsBridgeInterface bridge) {
         this.bridge = bridge;
     }
 
-    public <T extends SyncedStoreObject> void connectStorage(String name, T data, Promise<T> promise) {
-        types.put(name, (Class<SyncedStoreObject>) data.getClass());
-        bridge.callHandler("store.connectStorage", new Object[]{name, data}, (OnReturnValue<String>) retValue -> {
-            JsonObject state = Utils.fromJson(retValue, JsonObject.class);
-            storages.put(name, state);
-            promise.then(getStorageState(name));
+    public void connectStorage(String name, String defaultJson, Promise<String> promise) {
+        bridge.callHandler("store.connectStorage", new Object[]{name, Utils.asJSONObject(defaultJson)}, (OnReturnValue<String>) retValue -> {
+            SDKError sdkError = SDKError.promiseError(retValue);
+            if (sdkError == null) {
+                JsonObject state = Utils.fromJson(retValue, JsonObject.class);
+                storages.put(name, state);
+                promise.then(retValue);
+            } else {
+                promise.catchEx(sdkError);
+            }
         });
     }
 
-    public <T extends SyncedStoreObject> T getStorageState(String name) {
-        return (T) Utils.fromJson(storages.get(name), types.get(name));
+    public String getStorageState(String name) {
+        return Utils.toJson(storages.get(name));
     }
 
-    public <T extends SyncedStoreObject> void getStorageState(String name, Promise<T> promise) {
+    public void getStorageState(String name, Promise<String> promise) {
         bridge.callHandler("store.getStorageState", new Object[]{name}, (OnReturnValue<String>) retValue -> {
             try {
-                T state = (T) Utils.fromJson(retValue, types.get(name));
-                promise.then(state);
+                promise.then(retValue);
             } catch (Exception e) {
                 promise.catchEx(SDKError.promiseError(e.getMessage()));
             }
         });
     }
 
-    public <T extends SyncedStoreObject> void setStorageState(String name, T data) {
-        bridge.callHandler("store.setStorageState", new Object[]{name, data});
+    public void setStorageState(String name, String json) {
+        bridge.callHandler("store.setStorageState", new Object[]{name, json});
     }
 
     /**
@@ -81,23 +86,24 @@ public class SyncedStore {
         StorageStateUpdate stateUpdate = Utils.fromJson(valueOf, StorageStateUpdate.class);
         String name = stateUpdate.name;
         JsonObject data = stateUpdate.data;
-        if (types.containsKey(name) && storages.containsKey(name)) {
-            JsonObject newValueData = getNewValueObject(data);
-
-            Class<SyncedStoreObject> storeObjectClass = types.get(name);
-            JsonObject merged = mergeUpdate(storages.get(name).deepCopy(), newValueData);
+        if (storages.containsKey(name)) {
+            JsonObject merged = mergeUpdate(storages.get(name).deepCopy(), getNewValueObject(data));
             storages.put(stateUpdate.name, merged);
-            SyncedStoreObject current = Utils.fromJson(merged, storeObjectClass);
-            SyncedStoreObject modifyState = Utils.fromJson(newValueData, storeObjectClass);
 
-            notifyStateChanged(stateUpdate.name, modifyState, current);
+            String current = Utils.toJson(merged);
+            String diff = Utils.toJsonWithNull(data);
+
+            notifyStateChanged(stateUpdate.name, diff, current);
         }
     }
 
-    private void notifyStateChanged(String name, SyncedStoreObject modifyState, SyncedStoreObject current) {
+    private void notifyStateChanged(String name, String diff, String current) {
         CopyOnWriteArraySet<OnStateChangedListener> listeners = listenersByName.get(name);
+        if (listeners == null) {
+            return;
+        }
         for (OnStateChangedListener listener : listeners) {
-            listener.onStateChanged(modifyState, current);
+            listener.onStateChanged(diff, current);
         }
     }
 
@@ -127,7 +133,7 @@ public class SyncedStore {
         return object;
     }
 
-    public <T extends SyncedStoreObject> void addOnStateChangedListener(String name, @NonNull OnStateChangedListener<T> listener) {
+    public void addOnStateChangedListener(String name, @NonNull OnStateChangedListener listener) {
         CopyOnWriteArraySet<OnStateChangedListener> listeners = listenersByName.get(name);
         if (listeners == null) {
             listeners = new CopyOnWriteArraySet<>();
@@ -136,15 +142,15 @@ public class SyncedStore {
         listeners.add(listener);
     }
 
-    public <T extends SyncedStoreObject> void removeOnStateChangedListener(String name, OnStateChangedListener<T> listener) {
+    public void removeOnStateChangedListener(String name, OnStateChangedListener listener) {
         CopyOnWriteArraySet<OnStateChangedListener> listeners = listenersByName.get(name);
         if (listeners != null) {
             listeners.remove(listener);
         }
     }
 
-    public interface OnStateChangedListener<T extends SyncedStoreObject> {
-        void onStateChanged(T value, T diff);
+    public interface OnStateChangedListener {
+        void onStateChanged(String value, String diff);
     }
 
     static class StorageStateUpdate {

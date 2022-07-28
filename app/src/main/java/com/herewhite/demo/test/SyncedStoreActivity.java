@@ -5,12 +5,13 @@ import android.view.View;
 import com.herewhite.demo.common.SampleBaseActivity;
 import com.herewhite.demo.databinding.ActivitySyncedStoreBinding;
 import com.herewhite.sdk.SyncedStore;
-import com.herewhite.sdk.SyncedStoreObject;
 import com.herewhite.sdk.WhiteSdkConfiguration;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.SDKError;
+import com.herewhite.sdk.domain.WhiteObject;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class SyncedStoreActivity extends SampleBaseActivity {
     static final String TAG = SyncedStoreActivity.class.getSimpleName();
@@ -21,7 +22,7 @@ public class SyncedStoreActivity extends SampleBaseActivity {
     private SyncedStore syncedStore;
     private MainStorage mainStorage;
 
-    static class MainStorage extends SyncedStoreObject {
+    static class MainStorage extends WhiteObject {
         public Integer intValue;
         public String strValue;
         public ObjValue objValue;
@@ -60,16 +61,28 @@ public class SyncedStoreActivity extends SampleBaseActivity {
     @Override
     protected void initView() {
         binding.connectStorage.setOnClickListener(v -> {
+            syncedStore.connectStorage(MAIN_STORAGE_NAME, "{}", new Promise<String>() {
+                @Override
+                public void then(String mainSyncedStore) {
+                    SyncedStoreActivity.this.mainStorage = gson.fromJson(mainSyncedStore, MainStorage.class);
+                }
 
+                @Override
+                public void catchEx(SDKError t) {
+                    alert("connectStorage error", Arrays.toString(t.getStackTrace()));
+                }
+            });
         });
         binding.getStorageState.setOnClickListener(v -> {
-            logRoomInfo("storage main sync state" + syncedStore.getStorageState(MAIN_STORAGE_NAME).toString());
+            MainStorage mainStorage = gson.fromJson(syncedStore.getStorageState(MAIN_STORAGE_NAME), MainStorage.class);
+            logRoomInfo("storage main sync state" + mainStorage);
         });
         binding.getStorageStateAsync.setOnClickListener(v -> {
-            syncedStore.getStorageState(MAIN_STORAGE_NAME, new Promise<SyncedStoreObject>() {
+            syncedStore.getStorageState(MAIN_STORAGE_NAME, new Promise<String>() {
                 @Override
-                public void then(SyncedStoreObject syncedStoreObject) {
-                    logRoomInfo("storage main async state" + syncedStoreObject);
+                public void then(String json) {
+                    MainStorage mainStorage = gson.fromJson(json, MainStorage.class);
+                    logRoomInfo("storage main async state" + mainStorage);
                 }
 
                 @Override
@@ -105,7 +118,7 @@ public class SyncedStoreActivity extends SampleBaseActivity {
                     updates[3] = mainStorage;
                 }
                 if (syncedStore != null) {
-                    syncedStore.setStorageState(MAIN_STORAGE_NAME, updates[index++]);
+                    syncedStore.setStorageState(MAIN_STORAGE_NAME, gson.toJson(updates[index++]));
                     index = index % updates.length;
                 }
             }
@@ -122,12 +135,12 @@ public class SyncedStoreActivity extends SampleBaseActivity {
     protected void onJoinRoomSuccess() {
         syncedStore = room.getSyncedStore();
         syncedStore.addOnStateChangedListener(MAIN_STORAGE_NAME, (diff, currentValue) -> {
-            logRoomInfo("storage[main] updated" + "\tdiff:" + diff.toString() + "\tvalue:" + currentValue.toString());
+            logRoomInfo("storage[main] updated" + "\tdiff:" + diff + "\tvalue:" + currentValue);
         });
-        syncedStore.connectStorage(MAIN_STORAGE_NAME, new MainStorage(), new Promise<MainStorage>() {
+        syncedStore.connectStorage(MAIN_STORAGE_NAME, "{}", new Promise<String>() {
             @Override
-            public void then(MainStorage mainSyncedStore) {
-                SyncedStoreActivity.this.mainStorage = mainSyncedStore;
+            public void then(String mainSyncedStore) {
+                SyncedStoreActivity.this.mainStorage = gson.fromJson(mainSyncedStore, MainStorage.class);
             }
 
             @Override

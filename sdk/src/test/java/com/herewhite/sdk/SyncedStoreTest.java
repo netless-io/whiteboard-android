@@ -1,12 +1,13 @@
 package com.herewhite.sdk;
 
 import com.google.gson.Gson;
+import com.herewhite.sdk.domain.WhiteObject;
 
 import org.junit.Test;
 
 public class SyncedStoreTest {
 
-    static class TestSyncedStore extends SyncedStoreObject {
+    static class TestSyncedStore extends WhiteObject {
         String strValue;
         Integer intValue;
         ObjValue objValue;

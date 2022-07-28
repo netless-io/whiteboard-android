@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.DisplayMetrics;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
 import com.herewhite.sdk.domain.WhiteObject;
@@ -17,6 +18,9 @@ import java.util.List;
 
 class Utils {
     private final static Gson gson = new Gson();
+    private final static Gson gsonWithNull = new GsonBuilder()
+            .serializeNulls()
+            .create();
 
     public static <T> T fromJson(String json, Class<T> classOfT) throws JsonSyntaxException {
         return gson.fromJson(json, classOfT);
@@ -24,6 +28,14 @@ class Utils {
 
     public static <T> T fromJson(JsonElement jsonElement, Class<T> classOfT) throws JsonSyntaxException {
         return gson.fromJson(jsonElement, classOfT);
+    }
+
+    public static String toJson(Object object) {
+        return gson.toJson(object);
+    }
+
+    public static String toJsonWithNull(Object object) {
+        return gsonWithNull.toJson(object);
     }
 
     /**
