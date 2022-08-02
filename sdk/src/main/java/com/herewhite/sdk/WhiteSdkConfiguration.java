@@ -408,6 +408,10 @@ public class WhiteSdkConfiguration extends WhiteObject {
         __netlessUA = netlessUA;
     }
 
+    public List<String> getNetlessUA() {
+        return __netlessUA;
+    }
+
     /// @cond test
 
     /**
