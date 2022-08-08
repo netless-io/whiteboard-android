@@ -6,9 +6,6 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.SDKError;
-import com.herewhite.sdk.domain.WhiteObject;
-
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -52,7 +49,7 @@ public class SyncedStore {
     }
 
     public void setStorageState(String name, String json) {
-        bridge.callHandler("store.setStorageState", new Object[]{name, json});
+        bridge.callHandler("store.setStorageState", new Object[]{name, Utils.asJSONObject(json)});
     }
 
     /**
@@ -90,20 +87,20 @@ public class SyncedStore {
             JsonObject merged = mergeUpdate(storages.get(name).deepCopy(), getNewValueObject(data));
             storages.put(stateUpdate.name, merged);
 
-            String current = Utils.toJson(merged);
+            String value = Utils.toJson(merged);
             String diff = Utils.toJsonWithNull(data);
 
-            notifyStateChanged(stateUpdate.name, diff, current);
+            notifyStateChanged(stateUpdate.name, value, diff);
         }
     }
 
-    private void notifyStateChanged(String name, String diff, String current) {
+    private void notifyStateChanged(String name, String value, String diff) {
         CopyOnWriteArraySet<OnStateChangedListener> listeners = listenersByName.get(name);
         if (listeners == null) {
             return;
         }
         for (OnStateChangedListener listener : listeners) {
-            listener.onStateChanged(diff, current);
+            listener.onStateChanged(value, diff);
         }
     }
 
@@ -150,6 +147,10 @@ public class SyncedStore {
     }
 
     public interface OnStateChangedListener {
+        /**
+         * @param value 当前状态值对象
+         * @param diff 变更字段 json 表示
+         */
         void onStateChanged(String value, String diff);
     }
 
