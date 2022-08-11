@@ -1,4 +1,9 @@
 # 版本更新记录
+## [2.16.29] - 2022-08-11
+- 更新 `@netless/app-slide` 至 0.2.7。
+- 更新 `@netless/slide-rtc-plugin` 至 0.6.1。
+- 添加 `AudioMixerBridge.pauseAudioMixing`, `AudioMixerBridge.resumeAudioMixing`
+- 修复 rtc 混音问题16.29
 ## [2.16.28] - 2022-08-03
 - 更新 `white-web-sdk` 至 2.16.31。修复 room.setMemberState() 某些字段无法保存到本地问题。
 ## [2.16.27] - 2022-08-01
