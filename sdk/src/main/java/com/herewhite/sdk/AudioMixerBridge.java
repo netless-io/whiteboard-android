@@ -44,4 +44,14 @@ public interface AudioMixerBridge {
      * @param position 整数。进度条位置，单位为毫秒。
      */
     void setAudioMixingPosition(int position);
+
+    /**
+     * 暂停播放音乐文件及混音
+     */
+    void pauseAudioMixing();
+
+    /**
+     * 恢复播放音乐文件及混音
+     */
+    void resumeAudioMixing();
 }

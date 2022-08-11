@@ -76,6 +76,12 @@ public class WhiteSdk {
         return SDK_VERSION;
     }
 
+    private static AudioMixerBridge sAudioMixerBridge;
+
+    public static void setAudioMixerBridge(AudioMixerBridge audioMixerBridge) {
+        sAudioMixerBridge = audioMixerBridge;
+    }
+
     /**
      * 初始化白板 SDK 实例。
      * <p>
@@ -139,6 +145,9 @@ public class WhiteSdk {
         storeJsInterface = new StoreJsInterfaceImpl();
         onlyCallbackRemoteStateModify = whiteSdkConfiguration.isOnlyCallbackRemoteStateModify();
 
+        if (audioMixerBridge == null) {
+            audioMixerBridge = sAudioMixerBridge;
+        }
         if (audioMixerBridge != null) {
             audioMixerImplement = new AudioMixerImplement(bridge);
 

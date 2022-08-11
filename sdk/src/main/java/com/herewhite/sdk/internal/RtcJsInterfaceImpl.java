@@ -38,6 +38,20 @@ public class RtcJsInterfaceImpl {
     }
 
     @JavascriptInterface
+    public void pauseAudioMixing(Object args) {
+        if (this.mixerBridge != null) {
+            this.mixerBridge.pauseAudioMixing();
+        }
+    }
+
+    @JavascriptInterface
+    public void resumeAudioMixing(Object args) {
+        if (this.mixerBridge != null) {
+            this.mixerBridge.resumeAudioMixing();
+        }
+    }
+
+    @JavascriptInterface
     public void setAudioMixingPosition(Object args) {
         if (this.mixerBridge != null) {
             int pos = Integer.valueOf((Integer) args);
