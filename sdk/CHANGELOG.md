@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.16.30] - 2022-08-16
+- 更新 `white-web-sdk` 至 2.16.33。
+- 更新 `@netless/window-manager`至 0.4.38。
 ## [2.16.29] - 2022-08-11
 - 更新 `@netless/app-slide` 至 0.2.7。
 - 更新 `@netless/slide-rtc-plugin` 至 0.6.1。
