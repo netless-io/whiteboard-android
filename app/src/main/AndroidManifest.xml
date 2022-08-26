@@ -91,6 +91,7 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:screenOrientation="landscape" />
         <activity android:name=".test.SyncedStoreActivity" />
+        <activity android:name=".test.CameraBoundActivity" android:screenOrientation="landscape"/>
     </application>
 
 </manifest>
