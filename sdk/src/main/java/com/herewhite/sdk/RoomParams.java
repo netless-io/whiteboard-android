@@ -444,4 +444,14 @@ public class RoomParams extends WhiteObject {
     public boolean isUseNativeWebSocket() {
         return nativeWebSocket;
     }
+
+    private boolean floatBar = true;
+
+    public boolean isUsingFloatBar() {
+        return floatBar;
+    }
+
+    public void setUsingFloatBar(boolean floatBar) {
+        this.floatBar = floatBar;
+    }
 }
