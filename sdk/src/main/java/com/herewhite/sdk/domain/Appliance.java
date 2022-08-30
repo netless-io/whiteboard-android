@@ -55,4 +55,8 @@ public class Appliance {
      * 图形工具。
      */
     public final static String SHAPE = "shape";
+    /**
+     * 橡皮工具（用来擦除铅笔笔迹的局部）
+     */
+    public final static String PENCIL_ERASER = "pencilEraser";
 }
