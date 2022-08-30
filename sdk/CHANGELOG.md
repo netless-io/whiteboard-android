@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.16.34] - 2022-08-30
+- 新增 `RoomParams.floatBar`, 通过 `RoomParams.setUsingFloatBar` 开启或关闭图片、画笔、文本等的浮窗操作工具.
+- 新增 `Appliance.PENCIL_ERASER`, 支持线条的局部擦除.
 ## [2.16.33] - 2022-08-23
 - 更新 `white-web-sdk` 至 2.16.34。
 - 更新 `@netless/app-slide` 至 0.2.8。修复切页动画显示不正确的问题
