@@ -1,7 +1,12 @@
 package com.herewhite.sdk;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import static org.mockito.AdditionalMatchers.aryEq;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import com.herewhite.sdk.domain.AkkoEvent;
 import com.herewhite.sdk.domain.GlobalState;
 import com.herewhite.sdk.domain.ImageInformation;
@@ -12,18 +17,10 @@ import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.ViewMode;
-import com.herewhite.sdk.util.GsonFieldIgnoreStrategy;
 
 import junit.framework.TestCase;
 
 import wendu.dsbridge.OnReturnValue;
-
-import static org.mockito.AdditionalMatchers.aryEq;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 public class RoomTest extends TestCase {
     Promise IGNORE_PROMISE = new Promise() {
@@ -54,19 +51,6 @@ public class RoomTest extends TestCase {
     }
 
     public void tearDown() throws Exception {
-    }
-
-    private static final String ROOM_INITIAL_STATES = "{\"roomPhase\":\"connecting\",\"disconnectedBySelf\":false,\"writable\":null,\"timeDelay\":0.0,\"observerId\":null,\"localRoomStateListener\":{},\"roomDelegate\":null,\"backgroundColor\":-1,\"uuid\":\"7e7c8f007a4011eba97639a3a8d1dde1\",\"densityDpi\":3,\"eventListenerMap\":{},\"frequencyEventListenerMap\":{}}";
-
-    public void testInitialStatesBySerialization() {
-        Gson gson = new GsonBuilder()
-                .serializeNulls()
-                .addSerializationExclusionStrategy(
-                        new GsonFieldIgnoreStrategy("syncRoomState", "roomListener", "bridge", "handler")
-                )
-                .create();
-
-        assertEquals(ROOM_INITIAL_STATES, gson.toJson(mRoom));
     }
 
     public void testSetAndGet_DisconnectedBySelf() {

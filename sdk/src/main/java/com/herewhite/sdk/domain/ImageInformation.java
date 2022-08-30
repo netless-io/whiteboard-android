@@ -13,6 +13,7 @@ public class ImageInformation extends WhiteObject {
     private Double centerY;
     private Double width;
     private Double height;
+    private Boolean locked = false;
 
     /**
      * 获取是否锁定图片。
@@ -37,8 +38,6 @@ public class ImageInformation extends WhiteObject {
     public void setLocked(Boolean locked) {
         this.locked = locked;
     }
-
-    private Boolean locked = false;
 
     /**
      * 获取图片的 UUID。

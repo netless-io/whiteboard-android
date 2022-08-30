@@ -22,16 +22,29 @@ import okhttp3.Response;
  * Class for query convert task by Projector
  */
 public class ProjectorQuery {
-    private ConverterStatus status;
+    private final static String QUERY_URL_FORMAT = "https://api.netless.link/v5/projector/tasks/%s";
+    static ThreadPoolExecutor executorService;
+
+    static {
+        executorService = new ThreadPoolExecutor(4,
+                4,
+                10L,
+                TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(),
+                new ProjectorThreadFactory());
+        executorService.allowCoreThreadTimeOut(true);
+    }
+
     private final Region region;
     private final String taskUuid;
     private final String taskToken;
     private final long interval;
     private final long timeout;
     private final Callback outCallback;
-
+    private final Gson gson = new Gson();
+    private final OkHttpClient client = new OkHttpClient();
+    private ConverterStatus status;
     private long startTime;
-
     public ProjectorQuery(Region region,
                           String taskUuid,
                           String taskToken,
@@ -45,31 +58,6 @@ public class ProjectorQuery {
         this.timeout = timeout;
         this.outCallback = callback;
     }
-
-    static ThreadPoolExecutor executorService;
-
-    private static final class ProjectorThreadFactory implements ThreadFactory {
-        @Override
-        public synchronized Thread newThread(Runnable runnable) {
-            Thread result = new Thread(runnable, "white-sdk-converter");
-            result.setPriority(Thread.MIN_PRIORITY);
-            return result;
-        }
-    }
-
-    static {
-        executorService = new ThreadPoolExecutor(4,
-                4,
-                10L,
-                TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>(),
-                new ProjectorThreadFactory());
-        executorService.allowCoreThreadTimeOut(true);
-    }
-
-    private final static String QUERY_URL_FORMAT = "https://api.netless.link/v5/projector/tasks/%s";
-    private final Gson gson = new Gson();
-    private final OkHttpClient client = new OkHttpClient();
 
     public void startQuery() {
         if (startTime != 0 && isNotFinish()) {
@@ -152,7 +140,6 @@ public class ProjectorQuery {
         return regionElement.getAsString();
     }
 
-
     private void onFinish(QueryResponse response) {
         if (outCallback != null) {
             outCallback.onFinish(response);
@@ -168,6 +155,31 @@ public class ProjectorQuery {
     private void onProgress(double convertedPercentage, QueryResponse response) {
         if (outCallback != null) {
             outCallback.onProgress(convertedPercentage, response);
+        }
+    }
+
+    public enum ConversionStatus {
+        Waiting,
+        Converting,
+        Finished,
+        Fail,
+        Abort,
+    }
+
+    public interface Callback {
+        void onProgress(double progress, QueryResponse convertInfo);
+
+        void onFinish(QueryResponse response);
+
+        void onFailure(ConvertException e);
+    }
+
+    private static final class ProjectorThreadFactory implements ThreadFactory {
+        @Override
+        public synchronized Thread newThread(Runnable runnable) {
+            Thread result = new Thread(runnable, "white-sdk-converter");
+            result.setPriority(Thread.MIN_PRIORITY);
+            return result;
         }
     }
 
@@ -239,14 +251,6 @@ public class ProjectorQuery {
         }
     }
 
-    public interface Callback {
-        void onProgress(double progress, QueryResponse convertInfo);
-
-        void onFinish(QueryResponse response);
-
-        void onFailure(ConvertException e);
-    }
-
     public static class QueryResponse {
         private String uuid;
         private ConversionStatus status;
@@ -302,13 +306,5 @@ public class ProjectorQuery {
         public void setPrefix(String prefix) {
             this.prefix = prefix;
         }
-    }
-
-    public enum ConversionStatus {
-        Waiting,
-        Converting,
-        Finished,
-        Fail,
-        Abort,
     }
 }

@@ -28,18 +28,33 @@ import okhttp3.Response;
 
 public class Converter {
 
-    public enum ConvertType {
-        Unknown,
-        Static,
-        Dynamic,
+    static final String PPT_ORIGIN = "https://cloudcapiv4.herewhite.com";
+    private static final MediaType JSON
+            = MediaType.parse("application/json; charset=utf-8");
+    static ExecutorService poolExecutor = Executors.newSingleThreadExecutor();
+    OkHttpClient client = new OkHttpClient();
+    private String roomToken;
+    private Gson gson;
+    private long interval;
+    private long timeout;
+    private String taskId;
+    private boolean converting = true;
+    private Date beginDate;
+    private ConverterStatus status;
+    public Converter(String roomToken) {
+        this(roomToken, 15 * 1000, 3 * 60 * 1000);
+    }
+    public Converter(String roomToken, long pollingInterval, long timeout) {
+        this.roomToken = roomToken;
+        gson = new Gson();
+        status = ConverterStatus.Idle;
+        this.interval = pollingInterval;
+        this.timeout = timeout;
     }
 
     public String getRoomToken() {
         return roomToken;
     }
-
-    private String roomToken;
-    private Gson gson;
 
     public String getTaskId() {
         return taskId;
@@ -61,36 +76,9 @@ public class Converter {
         this.timeout = timeout;
     }
 
-    private long interval;
-    private long timeout;
-    private String taskId;
-    private boolean converting = true;
-    private Date beginDate;
-
     public ConverterStatus getStatus() {
         return status;
     }
-
-    private ConverterStatus status;
-
-    public Converter(String roomToken) {
-        this(roomToken, 15 * 1000, 3 * 60 * 1000);
-    }
-
-    public Converter(String roomToken, long pollingInterval, long timeout) {
-        this.roomToken = roomToken;
-        gson = new Gson();
-        status = ConverterStatus.Idle;
-        this.interval = pollingInterval;
-        this.timeout = timeout;
-    }
-
-    private static final MediaType JSON
-            = MediaType.parse("application/json; charset=utf-8");
-    static ExecutorService poolExecutor = Executors.newSingleThreadExecutor();
-    static final String PPT_ORIGIN = "https://cloudcapiv4.herewhite.com";
-
-    OkHttpClient client = new OkHttpClient();
 
     public void startConvertTask(final String url, final ConvertType type, final ConverterCallbacks callback) {
 
@@ -163,14 +151,6 @@ public class Converter {
                 });
             }
         });
-    }
-
-    private interface ConvertCallback {
-        void onConvertProgress(Double progress, ConversionInfo info);
-
-        void onConvertFinish(ConversionInfo info);
-
-        void onConvertFailure(ConvertException e);
     }
 
     private void createConvertTask(String url, ConvertType type, final Callback callback) {
@@ -250,12 +230,6 @@ public class Converter {
         }
     }
 
-    private interface CheckCallback {
-        void onCheckResponse(ConversionInfo info);
-
-        void onCheckFailure(Exception e);
-    }
-
     private void checkProgress(String taskId, ConvertType type, final CheckCallback checkCallback) {
 
         String typeUrl = type.equals(ConvertType.Dynamic) ? "dynamic_conversion" : "static_conversion";
@@ -329,5 +303,25 @@ public class Converter {
         } else {
             return com.herewhite.sdk.converter.ConvertType.Dynamic;
         }
+    }
+
+    public enum ConvertType {
+        Unknown,
+        Static,
+        Dynamic,
+    }
+
+    private interface ConvertCallback {
+        void onConvertProgress(Double progress, ConversionInfo info);
+
+        void onConvertFinish(ConversionInfo info);
+
+        void onConvertFailure(ConvertException e);
+    }
+
+    private interface CheckCallback {
+        void onCheckResponse(ConversionInfo info);
+
+        void onCheckFailure(Exception e);
     }
 }

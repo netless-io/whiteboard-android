@@ -10,47 +10,14 @@ import com.google.gson.annotations.SerializedName;
  */
 public class ContentModeConfig extends WhiteObject {
 
+    private Double scale;
+    private Double space;
+    private ScaleMode mode;
+
     public ContentModeConfig() {
         scale = 1d;
         space = 0d;
         mode = ScaleMode.CENTER;
-    }
-
-    /**
-     * 视角边界的缩放模式。
-     */
-    public enum ScaleMode {
-        /**
-         * （默认）基于设置的 `scale` 缩放视角边界。
-         */
-        @SerializedName("Scale")
-        CENTER,
-        /**
-         * 等比例缩放视角边界，使视角边界的长边正好顶住与其垂直的屏幕的两边，以保证在屏幕上完整展示视角边界。
-         */
-        @SerializedName("AspectFit")
-        CENTER_INSIDE,
-        /**
-         * 等比例缩放视角边界，使视角边界的长边正好顶住与其垂直的屏幕的两边，以保证在屏幕上完整展示视角边界；在此基础上，再将视角边界缩放指定的倍数。
-         */
-        @SerializedName("AspectFitScale")
-        CENTER_INSIDE_SCALE,
-        /**
-         * 等比例缩放视角边界，使视角边界的长边正好顶住与其垂直的屏幕的两边；在此基础上，在视角边界的四周填充指定的空白空间。
-         */
-        @SerializedName("AspectFitSpace")
-        CENTER_INSIDE_SPACE,
-        /**
-         * 等比例缩放视角边界，使视角边界的短边正好顶住与其垂直的屏幕的两边，以保证视角边界铺满屏幕。
-         */
-        @SerializedName("AspectFill")
-        CENTER_CROP,
-        /**
-         * 等比例缩放视角边界，使视角边界的短边正好顶住与其垂直的屏幕的两边，以保证视角边界铺满屏幕；在此基础上再将视角边界缩放指定的倍数。
-         *
-         */
-        @SerializedName("AspectFillScale")
-        CENTER_CROP_SPACE,
     }
 
     /**
@@ -115,8 +82,40 @@ public class ContentModeConfig extends WhiteObject {
     public void setMode(ScaleMode mode) {
         this.mode = mode;
     }
-
-    private Double scale;
-    private Double space;
-    private ScaleMode mode;
+    /**
+     * 视角边界的缩放模式。
+     */
+    public enum ScaleMode {
+        /**
+         * （默认）基于设置的 `scale` 缩放视角边界。
+         */
+        @SerializedName("Scale")
+        CENTER,
+        /**
+         * 等比例缩放视角边界，使视角边界的长边正好顶住与其垂直的屏幕的两边，以保证在屏幕上完整展示视角边界。
+         */
+        @SerializedName("AspectFit")
+        CENTER_INSIDE,
+        /**
+         * 等比例缩放视角边界，使视角边界的长边正好顶住与其垂直的屏幕的两边，以保证在屏幕上完整展示视角边界；在此基础上，再将视角边界缩放指定的倍数。
+         */
+        @SerializedName("AspectFitScale")
+        CENTER_INSIDE_SCALE,
+        /**
+         * 等比例缩放视角边界，使视角边界的长边正好顶住与其垂直的屏幕的两边；在此基础上，在视角边界的四周填充指定的空白空间。
+         */
+        @SerializedName("AspectFitSpace")
+        CENTER_INSIDE_SPACE,
+        /**
+         * 等比例缩放视角边界，使视角边界的短边正好顶住与其垂直的屏幕的两边，以保证视角边界铺满屏幕。
+         */
+        @SerializedName("AspectFill")
+        CENTER_CROP,
+        /**
+         * 等比例缩放视角边界，使视角边界的短边正好顶住与其垂直的屏幕的两边，以保证视角边界铺满屏幕；在此基础上再将视角边界缩放指定的倍数。
+         *
+         */
+        @SerializedName("AspectFillScale")
+        CENTER_CROP_SPACE,
+    }
 }

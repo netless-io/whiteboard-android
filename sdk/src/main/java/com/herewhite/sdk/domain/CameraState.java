@@ -5,6 +5,8 @@ package com.herewhite.sdk.domain;
  */
 public class CameraState extends WhiteObject {
     private Double centerX;
+    private Double centerY;
+    private Double scale;
 
     /**
      * 获取视角的中心点在世界坐标系（以白板初始化时的中心点为原点的坐标系）中的 X 轴坐标。
@@ -32,7 +34,4 @@ public class CameraState extends WhiteObject {
     public Double getScale() {
         return scale;
     }
-
-    private Double centerY;
-    private Double scale;
 }

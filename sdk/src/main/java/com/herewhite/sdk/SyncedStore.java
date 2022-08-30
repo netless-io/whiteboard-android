@@ -21,6 +21,32 @@ public class SyncedStore {
         this.bridge = bridge;
     }
 
+    /**
+     * SyncedStore 约定只保证一层数据变更。
+     * update 格式类型 {"key":{"oldValue":{},"newValue":{}}}
+     * @param update
+     * @return
+     */
+    private static JsonObject getNewValueObject(JsonObject update) {
+        JsonObject result = new JsonObject();
+        for (String key : update.keySet()) {
+            JsonObject updateItem = update.get(key).getAsJsonObject();
+            if (updateItem.has("newValue")) {
+                result.add(key, updateItem.get("newValue"));
+            } else {
+                result.add(key, JsonNull.INSTANCE);
+            }
+        }
+        return result;
+    }
+
+    private static JsonObject mergeUpdate(JsonObject object, JsonObject update) {
+        for (String key : update.keySet()) {
+            object.add(key, update.get(key));
+        }
+        return object;
+    }
+
     public void connectStorage(String name, String defaultJson, Promise<String> promise) {
         bridge.callHandler("store.connectStorage", new Object[]{name, Utils.asJSONObject(defaultJson)}, (OnReturnValue<String>) retValue -> {
             SDKError sdkError = SDKError.promiseError(retValue);
@@ -102,32 +128,6 @@ public class SyncedStore {
         for (OnStateChangedListener listener : listeners) {
             listener.onStateChanged(value, diff);
         }
-    }
-
-    /**
-     * SyncedStore 约定只保证一层数据变更。
-     * update 格式类型 {"key":{"oldValue":{},"newValue":{}}}
-     * @param update
-     * @return
-     */
-    private static JsonObject getNewValueObject(JsonObject update) {
-        JsonObject result = new JsonObject();
-        for (String key : update.keySet()) {
-            JsonObject updateItem = update.get(key).getAsJsonObject();
-            if (updateItem.has("newValue")) {
-                result.add(key, updateItem.get("newValue"));
-            } else {
-                result.add(key, JsonNull.INSTANCE);
-            }
-        }
-        return result;
-    }
-
-    private static JsonObject mergeUpdate(JsonObject object, JsonObject update) {
-        for (String key : update.keySet()) {
-            object.add(key, update.get(key));
-        }
-        return object;
     }
 
     public void addOnStateChangedListener(String name, @NonNull OnStateChangedListener listener) {

@@ -27,13 +27,13 @@ public class SdkJsInterfaceImpl {
         this.commonCallback = commonCallbacks;
     }
 
-    public void setUrlInterrupter(@Nullable UrlInterrupter urlInterrupter) {
-        this.urlInterrupter = urlInterrupter;
-    }
-
     @Nullable
     public UrlInterrupter getUrlInterrupter() {
         return urlInterrupter;
+    }
+
+    public void setUrlInterrupter(@Nullable UrlInterrupter urlInterrupter) {
+        this.urlInterrupter = urlInterrupter;
     }
 
     @JavascriptInterface

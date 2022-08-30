@@ -7,6 +7,11 @@ package com.herewhite.sdk.domain;
  */
 public class CameraConfig extends WhiteObject {
 
+    private AnimationMode animationMode;
+    private Double centerX;
+    private Double centerY;
+    private Double scale;
+
     /**
      * 获取视角调整时的动画模式。
      *
@@ -28,8 +33,6 @@ public class CameraConfig extends WhiteObject {
     public void setAnimationMode(AnimationMode animationMode) {
         this.animationMode = animationMode;
     }
-
-    private AnimationMode animationMode;
 
     /**
      * 获取视角的中心点在世界坐标系（以白板初始化时的中心点为原点的坐标系）中的 X 轴坐标。
@@ -84,8 +87,4 @@ public class CameraConfig extends WhiteObject {
     public void setScale(Double scale) {
         this.scale = scale;
     }
-
-    private Double centerX;
-    private Double centerY;
-    private Double scale;
 }

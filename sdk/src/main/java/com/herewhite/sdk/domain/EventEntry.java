@@ -10,6 +10,7 @@ public class EventEntry extends WhiteObject {
     private long authorId;
 
     /// @cond test
+
     /**
      * 文档中隐藏
      * 对外能修改，用户只应该查看 eventName 和 payload

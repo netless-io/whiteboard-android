@@ -50,6 +50,17 @@ public class MemberState extends WhiteObject {
     }
 
     /**
+     * 获取图形工具的类型。
+     *
+     * @since 2.12.26
+     *
+     * @return 图形工具的类型。详见 {@link com.herewhite.sdk.domain.ShapeType ShapeType}。
+     */
+    public ShapeType getShapeType() {
+        return shapeType;
+    }
+
+    /**
      * 设置图形工具的类型。
      *
      * @since 2.12.26
@@ -59,17 +70,6 @@ public class MemberState extends WhiteObject {
     public void setShapeType(ShapeType shapeType) {
         this.currentApplianceName = Appliance.SHAPE;
         this.shapeType = shapeType;
-    }
-
-    /**
-     * 获取图形工具的类型。
-     *
-     * @since 2.12.26
-     *
-     * @return 图形工具的类型。详见 {@link com.herewhite.sdk.domain.ShapeType ShapeType}。
-     */
-    public ShapeType getShapeType() {
-        return shapeType;
     }
 
     /**

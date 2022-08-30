@@ -2,12 +2,12 @@ package com.herewhite.sdk.internal;
 
 import android.webkit.JavascriptInterface;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.Gson;
 import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.FrameError;
 import com.herewhite.sdk.domain.RoomPhase;
-
-import androidx.annotation.Nullable;
 
 
 // Created by buhe on 2018/8/12.

@@ -20,18 +20,6 @@ public class WindowAppParam {
         this.attributes = attributes;
     }
 
-    public String getKind() {
-        return kind;
-    }
-
-    public Options getOptions() {
-        return options;
-    }
-
-    public Attributes getAttributes() {
-        return attributes;
-    }
-
     public static WindowAppParam createDocsViewerApp(String scenePath, Scene[] scenes, String title) {
         DocOptions options = new DocOptions(scenePath, scenes, title);
         return new WindowAppParam(KIND_DOCSVIEWER, options, null);
@@ -64,6 +52,18 @@ public class WindowAppParam {
                 new ProjectorOptions(String.format("/%s/%s", taskUuid, UUID.randomUUID()), title),
                 new ProjectorAttributes(taskUuid, prefixUrl)
         );
+    }
+
+    public String getKind() {
+        return kind;
+    }
+
+    public Options getOptions() {
+        return options;
+    }
+
+    public Attributes getAttributes() {
+        return attributes;
     }
 
     private static class DocOptions extends Options {

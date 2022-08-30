@@ -55,6 +55,15 @@ public class MemberInformation extends WhiteObject {
     }
 
     /**
+     * 设置用户昵称。
+     *
+     * @param nickName 用户昵称。
+     */
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    /**
      * 获取 String 型的用户 ID。
      *
      * @return String 型的用户 ID。
@@ -70,15 +79,6 @@ public class MemberInformation extends WhiteObject {
      */
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    /**
-     * 设置用户昵称。
-     *
-     * @param nickName 用户昵称。
-     */
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
     }
 
     /**

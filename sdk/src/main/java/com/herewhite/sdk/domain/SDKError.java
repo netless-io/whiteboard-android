@@ -1,11 +1,11 @@
 package com.herewhite.sdk.domain;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
-
-import androidx.annotation.Nullable;
 
 /**
  * Created by buhe on 2018/8/18.
@@ -16,8 +16,18 @@ import androidx.annotation.Nullable;
  */
 public class SDKError extends Exception {
 
-    private final String jsStack;
     static Gson gson = new Gson();
+    private final String jsStack;
+
+    public SDKError(String message) {
+        super(message);
+        jsStack = "Native Error";
+    }
+
+    public SDKError(String message, String jsStack) {
+        super(message);
+        this.jsStack = jsStack;
+    }
 
     public static @Nullable
     SDKError parseError(JSONObject object) {
@@ -51,16 +61,6 @@ public class SDKError extends Exception {
         } else {
             return null;
         }
-    }
-
-    public SDKError(String message) {
-        super(message);
-        jsStack = "Native Error";
-    }
-
-    public SDKError(String message, String jsStack) {
-        super(message);
-        this.jsStack = jsStack;
     }
 
     @Override

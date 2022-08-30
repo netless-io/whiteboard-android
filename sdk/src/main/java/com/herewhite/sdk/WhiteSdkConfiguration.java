@@ -21,104 +21,6 @@ import java.util.List;
  */
 public class WhiteSdkConfiguration extends WhiteObject {
 
-    /**
-     * 白板上绘画的渲染模式。
-     *
-     * @since 2.8.0
-     */
-    public enum RenderEngineType {
-        /**
-         * SVG 渲染模式。
-         * 2.8.0 及之前版本的互动白板 SDK 默认使用的渲染模式，该模式兼容性较好，但性能较差。
-         */
-        @SerializedName("svg")
-        svg,
-        /**
-         * Canvas 渲染模式。
-         * <p>
-         * 2.8.0 版本起新增 `canvas` 渲染模式，该模式性能较好，但兼容性较差。
-         * 2.9.0 及之后版本的互动白板 SDK 默认使用 `canvas` 渲染模式。
-         *
-         * @note 由于部分 Android 6.1 至 Android 8.1 设备无法支持 `canvas` 渲染模式，SDK 会自动将默认的渲染模式切换为 `svg` 渲染模式。
-         */
-        @SerializedName("canvas")
-        canvas,
-    }
-
-    /**
-     * `PptParams` 类，用于设置动态 PPT 参数。
-     */
-    public static class PptParams extends WhiteObject {
-        /// @cond test
-
-        /** 文档中隐藏 */
-        public String getScheme() {
-            return scheme;
-        }
-        /// @endcond
-
-        /// @cond test
-
-        /**
-         * 更改动态 ppt 请求时的请求协议，可以将 https://www.exmaple.com/1.pptx 更改成 scheme://www.example.com/1.pptx
-         * Android 端该方法无需使用
-         * 文档中隐藏
-         *
-         * @param scheme
-         */
-        public void setScheme(String scheme) {
-            this.scheme = scheme;
-        }
-        /// @endcond
-
-        private String scheme;
-
-        /**
-         * 获取是否开启动态 PPT 服务端排版功能。
-         *
-         * @return 动态 PPT 服务端排版功能的开启状态：
-         * - `true`：开启。
-         * - `false`：关闭。
-         */
-        public boolean isUseServerWrap() {
-            return useServerWrap;
-        }
-
-        /**
-         * 开启/关闭动态 PPT 服务端排版功能。
-         *
-         * @since 2.11.16
-         *
-         * 自 2021 年 2 月 10 日起，将 PPTX 文件转换为 HTML 网页时，Agora Interactive 白板服务端支持对 PPTX 文件进行排版，以确保 PPTX 文件的文本在各个平台上的呈现保持一致。
-         *
-         * @note Note: 自 2.12.27 版本起，`useServerWrap` 的默认值由 `false` 改为 `true`。
-         *
-         * @param useServerWrap 是否开启服务端排版功能：
-         * - `true`：（默认）开启。
-         * - `false`：关闭。
-         */
-        public void setUseServerWrap(boolean useServerWrap) {
-            this.useServerWrap = useServerWrap;
-        }
-
-        private boolean useServerWrap = true;
-
-        /// @cond test
-
-        /** 文档中隐藏 */
-        public PptParams(String scheme) {
-            this.scheme = scheme;
-        }
-        /// @endcond
-
-        /// @cond test
-        public PptParams() {
-
-        }
-        /// @endcond
-    }
-
-
     private Region region;
     // native 永远只接收 touch 事件
     private DeviceType deviceType = DeviceType.touch;
@@ -135,9 +37,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private boolean enableRtcIntercept = false;
     private boolean enableSyncedStore = false;
     private boolean disableNewPencilStroke = false;
-
     private LoggerOptions loggerOptions;
-
     private String appIdentifier;
     private HashMap<String, String> __nativeTags = new HashMap<>();
     private List<String> __netlessUA;
@@ -146,6 +46,40 @@ public class WhiteSdkConfiguration extends WhiteObject {
      */
     private PptParams pptParams = new PptParams();
     private HashMap<String, String> fonts;
+    private boolean enableImgErrorCallback;
+    /**
+     * 多窗口支持
+     */
+    private Boolean useMultiViews = false;
+
+    /**
+     * 初始化互动白板 SDK 配置。
+     *
+     *
+     *
+     * @param appIdentifier 白板项目的唯一标识。详见[获取白板项目的 App Identifier](https://docs.agora.io/cn/whiteboard/enable_whiteboard?platform=Android#获取-app-identifier)。
+     * @param log           是否开启调试日志回调：
+     *                      - `true`：开启。
+     *                      - `false`：（默认）关闭。
+     * 调试日志仅包含调用初始化互动白板 SDK、加入房间和开始回放等方法的回调。
+     */
+    public WhiteSdkConfiguration(String appIdentifier, boolean log) {
+        this(appIdentifier);
+        this.log = log;
+    }
+
+    /**
+     * 初始化互动白板 SDK 配置。
+     *
+     * @param appIdentifier 白板项目的唯一标识。详见[获取白板项目的 App Identifier](https://docs.agora.io/cn/whiteboard/enable_whiteboard?platform=Android#获取-app-identifier)。
+     */
+    public WhiteSdkConfiguration(String appIdentifier) {
+        this.appIdentifier = appIdentifier;
+        if (VERSION.SDK_INT >= Build.VERSION_CODES.N && VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            renderEngine = RenderEngineType.svg;
+        }
+        setupNativeTags();
+    }
 
     /**
      * 获取是否启用 iframe 插件。
@@ -180,6 +114,8 @@ public class WhiteSdkConfiguration extends WhiteObject {
         return region;
     }
 
+    /// @cond test
+
     /**
      * 设置数据中心。
      *
@@ -190,10 +126,14 @@ public class WhiteSdkConfiguration extends WhiteObject {
     public void setRegion(Region region) {
         this.region = region;
     }
+    /// @endcond
+
+    /// @cond test
 
     boolean isEnableRtcIntercept() {
         return enableRtcIntercept;
     }
+    /// @endcond
 
     /// @cond test
 
@@ -217,8 +157,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
     /// @endcond
 
-    /// @cond test
-
     /**
      * 文档中隐藏
      * @return
@@ -226,9 +164,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
     public boolean isDisableDeviceInputs() {
         return disableDeviceInputs;
     }
-    /// @endcond
-
-    /// @cond test
 
     /**
      * FIXME: 该 API 会 {@link RoomParams#setDisableDeviceInputs(boolean)} 覆盖，需要删除。
@@ -241,7 +176,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
     public void setDisableDeviceInputs(boolean disableDeviceInputs) {
         this.disableDeviceInputs = disableDeviceInputs;
     }
-    /// @endcond
 
     public boolean isDisableNewPencilStroke() {
         return disableNewPencilStroke;
@@ -259,6 +193,15 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
     /**
+     * 获取绘图的渲染模式。
+     *
+     * @return 绘图的渲染模式，详见 {@link RenderEngineType}。
+     */
+    public RenderEngineType getRenderEngine() {
+        return renderEngine;
+    }
+
+    /**
      * 设置绘图的渲染模式。
      *
      * @since 2.8.0
@@ -271,15 +214,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
      */
     public void setRenderEngine(RenderEngineType renderEngine) {
         this.renderEngine = renderEngine;
-    }
-
-    /**
-     * 获取绘图的渲染模式。
-     *
-     * @return 绘图的渲染模式，详见 {@link RenderEngineType}。
-     */
-    public RenderEngineType getRenderEngine() {
-        return renderEngine;
     }
 
     /**
@@ -355,36 +289,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
     /**
-     * 初始化互动白板 SDK 配置。
-     *
-     *
-     *
-     * @param appIdentifier 白板项目的唯一标识。详见[获取白板项目的 App Identifier](https://docs.agora.io/cn/whiteboard/enable_whiteboard?platform=Android#获取-app-identifier)。
-     * @param log           是否开启调试日志回调：
-     *                      - `true`：开启。
-     *                      - `false`：（默认）关闭。
-     * 调试日志仅包含调用初始化互动白板 SDK、加入房间和开始回放等方法的回调。
-     */
-    public WhiteSdkConfiguration(String appIdentifier, boolean log) {
-        this(appIdentifier);
-        this.log = log;
-    }
-
-    /**
-     * 初始化互动白板 SDK 配置。
-     *
-     * @param appIdentifier 白板项目的唯一标识。详见[获取白板项目的 App Identifier](https://docs.agora.io/cn/whiteboard/enable_whiteboard?platform=Android#获取-app-identifier)。
-     */
-    public WhiteSdkConfiguration(String appIdentifier) {
-        this.appIdentifier = appIdentifier;
-        if (VERSION.SDK_INT >= Build.VERSION_CODES.N && VERSION.SDK_INT < Build.VERSION_CODES.P) {
-            renderEngine = RenderEngineType.svg;
-        }
-        setupNativeTags();
-    }
-
-
-    /**
      * 获取设置的日志选项。
      *
      * @return 设置的日志选项，详见 {@link com.herewhite.sdk.domain.LoggerOptions LoggerOptions}。
@@ -404,12 +308,12 @@ public class WhiteSdkConfiguration extends WhiteObject {
         this.loggerOptions = loggerOptions;
     }
 
-    public void setNetlessUA(List<String> netlessUA) {
-        __netlessUA = netlessUA;
-    }
-
     public List<String> getNetlessUA() {
         return __netlessUA;
+    }
+
+    public void setNetlessUA(List<String> netlessUA) {
+        __netlessUA = netlessUA;
     }
 
     /// @cond test
@@ -449,17 +353,10 @@ public class WhiteSdkConfiguration extends WhiteObject {
     /// @endcond
 
     /**
-     * 设置是否显示用户头像。
-     * <p>
-     * 要显示用户头像，请确保你在 `userPayload` 对象中传入了头像的键值对，
-     * 并在调用 {@link com.herewhite.sdk.RoomParams#setUserPayload(Object userPayload) setUserPayload}。
-     *
-     * @param userCursor 是否显示用户头像：
-     *                   - `true`：显示。
-     *                   - `false`：（默认）不显示。
+     * 文档中隐藏
      */
-    public void setUserCursor(boolean userCursor) {
-        this.userCursor = userCursor;
+    public void setDeviceType(DeviceType deviceType) {
+        this.deviceType = deviceType;
     }
 
     /**
@@ -474,6 +371,20 @@ public class WhiteSdkConfiguration extends WhiteObject {
     }
 
     /**
+     * 设置是否显示用户头像。
+     * <p>
+     * 要显示用户头像，请确保你在 `userPayload` 对象中传入了头像的键值对，
+     * 并在调用 {@link com.herewhite.sdk.RoomParams#setUserPayload(Object userPayload) setUserPayload}。
+     *
+     * @param userCursor 是否显示用户头像：
+     *                   - `true`：显示。
+     *                   - `false`：（默认）不显示。
+     */
+    public void setUserCursor(boolean userCursor) {
+        this.userCursor = userCursor;
+    }
+
+    /**
      * 获取是否开启仅接收远端用户状态改变的回调。
      *
      * @return 是否开启仅接收远端用户状态改变回调：
@@ -483,6 +394,8 @@ public class WhiteSdkConfiguration extends WhiteObject {
     public boolean isOnlyCallbackRemoteStateModify() {
         return onlyCallbackRemoteStateModify;
     }
+
+    /// @cond test
 
     /**
      * 开启/关闭仅接收远端用户状态改变的回调。
@@ -495,15 +408,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
      */
     public void setOnlyCallbackRemoteStateModify(boolean onlyCallbackRemoteStateModify) {
         this.onlyCallbackRemoteStateModify = onlyCallbackRemoteStateModify;
-    }
-
-    /// @cond test
-
-    /**
-     * 文档中隐藏
-     */
-    public void setDeviceType(DeviceType deviceType) {
-        this.deviceType = deviceType;
     }
     /// @endcond
 
@@ -580,8 +484,6 @@ public class WhiteSdkConfiguration extends WhiteObject {
         this.enableImgErrorCallback = enableImgErrorCallback;
     }
 
-    private boolean enableImgErrorCallback;
-
     public boolean isEnableSyncedStore() {
         return enableSyncedStore;
     }
@@ -590,16 +492,107 @@ public class WhiteSdkConfiguration extends WhiteObject {
         this.enableSyncedStore = enableSyncedStore;
     }
 
-    /**
-     * 多窗口支持
-     */
-    private Boolean useMultiViews = false;
-
     public Boolean getUseMultiViews() {
         return useMultiViews;
     }
 
     public void setUseMultiViews(Boolean useMultiViews) {
         this.useMultiViews = useMultiViews;
+    }
+
+    /**
+     * 白板上绘画的渲染模式。
+     *
+     * @since 2.8.0
+     */
+    public enum RenderEngineType {
+        /**
+         * SVG 渲染模式。
+         * 2.8.0 及之前版本的互动白板 SDK 默认使用的渲染模式，该模式兼容性较好，但性能较差。
+         */
+        @SerializedName("svg")
+        svg,
+        /**
+         * Canvas 渲染模式。
+         * <p>
+         * 2.8.0 版本起新增 `canvas` 渲染模式，该模式性能较好，但兼容性较差。
+         * 2.9.0 及之后版本的互动白板 SDK 默认使用 `canvas` 渲染模式。
+         *
+         * @note 由于部分 Android 6.1 至 Android 8.1 设备无法支持 `canvas` 渲染模式，SDK 会自动将默认的渲染模式切换为 `svg` 渲染模式。
+         */
+        @SerializedName("canvas")
+        canvas,
+    }
+
+    /**
+     * `PptParams` 类，用于设置动态 PPT 参数。
+     */
+    public static class PptParams extends WhiteObject {
+        /// @cond test
+
+        private String scheme;
+        /// @endcond
+
+        /// @cond test
+        private boolean useServerWrap = true;
+        /// @endcond
+
+        /** 文档中隐藏 */
+        public PptParams(String scheme) {
+            this.scheme = scheme;
+        }
+
+        /// @cond test
+        public PptParams() {
+
+        }
+
+        /** 文档中隐藏 */
+        public String getScheme() {
+            return scheme;
+        }
+
+        /**
+         * 更改动态 ppt 请求时的请求协议，可以将 https://www.exmaple.com/1.pptx 更改成 scheme://www.example.com/1.pptx
+         * Android 端该方法无需使用
+         * 文档中隐藏
+         *
+         * @param scheme
+         */
+        public void setScheme(String scheme) {
+            this.scheme = scheme;
+        }
+
+        /// @cond test
+
+        /**
+         * 获取是否开启动态 PPT 服务端排版功能。
+         *
+         * @return 动态 PPT 服务端排版功能的开启状态：
+         * - `true`：开启。
+         * - `false`：关闭。
+         */
+        public boolean isUseServerWrap() {
+            return useServerWrap;
+        }
+        /// @endcond
+
+        /**
+         * 开启/关闭动态 PPT 服务端排版功能。
+         *
+         * @since 2.11.16
+         *
+         * 自 2021 年 2 月 10 日起，将 PPTX 文件转换为 HTML 网页时，Agora Interactive 白板服务端支持对 PPTX 文件进行排版，以确保 PPTX 文件的文本在各个平台上的呈现保持一致。
+         *
+         * @note Note: 自 2.12.27 版本起，`useServerWrap` 的默认值由 `false` 改为 `true`。
+         *
+         * @param useServerWrap 是否开启服务端排版功能：
+         * - `true`：（默认）开启。
+         * - `false`：关闭。
+         */
+        public void setUseServerWrap(boolean useServerWrap) {
+            this.useServerWrap = useServerWrap;
+        }
+        /// @endcond
     }
 }

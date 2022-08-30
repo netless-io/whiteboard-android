@@ -10,6 +10,8 @@ public class ConvertedFiles {
     private ConvertType type;
     private Double width;
     private Double height;
+    private String[] slideURLs;
+    private Scene[] scenes;
 
     public String getTaskId() {
         return taskId;
@@ -58,7 +60,4 @@ public class ConvertedFiles {
     public void setScenes(Scene[] scenes) {
         this.scenes = scenes;
     }
-
-    private String[] slideURLs;
-    private Scene[] scenes;
 }
