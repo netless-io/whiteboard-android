@@ -35,7 +35,7 @@ public class CameraBoundActivity extends SampleBaseActivity {
             double IMAGE_WIDTH = imageSize.getWidth();
             double IMAGE_HEIGHT = imageSize.getHeight();
 
-            // 此示例
+            // 此示例以 Width 为基准，图片顶部与视图顶部重合
             // 1: 插入图片到原点
             ImageInformationWithUrl image = new ImageInformationWithUrl(
                     0.0,
@@ -51,26 +51,38 @@ public class CameraBoundActivity extends SampleBaseActivity {
             memberState.setCurrentApplianceName(Appliance.HAND);
             room.setMemberState(memberState);
 
+            boolean oblateType = IMAGE_HEIGHT / IMAGE_WIDTH < (double) whiteboardView.getHeight() / whiteboardView.getWidth();
             // 3: 设置视角边界
             ContentModeConfig minContentConfig = new ContentModeConfig();
-            minContentConfig.setMode(ContentModeConfig.ScaleMode.CENTER_CROP);
-
             ContentModeConfig maxContentConfig = new ContentModeConfig();
-            maxContentConfig.setScale(1.2);
-            maxContentConfig.setMode(ContentModeConfig.ScaleMode.CENTER_CROP_SPACE);
+            if (oblateType) {
+                minContentConfig.setMode(ContentModeConfig.ScaleMode.CENTER_INSIDE);
+                maxContentConfig.setMode(ContentModeConfig.ScaleMode.CENTER_INSIDE);
+            } else {
+                minContentConfig.setMode(ContentModeConfig.ScaleMode.CENTER_CROP);
+                maxContentConfig.setMode(ContentModeConfig.ScaleMode.CENTER_CROP);
+            }
+
+            double scale = px2dp(whiteboardView.getWidth()) / IMAGE_WIDTH;
+            double viewportHeight = px2dp(whiteboardView.getHeight()) / scale;
+            double offset = (viewportHeight - IMAGE_HEIGHT) / 2;
 
             CameraBound cameraBound = new CameraBound();
             cameraBound.setMinContentMode(minContentConfig);
             cameraBound.setMaxContentMode(maxContentConfig);
             cameraBound.setWidth(IMAGE_WIDTH);
             cameraBound.setHeight(IMAGE_HEIGHT);
+            if (oblateType) {
+                cameraBound.setCenterX(0.0);
+                cameraBound.setCenterY(offset);
+            } else {
+                cameraBound.setCenterX(0.0);
+                cameraBound.setCenterY(0.0);
+            }
+
             room.setCameraBound(cameraBound);
 
             // 4: 移动到图片顶部
-            double scale = px2dp(whiteboardView.getWidth()) / IMAGE_WIDTH;
-            double viewportHeight = px2dp(whiteboardView.getHeight()) / scale;
-            double offset = (viewportHeight - IMAGE_HEIGHT) / 2;
-
             CameraConfig cameraConfig = new CameraConfig();
             cameraConfig.setCenterX(0.0);
             cameraConfig.setCenterY(offset);
