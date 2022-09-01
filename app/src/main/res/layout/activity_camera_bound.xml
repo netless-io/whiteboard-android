@@ -6,7 +6,7 @@
     <com.herewhite.sdk.WhiteboardView
         android:id="@+id/white"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="400dp"
         android:visibility="visible" />
 
     <HorizontalScrollView
@@ -22,19 +22,19 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/cleanImage"
+                android:id="@+id/prevPage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="cleanImage"
+                android:text="prevPage"
                 android:textAllCaps="false" />
 
             <Button
-                android:id="@+id/insertImage"
+                android:id="@+id/nextPage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="insertImage"
+                android:text="nextPage"
                 android:textAllCaps="false" />
         </LinearLayout>
     </HorizontalScrollView>
