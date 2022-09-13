@@ -21,7 +21,6 @@ import com.herewhite.sdk.CommonCallback;
 import com.herewhite.sdk.Room;
 import com.herewhite.sdk.RoomListener;
 import com.herewhite.sdk.RoomParams;
-import com.herewhite.sdk.SyncedStore;
 import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
 import com.herewhite.sdk.WhiteboardView;
@@ -47,6 +46,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 
 import wendu.dsbridge.DWebView;
 
@@ -62,6 +62,19 @@ public class WindowTestActivity extends AppCompatActivity {
     WhiteSdk mWhiteSdk;
     Room mRoom;
     FrameLayout mWhiteboardParent;
+
+    Stack<String> appIds = new Stack<>();
+    private Promise<String> insertPromise = new Promise<String>() {
+        @Override
+        public void then(String appId) {
+            appIds.push(appId);
+        }
+
+        @Override
+        public void catchEx(SDKError t) {
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,17 +130,7 @@ public class WindowTestActivity extends AppCompatActivity {
         // 插入播放器
         findViewById(R.id.insertPlayer).setOnClickListener(v -> {
             WindowAppParam appParam = WindowAppParam.createMediaPlayerApp("https://white-pan.oss-cn-shanghai.aliyuncs.com/101/oceans.mp4", "player");
-            mRoom.addApp(appParam, new Promise<String>() {
-                @Override
-                public void then(String appId) {
-                    logRoomInfo("create App id " + appId);
-                }
-
-                @Override
-                public void catchEx(SDKError t) {
-
-                }
-            });
+            mRoom.addApp(appParam, insertPromise);
         });
 
         // 插入静态场景
@@ -137,7 +140,7 @@ public class WindowTestActivity extends AppCompatActivity {
             Scene[] scenes = gson.fromJson(ppts, Scene[].class);
 
             WindowAppParam param = WindowAppParam.createDocsViewerApp("/static", scenes, "static");
-            mRoom.addApp(param, null);
+            mRoom.addApp(param, insertPromise);
         });
 
         // 插入动态场景
@@ -146,8 +149,8 @@ public class WindowTestActivity extends AppCompatActivity {
             String ppts = " [{\"name\":\"1\",\"ppt\":{\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/1.slide\",\"width\":1280,\"height\":720,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/preview/1.png\"}},{\"name\":\"2\",\"ppt\":{\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/2.slide\",\"width\":1280,\"height\":720,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/preview/2.png\"}},{\"name\":\"3\",\"ppt\":{\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/3.slide\",\"width\":1280,\"height\":720,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/preview/3.png\"}},{\"name\":\"4\",\"ppt\":{\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/4.slide\",\"width\":1280,\"height\":720,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/preview/4.png\"}},{\"name\":\"5\",\"ppt\":{\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/5.slide\",\"width\":1280,\"height\":720,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/preview/5.png\"}},{\"name\":\"6\",\"ppt\":{\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/6.slide\",\"width\":1280,\"height\":720,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/preview/6.png\"}},{\"name\":\"7\",\"ppt\":{\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/7.slide\",\"width\":1280,\"height\":720,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/preview/7.png\"}},{\"name\":\"8\",\"ppt\":{\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/8.slide\",\"width\":1280,\"height\":720,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/preview/8.png\"}},{\"name\":\"9\",\"ppt\":{\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/9.slide\",\"width\":1280,\"height\":720,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/preview/9.png\"}},{\"name\":\"10\",\"ppt\":{\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/10.slide\",\"width\":1280,\"height\":720,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/preview/10.png\"}},{\"name\":\"11\",\"ppt\":{\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/11.slide\",\"width\":1280,\"height\":720,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/preview/11.png\"}},{\"name\":\"12\",\"ppt\":{\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/12.slide\",\"width\":1280,\"height\":720,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/preview/12.png\"}},{\"name\":\"13\",\"ppt\":{\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/13.slide\",\"width\":1280,\"height\":720,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/preview/13.png\"}},{\"name\":\"14\",\"ppt\":{\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/14.slide\",\"width\":1280,\"height\":720,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/preview/14.png\"}}]";
             Scene[] scenes = gson.fromJson(ppts, Scene[].class);
 
-            WindowAppParam param = WindowAppParam.createSlideApp("/dynamic", scenes, "dynamic");
-            mRoom.addApp(param, null);
+            WindowAppParam param = WindowAppParam.createSlideApp("/dynamic003", scenes, "dynamic");
+            mRoom.addApp(param, insertPromise);
         });
 
         // 插入新的动态PPT
@@ -156,7 +159,21 @@ public class WindowTestActivity extends AppCompatActivity {
             String prefixUrl = "https://convertcdn.netless.link/dynamicConvert";
             String taskUuid = "a136d855525a48a9844c678ad5027067";
             WindowAppParam param = WindowAppParam.createSlideApp(taskUuid, prefixUrl, "Projector App");
-            mRoom.addApp(param, null);
+            mRoom.addApp(param, insertPromise);
+        });
+
+        findViewById(R.id.closeApp).setOnClickListener(v -> {
+            mRoom.closeApp(appIds.pop(), new Promise<Boolean>() {
+                @Override
+                public void then(Boolean aBoolean) {
+
+                }
+
+                @Override
+                public void catchEx(SDKError t) {
+
+                }
+            });
         });
 
         // 16:9 限定

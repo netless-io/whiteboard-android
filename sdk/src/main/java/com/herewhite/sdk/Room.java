@@ -1327,6 +1327,15 @@ public class Room extends Displayer {
         });
     }
 
+    // 关闭窗口
+    public void closeApp(String appId, Promise<Boolean> promise) {
+        bridge.callHandler("room.closeApp", new Object[]{appId}, value -> {
+            if (promise != null) {
+                promise.then(true);
+            }
+        });
+    }
+
     /**
      * 恢复当前多窗口状态
      * @param attributes
