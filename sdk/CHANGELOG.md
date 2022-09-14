@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.16.35] - 2022-09-14
+- 更新 `white-web-sdk` 至 2.16.35。
 ## [2.16.34] - 2022-08-30
 - 新增 `RoomParams.floatBar`, 通过 `RoomParams.setUsingFloatBar` 开启或关闭图片、画笔、文本等的浮窗操作工具.
 - 新增 `Appliance.PENCIL_ERASER`, 支持线条的局部擦除.
