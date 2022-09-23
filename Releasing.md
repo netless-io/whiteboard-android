@@ -25,5 +25,5 @@ Cutting a Release
    ```
 5. Trigger Jitpack build
    ```shell
-   curl https://jitpack.io/api/builds/com.github.netless-io/whiteboard-android/${WHITE_TAG}
+   curl https://jitpack.io/api/builds/com.github.netless-io/whiteboard-android/${RELEASE_VERSION}
    ```
