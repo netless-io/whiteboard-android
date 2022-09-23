@@ -1,4 +1,8 @@
 # 版本更新记录
+## [2.16.36] - 2022-09-23
+- 更新 `@netless/window-manager` 至 0.4.44
+- 更新 `@netless/app-slide` 至 0.2.12
+- 新增 `WhiteSdk.requestSlideLog` 方法，支持客户端获取 PPT 日志，方便问题排查
 ## [2.16.35] - 2022-09-14
 - 更新 `white-web-sdk` 至 2.16.35。
 ## [2.16.34] - 2022-08-30
