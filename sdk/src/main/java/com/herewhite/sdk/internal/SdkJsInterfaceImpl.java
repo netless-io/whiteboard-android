@@ -19,12 +19,19 @@ public class SdkJsInterfaceImpl {
     @Nullable
     private UrlInterrupter urlInterrupter;
 
+    @Nullable
+    private PostMessageCallback postMessageCallback;
+
     public SdkJsInterfaceImpl(CommonCallback commonCallback) {
         this.commonCallback = commonCallback;
     }
 
     public void setCommonCallbacks(@Nullable CommonCallback commonCallbacks) {
         this.commonCallback = commonCallbacks;
+    }
+
+    public void setPostMessageCallback(PostMessageCallback postMessageCallback) {
+        this.postMessageCallback = postMessageCallback;
     }
 
     @Nullable
@@ -69,6 +76,10 @@ public class SdkJsInterfaceImpl {
         JSONObject jsonObject = convertToJsonOrNull(args);
         if (commonCallback != null && jsonObject != null) {
             commonCallback.onMessage(jsonObject);
+        }
+
+        if (postMessageCallback != null && jsonObject != null) {
+            postMessageCallback.onMessage(jsonObject);
         }
     }
 
