@@ -17,6 +17,24 @@ public class PlayerConfiguration extends WhiteObject {
      * 多窗口属性
      */
     private WindowParams windowParams;
+    private Region region;
+    /**
+     * 文档中隐藏
+     * 音频地址，暂不支持视频。
+     * Player 会自动与音视频播放做同步，保证同时播放，当一方缓冲时，会暂停。
+     */
+    private String mediaURL;
+
+    /**
+     * 回放房间的构造方法，用于初始化回放房间实例。
+     *
+     * @param room      房间 UUID，即房间唯一标识符，必须和加入互动白板房间实例时设置的房间 UUID 一致。
+     * @param roomToken 用于鉴权的 Room Token，必须是使用上面传入的房间 UUID 生成的 Room Token。
+     */
+    public PlayerConfiguration(String room, String roomToken) {
+        this.room = room;
+        this.roomToken = roomToken;
+    }
 
     /**
      * 获取 `Player` 实例的数据中心。
@@ -36,19 +54,6 @@ public class PlayerConfiguration extends WhiteObject {
      */
     public void setRegion(Region region) {
         this.region = region;
-    }
-
-    private Region region;
-
-    /**
-     * 回放房间的构造方法，用于初始化回放房间实例。
-     *
-     * @param room      房间 UUID，即房间唯一标识符，必须和加入互动白板房间实例时设置的房间 UUID 一致。
-     * @param roomToken 用于鉴权的 Room Token，必须是使用上面传入的房间 UUID 生成的 Room Token。
-     */
-    public PlayerConfiguration(String room, String roomToken) {
-        this.room = room;
-        this.roomToken = roomToken;
     }
 
     /**
@@ -71,6 +76,9 @@ public class PlayerConfiguration extends WhiteObject {
         this.cameraBound = cameraBound;
     }
 
+
+    /// @cond test
+
     /**
      * 设置 SDK 回调播放进度的频率。
      *
@@ -80,15 +88,6 @@ public class PlayerConfiguration extends WhiteObject {
     public void setStep(Long duration, TimeUnit timeUnit) {
         this.step = TimeUnit.MILLISECONDS.convert(duration, timeUnit);
     }
-
-
-    /// @cond test
-    /**
-     * 文档中隐藏
-     * 音频地址，暂不支持视频。
-     * Player 会自动与音视频播放做同步，保证同时播放，当一方缓冲时，会暂停。
-     */
-    private String mediaURL;
     /// @endcond
 
     /**
@@ -128,6 +127,7 @@ public class PlayerConfiguration extends WhiteObject {
     }
 
     /// @cond test
+
     /**
      * 文档中隐藏
      *
@@ -139,6 +139,7 @@ public class PlayerConfiguration extends WhiteObject {
     /// @endcond
 
     /// @cond test
+
     /**
      * 文档中隐藏
      *
@@ -186,6 +187,7 @@ public class PlayerConfiguration extends WhiteObject {
     }
 
     /// @cond test
+
     /**
      * 文档中隐藏
      * @return
@@ -196,6 +198,7 @@ public class PlayerConfiguration extends WhiteObject {
     /// @endcond
 
     /// @cond test
+
     /**
      * 文档中隐藏
      * @param mediaURL

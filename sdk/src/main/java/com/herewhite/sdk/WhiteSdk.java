@@ -29,52 +29,20 @@ import wendu.dsbridge.OnReturnValue;
  * `WhiteSdk` 类。
  */
 public class WhiteSdk {
-    private final static String SDK_VERSION = "2.17.0-alpha.3";
+    private final static String SDK_VERSION = "2.16.35";
 
     private final static Gson gson = new Gson();
-
+    private static AudioMixerBridge sAudioMixerBridge;
     private final JsBridgeInterface bridge;
     private final RoomJsInterfaceImpl roomJsInterface;
     private final PlayerJsInterfaceImpl playerJsInterface;
     private final SdkJsInterfaceImpl sdkJsInterface;
     private final StoreJsInterfaceImpl storeJsInterface;
-    private RtcJsInterfaceImpl rtcJsInterface;
-
     private final int densityDpi;
-
-    /**
-     * 设置通用事件回调。
-     * <p>
-     * SDK 通过 `CommonCallbacks` 类向 app 报告 SDK 运行时的各项事件。
-     *
-     * @param commonCallback 通用回调事件，详见 {@link CommonCallback CommonCallback}
-     */
-    public void setCommonCallbacks(CommonCallback commonCallback) {
-        sdkJsInterface.setCommonCallbacks(commonCallback);
-    }
-
     private final boolean onlyCallbackRemoteStateModify;
-
-    /**
-     * 获取 {@link AudioMixerImplement} 实例。
-     *
-     * @return {@link AudioMixerImplement} 实例。
-     */
-    public AudioMixerImplement getAudioMixerImplement() {
-        return audioMixerImplement;
-    }
-
+    private RtcJsInterfaceImpl rtcJsInterface;
     @Nullable
     private AudioMixerImplement audioMixerImplement;
-
-    /**
-     * 查询 SDK 版本号。
-     *
-     * @return 当前的 SDK 版本号，格式为字符串，如 `"2.12.28"`。
-     */
-    public static String Version() {
-        return SDK_VERSION;
-    }
 
     /**
      * 初始化白板 SDK 实例。
@@ -139,6 +107,9 @@ public class WhiteSdk {
         storeJsInterface = new StoreJsInterfaceImpl();
         onlyCallbackRemoteStateModify = whiteSdkConfiguration.isOnlyCallbackRemoteStateModify();
 
+        if (audioMixerBridge == null) {
+            audioMixerBridge = sAudioMixerBridge;
+        }
         if (audioMixerBridge != null) {
             audioMixerImplement = new AudioMixerImplement(bridge);
 
@@ -162,6 +133,38 @@ public class WhiteSdk {
         bridge.callHandler("sdk.newWhiteSdk", new Object[]{copyConfig});
     }
 
+    /**
+     * 查询 SDK 版本号。
+     *
+     * @return 当前的 SDK 版本号，格式为字符串，如 `"2.12.28"`。
+     */
+    public static String Version() {
+        return SDK_VERSION;
+    }
+
+    public static void setAudioMixerBridge(AudioMixerBridge audioMixerBridge) {
+        sAudioMixerBridge = audioMixerBridge;
+    }
+
+    /**
+     * 设置通用事件回调。
+     * <p>
+     * SDK 通过 `CommonCallbacks` 类向 app 报告 SDK 运行时的各项事件。
+     *
+     * @param commonCallback 通用回调事件，详见 {@link CommonCallback CommonCallback}
+     */
+    public void setCommonCallbacks(CommonCallback commonCallback) {
+        sdkJsInterface.setCommonCallbacks(commonCallback);
+    }
+
+    /**
+     * 获取 {@link AudioMixerImplement} 实例。
+     *
+     * @return {@link AudioMixerImplement} 实例。
+     */
+    public AudioMixerImplement getAudioMixerImplement() {
+        return audioMixerImplement;
+    }
 
     /**
      * 加入互动白板实时房间。

@@ -7,55 +7,11 @@ import com.google.gson.annotations.SerializedName;
  */
 public class LoggerOptions extends WhiteObject {
 
-    /**
-     * 日志等级。
-     *
-     * @since 2.11.10
-     *
-     * 日志级别顺序依次为 `error`，`warn`，`info`，和 `debug`。选择一个级别，你就可以看到在该级别之前所有级别的日志信息。
-     * 例如，你选择 `info` 级别，就可以看到在 `error`，`warn`，`info` 级别上的所有日志信息。
-     */
-    public enum Level {
-        /**
-         * 调试日志：最详细的日志，目前内容与 `info` 一致。
-         */
-        debug,
-        /**
-         * 信息日志：主要为连接状态。
-         */
-        info,
-        /**
-         * 警告日志：当传入的参数不符合 SDK 要求时，SDK 会自动调整并发出警告。
-         *
-         * @note
-         * 如果调用废弃 API，SDK 不会发出警告信息。
-         */
-        warn,
-        /**
-         * 报错日志：直接导致 SDK 无法正常运行的错误。
-         */
-        error,
-    }
-
-    /**
-     * 上报模式。
-     *
-     * @since 2.11.10
-     */
-    public enum ReportMode {
-        /**
-         * （默认）总是上报。
-         */
-        @SerializedName("alwaysReport")
-        always,
-        /**
-         * 禁止上报。
-         */
-        @SerializedName("banReport")
-        ban,
-    }
-
     private Boolean disableReportLog;
+    private Level printLevelMask;
+    private Level reportLevelMask;
+    private ReportMode reportDebugLogMode;
+    private ReportMode reportQualityMode;
 
     /**
      * 获取是否关闭日志上报。
@@ -166,9 +122,50 @@ public class LoggerOptions extends WhiteObject {
     public void setReportQualityMode(ReportMode reportQualityMode) {
         this.reportQualityMode = reportQualityMode;
     }
-
-    private Level printLevelMask;
-    private Level reportLevelMask;
-    private ReportMode reportDebugLogMode;
-    private ReportMode reportQualityMode;
+    /**
+     * 日志等级。
+     *
+     * @since 2.11.10
+     *
+     * 日志级别顺序依次为 `error`，`warn`，`info`，和 `debug`。选择一个级别，你就可以看到在该级别之前所有级别的日志信息。
+     * 例如，你选择 `info` 级别，就可以看到在 `error`，`warn`，`info` 级别上的所有日志信息。
+     */
+    public enum Level {
+        /**
+         * 调试日志：最详细的日志，目前内容与 `info` 一致。
+         */
+        debug,
+        /**
+         * 信息日志：主要为连接状态。
+         */
+        info,
+        /**
+         * 警告日志：当传入的参数不符合 SDK 要求时，SDK 会自动调整并发出警告。
+         *
+         * @note
+         * 如果调用废弃 API，SDK 不会发出警告信息。
+         */
+        warn,
+        /**
+         * 报错日志：直接导致 SDK 无法正常运行的错误。
+         */
+        error,
+    }
+    /**
+     * 上报模式。
+     *
+     * @since 2.11.10
+     */
+    public enum ReportMode {
+        /**
+         * （默认）总是上报。
+         */
+        @SerializedName("alwaysReport")
+        always,
+        /**
+         * 禁止上报。
+         */
+        @SerializedName("banReport")
+        ban,
+    }
 }

@@ -23,12 +23,40 @@ import wendu.dsbridge.OnReturnValue;
  * `Player` 类，用于操作白板的回放。
  */
 public class Player extends Displayer {
+    // region PlayerListener
+    private final CopyOnWriteArrayList<PlayerListener> listeners = new CopyOnWriteArrayList<>();
     private SyncDisplayerState<PlayerState> syncPlayerState;
-
     private long scheduleTime = 0;
     private long timeDuration;
     private long beginTimestamp;
     private int framesCount;
+    private double playbackSpeed;
+    private PlayerPhase playerPhase = PlayerPhase.waitingFirstFrame;
+    private PlayerDelegate playerDelegate;
+    private SyncDisplayerState.Listener<PlayerState> localPlayStateListener = modifyState -> {
+        post(() -> {
+            for (PlayerListener listener : listeners) {
+                listener.onPlayerStateChanged(modifyState);
+            }
+        });
+    };
+
+    /// @cond test
+
+    /**
+     * 文档中隐藏，SDK 内部使用
+     * Instantiates a new Player.
+     *
+     * @param room       回放房间 uuid
+     * @param bridge     the bridge
+     * @param densityDpi Android屏幕密度值
+     */
+    Player(String room, JsBridgeInterface bridge, int densityDpi) {
+        super(room, bridge, densityDpi);
+        syncPlayerState = new SyncDisplayerState(PlayerState.class, true);
+        syncPlayerState.setListener(localPlayStateListener);
+    }
+    /// @endcond
 
     /**
      * 获取白板回放的倍速。
@@ -82,34 +110,6 @@ public class Player extends Displayer {
         });
     }
 
-    private double playbackSpeed;
-
-    private PlayerPhase playerPhase = PlayerPhase.waitingFirstFrame;
-
-    /// @cond test
-
-    /**
-     * 文档中隐藏，SDK 内部使用
-     * Instantiates a new Player.
-     *
-     * @param room       回放房间 uuid
-     * @param bridge     the bridge
-     * @param densityDpi Android屏幕密度值
-     */
-    Player(String room, JsBridgeInterface bridge, int densityDpi) {
-        super(room, bridge, densityDpi);
-        syncPlayerState = new SyncDisplayerState(PlayerState.class, true);
-        syncPlayerState.setListener(localPlayStateListener);
-    }
-    /// @endcond
-
-    void setPlayerTimeInfo(PlayerTimeInfo playerTimeInfo) {
-        this.scheduleTime = playerTimeInfo.getScheduleTime();
-        this.timeDuration = playerTimeInfo.getTimeDuration();
-        this.framesCount = playerTimeInfo.getFramesCount();
-        this.beginTimestamp = playerTimeInfo.getBeginTimestamp();
-    }
-
     /**
      * 开始白板回放。
      * <p>
@@ -135,6 +135,8 @@ public class Player extends Displayer {
         bridge.callHandler("player.stop", new Object[]{});
     }
 
+    //region Get API
+
     /**
      * 设置白板回放的播放位置。
      *
@@ -154,8 +156,6 @@ public class Player extends Displayer {
     public void setObserverMode(PlayerObserverMode mode) {
         bridge.callHandler("player.setObserverMode", new Object[]{mode.name()});
     }
-
-    //region Get API
 
     /**
      * 获取白板回放的阶段。
@@ -258,6 +258,7 @@ public class Player extends Displayer {
             }
         });
     }
+    //endregion
 
     /**
      * 获取白板回放的时间信息。
@@ -274,6 +275,13 @@ public class Player extends Displayer {
      */
     public PlayerTimeInfo getPlayerTimeInfo() {
         return new PlayerTimeInfo(this.scheduleTime, this.timeDuration, this.framesCount, this.beginTimestamp);
+    }
+
+    void setPlayerTimeInfo(PlayerTimeInfo playerTimeInfo) {
+        this.scheduleTime = playerTimeInfo.getScheduleTime();
+        this.timeDuration = playerTimeInfo.getTimeDuration();
+        this.framesCount = playerTimeInfo.getFramesCount();
+        this.beginTimestamp = playerTimeInfo.getBeginTimestamp();
     }
 
     /**
@@ -295,10 +303,7 @@ public class Player extends Displayer {
             }
         });
     }
-    //endregion
-
-    // region PlayerListener
-    private final CopyOnWriteArrayList<PlayerListener> listeners = new CopyOnWriteArrayList<>();
+    // endregion
 
     public void addPlayerListener(@NonNull PlayerListener playerListener) {
         listeners.addIfAbsent(playerListener);
@@ -307,9 +312,6 @@ public class Player extends Displayer {
     public void removePlayerListener(@NonNull PlayerListener playerListener) {
         listeners.remove(playerListener);
     }
-    // endregion
-
-    private PlayerDelegate playerDelegate;
 
     PlayerDelegate getDelegate() {
         if (playerDelegate == null) {
@@ -317,15 +319,6 @@ public class Player extends Displayer {
         }
         return playerDelegate;
     }
-
-    private SyncDisplayerState.Listener<PlayerState> localPlayStateListener = modifyState -> {
-        post(() -> {
-            for (PlayerListener listener : listeners) {
-                listener.onPlayerStateChanged(modifyState);
-            }
-        });
-    };
-
 
     private class PlayerDelegateImpl implements PlayerDelegate {
         @Override

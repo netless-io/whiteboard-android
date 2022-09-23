@@ -41,19 +41,17 @@ import wendu.dsbridge.OnReturnValue;
  */
 public class Displayer {
     protected final static Gson gson = new Gson();
-    @ColorInt
-    private int backgroundColor = Color.WHITE;
-
     protected final JsBridgeInterface bridge;
     protected String uuid;
     protected int densityDpi;
-    private Handler handler;
-    private SyncedStore syncedStore;
-
     @VisibleForTesting
     ConcurrentHashMap<String, EventListener> eventListenerMap = new ConcurrentHashMap<>();
     @VisibleForTesting
     ConcurrentHashMap<String, FrequencyEventListener> frequencyEventListenerMap = new ConcurrentHashMap<>();
+    @ColorInt
+    private int backgroundColor = Color.WHITE;
+    private Handler handler;
+    private SyncedStore syncedStore;
 
     /// @cond test
 
@@ -71,6 +69,14 @@ public class Displayer {
         this.densityDpi = densityDpi;
     }
     /// @endcond
+
+    private static Float[] hexSplit(@ColorInt int color) {
+        Float r = Float.valueOf((color >> 16) & 0xff);
+        Float g = Float.valueOf((color >> 8) & 0xff);
+        Float b = Float.valueOf((color) & 0xff);
+        Float a = Float.valueOf(((color >> 24) & 0xff) / 255.0f);
+        return new Float[]{r, g, b, a};
+    }
 
     private Handler getHandler() {
         if (handler == null) {
@@ -290,6 +296,19 @@ public class Displayer {
     }
 
     /**
+     * 获取本地白板的背景色。
+     *
+     * @since 2.4.0
+     *
+     * @deprecated 该方法已废弃。
+     *
+     * @return 本地白板的背景色，格式为 16 进制 ARGB 定义下的 Hex 值。
+     */
+    public int getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    /**
      * 设置白板的背景色。
      *
      * @since 2.4.14
@@ -305,27 +324,6 @@ public class Displayer {
         Float[] rgba = hexSplit(intColor);
         this.bridge.callHandler("displayer.setBackgroundColor", rgba);
         backgroundColor = intColor;
-    }
-
-    private static Float[] hexSplit(@ColorInt int color) {
-        Float r = Float.valueOf((color >> 16) & 0xff);
-        Float g = Float.valueOf((color >> 8) & 0xff);
-        Float b = Float.valueOf((color) & 0xff);
-        Float a = Float.valueOf(((color >> 24) & 0xff) / 255.0f);
-        return new Float[]{r, g, b, a};
-    }
-
-    /**
-     * 获取本地白板的背景色。
-     *
-     * @since 2.4.0
-     *
-     * @deprecated 该方法已废弃。
-     *
-     * @return 本地白板的背景色，格式为 16 进制 ARGB 定义下的 Hex 值。
-     */
-    public int getBackgroundColor() {
-        return backgroundColor;
     }
 
     /**

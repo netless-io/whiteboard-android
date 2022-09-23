@@ -32,91 +32,6 @@ class SyncDisplayerState<T> {
         this.disableCallbackWhilePutting = disableCallbackWhilePutting;
     }
 
-    public interface Listener<T> {
-        void onDisplayerStateChanged(T modifyState);
-    }
-
-    public T getDisplayerState() {
-        return gson.fromJson(this.stateJSON, this.clazz);
-    }
-
-    public void setListener(Listener<T> listener) {
-        this.listener = listener;
-    }
-
-    public void syncDisplayerState(String stateJSON) {
-        JsonObject modifyStateJSON = compareAndModifyStateJSON(parser.parse(stateJSON).getAsJsonObject());
-        if (listener != null) {
-            if (modifyStateJSON != null) {
-                T modifyState = gson.fromJson(modifyStateJSON, this.clazz);
-                this.listener.onDisplayerStateChanged(modifyState);
-            }
-        }
-    }
-
-    void putProperty(String key, Object value) {
-        if (stateJSON == null) {
-            stateJSON = new JsonObject();
-        }
-        JsonElement originalValue = this.stateJSON.get(key);
-
-        if (originalValue != null) {
-            JsonElement newValue = assignObject(this.stateJSON.get(key), gson.toJsonTree(value));
-
-            if (!compareJson(originalValue, newValue)) {
-                JsonObject newStateJSON = new JsonObject();
-                for (String otherKey : this.stateJSON.keySet()) {
-                    if (otherKey.equals(key)) {
-                        newStateJSON.add(otherKey, newValue);
-                    } else {
-                        newStateJSON.add(otherKey, this.stateJSON.get(otherKey));
-                    }
-                }
-                this.stateJSON = newStateJSON;
-
-                if (!this.disableCallbackWhilePutting) {
-                    JsonObject modifyStateJSON = new JsonObject();
-                    modifyStateJSON.add(key, newValue);
-                    T modifyState = gson.fromJson(modifyStateJSON, this.clazz);
-                    this.listener.onDisplayerStateChanged(modifyState);
-                }
-            }
-        }
-    }
-
-    private JsonObject compareAndModifyStateJSON(JsonObject modifyStateJSON) {
-        if (this.stateJSON == null) {
-            this.stateJSON = modifyStateJSON;
-            return null;
-        } else {
-            JsonObject jsonObject = new JsonObject();
-            JsonObject checkedModifyStateJSON = null;
-
-            String[] strs = this.stateJSON.keySet().toArray(new String[0]);
-            Set<String> keySet = new HashSet<>(Arrays.asList(strs));
-            keySet.addAll(modifyStateJSON.keySet());
-            for (String key : keySet) {
-                JsonElement originalValue = this.stateJSON.get(key);
-                JsonElement newValue = modifyStateJSON.get(key);
-
-                if (newValue != null) {
-                    if (!compareJson(originalValue, newValue)) {
-                        if (checkedModifyStateJSON == null) {
-                            checkedModifyStateJSON = new JsonObject();
-                        }
-                        checkedModifyStateJSON.add(key, newValue);
-                    }
-                    jsonObject.add(key, newValue);
-
-                } else if (originalValue != null) {
-                    jsonObject.add(key, originalValue);
-                }
-            }
-            this.stateJSON = jsonObject;
-            return checkedModifyStateJSON;
-        }
-    }
-
     private static JsonElement assignObject(JsonElement value1, JsonElement value2) {
         if (!value1.isJsonObject() || !value2.isJsonObject()) {
             return value2;
@@ -207,5 +122,90 @@ class SyncDisplayerState<T> {
             return false;
         }
         return isEqual;
+    }
+
+    public T getDisplayerState() {
+        return gson.fromJson(this.stateJSON, this.clazz);
+    }
+
+    public void setListener(Listener<T> listener) {
+        this.listener = listener;
+    }
+
+    public void syncDisplayerState(String stateJSON) {
+        JsonObject modifyStateJSON = compareAndModifyStateJSON(parser.parse(stateJSON).getAsJsonObject());
+        if (listener != null) {
+            if (modifyStateJSON != null) {
+                T modifyState = gson.fromJson(modifyStateJSON, this.clazz);
+                this.listener.onDisplayerStateChanged(modifyState);
+            }
+        }
+    }
+
+    void putProperty(String key, Object value) {
+        if (stateJSON == null) {
+            stateJSON = new JsonObject();
+        }
+        JsonElement originalValue = this.stateJSON.get(key);
+
+        if (originalValue != null) {
+            JsonElement newValue = assignObject(this.stateJSON.get(key), gson.toJsonTree(value));
+
+            if (!compareJson(originalValue, newValue)) {
+                JsonObject newStateJSON = new JsonObject();
+                for (String otherKey : this.stateJSON.keySet()) {
+                    if (otherKey.equals(key)) {
+                        newStateJSON.add(otherKey, newValue);
+                    } else {
+                        newStateJSON.add(otherKey, this.stateJSON.get(otherKey));
+                    }
+                }
+                this.stateJSON = newStateJSON;
+
+                if (!this.disableCallbackWhilePutting) {
+                    JsonObject modifyStateJSON = new JsonObject();
+                    modifyStateJSON.add(key, newValue);
+                    T modifyState = gson.fromJson(modifyStateJSON, this.clazz);
+                    this.listener.onDisplayerStateChanged(modifyState);
+                }
+            }
+        }
+    }
+
+    private JsonObject compareAndModifyStateJSON(JsonObject modifyStateJSON) {
+        if (this.stateJSON == null) {
+            this.stateJSON = modifyStateJSON;
+            return null;
+        } else {
+            JsonObject jsonObject = new JsonObject();
+            JsonObject checkedModifyStateJSON = null;
+
+            String[] strs = this.stateJSON.keySet().toArray(new String[0]);
+            Set<String> keySet = new HashSet<>(Arrays.asList(strs));
+            keySet.addAll(modifyStateJSON.keySet());
+            for (String key : keySet) {
+                JsonElement originalValue = this.stateJSON.get(key);
+                JsonElement newValue = modifyStateJSON.get(key);
+
+                if (newValue != null) {
+                    if (!compareJson(originalValue, newValue)) {
+                        if (checkedModifyStateJSON == null) {
+                            checkedModifyStateJSON = new JsonObject();
+                        }
+                        checkedModifyStateJSON.add(key, newValue);
+                    }
+                    jsonObject.add(key, newValue);
+
+                } else if (originalValue != null) {
+                    jsonObject.add(key, originalValue);
+                }
+            }
+            this.stateJSON = jsonObject;
+            return checkedModifyStateJSON;
+        }
+    }
+
+    public interface Listener<T> {
+        void onDisplayerStateChanged(T modifyState);
     }
 }

@@ -5,9 +5,13 @@ package com.herewhite.sdk.domain;
  */
 public class ImageInformationWithUrl extends WhiteObject {
 
+    private Double centerX;
+    private Double centerY;
+    private Double width;
+    private Double height;
+    private String url;
     public ImageInformationWithUrl() {
     }
-
     /**
      * `ImageInformationWithUrl` 构造方法，用于初始化 `ImageInformationWithUrl` 实例。
      *
@@ -24,12 +28,6 @@ public class ImageInformationWithUrl extends WhiteObject {
         this.height = height;
         this.url = url;
     }
-
-    private Double centerX;
-    private Double centerY;
-    private Double width;
-    private Double height;
-    private String url;
 
     /**
      * 获取图片的中心在世界坐标系（以白板初始化时的中心点为原点的坐标系）中的横向坐标。

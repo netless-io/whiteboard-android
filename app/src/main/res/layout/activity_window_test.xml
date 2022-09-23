@@ -29,45 +29,33 @@
 
             <Button
                 android:id="@+id/radio"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                style="@style/TestButton"
                 android:text="setRadio" />
 
             <Button
                 android:id="@+id/colorScheme"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                style="@style/TestButton"
                 android:text="setPrefersColorScheme" />
 
             <Button
                 android:id="@+id/insertPlayer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                style="@style/TestButton"
                 android:text="player" />
 
             <Button
                 android:id="@+id/insertStatic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                style="@style/TestButton"
                 android:text="static" />
 
             <Button
                 android:id="@+id/insertDynamic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                style="@style/TestButton"
                 android:text="dynamic" />
 
             <Button
                 android:id="@+id/insertNewDynamic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="NewDynamic" />
+                style="@style/TestButton"
+                android:text="newDynamic" />
 
             <Button
                 android:id="@+id/closeApp"
@@ -76,24 +64,17 @@
 
             <Button
                 android:id="@+id/lockRatio"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                style="@style/TestButton"
                 android:text="lockRatio" />
 
             <Button
                 android:id="@+id/disableOperation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                style="@style/TestButton"
                 android:text="disableOperation" />
-
 
             <Button
                 android:id="@+id/saveAttributes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                style="@style/TestButton"
                 android:text="saveAttributes" />
         </LinearLayout>
     </HorizontalScrollView>

@@ -21,6 +21,32 @@ public class SyncedStore {
         this.bridge = bridge;
     }
 
+    /**
+     * SyncedStore 约定只保证一层数据变更。
+     * update 格式类型 {"key":{"oldValue":{},"newValue":{}}}
+     * @param update
+     * @return
+     */
+    private static JsonObject getNewValueObject(JsonObject update) {
+        JsonObject result = new JsonObject();
+        for (String key : update.keySet()) {
+            JsonObject updateItem = update.get(key).getAsJsonObject();
+            if (updateItem.has("newValue")) {
+                result.add(key, updateItem.get("newValue"));
+            } else {
+                result.add(key, JsonNull.INSTANCE);
+            }
+        }
+        return result;
+    }
+
+    private static JsonObject mergeUpdate(JsonObject object, JsonObject update) {
+        for (String key : update.keySet()) {
+            object.add(key, update.get(key));
+        }
+        return object;
+    }
+
     public void connectStorage(String name, String defaultJson, Promise<String> promise) {
         bridge.callHandler("store.connectStorage", new Object[]{name, Utils.asJSONObject(defaultJson)}, (OnReturnValue<String>) retValue -> {
             SDKError sdkError = SDKError.promiseError(retValue);
@@ -49,7 +75,7 @@ public class SyncedStore {
     }
 
     public void setStorageState(String name, String json) {
-        bridge.callHandler("store.setStorageState", new Object[]{name, json});
+        bridge.callHandler("store.setStorageState", new Object[]{name, Utils.asJSONObject(json)});
     }
 
     /**
@@ -87,47 +113,21 @@ public class SyncedStore {
             JsonObject merged = mergeUpdate(storages.get(name).deepCopy(), getNewValueObject(data));
             storages.put(stateUpdate.name, merged);
 
-            String current = Utils.toJson(merged);
+            String value = Utils.toJson(merged);
             String diff = Utils.toJsonWithNull(data);
 
-            notifyStateChanged(stateUpdate.name, diff, current);
+            notifyStateChanged(stateUpdate.name, value, diff);
         }
     }
 
-    private void notifyStateChanged(String name, String diff, String current) {
+    private void notifyStateChanged(String name, String value, String diff) {
         CopyOnWriteArraySet<OnStateChangedListener> listeners = listenersByName.get(name);
         if (listeners == null) {
             return;
         }
         for (OnStateChangedListener listener : listeners) {
-            listener.onStateChanged(diff, current);
+            listener.onStateChanged(value, diff);
         }
-    }
-
-    /**
-     * SyncedStore 约定只保证一层数据变更。
-     * update 格式类型 {"key":{"oldValue":{},"newValue":{}}}
-     * @param update
-     * @return
-     */
-    private static JsonObject getNewValueObject(JsonObject update) {
-        JsonObject result = new JsonObject();
-        for (String key : update.keySet()) {
-            JsonObject updateItem = update.get(key).getAsJsonObject();
-            if (updateItem.has("newValue")) {
-                result.add(key, updateItem.get("newValue"));
-            } else {
-                result.add(key, JsonNull.INSTANCE);
-            }
-        }
-        return result;
-    }
-
-    private static JsonObject mergeUpdate(JsonObject object, JsonObject update) {
-        for (String key : update.keySet()) {
-            object.add(key, update.get(key));
-        }
-        return object;
     }
 
     public void addOnStateChangedListener(String name, @NonNull OnStateChangedListener listener) {
@@ -147,6 +147,10 @@ public class SyncedStore {
     }
 
     public interface OnStateChangedListener {
+        /**
+         * @param value 当前状态值对象
+         * @param diff 变更字段 json 表示
+         */
         void onStateChanged(String value, String diff);
     }
 

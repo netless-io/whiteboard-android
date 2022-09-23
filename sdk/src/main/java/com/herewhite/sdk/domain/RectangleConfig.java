@@ -14,6 +14,7 @@ public class RectangleConfig extends WhiteObject {
     private Double originY;
     private Double width;
     private Double height;
+    private AnimationMode animationMode;
 
     /**
      * `RectangleConfig` 构造函数。
@@ -177,6 +178,4 @@ public class RectangleConfig extends WhiteObject {
     public void setAnimationMode(AnimationMode animationMode) {
         this.animationMode = animationMode;
     }
-
-    private AnimationMode animationMode;
 }

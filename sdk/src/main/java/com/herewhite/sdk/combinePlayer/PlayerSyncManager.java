@@ -15,78 +15,11 @@ import java.util.concurrent.TimeUnit;
  */
 public class PlayerSyncManager {
 
-    /**
-     * `Callbacks` 接口，用于监听 `PlayerSyncManager` 对象的事件。
-     */
-    public interface Callbacks {
-        /**
-         * 开始缓冲。
-         */
-        void startBuffering();
-
-        /**
-         * 结束缓冲。
-         */
-        void endBuffering();
-    }
-
-    private enum PauseReason {
-        None(0),
-        WaitingWhitePlayerBuffering(1),
-        WaitingNativePlayerBuffering(1 << 1),
-        WaitingBothBuffering(1 << 1 | 1),
-        Pause(1 << 2),
-        PauseAndWhiteBuffering(1 << 2 | 1),
-        PauseAndNativeBuffering(1 << 2 | 1 << 1),
-        PauseAndBothBuffering(1 << 2 | 1 << 1 | 1),
-        Init(1 | 1 << 1 | 1 << 2);
-
-        private int flag;
-
-        PauseReason(int flag) {
-            this.flag = flag;
-        }
-
-        public int getValue() {
-            return flag;
-        }
-
-        public boolean equals(PauseReason flag) {
-            return flag.getValue() == getValue();
-        }
-
-        public boolean hasFlag(PauseReason flag) {
-            return (getValue() & flag.getValue()) != PauseReason.None.getValue();
-        }
-
-        public PauseReason removeFlag(PauseReason flag) {
-            int value = getValue() & ~flag.getValue();
-            for (PauseReason p : PauseReason.values()) {
-                if (value == p.getValue()) {
-                    return p;
-                }
-
-            }
-            return PauseReason.None;
-        }
-
-        public PauseReason addFlag(PauseReason flag) {
-            int value = getValue() | flag.getValue();
-            for (PauseReason p : PauseReason.values()) {
-                if (value == p.getValue()) {
-                    return p;
-                }
-
-            }
-            return PauseReason.None;
-        }
-    }
-
     private Player whitePlayer;
     private PauseReason pauseReason = PauseReason.Init;
     private NativePlayer nativePlayer;
     private Callbacks callbacks;
-
+    private Handler mainHandler = new Handler(Looper.getMainLooper());
     /**
      * `PlayerSyncManager` 构造方法，用于初始化 `PlayerSyncManager` 实例。
      *
@@ -179,8 +112,6 @@ public class PlayerSyncManager {
         }
     }
 
-    private Handler mainHandler = new Handler(Looper.getMainLooper());
-
     private void runOnMainThread(Runnable runnable) {
         if (Looper.getMainLooper() == Looper.myLooper()) {
             runnable.run();
@@ -188,7 +119,6 @@ public class PlayerSyncManager {
         }
         mainHandler.post(runnable);
     }
-
 
     private void playNativePlayer() {
         if (nativePlayer != null) {
@@ -290,6 +220,73 @@ public class PlayerSyncManager {
             pauseWhitePlayer();
             pauseNativePlayer();
         }
+    }
+
+    private enum PauseReason {
+        None(0),
+        WaitingWhitePlayerBuffering(1),
+        WaitingNativePlayerBuffering(1 << 1),
+        WaitingBothBuffering(1 << 1 | 1),
+        Pause(1 << 2),
+        PauseAndWhiteBuffering(1 << 2 | 1),
+        PauseAndNativeBuffering(1 << 2 | 1 << 1),
+        PauseAndBothBuffering(1 << 2 | 1 << 1 | 1),
+        Init(1 | 1 << 1 | 1 << 2);
+
+        private int flag;
+
+        PauseReason(int flag) {
+            this.flag = flag;
+        }
+
+        public int getValue() {
+            return flag;
+        }
+
+        public boolean equals(PauseReason flag) {
+            return flag.getValue() == getValue();
+        }
+
+        public boolean hasFlag(PauseReason flag) {
+            return (getValue() & flag.getValue()) != PauseReason.None.getValue();
+        }
+
+        public PauseReason removeFlag(PauseReason flag) {
+            int value = getValue() & ~flag.getValue();
+            for (PauseReason p : PauseReason.values()) {
+                if (value == p.getValue()) {
+                    return p;
+                }
+
+            }
+            return PauseReason.None;
+        }
+
+        public PauseReason addFlag(PauseReason flag) {
+            int value = getValue() | flag.getValue();
+            for (PauseReason p : PauseReason.values()) {
+                if (value == p.getValue()) {
+                    return p;
+                }
+
+            }
+            return PauseReason.None;
+        }
+    }
+
+    /**
+     * `Callbacks` 接口，用于监听 `PlayerSyncManager` 对象的事件。
+     */
+    public interface Callbacks {
+        /**
+         * 开始缓冲。
+         */
+        void startBuffering();
+
+        /**
+         * 结束缓冲。
+         */
+        void endBuffering();
     }
 
 }

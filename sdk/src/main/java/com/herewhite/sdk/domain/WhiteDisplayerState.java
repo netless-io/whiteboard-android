@@ -14,6 +14,12 @@ public class WhiteDisplayerState extends WhiteObject {
 
     static Gson gson = new Gson();
     static Class<?> customClass = GlobalState.class;
+    private Object globalState;
+    private RoomMember[] roomMembers;
+    private SceneState sceneState;
+    private String windowBoxState;
+    private PageState pageState;
+    private CameraState cameraState;
 
     /**
      * 设置自定义 `GlobalState`类。
@@ -70,13 +76,6 @@ public class WhiteDisplayerState extends WhiteObject {
         return sceneState;
     }
 
-    private Object globalState;
-    private RoomMember[] roomMembers;
-    private SceneState sceneState;
-
-    private String windowBoxState;
-    private PageState pageState;
-
     /**
      * 获取视角状态。
      *
@@ -85,8 +84,6 @@ public class WhiteDisplayerState extends WhiteObject {
     public CameraState getCameraState() {
         return cameraState;
     }
-
-    private CameraState cameraState;
 
     /**
      * 获取多窗口下窗口展示状态，为一下值：

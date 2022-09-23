@@ -24,3 +24,7 @@ Cutting a Release
    git push -v origin refs/heads/window-manager:refs/heads/window-manager
    git push origin $RELEASE_VERSION
    ```
+5. Trigger Jitpack build
+   ```shell
+   curl https://jitpack.io/api/builds/com.github.netless-io/whiteboard-android/${RELEASE_VERSION}
+   ```

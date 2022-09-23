@@ -9,6 +9,37 @@ package com.herewhite.sdk.domain;
  */
 public class CameraBound extends WhiteObject {
 
+    private Double damping;
+    private Double centerX;
+    private Double centerY;
+    private Double width;
+    private Double height;
+    private ContentModeConfig maxContentMode;
+    private ContentModeConfig minContentMode;
+
+    public CameraBound() {
+        super();
+    }
+
+
+    /**
+     * 初始化视角边界。
+     *
+     * @param miniScale 视角边界的最小缩放比例。
+     * @param maxScale  视角边界的最大缩放比例。
+     */
+    public CameraBound(Double miniScale, Double maxScale) {
+        this();
+        ContentModeConfig miniConfig = new ContentModeConfig();
+        miniConfig.setScale(miniScale);
+        this.minContentMode = miniConfig;
+
+        ContentModeConfig maxConfig = new ContentModeConfig();
+        maxConfig.setScale(maxScale);
+        this.maxContentMode = maxConfig;
+
+    }
+
     /**
      * 获取视角边界的中心点在世界坐标系（以白板初始化时的中心点为原点的坐标系）中的 X 轴坐标。
      *
@@ -81,7 +112,6 @@ public class CameraBound extends WhiteObject {
         this.height = height;
     }
 
-
     /**
      * 获取视角边界的缩放模式和最大缩放比例。
      *
@@ -99,7 +129,6 @@ public class CameraBound extends WhiteObject {
     public void setMaxContentMode(ContentModeConfig maxContentMode) {
         this.maxContentMode = maxContentMode;
     }
-
 
     /**
      * 获取视角边界的缩放模式和最小缩放比例。
@@ -137,35 +166,5 @@ public class CameraBound extends WhiteObject {
      */
     public void setDamping(Double damping) {
         this.damping = damping;
-    }
-
-    private Double damping;
-    private Double centerX;
-    private Double centerY;
-    private Double width;
-    private Double height;
-    private ContentModeConfig maxContentMode;
-    private ContentModeConfig minContentMode;
-
-    public CameraBound() {
-        super();
-    }
-
-    /**
-     * 初始化视角边界。
-     *
-     * @param miniScale 视角边界的最小缩放比例。
-     * @param maxScale  视角边界的最大缩放比例。
-     */
-    public CameraBound(Double miniScale, Double maxScale) {
-        this();
-        ContentModeConfig miniConfig = new ContentModeConfig();
-        miniConfig.setScale(miniScale);
-        this.minContentMode = miniConfig;
-
-        ContentModeConfig maxConfig = new ContentModeConfig();
-        maxConfig.setScale(maxScale);
-        this.maxContentMode = maxConfig;
-
     }
 }

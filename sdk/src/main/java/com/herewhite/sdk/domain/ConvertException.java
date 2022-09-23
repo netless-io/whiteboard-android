@@ -7,6 +7,16 @@ public final class ConvertException extends Exception {
         this.code = code;
     }
 
+    public ConvertException(ConvertErrorCode code, String message) {
+        super(message);
+        this.code = code;
+    }
+
+    public ConvertException(ConvertErrorCode code, Exception e) {
+        super(e);
+        this.code = code;
+    }
+
     @Override
     public String getMessage() {
         String detailMessage = "";
@@ -36,16 +46,6 @@ public final class ConvertException extends Exception {
         } else {
             return "convert error: " + detailMessage + " error: " + super.getMessage();
         }
-    }
-
-    public ConvertException(ConvertErrorCode code, String message) {
-        super(message);
-        this.code = code;
-    }
-
-    public ConvertException(ConvertErrorCode code, Exception e) {
-        super(e);
-        this.code = code;
     }
 
     public ConvertErrorCode getCode() {

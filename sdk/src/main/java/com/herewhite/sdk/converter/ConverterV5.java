@@ -33,6 +33,32 @@ import okhttp3.Response;
  * 此类提供一个PPT转换思路，用户可依据{@see <a href="https://developer.netless.link/server-zh/home/server-conversion">ppt转换</a>}自行实现转换
  */
 public class ConverterV5 {
+    static ThreadPoolExecutor executorService;
+    static Map<ImageFormat, String> outputFormatMap;
+    private static MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    private static String PPT_BASE_URL = "https://api.netless.link/v5/services/conversion/tasks";
+    private static String PROGRESS_URL_FORMAT = PPT_BASE_URL + "/%s?type=%s";
+
+    static {
+        executorService = new ThreadPoolExecutor(4,
+                4,
+                10L,
+                TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(),
+                new ConverterThreadFactory());
+        executorService.allowCoreThreadTimeOut(true);
+    }
+
+    static {
+        outputFormatMap = new HashMap<>();
+        outputFormatMap.put(ImageFormat.PNG, "png");
+        outputFormatMap.put(ImageFormat.JPG, "jpg");
+        outputFormatMap.put(ImageFormat.JPEG, "jpeg");
+        outputFormatMap.put(ImageFormat.WEBP, "webp");
+    }
+
+    private final Gson gson = new Gson();
+    private final OkHttpClient client = new OkHttpClient();
     private String resource;
     private ConvertType type;
     private boolean preview;
@@ -45,7 +71,6 @@ public class ConverterV5 {
     private String taskToken;
     private long interval;
     private long timeout;
-
     private long startTime;
     private ConverterCallbacks outCallbacks;
     private volatile ConverterStatus status = ConverterStatus.Created;
@@ -77,34 +102,6 @@ public class ConverterV5 {
         this.timeout = timeout;
         this.outCallbacks = callbacks;
     }
-
-    static ThreadPoolExecutor executorService;
-
-    static {
-        executorService = new ThreadPoolExecutor(4,
-                4,
-                10L,
-                TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>(),
-                new ConverterThreadFactory());
-        executorService.allowCoreThreadTimeOut(true);
-    }
-
-    private static final class ConverterThreadFactory implements ThreadFactory {
-        @Override
-        public synchronized Thread newThread(Runnable runnable) {
-            Thread result = new Thread(runnable, "white-sdk-converter");
-            result.setPriority(Thread.MIN_PRIORITY);
-            return result;
-        }
-    }
-
-    private static MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    private static String PPT_BASE_URL = "https://api.netless.link/v5/services/conversion/tasks";
-    private static String PROGRESS_URL_FORMAT = PPT_BASE_URL + "/%s?type=%s";
-
-    private final Gson gson = new Gson();
-    private final OkHttpClient client = new OkHttpClient();
 
     public void startConvertTask() {
         if (startTime != 0 && isNotFinish()) {
@@ -208,16 +205,6 @@ public class ConverterV5 {
         return regionElement.getAsString();
     }
 
-    static Map<ImageFormat, String> outputFormatMap;
-
-    static {
-        outputFormatMap = new HashMap<>();
-        outputFormatMap.put(ImageFormat.PNG, "png");
-        outputFormatMap.put(ImageFormat.JPG, "jpg");
-        outputFormatMap.put(ImageFormat.JPEG, "jpeg");
-        outputFormatMap.put(ImageFormat.WEBP, "webp");
-    }
-
     private String convertOutputFormat(ImageFormat outputFormat) {
         return outputFormatMap.get(outputFormat);
     }
@@ -317,6 +304,15 @@ public class ConverterV5 {
         files.setScenes(scenes);
 
         return files;
+    }
+
+    private static final class ConverterThreadFactory implements ThreadFactory {
+        @Override
+        public synchronized Thread newThread(Runnable runnable) {
+            Thread result = new Thread(runnable, "white-sdk-converter");
+            result.setPriority(Thread.MIN_PRIORITY);
+            return result;
+        }
     }
 
     public static class Builder {

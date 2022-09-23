@@ -6,6 +6,7 @@ import com.herewhite.sdk.domain.PlayerState;
 import com.herewhite.sdk.domain.SDKError;
 
 // Created by buhe on 2018/8/12.
+
 /**
  * `PlayerEventListener` 接口的缺省（空）实现。详见 {@link PlayerEventListener PlayerEventListener}。
  *

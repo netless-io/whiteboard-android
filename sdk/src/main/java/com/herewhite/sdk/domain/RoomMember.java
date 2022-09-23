@@ -12,6 +12,8 @@ package com.herewhite.sdk.domain;
 public class RoomMember {
     private Long memberId;
     private MemberInformation information;
+    private MemberState memberState;
+    private Object payload;
 
     /**
      * 获取互动模式用户的所有白板工具信息。
@@ -24,8 +26,6 @@ public class RoomMember {
         return memberState;
     }
 
-    private MemberState memberState;
-
     /**
      * 获取用户加入房间时携带的自定义用户信息。
      *
@@ -35,8 +35,6 @@ public class RoomMember {
     public Object getPayload() {
         return payload;
     }
-
-    private Object payload;
 
     /**
      * 获取用户 ID。

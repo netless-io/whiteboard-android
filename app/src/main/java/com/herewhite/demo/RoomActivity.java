@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -165,6 +166,15 @@ public class RoomActivity extends BaseActivity {
         super.onDestroy();
     }
 
+    static class UserPayload {
+        public String nickName = "nickname";
+        public String cursorName = "cursorName";
+        public String userId = "unique uid";
+        // public String cursorTextColor = "red";
+        // public String avatar = "https://photo.16pic.com/00/31/19/16pic_3119624_b.jpg";
+        // public String cursorBackgroundColor = "rgb(128,128,128,1)";
+    }
+
     //region room
     private void joinRoom(String uuid, String token) {
         logRoomInfo("room uuid: " + uuid + "\nroom token: " + token);
@@ -237,9 +247,10 @@ public class RoomActivity extends BaseActivity {
         WhiteDisplayerState.setCustomGlobalStateClass(MyGlobalState.class);
 
         //如需支持用户头像，请在设置 WhiteSdkConfiguration 后，再调用 setUserPayload 方法，传入符合用户信息
-        RoomParams roomParams = new RoomParams(uuid, token, DemoAPI.DEFAULT_UID);
+        RoomParams roomParams = new RoomParams(uuid, token, getUniqueUid());
         roomParams.setDisableNewPencil(false);
         roomParams.setWritable(true);
+        roomParams.setUserPayload(new UserPayload());
 
         final Date joinDate = new Date();
         logRoomInfo("native join " + joinDate);
@@ -306,6 +317,15 @@ public class RoomActivity extends BaseActivity {
         });
     }
     //endregion
+
+    private static String getUniqueUid() {
+        try {
+            return Build.SERIAL;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return DemoAPI.DEFAULT_UID;
+    }
 
     //region private
     private void alert(final String title, final String detail) {

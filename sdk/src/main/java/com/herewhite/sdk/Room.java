@@ -43,10 +43,33 @@ import wendu.dsbridge.OnReturnValue;
 public class Room extends Displayer {
     private SyncDisplayerState<RoomState> syncRoomState;
     private RoomPhase roomPhase = RoomPhase.connecting;
-
-    void setDisconnectedBySelf(Boolean disconnectedBySelf) {
-        this.disconnectedBySelf = disconnectedBySelf;
+    private Boolean disconnectedBySelf = false;
+    private Boolean writable;
+    private Double timeDelay;
+    private Long observerId;
+    // region roomListener
+    // 关于此处的回调在JsBridge线程，请考虑/讨论确定是否在主执行
+    private RoomListener roomListener;
+    private SyncDisplayerState.Listener<RoomState> localRoomStateListener = modifyState -> {
+        post(() -> {
+            if (roomListener != null) {
+                roomListener.onRoomStateChanged(modifyState);
+            }
+        });
+    };
+    //endregion
+    private RoomDelegate roomDelegate;
+    /**
+     * 文档中隐藏，只有 sdk 内部初始化才有意义
+     */
+    Room(String uuid, JsBridgeInterface bridge, int densityDpi, boolean disableCallbackWhilePutting) {
+        super(uuid, bridge, densityDpi);
+        this.timeDelay = 0.0;
+        this.syncRoomState = new SyncDisplayerState<>(RoomState.class, disableCallbackWhilePutting);
+        this.syncRoomState.setListener(localRoomStateListener);
     }
+
+    /// @cond test
 
     /**
      * 获取用户是否主动断开与白板房间的连接。
@@ -56,8 +79,11 @@ public class Room extends Displayer {
     public Boolean getDisconnectedBySelf() {
         return disconnectedBySelf;
     }
+    /// @endcond
 
-    private Boolean disconnectedBySelf = false;
+    void setDisconnectedBySelf(Boolean disconnectedBySelf) {
+        this.disconnectedBySelf = disconnectedBySelf;
+    }
 
     /**
      * 获取本地用户在当前互动白板实时房间是否为互动模式。
@@ -74,33 +100,11 @@ public class Room extends Displayer {
         this.writable = writable;
     }
 
-    private Boolean writable;
-    private Double timeDelay;
-    private Long observerId;
-
-    /// @cond test
-
-    /**
-     * 文档中隐藏，只有 sdk 内部初始化才有意义
-     */
-    Room(String uuid, JsBridgeInterface bridge, int densityDpi, boolean disableCallbackWhilePutting) {
-        super(uuid, bridge, densityDpi);
-        this.timeDelay = 0.0;
-        this.syncRoomState = new SyncDisplayerState<>(RoomState.class, disableCallbackWhilePutting);
-        this.syncRoomState.setListener(localRoomStateListener);
-    }
-    /// @endcond
-
     void setSyncRoomState(String stateJSON) {
         syncRoomState.syncDisplayerState(stateJSON);
     }
 
-    void setRoomPhase(RoomPhase roomPhase) {
-        this.roomPhase = roomPhase;
-        if (roomListener != null) {
-            roomListener.onPhaseChanged(roomPhase);
-        }
-    }
+    //region Set API
 
     /**
      * 获取用户在当前房间中的用户 ID。
@@ -117,39 +121,7 @@ public class Room extends Displayer {
         this.observerId = observerId;
     }
 
-    //region Set API
-
-    /**
-     * 修改互动白板实时房间的公共全局状态。
-     * <p>
-     * 实时房间的 `globalState` 属性为公共全局变量，房间内所有用户都可以读取 `globalState`，互动模式用户可以修改 `globalState`。
-     * 修改后的 `globalState` 会立即同步给所有用户。
-     *
-     * @param globalState 房间公共全局状态，详见 {@link com.herewhite.sdk.domain.GlobalState GlobalState}.
-     */
-    public void setGlobalState(GlobalState globalState) {
-        syncRoomState.putProperty("globalState", globalState);
-        bridge.callHandler("room.setGlobalState", new Object[]{globalState});
-    }
-
-    /**
-     * 修改房间内的白板工具状态。
-     * <p>
-     * 调用该方法会立刻更新房间的 {@link com.herewhite.sdk.domain.MemberState MemberState}。
-     * 你可以调用 {@link #getMemberState() getMemberState} 获取最新设置的白板工具状态。
-     *
-     * @param memberState 需要修改的白板工具状态，详见 {@link com.herewhite.sdk.domain.MemberState MemberState}。
-     */
-    public void setMemberState(MemberState memberState) {
-        syncRoomState.putProperty("memberState", memberState);
-        if (Appliance.TEXT.equals(memberState.getCurrentApplianceName())) {
-            bridge.callFocusView();
-        }
-        bridge.callHandler("room.setMemberState", new Object[]{memberState});
-    }
-
     //region operation
-
 
     /**
      * 复制选中内容。
@@ -403,6 +375,19 @@ public class Room extends Displayer {
     }
 
     /**
+     * 修改互动白板实时房间的公共全局状态。
+     * <p>
+     * 实时房间的 `globalState` 属性为公共全局变量，房间内所有用户都可以读取 `globalState`，互动模式用户可以修改 `globalState`。
+     * 修改后的 `globalState` 会立即同步给所有用户。
+     *
+     * @param globalState 房间公共全局状态，详见 {@link com.herewhite.sdk.domain.GlobalState GlobalState}.
+     */
+    public void setGlobalState(GlobalState globalState) {
+        syncRoomState.putProperty("globalState", globalState);
+        bridge.callHandler("room.setGlobalState", new Object[]{globalState});
+    }
+
+    /**
      * 获取房间全局状态。
      *
      * @deprecated 该方法已废弃。请使用 {@link #getGlobalState() getGlobalState}[1/2]。
@@ -473,6 +458,22 @@ public class Room extends Displayer {
      */
     public MemberState getMemberState() {
         return syncRoomState.getDisplayerState().getMemberState();
+    }
+
+    /**
+     * 修改房间内的白板工具状态。
+     * <p>
+     * 调用该方法会立刻更新房间的 {@link com.herewhite.sdk.domain.MemberState MemberState}。
+     * 你可以调用 {@link #getMemberState() getMemberState} 获取最新设置的白板工具状态。
+     *
+     * @param memberState 需要修改的白板工具状态，详见 {@link com.herewhite.sdk.domain.MemberState MemberState}。
+     */
+    public void setMemberState(MemberState memberState) {
+        syncRoomState.putProperty("memberState", memberState);
+        if (Appliance.TEXT.equals(memberState.getCurrentApplianceName())) {
+            bridge.callFocusView();
+        }
+        bridge.callHandler("room.setMemberState", new Object[]{memberState});
     }
 
     /**
@@ -701,7 +702,6 @@ public class Room extends Displayer {
         });
     }
 
-
     /**
      * 获取用户当前的视角缩放比例。
      *
@@ -767,6 +767,16 @@ public class Room extends Displayer {
     public RoomPhase getRoomPhase() {
         return this.roomPhase;
     }
+
+    void setRoomPhase(RoomPhase roomPhase) {
+        this.roomPhase = roomPhase;
+        if (roomListener != null) {
+            roomListener.onPhaseChanged(roomPhase);
+        }
+    }
+    //endregion
+
+    //region Scene API
 
     /**
      * 获取房间的连接状态。
@@ -845,9 +855,6 @@ public class Room extends Displayer {
             }
         });
     }
-    //endregion
-
-    //region Scene API
 
     /**
      * 切换至指定的场景。
@@ -949,6 +956,9 @@ public class Room extends Displayer {
     public void putScenes(String dir, Scene[] scenes, int index) {
         bridge.callHandler("room.putScenes", new Object[]{dir, scenes, index});
     }
+    //endregion
+
+    //region PPT
 
     /**
      * 移动场景。
@@ -988,6 +998,7 @@ public class Room extends Displayer {
     public void removeScenes(String dirOrPath) {
         bridge.callHandler("room.removeScenes", new Object[]{dirOrPath});
     }
+    //endregion
 
     /**
      * 清除当前场景的所有内容。
@@ -999,9 +1010,6 @@ public class Room extends Displayer {
     public void cleanScene(boolean retainPpt) {
         bridge.callHandler("room.cleanScene", new Object[]{retainPpt});
     }
-    //endregion
-
-    //region PPT
 
     /**
      * 播放动态 PPT 下一页。
@@ -1024,7 +1032,6 @@ public class Room extends Displayer {
     public void pptPreviousStep() {
         bridge.callHandler("ppt.previousStep", new Object[]{});
     }
-    //endregion
 
     /**
      * 添加新页面到场景集最后位置
@@ -1101,6 +1108,9 @@ public class Room extends Displayer {
         });
     }
 
+
+    //region Disable
+
     /**
      * 切换到上一个页面
      *
@@ -1146,9 +1156,6 @@ public class Room extends Displayer {
             }
         });
     }
-
-
-    //region Disable
 
     /**
      * 允许/禁止白板响应用户任何操作。
@@ -1213,6 +1220,9 @@ public class Room extends Displayer {
     public void disableEraseImage(boolean disable) {
         bridge.callHandler("room.sync.disableEraseImage", new Object[]{disable});
     }
+    //endregion
+
+    //region Delay API
 
     /**
      * 禁止/允许用户调整（移动或缩放）视角。
@@ -1239,6 +1249,7 @@ public class Room extends Displayer {
     public void disableDeviceInputs(final boolean disableOperations) {
         bridge.callHandler("room.disableDeviceInputs", new Object[]{disableOperations});
     }
+    //endregion
 
     /**
      * 禁止/允许窗口操作。
@@ -1252,9 +1263,16 @@ public class Room extends Displayer {
     public void disableWindowOperation(final boolean disableWindowOperation) {
         bridge.callHandler("room.disableWindowOperation", new Object[]{disableWindowOperation});
     }
-    //endregion
 
-    //region Delay API
+    /**
+     * 获取设置得远端白板画面同步延时。
+     *
+     * @return 延时时长，单位为秒。
+     */
+    public Double getTimeDelay() {
+        return this.timeDelay;
+    }
+    //endregion
 
     /**
      * 设置将本地用户的白板内容向远端同步的延时。
@@ -1271,17 +1289,6 @@ public class Room extends Displayer {
         bridge.callHandler("room.setTimeDelay", new Object[]{(int) (delaySec * 1000)});
         this.timeDelay = delaySec;
     }
-
-    /**
-     * 获取设置得远端白板画面同步延时。
-     *
-     * @return 延时时长，单位为秒。
-     */
-    public Double getTimeDelay() {
-        return this.timeDelay;
-    }
-    //endregion
-
 
     /**
      * 设置白板同步延时。
@@ -1304,7 +1311,6 @@ public class Room extends Displayer {
     public void dispatchMagixEvent(AkkoEvent eventEntry) {
         bridge.callHandler("room.dispatchMagixEvent", new Object[]{eventEntry});
     }
-    //endregion
 
     // 添加窗口
     public void addApp(WindowAppParam appParam, Promise<String> promise) {
@@ -1323,12 +1329,9 @@ public class Room extends Displayer {
 
     // 关闭窗口
     public void closeApp(String appId, Promise<Boolean> promise) {
-        bridge.callHandler("room.closeApp", new Object[]{appId}, new OnReturnValue<Object>() {
-            @Override
-            public void onValue(Object value) {
-                if (promise != null) {
-                    promise.then(true);
-                }
+        bridge.callHandler("room.closeApp", new Object[]{appId}, value -> {
+            if (promise != null) {
+                promise.then(true);
             }
         });
     }
@@ -1359,24 +1362,9 @@ public class Room extends Displayer {
         bridge.callHandler("room.setPrefersColorScheme", new Object[]{colorSchemeStr});
     }
 
-    // region roomListener
-    // 关于此处的回调在JsBridge线程，请考虑/讨论确定是否在主执行
-    private RoomListener roomListener;
-
     void setRoomListener(RoomListener roomCallbacks) {
         this.roomListener = roomCallbacks;
     }
-
-    private SyncDisplayerState.Listener<RoomState> localRoomStateListener = modifyState -> {
-        post(() -> {
-            if (roomListener != null) {
-                roomListener.onRoomStateChanged(modifyState);
-            }
-        });
-    };
-
-    //endregion
-    private RoomDelegate roomDelegate;
 
     public RoomDelegate getRoomDelegate() {
         if (roomDelegate == null) {

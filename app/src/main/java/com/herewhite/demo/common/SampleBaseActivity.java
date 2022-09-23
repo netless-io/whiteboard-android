@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
 
 import com.google.gson.Gson;
 import com.herewhite.demo.BaseActivity;
@@ -31,8 +30,7 @@ abstract public class SampleBaseActivity extends BaseActivity {
     private static final String ROOM_INFO = "RoomInfo";
     private static final String ROOM_ACTION = "RoomAction";
 
-    @VisibleForTesting
-    RoomCallbacks mRoomCallbackHock = new AbstractRoomCallbacks() {
+    protected RoomCallbacks mRoomCallbackHock = new AbstractRoomCallbacks() {
     };
 
     protected DemoAPI demoAPI = DemoAPI.get();

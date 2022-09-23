@@ -21,6 +21,83 @@ public class RoomParams extends WhiteObject {
     private String uuid;
     private String roomToken;
     private String uid;
+    private Region region;
+    private CameraBound cameraBound;
+    /**
+     * 重连时，最大重连尝试时间，单位：毫秒，默认 45 秒。
+     */
+    private long timeout = 45000;
+    private boolean isWritable = true;
+    private boolean disableEraseImage = false;
+    private boolean disableDeviceInputs = false;
+    private boolean disableOperations = false;
+    private boolean disableCameraTransform = false;
+    private boolean disableBezier = false;
+    private boolean disableNewPencil = true;
+    private Object userPayload;
+    /**
+     * 多窗口属性
+     */
+    private WindowParams windowParams;
+    /**
+     * 是否关闭 ``insertText`` 与 ``updateText`` 操作权限
+     */
+    private boolean disableTextOperations = false;
+    private boolean nativeWebSocket;
+    private boolean floatBar = true;
+
+    /**
+     * 初始化房间配置参数。
+     *
+     * @param uuid      房间 UUID， 即房间唯一标识符。传入的房间 UUID 必须和生成 Room Token 时填入的房间 UUID 一致。
+     * @param roomToken 用于鉴权的 Room Token。
+     * @param uid 用户标识，可以为任意 string，字符串长度不能超过 1024，2.15.0 后必须填写。
+     */
+    public RoomParams(String uuid, String roomToken, String uid) {
+        this(uuid, roomToken, uid, (Object) null);
+    }
+
+    /**
+     * 初始化房间配置参数并传入用户信息。
+     *
+     * @deprecated 该方法已经废弃。请使用 {@link RoomParams(String, String, Object) RoomParams}[2/2]。
+     *
+     * @param uuid       房间 UUID， 即房间唯一标识符。传入的房间 UUID 必须和生成 Room Token 时填入的房间 UUID 一致。
+     * @param roomToken  用于鉴权的 Room Token。
+     * @param uid 用户标识，可以为任意 string，字符串长度不能超过 1024，2.15.0 后必须填写。
+     * @param memberInfo 自定义用户信息，详见 {@link com.herewhite.sdk.domain.MemberInformation MemberInformation}。
+     *
+     */
+    @Deprecated
+    public RoomParams(String uuid, String roomToken, String uid, MemberInformation memberInfo) {
+        this(uuid, roomToken, uid, (Object) memberInfo);
+    }
+
+    /**
+     * 初始化房间配置参数并传入自定义的用户信息。
+     *
+     * @since 2.0.0
+     *
+     * @param uuid        房间 UUID， 即房间唯一标识符。传入的房间 UUID 必须和生成 Room Token 时填入的房间 UUID 一致。
+     * @param roomToken   用于鉴权的 Room Token。
+     * @param uid 用户标识，可以为任意 string，字符串长度不能超过 1024, 2.15.0 后必须填写。
+     * @param userPayload 自定义用户信息，必须为 {@link com.herewhite.sdk.domain.WhiteObject WhiteObject} 子类。
+     */
+    public RoomParams(String uuid, String roomToken, String uid, Object userPayload) {
+        this.uuid = uuid;
+        this.roomToken = roomToken;
+        this.uid = uid;
+        this.userPayload = userPayload;
+    }
+
+    /**
+     * 获取设置的数据中心。
+     *
+     * @return 设置的数据中心，详见 {@link com.herewhite.sdk.domain.Region Region}。
+     */
+    public Region getRegion() {
+        return region;
+    }
 
     /**
      * 设置数据中心。
@@ -34,23 +111,6 @@ public class RoomParams extends WhiteObject {
     public void setRegion(Region region) {
         this.region = region;
     }
-
-    /**
-     * 获取设置的数据中心。
-     *
-     * @return 设置的数据中心，详见 {@link com.herewhite.sdk.domain.Region Region}。
-     */
-    public Region getRegion() {
-        return region;
-    }
-
-    private Region region;
-    private CameraBound cameraBound;
-
-    /**
-     * 重连时，最大重连尝试时间，单位：毫秒，默认 45 秒。
-     */
-    private long timeout = 45000;
 
     /**
      * 获取用户是否以互动模式加入白板房间。
@@ -77,8 +137,6 @@ public class RoomParams extends WhiteObject {
     public void setWritable(boolean writable) {
         isWritable = writable;
     }
-
-    private boolean isWritable = true;
 
     /**
      * 获取是否关闭橡皮擦擦除图片功能。
@@ -113,8 +171,6 @@ public class RoomParams extends WhiteObject {
     public void setTimeout(long timeout, TimeUnit timeUnit) {
         this.timeout = TimeUnit.MILLISECONDS.convert(timeout, timeUnit);
     }
-
-    private boolean disableEraseImage = false;
 
     /**
      * 获取是否禁止白板工具响应用户输入。
@@ -195,9 +251,6 @@ public class RoomParams extends WhiteObject {
         this.disableBezier = disableBezier;
     }
 
-    private boolean disableDeviceInputs = false;
-    private boolean disableOperations = false;
-
     /**
      * 获取是否禁止本地用户操作白板视角。
      *
@@ -219,9 +272,6 @@ public class RoomParams extends WhiteObject {
     public void setDisableCameraTransform(boolean disableCameraTransform) {
         this.disableCameraTransform = disableCameraTransform;
     }
-
-    private boolean disableCameraTransform = false;
-    private boolean disableBezier = false;
 
     /**
      * 获取是否关闭笔锋效果。
@@ -252,8 +302,6 @@ public class RoomParams extends WhiteObject {
     public void setDisableNewPencil(boolean disableNewPencil) {
         this.disableNewPencil = disableNewPencil;
     }
-
-    private boolean disableNewPencil = true;
 
     /**
      * 获取视角边界。
@@ -297,52 +345,6 @@ public class RoomParams extends WhiteObject {
      * @param userPayload 自定义的用户信息，必须为 key-value 结构，例如，`"avatar", "https://example.com/user.png")`。
      */
     public void setUserPayload(Object userPayload) {
-        this.userPayload = userPayload;
-    }
-
-    private Object userPayload;
-
-    /**
-     * 初始化房间配置参数。
-     *
-     * @param uuid      房间 UUID， 即房间唯一标识符。传入的房间 UUID 必须和生成 Room Token 时填入的房间 UUID 一致。
-     * @param roomToken 用于鉴权的 Room Token。
-     * @param uid 用户标识，可以为任意 string，字符串长度不能超过 1024，2.15.0 后必须填写。
-     */
-    public RoomParams(String uuid, String roomToken, String uid) {
-        this(uuid, roomToken, uid, (Object) null);
-    }
-
-    /**
-     * 初始化房间配置参数并传入用户信息。
-     *
-     * @deprecated 该方法已经废弃。请使用 {@link RoomParams(String, String, Object) RoomParams}[2/2]。
-     *
-     * @param uuid       房间 UUID， 即房间唯一标识符。传入的房间 UUID 必须和生成 Room Token 时填入的房间 UUID 一致。
-     * @param roomToken  用于鉴权的 Room Token。
-     * @param uid 用户标识，可以为任意 string，字符串长度不能超过 1024，2.15.0 后必须填写。
-     * @param memberInfo 自定义用户信息，详见 {@link com.herewhite.sdk.domain.MemberInformation MemberInformation}。
-     *
-     */
-    @Deprecated
-    public RoomParams(String uuid, String roomToken, String uid, MemberInformation memberInfo) {
-        this(uuid, roomToken, uid, (Object) memberInfo);
-    }
-
-    /**
-     * 初始化房间配置参数并传入自定义的用户信息。
-     *
-     * @since 2.0.0
-     *
-     * @param uuid        房间 UUID， 即房间唯一标识符。传入的房间 UUID 必须和生成 Room Token 时填入的房间 UUID 一致。
-     * @param roomToken   用于鉴权的 Room Token。
-     * @param uid 用户标识，可以为任意 string，字符串长度不能超过 1024, 2.15.0 后必须填写。
-     * @param userPayload 自定义用户信息，必须为 {@link com.herewhite.sdk.domain.WhiteObject WhiteObject} 子类。
-     */
-    public RoomParams(String uuid, String roomToken, String uid, Object userPayload) {
-        this.uuid = uuid;
-        this.roomToken = roomToken;
-        this.uid = uid;
         this.userPayload = userPayload;
     }
 
@@ -409,11 +411,6 @@ public class RoomParams extends WhiteObject {
         this.roomToken = roomToken;
     }
 
-    /**
-     * 多窗口属性
-     */
-    private WindowParams windowParams;
-
     public WindowParams getWindowParams() {
         return windowParams;
     }
@@ -421,11 +418,6 @@ public class RoomParams extends WhiteObject {
     public void setWindowParams(WindowParams windowParams) {
         this.windowParams = windowParams;
     }
-
-    /**
-     * 是否关闭 ``insertText`` 与 ``updateText`` 操作权限
-     */
-    private boolean disableTextOperations = false;
 
     public boolean isDisableTextOperations() {
         return disableTextOperations;
@@ -435,13 +427,19 @@ public class RoomParams extends WhiteObject {
         this.disableTextOperations = disableTextOperations;
     }
 
-    private boolean nativeWebSocket;
+    public boolean isUseNativeWebSocket() {
+        return nativeWebSocket;
+    }
 
     public void setUseNativeWebSocket(boolean nativeWebSocket) {
         this.nativeWebSocket = nativeWebSocket;
     }
 
-    public boolean isUseNativeWebSocket() {
-        return nativeWebSocket;
+    public boolean isUsingFloatBar() {
+        return floatBar;
+    }
+
+    public void setUsingFloatBar(boolean floatBar) {
+        this.floatBar = floatBar;
     }
 }

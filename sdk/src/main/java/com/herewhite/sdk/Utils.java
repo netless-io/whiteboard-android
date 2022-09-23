@@ -21,6 +21,10 @@ class Utils {
     private final static Gson gsonWithNull = new GsonBuilder()
             .serializeNulls()
             .create();
+    private static final Class[] PRIMITIVE_TYPES = {int.class, long.class, short.class,
+            float.class, double.class, byte.class, boolean.class, char.class, Integer.class, Long.class,
+            Short.class, Float.class, Double.class, Byte.class, Boolean.class, Character.class};
+    private static List<Class> PRIMITIVE_LIST = Arrays.asList(PRIMITIVE_TYPES);
 
     public static <T> T fromJson(String json, Class<T> classOfT) throws JsonSyntaxException {
         return gson.fromJson(json, classOfT);
@@ -38,6 +42,8 @@ class Utils {
         return gsonWithNull.toJson(object);
     }
 
+    // region bridge data convert
+
     /**
      * @param object
      * @param classOfT
@@ -53,8 +59,6 @@ class Utils {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         return displayMetrics.densityDpi;
     }
-
-    // region bridge data convert
 
     /**
      * 转换成DWebView中需要类型
@@ -73,11 +77,6 @@ class Utils {
             return new Object[0];
         }
     }
-
-    private static final Class[] PRIMITIVE_TYPES = {int.class, long.class, short.class,
-            float.class, double.class, byte.class, boolean.class, char.class, Integer.class, Long.class,
-            Short.class, Float.class, Double.class, Byte.class, Boolean.class, Character.class};
-    private static List<Class> PRIMITIVE_LIST = Arrays.asList(PRIMITIVE_TYPES);
 
     private static boolean isPrimitiveOrStringOrNull(Object target) {
         if (target instanceof String) {

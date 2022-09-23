@@ -5,6 +5,33 @@
 - 新增 `WindowParams.fullscreen` 属性，用于设置全屏模式的样式
 - 新增 `WindowParams.containerStyle`, `WindowParams.stageStyle`, `WindowParams.defaultBoxBodyStyle`, `WindowParams.defaultBoxStageStyle`, `WindowParams.theme` 属性，用于设置窗口样式
 - 添加 `Room.closeApp` 接口
+## [2.16.35] - 2022-09-14
+- 更新 `white-web-sdk` 至 2.16.35。
+## [2.16.34] - 2022-08-30
+- 新增 `RoomParams.floatBar`, 通过 `RoomParams.setUsingFloatBar` 开启或关闭图片、画笔、文本等的浮窗操作工具.
+- 新增 `Appliance.PENCIL_ERASER`, 支持线条的局部擦除.
+## [2.16.33] - 2022-08-23
+- 更新 `white-web-sdk` 至 2.16.34。
+- 更新 `@netless/app-slide` 至 0.2.8。修复切页动画显示不正确的问题
+## [2.16.32] - 2022-08-19
+- 更新 `@netless/window-manager` 至 0.4.42
+- 修复多窗口下 PPT 最大化时最小化重新进入再恢复的显示问题
+- 更新 `netless/cursor-tool` 至 0.1.1, 修复低版本安卓下头像名字无背景问题
+## [2.16.31] - 2022-08-17
+- 更新 `@netless/window-manager`至 0.4.40, 修复无法插入动态文档问题.
+## [2.16.30] - 2022-08-16
+- 更新 `white-web-sdk` 至 2.16.33。
+- 更新 `@netless/window-manager`至 0.4.38。
+## [2.16.29] - 2022-08-11
+- 更新 `@netless/app-slide` 至 0.2.7。
+- 更新 `@netless/slide-rtc-plugin` 至 0.6.1。
+- `AudioMixerBridge` 添加 `pauseAudioMixing`, `resumeAudioMixing` 方法。用户需要在自定义实现类中调用 RTC 对应的混音方法。
+## [2.16.28] - 2022-08-03
+- 更新 `white-web-sdk` 至 2.16.31。修复 room.setMemberState() 某些字段无法保存到本地问题。
+## [2.16.27] - 2022-08-01
+- 更新 `@netless/window-manager`至 0.4.37。
+- 修复 Slide 最小化状态下重新进入房间恢复正常无法恢复到正确的大小问题。
+- 修复只读用户 Slide 最小化状态下重新进入房间恢复正常无法恢复到正确的大小问题。
 ## [2.16.26] - 2022-07-19
 - 更新 `white-web-sdk` 至 2.16.27
 - 画笔支持虚线功能，设置 `room.memberState.dottedLine` 为 `true` 开启该功能。该功能需要开启新铅笔后才能使用

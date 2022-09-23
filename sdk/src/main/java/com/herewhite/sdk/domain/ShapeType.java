@@ -1,6 +1,7 @@
 package com.herewhite.sdk.domain;
 
 import com.google.gson.annotations.SerializedName;
+
 /**
  * 图形工具。
  */
