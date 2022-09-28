@@ -59,6 +59,14 @@ public class WindowParams extends WhiteObject {
      */
     private TeleBoxManagerThemeConfig theme;
 
+    /**
+     * 是否只允许垂直滚动。（默认为 FALSE)
+     * TRUE:  只允许垂直滚动，不允许放大。
+     * FALSE: 允许放大和任意方向滚动。
+     * 注意该值必须在各端保持一致，否则会导致画布无法同步。该参数为 TURE 时，与 room.viewMode 冲突。
+     */
+    private Boolean scrollVerticalOnly = false;
+
     public Float getContainerSizeRatio() {
         return containerSizeRatio;
     }
@@ -165,5 +173,13 @@ public class WindowParams extends WhiteObject {
     public WindowParams setTheme(TeleBoxManagerThemeConfig theme) {
         this.theme = theme;
         return this;
+    }
+
+    public Boolean getScrollVerticalOnly() {
+        return scrollVerticalOnly;
+    }
+
+    public void setScrollVerticalOnly(Boolean scrollVerticalOnly) {
+        this.scrollVerticalOnly = scrollVerticalOnly;
     }
 }
