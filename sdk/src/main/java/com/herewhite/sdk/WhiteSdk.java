@@ -476,7 +476,6 @@ public class WhiteSdk {
                     int total = jsonObject.getInt("total");
                     int index = jsonObject.getInt("index");
                     if (index == total) {
-                        writer.close();
                         success();
                     }
                 }
@@ -486,13 +485,15 @@ public class WhiteSdk {
         }
 
         private void success() {
-            promise.then(true);
+            writer.close();
             sdkJsInterface.setPostMessageCallback(null);
+            promise.then(true);
         }
 
         private void failure(Exception e) {
-            promise.catchEx(new SDKError(e.getMessage()));
+            writer.close();
             sdkJsInterface.setPostMessageCallback(null);
+            promise.catchEx(new SDKError(e.getMessage()));
         }
 
         public void request() {
