@@ -1,4 +1,8 @@
 # 版本更新记录
+## [2.16.37] - 2022-10-10
+- 更新 `@netless/slide-rtc-plugin` 至 0.7.5，修复混音进度单位错误
+- 更新 `@netless/app-slide` 至 0.2.16，修复 PPT 未显示时 `WhiteSdk.requestSlideLog` 无回调问题
+- 修复 `RoomParams.floatBar`，默认不开启
 ## [2.16.36] - 2022-09-23
 - 更新 `@netless/window-manager` 至 0.4.44
 - 更新 `@netless/app-slide` 至 0.2.12
