@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.16.39] - 2022-10-14
+- 更新 `@netless/slide-rtc-plugin` 至 0.7.9
 ## [2.16.38] - 2022-10-12
 - 更新 `@netless/window-manager` 至 0.4.46, 修复 `rectangle` `ellipse` `straight` 等教具 icon 同步显示错误的问题
 - 更新 `@netless/app-slide` 至 0.2.17
