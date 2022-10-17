@@ -1,7 +1,6 @@
 package com.herewhite.rtc.demo;
 
 import com.herewhite.sdk.AudioMixerBridge;
-import com.herewhite.sdk.WhiteSdk;
 
 import io.agora.rtc.RtcEngine;
 
@@ -10,11 +9,11 @@ import io.agora.rtc.RtcEngine;
  */
 public class AudioMixerBridgeImpl implements AudioMixerBridge {
     private RtcEngine rtcEngine;
-    private WhiteSdk whiteSdk;
+    private ResultCallback callback;
 
-    public AudioMixerBridgeImpl(RtcEngine rtcEngine, WhiteSdk whiteSdk) {
+    public AudioMixerBridgeImpl(RtcEngine rtcEngine, ResultCallback callback) {
         this.rtcEngine = rtcEngine;
-        this.whiteSdk = whiteSdk;
+        this.callback = callback;
     }
 
     @Override
@@ -58,9 +57,10 @@ public class AudioMixerBridgeImpl implements AudioMixerBridge {
     }
 
     private void returnResult(int state, int code) {
-        if (whiteSdk.getAudioMixerImplement() != null) {
-            whiteSdk.getAudioMixerImplement().setMediaState(state, code);
-        }
+        callback.onResult(state, code);
     }
 
+    public interface ResultCallback {
+        void onResult(int state, int code);
+    }
 }
