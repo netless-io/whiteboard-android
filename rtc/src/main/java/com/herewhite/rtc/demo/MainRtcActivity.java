@@ -8,6 +8,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,7 +22,9 @@ import com.herewhite.sdk.RoomParams;
 import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
 import com.herewhite.sdk.WhiteboardView;
+import com.herewhite.sdk.domain.Appliance;
 import com.herewhite.sdk.domain.GlobalState;
+import com.herewhite.sdk.domain.MemberState;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
@@ -185,7 +188,6 @@ public class MainRtcActivity extends AppCompatActivity {
     }
 
     private void initWhiteboard() {
-        // TODO create WhiteBoard Ref App Module
         joinRoom(ROOM_UUID, ROOM_TOKEN);
     }
 
@@ -213,6 +215,7 @@ public class MainRtcActivity extends AppCompatActivity {
 
         // 如需支持用户头像，请在设置 WhiteSdkConfiguration 后，再调用 setUserPayload 方法，传入符合用户信息
         RoomParams roomParams = new RoomParams(uuid, token, DEFAULT_UID);
+        roomParams.setWritable(true);
 
         HashMap<String, String> styleMap = new HashMap<>();
         styleMap.put("backgroundColor", "red");
@@ -235,7 +238,7 @@ public class MainRtcActivity extends AppCompatActivity {
             @Override
             public void onPhaseChanged(RoomPhase phase) {
                 logRoomInfo("onPhaseChanged: " + phase.name());
-                // showToast(phase.name());
+                showToast(phase.name());
             }
 
             @Override
@@ -273,6 +276,10 @@ public class MainRtcActivity extends AppCompatActivity {
             @Override
             public void then(Room room) {
                 MainRtcActivity.this.room = room;
+
+                MemberState memberState = new MemberState();
+                memberState.setCurrentApplianceName(Appliance.CLICKER);
+                room.setMemberState(memberState);
             }
 
             @Override
@@ -360,5 +367,9 @@ public class MainRtcActivity extends AppCompatActivity {
 
     void logAction() {
         Log.i(ROOM_ACTION, Thread.currentThread().getStackTrace()[3].getMethodName());
+    }
+
+    void showToast(Object o) {
+        Toast.makeText(this, o.toString(), Toast.LENGTH_SHORT).show();
     }
 }

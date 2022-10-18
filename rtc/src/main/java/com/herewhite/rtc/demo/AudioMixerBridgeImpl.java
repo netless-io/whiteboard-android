@@ -1,5 +1,7 @@
 package com.herewhite.rtc.demo;
 
+import android.util.Log;
+
 import com.herewhite.sdk.AudioMixerBridge;
 
 import io.agora.rtc.RtcEngine;
@@ -18,49 +20,54 @@ public class AudioMixerBridgeImpl implements AudioMixerBridge {
 
     @Override
     public void startAudioMixing(String filepath, boolean loopback, boolean replace, int cycle) {
+        Log.d("AudioMixerBridgeImpl", "startAudioMixing");
         int code = rtcEngine.startAudioMixing(filepath, loopback, replace, cycle);
         if (code != 0) {
-            returnResult(714, code);
+            onMediaStateChanged(714, code);
         }
     }
 
     @Override
     public void stopAudioMixing() {
+        Log.d("AudioMixerBridgeImpl", "stopAudioMixing");
         int code = rtcEngine.stopAudioMixing();
         if (code != 0) {
-            returnResult(0, code);
+            onMediaStateChanged(0, code);
         }
     }
 
     @Override
     public void setAudioMixingPosition(int position) {
+        Log.d("AudioMixerBridgeImpl", "setAudioMixingPosition " + position);
         int code = rtcEngine.setAudioMixingPosition(position);
         if (code != 0) {
-            returnResult(0, code);
+            onMediaStateChanged(0, code);
         }
     }
 
     @Override
     public void pauseAudioMixing() {
+        Log.d("AudioMixerBridgeImpl", "pauseAudioMixing");
         int code = rtcEngine.pauseAudioMixing();
         if (code != 0) {
-            returnResult(0, code);
+            onMediaStateChanged(0, code);
         }
     }
 
     @Override
     public void resumeAudioMixing() {
+        Log.d("AudioMixerBridgeImpl", "resumeAudioMixing");
         int code = rtcEngine.resumeAudioMixing();
         if (code != 0) {
-            returnResult(0, code);
+            onMediaStateChanged(0, code);
         }
     }
 
-    private void returnResult(int state, int code) {
-        callback.onResult(state, code);
+    private void onMediaStateChanged(int state, int code) {
+        callback.onMediaStateChanged(state, code);
     }
 
     public interface ResultCallback {
-        void onResult(int state, int code);
+        void onMediaStateChanged(int state, int code);
     }
 }

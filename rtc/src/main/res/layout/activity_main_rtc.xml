@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
 
     <com.herewhite.sdk.WhiteboardView
         android:id="@+id/whiteboardView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="match_parent"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         tools:context=".MainRtcActivity">
@@ -38,4 +40,4 @@
             android:layout_height="160dp"
             android:background="#827b92" />
     </LinearLayout>
-</FrameLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>
