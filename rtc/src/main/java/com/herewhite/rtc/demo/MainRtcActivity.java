@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -42,10 +43,10 @@ import io.agora.rtc.video.VideoCanvas;
 import io.agora.rtc.video.VideoEncoderConfiguration;
 
 public class MainRtcActivity extends AppCompatActivity {
-    private static final String APP_ID = "";
-    private static final String ROOM_UUID = "";
-    private static final String ROOM_TOKEN = "";
-    private static final String DEFAULT_UID = "5e62a5c0-8c15-4b00-a9fc-0e309e91da30";
+    private static final String APP_ID = "123/12312313";
+    private static final String ROOM_UUID = "2b612720510f11ed9fbf251960392aac";
+    private static final String ROOM_TOKEN = "NETLESSROOM_YWs9c21nRzh3RzdLNk1kTkF5WCZub25jZT0yYmFlNWNjMC01MTBmLTExZWQtODZiOS1hMzhmMWY5ZjcyYmMmcm9sZT0xJnNpZz03ZDg2MGExMjU2Yjc3NDcwNDQxZDc4ZmMwYTQyZTcyMTc5YWNiMzAxZDZlYzk2NGQ0NjdhMzU4MWQyNmEyZjMwJnV1aWQ9MmI2MTI3MjA1MTBmMTFlZDlmYmYyNTE5NjAzOTJhYWM";
+    private static final String DEFAULT_UID = "5e62a5c0";
 
     private static final int PERMISSION_REQ_ID = 22;
     // 如果需要保存 rtc 日志到 sdk 卡就需要 WRITE_EXTERNAL_STORAGE 权限
@@ -75,6 +76,7 @@ public class MainRtcActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_rtc);
 
+        WebView.setWebContentsDebuggingEnabled(true);
         mCallBtn = findViewById(R.id.btn_call);
         mLocalContainer = findViewById(R.id.local_video_view_container);
         mRemoteContainer = findViewById(R.id.remote_video_view_container);
@@ -82,8 +84,15 @@ public class MainRtcActivity extends AppCompatActivity {
 
         // 如果用户需要用到 rtc 混音功能来解决回声和声音抑制问题，那么必须要在 whiteSDK 之前初始化 rtcEngine
         checkAndInitRtcEngine();
-    }
 
+
+        findViewById(R.id.exitRtc).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -98,6 +107,8 @@ public class MainRtcActivity extends AppCompatActivity {
             initializeEngine();
             setupVideoConfig();
             initWhiteboard();
+
+            onCallClicked(null);
         }
     }
 
@@ -106,6 +117,8 @@ public class MainRtcActivity extends AppCompatActivity {
         super.onDestroy();
         leaveChannel();
         RtcEngine.destroy();
+        whiteboardView.removeAllViews();
+        whiteboardView.destroy();
     }
 
     // rtc 回调
@@ -158,6 +171,7 @@ public class MainRtcActivity extends AppCompatActivity {
         @Override
         // 混音状态变化时的回调
         public void onAudioMixingStateChanged(int state, int errorCode) {
+            Log.d(AudioMixerBridgeImpl.TAG, "rtc onAudioMixingStateChanged state:" + state + " errorCode:" + errorCode);
             if (whiteSdk != null) {
                 whiteSdk.getAudioMixerImplement().setMediaState(state, errorCode);
             }
@@ -188,7 +202,7 @@ public class MainRtcActivity extends AppCompatActivity {
     }
 
     private void initWhiteboard() {
-        joinRoom(ROOM_UUID, ROOM_TOKEN);
+        // joinRoom(ROOM_UUID, ROOM_TOKEN);
     }
 
     private void joinRoom(String uuid, String token) {
@@ -320,6 +334,7 @@ public class MainRtcActivity extends AppCompatActivity {
     private void startCall() {
         setupLocalVideo();
         joinChannel();
+        joinRoom(ROOM_UUID, ROOM_TOKEN);
     }
 
     private void endCall() {
