@@ -1,7 +1,8 @@
 package com.herewhite.rtc.demo;
 
+import android.util.Log;
+
 import com.herewhite.sdk.AudioMixerBridge;
-import com.herewhite.sdk.WhiteSdk;
 
 import io.agora.rtc.RtcEngine;
 
@@ -9,58 +10,69 @@ import io.agora.rtc.RtcEngine;
  * 用户需要自己实现 rtc 混音逻辑
  */
 public class AudioMixerBridgeImpl implements AudioMixerBridge {
-    private RtcEngine rtcEngine;
-    private WhiteSdk whiteSdk;
+    public static final String TAG = AudioMixerBridgeImpl.class.getSimpleName();
 
-    public AudioMixerBridgeImpl(RtcEngine rtcEngine, WhiteSdk whiteSdk) {
+    private RtcEngine rtcEngine;
+    private ResultCallback callback;
+
+    public AudioMixerBridgeImpl(RtcEngine rtcEngine, ResultCallback callback) {
         this.rtcEngine = rtcEngine;
-        this.whiteSdk = whiteSdk;
+        this.callback = callback;
     }
 
     @Override
     public void startAudioMixing(String filepath, boolean loopback, boolean replace, int cycle) {
+        Log.d(TAG, "startAudioMixing");
         int code = rtcEngine.startAudioMixing(filepath, loopback, replace, cycle);
         if (code != 0) {
-            returnResult(714, code);
+            Log.d(TAG, "startAudioMixing Failed");
+            onMediaStateChanged(714, code);
         }
     }
 
     @Override
     public void stopAudioMixing() {
+        Log.d(TAG, "stopAudioMixing");
         int code = rtcEngine.stopAudioMixing();
         if (code != 0) {
-            returnResult(0, code);
+            Log.d(TAG, "stopAudioMixing Failed");
+            onMediaStateChanged(0, code);
         }
     }
 
     @Override
     public void setAudioMixingPosition(int position) {
+        Log.d(TAG, "setAudioMixingPosition " + position);
         int code = rtcEngine.setAudioMixingPosition(position);
         if (code != 0) {
-            returnResult(0, code);
+            onMediaStateChanged(0, code);
         }
     }
 
     @Override
     public void pauseAudioMixing() {
+        Log.d(TAG, "pauseAudioMixing");
         int code = rtcEngine.pauseAudioMixing();
         if (code != 0) {
-            returnResult(0, code);
+            onMediaStateChanged(0, code);
         }
     }
 
     @Override
     public void resumeAudioMixing() {
+        Log.d(TAG, "resumeAudioMixing");
         int code = rtcEngine.resumeAudioMixing();
         if (code != 0) {
-            returnResult(0, code);
+            onMediaStateChanged(0, code);
         }
     }
 
-    private void returnResult(int state, int code) {
-        if (whiteSdk.getAudioMixerImplement() != null) {
-            whiteSdk.getAudioMixerImplement().setMediaState(state, code);
-        }
+    private void onMediaStateChanged(int state, int code) {
+        Log.d(TAG, "onMediaStateChanged " + code);
+        callback.onMediaStateChanged(state, code);
     }
 
+    public interface ResultCallback {
+        void onMediaStateChanged(int state, int code);
+    }
 }

@@ -6,6 +6,23 @@
 - 新增 `WindowParams.fullscreen` 属性，用于设置全屏模式的样式
 - 新增 `WindowParams.containerStyle`, `WindowParams.stageStyle`, `WindowParams.defaultBoxBodyStyle`, `WindowParams.defaultBoxStageStyle`, `WindowParams.theme` 属性，用于设置窗口样式
 - 添加 `Room.closeApp` 接口
+## [2.16.41] - 2022-10-24
+- 修复部分低版本 WebView 未定义 globalThis 错误
+- 更新 `@netless/slide-rtc-plugin` 至 0.8.4， 修复 rtc 混音问题
+- 更新 `@netless/app-slide` 至 0.2.22
+## [2.16.39] - 2022-10-14
+- 更新 `@netless/slide-rtc-plugin` 至 0.7.9
+## [2.16.38] - 2022-10-12
+- 更新 `@netless/window-manager` 至 0.4.46, 修复 `rectangle` `ellipse` `straight` 等教具 icon 同步显示错误的问题
+- 更新 `@netless/app-slide` 至 0.2.17
+## [2.16.37] - 2022-10-10
+- 更新 `@netless/slide-rtc-plugin` 至 0.7.5，修复混音进度单位错误
+- 更新 `@netless/app-slide` 至 0.2.16，修复 PPT 未显示时 `WhiteSdk.requestSlideLog` 无回调问题
+- 修复 `RoomParams.floatBar`，默认不开启
+## [2.16.36] - 2022-09-23
+- 更新 `@netless/window-manager` 至 0.4.44
+- 更新 `@netless/app-slide` 至 0.2.12
+- 新增 `WhiteSdk.requestSlideLog` 方法，支持客户端获取 PPT 日志，方便问题排查
 ## [2.16.35] - 2022-09-14
 - 更新 `white-web-sdk` 至 2.16.35。
 ## [2.16.34] - 2022-08-30

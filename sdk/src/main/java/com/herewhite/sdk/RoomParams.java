@@ -44,7 +44,7 @@ public class RoomParams extends WhiteObject {
      */
     private boolean disableTextOperations = false;
     private boolean nativeWebSocket;
-    private boolean floatBar = true;
+    private boolean floatBar = false;
 
     /**
      * 初始化房间配置参数。

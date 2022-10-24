@@ -14,6 +14,7 @@ import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
 import com.herewhite.sdk.domain.WindowRegisterAppParams;
 import com.herewhite.sdk.internal.PlayerJsInterfaceImpl;
+import com.herewhite.sdk.internal.PostMessageCallback;
 import com.herewhite.sdk.internal.RoomJsInterfaceImpl;
 import com.herewhite.sdk.internal.RtcJsInterfaceImpl;
 import com.herewhite.sdk.internal.SdkJsInterfaceImpl;
@@ -22,6 +23,11 @@ import com.herewhite.sdk.internal.StoreJsInterfaceImpl;
 import com.herewhite.sdk.internal.WsJsInterfaceImpl;
 
 import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import wendu.dsbridge.OnReturnValue;
 
@@ -426,5 +432,74 @@ public class WhiteSdk {
     @Deprecated
     public void releasePlayer(String uuid) {
         releasePlayer();
+    }
+
+    private static final AtomicInteger sSessionId = new AtomicInteger(1);
+
+    /**
+     * 请求 Slide 的日志
+     *
+     * @param logFile 用于存储 slide 日志的日志文件
+     * @param promise 请求调用回调结果
+     */
+    public void requestSlideLog(File logFile, final Promise<Boolean> promise) {
+        try {
+            RequestSlideLogHandler handler = new RequestSlideLogHandler(logFile, promise);
+            handler.request();
+        } catch (Exception e) {
+            promise.catchEx(new SDKError(e.getMessage()));
+        }
+    }
+
+    class RequestSlideLogHandler implements PostMessageCallback {
+        private static final String SLIDE_REPORT_LOG_KEY = "@slide/_report_log_";
+
+        private final Promise<Boolean> promise;
+        private final PrintWriter writer;
+        private final int sessionId;
+
+        public RequestSlideLogHandler(File logFile, final Promise<Boolean> promise) throws Exception {
+            this.promise = promise;
+            writer = new PrintWriter(new FileWriter(logFile, true));
+            sessionId = sSessionId.getAndIncrement();
+        }
+
+        @Override
+        public void onMessage(JSONObject jsonObject) {
+            try {
+                String type = jsonObject.optString("type");
+                int id = jsonObject.optInt("sessionId");
+                if (SLIDE_REPORT_LOG_KEY.equals(type) && id == sessionId) {
+                    String log = jsonObject.getString("log");
+                    writer.write(log);
+
+                    int total = jsonObject.getInt("total");
+                    int index = jsonObject.getInt("index");
+                    if (index == total) {
+                        success();
+                    }
+                }
+            } catch (Exception e) {
+                failure(e);
+            }
+        }
+
+        private void success() {
+            writer.close();
+            sdkJsInterface.setPostMessageCallback(null);
+            promise.then(true);
+        }
+
+        private void failure(Exception e) {
+            writer.close();
+            sdkJsInterface.setPostMessageCallback(null);
+            promise.catchEx(new SDKError(e.getMessage()));
+        }
+
+        public void request() {
+            sdkJsInterface.setPostMessageCallback(this);
+            WhiteboardView whiteboardView = (WhiteboardView) bridge;
+            whiteboardView.evaluateJavascript("window.postMessage({'type': \"@slide/_request_log_\",'sessionId': " + sessionId + "});");
+        }
     }
 }

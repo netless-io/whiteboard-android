@@ -6,22 +6,48 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-
-import com.herewhite.sdk.WhiteSdk;
-import com.herewhite.sdk.WhiteboardView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import com.herewhite.sdk.CommonCallback;
+import com.herewhite.sdk.Room;
+import com.herewhite.sdk.RoomListener;
+import com.herewhite.sdk.RoomParams;
+import com.herewhite.sdk.WhiteSdk;
+import com.herewhite.sdk.WhiteSdkConfiguration;
+import com.herewhite.sdk.WhiteboardView;
+import com.herewhite.sdk.domain.Appliance;
+import com.herewhite.sdk.domain.GlobalState;
+import com.herewhite.sdk.domain.MemberState;
+import com.herewhite.sdk.domain.Promise;
+import com.herewhite.sdk.domain.RoomPhase;
+import com.herewhite.sdk.domain.RoomState;
+import com.herewhite.sdk.domain.SDKError;
+import com.herewhite.sdk.domain.WhiteDisplayerState;
+import com.herewhite.sdk.domain.WindowParams;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
+
 import io.agora.rtc.IRtcEngineEventHandler;
 import io.agora.rtc.RtcEngine;
 import io.agora.rtc.video.VideoCanvas;
 import io.agora.rtc.video.VideoEncoderConfiguration;
 
 public class MainRtcActivity extends AppCompatActivity {
+    private static final String APP_ID = "123/12312313";
+    private static final String ROOM_UUID = "2b612720510f11ed9fbf251960392aac";
+    private static final String ROOM_TOKEN = "NETLESSROOM_YWs9c21nRzh3RzdLNk1kTkF5WCZub25jZT0yYmFlNWNjMC01MTBmLTExZWQtODZiOS1hMzhmMWY5ZjcyYmMmcm9sZT0xJnNpZz03ZDg2MGExMjU2Yjc3NDcwNDQxZDc4ZmMwYTQyZTcyMTc5YWNiMzAxZDZlYzk2NGQ0NjdhMzU4MWQyNmEyZjMwJnV1aWQ9MmI2MTI3MjA1MTBmMTFlZDlmYmYyNTE5NjAzOTJhYWM";
+    private static final String DEFAULT_UID = "5e62a5c0";
+
     private static final int PERMISSION_REQ_ID = 22;
     // 如果需要保存 rtc 日志到 sdk 卡就需要 WRITE_EXTERNAL_STORAGE 权限
     private static final String[] REQUESTED_PERMISSIONS = {
@@ -41,23 +67,32 @@ public class MainRtcActivity extends AppCompatActivity {
     private boolean mCallEnd = true;
 
     // Whiteboard
-    private WhiteboardView mWhiteboardView;
-    private WhiteSdk mWhiteSdk;
+    private WhiteboardView whiteboardView;
+    private WhiteSdk whiteSdk;
+    private Room room;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_rtc);
 
+        WebView.setWebContentsDebuggingEnabled(true);
         mCallBtn = findViewById(R.id.btn_call);
         mLocalContainer = findViewById(R.id.local_video_view_container);
         mRemoteContainer = findViewById(R.id.remote_video_view_container);
-        mWhiteboardView = findViewById(R.id.whiteboardView);
+        whiteboardView = findViewById(R.id.whiteboardView);
 
         // 如果用户需要用到 rtc 混音功能来解决回声和声音抑制问题，那么必须要在 whiteSDK 之前初始化 rtcEngine
         checkAndInitRtcEngine();
-    }
 
+
+        findViewById(R.id.exitRtc).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -72,6 +107,8 @@ public class MainRtcActivity extends AppCompatActivity {
             initializeEngine();
             setupVideoConfig();
             initWhiteboard();
+
+            onCallClicked(null);
         }
     }
 
@@ -80,6 +117,8 @@ public class MainRtcActivity extends AppCompatActivity {
         super.onDestroy();
         leaveChannel();
         RtcEngine.destroy();
+        whiteboardView.removeAllViews();
+        whiteboardView.destroy();
     }
 
     // rtc 回调
@@ -132,8 +171,9 @@ public class MainRtcActivity extends AppCompatActivity {
         @Override
         // 混音状态变化时的回调
         public void onAudioMixingStateChanged(int state, int errorCode) {
-            if (mWhiteSdk != null) {
-                mWhiteSdk.getAudioMixerImplement().setMediaState(state, errorCode);
+            Log.d(AudioMixerBridgeImpl.TAG, "rtc onAudioMixingStateChanged state:" + state + " errorCode:" + errorCode);
+            if (whiteSdk != null) {
+                whiteSdk.getAudioMixerImplement().setMediaState(state, errorCode);
             }
         }
     };
@@ -162,7 +202,105 @@ public class MainRtcActivity extends AppCompatActivity {
     }
 
     private void initWhiteboard() {
-        // TODO create WhiteBoard Ref App Module
+        // joinRoom(ROOM_UUID, ROOM_TOKEN);
+    }
+
+    private void joinRoom(String uuid, String token) {
+        logRoomInfo("room uuid: " + uuid + "\nroom token: " + token);
+        WhiteSdkConfiguration configuration = new WhiteSdkConfiguration(APP_ID, true);
+        configuration.setUserCursor(true);
+        configuration.setUseMultiViews(true);
+
+        WhiteSdk.setAudioMixerBridge(new AudioMixerBridgeImpl(mRtcEngine, (state, code) -> {
+            if (whiteSdk.getAudioMixerImplement() != null) {
+                whiteSdk.getAudioMixerImplement().setMediaState(state, code);
+            }
+        }));
+        whiteSdk = new WhiteSdk(whiteboardView, this, configuration);
+        whiteSdk.setCommonCallbacks(new CommonCallback() {
+            @Override
+            public void onLogger(JSONObject object) {
+                logAction(object.toString());
+            }
+        });
+
+        /* 设置自定义全局状态，在后续回调中 GlobalState 直接进行类型转换即可 */
+        WhiteDisplayerState.setCustomGlobalStateClass(GlobalState.class);
+
+        // 如需支持用户头像，请在设置 WhiteSdkConfiguration 后，再调用 setUserPayload 方法，传入符合用户信息
+        RoomParams roomParams = new RoomParams(uuid, token, DEFAULT_UID);
+        roomParams.setWritable(true);
+
+        HashMap<String, String> styleMap = new HashMap<>();
+        styleMap.put("backgroundColor", "red");
+        styleMap.put("top", "12px");
+        styleMap.put("left", "60px");
+        styleMap.put("position", "fixed");
+
+        // String darkMode = darkModeStyle();
+        WindowParams windowParams = new WindowParams()
+                .setContainerSizeRatio(3f / 4)
+                .setChessboard(true)
+                .setDebug(true)
+                // .setOverwriteStyles(darkMode)
+                .setCollectorStyles(styleMap);
+        // optional
+        roomParams.setWindowParams(windowParams);
+
+        whiteSdk.joinRoom(roomParams, new RoomListener() {
+
+            @Override
+            public void onPhaseChanged(RoomPhase phase) {
+                logRoomInfo("onPhaseChanged: " + phase.name());
+                showToast(phase.name());
+            }
+
+            @Override
+            public void onDisconnectWithError(Exception e) {
+
+            }
+
+            @Override
+            public void onKickedWithReason(String s) {
+
+            }
+
+            @Override
+            public void onRoomStateChanged(RoomState roomState) {
+                if (roomState.getWindowBoxState() != null) {
+                    logRoomInfo("WindowBoxState " + roomState.getWindowBoxState());
+                }
+            }
+
+            @Override
+            public void onCanUndoStepsUpdate(long l) {
+
+            }
+
+            @Override
+            public void onCanRedoStepsUpdate(long l) {
+
+            }
+
+            @Override
+            public void onCatchErrorWhenAppendFrame(long l, Exception e) {
+
+            }
+        }, new Promise<Room>() {
+            @Override
+            public void then(Room room) {
+                MainRtcActivity.this.room = room;
+
+                MemberState memberState = new MemberState();
+                memberState.setCurrentApplianceName(Appliance.CLICKER);
+                room.setMemberState(memberState);
+            }
+
+            @Override
+            public void catchEx(SDKError sdkError) {
+
+            }
+        });
     }
 
     private boolean checkSelfPermission(String permission, int requestCode) {
@@ -196,6 +334,7 @@ public class MainRtcActivity extends AppCompatActivity {
     private void startCall() {
         setupLocalVideo();
         joinChannel();
+        joinRoom(ROOM_UUID, ROOM_TOKEN);
     }
 
     private void endCall() {
@@ -228,5 +367,24 @@ public class MainRtcActivity extends AppCompatActivity {
 
     private void leaveChannel() {
         mRtcEngine.leaveChannel();
+    }
+
+    private static final String ROOM_INFO = "RoomInfo";
+    private static final String ROOM_ACTION = "RoomAction";
+
+    void logRoomInfo(String str) {
+        Log.i(ROOM_INFO, Thread.currentThread().getStackTrace()[3].getMethodName() + " " + str);
+    }
+
+    void logAction(String str) {
+        Log.i(ROOM_ACTION, Thread.currentThread().getStackTrace()[3].getMethodName() + " " + str);
+    }
+
+    void logAction() {
+        Log.i(ROOM_ACTION, Thread.currentThread().getStackTrace()[3].getMethodName());
+    }
+
+    void showToast(Object o) {
+        Toast.makeText(this, o.toString(), Toast.LENGTH_SHORT).show();
     }
 }
