@@ -1,8 +1,8 @@
 # 版本更新记录
-## [2.16.40] - 2022-10-21
+## [2.16.41] - 2022-10-24
 - 修复部分低版本 WebView 未定义 globalThis 错误
-- 更新 `@netless/slide-rtc-plugin` 至 0.8.3， 修复 rtc 混音问题
-- 更新 `@netless/app-slide` 至 0.2.21
+- 更新 `@netless/slide-rtc-plugin` 至 0.8.4， 修复 rtc 混音问题
+- 更新 `@netless/app-slide` 至 0.2.22
 ## [2.16.39] - 2022-10-14
 - 更新 `@netless/slide-rtc-plugin` 至 0.7.9
 ## [2.16.38] - 2022-10-12
