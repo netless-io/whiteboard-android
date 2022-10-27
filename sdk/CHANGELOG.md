@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.16.42] - 2022-10-27
+- 更新 `white-web-sdk` 至 2.16.37。修复 Text 教具导致的弹出键盘异常
 ## [2.16.41] - 2022-10-24
 - 修复部分低版本 WebView 未定义 globalThis 错误
 - 更新 `@netless/slide-rtc-plugin` 至 0.8.4， 修复 rtc 混音问题
