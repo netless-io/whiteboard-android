@@ -70,6 +70,7 @@ public class MainRtcActivity extends AppCompatActivity {
     private WhiteboardView whiteboardView;
     private WhiteSdk whiteSdk;
     private Room room;
+    private AudioMixerBridgeImpl audioMixerBridge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +91,20 @@ public class MainRtcActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        findViewById(R.id.startVideo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                audioMixerBridge.startAudioMixing("https://lavaclass-cdn-sz.yyopenbuss.com/pictrues/dynamicConvert/e68cc2806adb11eda04a870992f19b96/resources/ppt/media/media1.mp3", false, false, 1);
+            }
+        });
+
+        findViewById(R.id.pauseVideo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                audioMixerBridge.pauseAudioMixing();
             }
         });
     }
@@ -170,10 +185,10 @@ public class MainRtcActivity extends AppCompatActivity {
 
         @Override
         // 混音状态变化时的回调
-        public void onAudioMixingStateChanged(int state, int errorCode) {
-            Log.d(AudioMixerBridgeImpl.TAG, "rtc onAudioMixingStateChanged state:" + state + " errorCode:" + errorCode);
+        public void onAudioMixingStateChanged(int state, int reason) {
+            Log.d(AudioMixerBridgeImpl.TAG, "rtcMix[RTC] onAudioMixingStateChanged state:" + state + " reason:" + reason);
             if (whiteSdk != null) {
-                whiteSdk.getAudioMixerImplement().setMediaState(state, errorCode);
+                whiteSdk.getAudioMixerImplement().setMediaState(state, reason);
             }
         }
     };
@@ -211,11 +226,12 @@ public class MainRtcActivity extends AppCompatActivity {
         configuration.setUserCursor(true);
         configuration.setUseMultiViews(true);
 
-        WhiteSdk.setAudioMixerBridge(new AudioMixerBridgeImpl(mRtcEngine, (state, code) -> {
+        audioMixerBridge = new AudioMixerBridgeImpl(mRtcEngine, (state, code) -> {
             if (whiteSdk.getAudioMixerImplement() != null) {
                 whiteSdk.getAudioMixerImplement().setMediaState(state, code);
             }
-        }));
+        });
+        WhiteSdk.setAudioMixerBridge(audioMixerBridge);
         whiteSdk = new WhiteSdk(whiteboardView, this, configuration);
         whiteSdk.setCommonCallbacks(new CommonCallback() {
             @Override
@@ -229,7 +245,7 @@ public class MainRtcActivity extends AppCompatActivity {
 
         // 如需支持用户头像，请在设置 WhiteSdkConfiguration 后，再调用 setUserPayload 方法，传入符合用户信息
         RoomParams roomParams = new RoomParams(uuid, token, DEFAULT_UID);
-        roomParams.setWritable(true);
+        roomParams.setWritable(false);
 
         HashMap<String, String> styleMap = new HashMap<>();
         styleMap.put("backgroundColor", "red");

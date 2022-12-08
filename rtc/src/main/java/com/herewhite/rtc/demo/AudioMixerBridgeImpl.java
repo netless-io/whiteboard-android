@@ -22,28 +22,26 @@ public class AudioMixerBridgeImpl implements AudioMixerBridge {
 
     @Override
     public void startAudioMixing(String filepath, boolean loopback, boolean replace, int cycle) {
-        Log.d(TAG, "startAudioMixing");
         int code = rtcEngine.startAudioMixing(filepath, loopback, replace, cycle);
+        Log.d(TAG, "rtcMix startAudioMixing " + filepath + " " + code);
         if (code != 0) {
-            Log.d(TAG, "startAudioMixing Failed");
             onMediaStateChanged(714, code);
         }
     }
 
     @Override
     public void stopAudioMixing() {
-        Log.d(TAG, "stopAudioMixing");
         int code = rtcEngine.stopAudioMixing();
+        Log.d(TAG, "rtcMix stopAudioMixing " + code);
         if (code != 0) {
-            Log.d(TAG, "stopAudioMixing Failed");
             onMediaStateChanged(0, code);
         }
     }
 
     @Override
     public void setAudioMixingPosition(int position) {
-        Log.d(TAG, "setAudioMixingPosition " + position);
         int code = rtcEngine.setAudioMixingPosition(position);
+        Log.d(TAG, "rtcMix setAudioMixingPosition " + position + " " + code);
         if (code != 0) {
             onMediaStateChanged(0, code);
         }
@@ -51,8 +49,8 @@ public class AudioMixerBridgeImpl implements AudioMixerBridge {
 
     @Override
     public void pauseAudioMixing() {
-        Log.d(TAG, "pauseAudioMixing");
         int code = rtcEngine.pauseAudioMixing();
+        Log.d(TAG, "rtcMix pauseAudioMixing " + code);
         if (code != 0) {
             onMediaStateChanged(0, code);
         }
@@ -60,15 +58,15 @@ public class AudioMixerBridgeImpl implements AudioMixerBridge {
 
     @Override
     public void resumeAudioMixing() {
-        Log.d(TAG, "resumeAudioMixing");
         int code = rtcEngine.resumeAudioMixing();
+        Log.d(TAG, "rtcMix resumeAudioMixing " + code);
         if (code != 0) {
             onMediaStateChanged(0, code);
         }
     }
 
     private void onMediaStateChanged(int state, int code) {
-        Log.d(TAG, "onMediaStateChanged " + code);
+        Log.d(TAG, "rtcMix onMediaStateChanged " + code);
         callback.onMediaStateChanged(state, code);
     }
 
