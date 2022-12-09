@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.16.45] - 2022-12-09
+- 更新 `@netless/app-slide` 至 0.2.27
+- 更新 `@netless/slide-rtc-plugin` 至 0.9.3， 修复 rtc 混音问题
 ## [2.16.44] - 2022-12-01
 - 更新 `@netless/app-slide` 至 0.2.24
 - 更新 `@netless/window-manager`至 0.4.54
