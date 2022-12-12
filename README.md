@@ -1,7 +1,4 @@
-# white sdk android [![Release](https://jitpack.io/v/netless-io/whiteboard-android.svg)](https://jitpack.io/#netless-io/whiteboard-android) ![bridge-check](https://github.com/netless-io/whiteboard-android/actions/workflows/bridge.yml/badge.svg)
-
-
-[last release](https://github.com/netless-io/whiteboard-android/releases/latest)
+# white sdk android [![Release](https://jitpack.io/v/netless-io/whiteboard-android.svg)](https://jitpack.io/#netless-io/whiteboard-android)
 
 [jitpack release](https://jitpack.io/com/github/netless-io/whiteboard-android/)
 
@@ -12,7 +9,7 @@
 ## Integrate the SDK
 ### Prerequisites
 1. Android Studio 
-2. API 19+
+2. API 21+
 3. A valid **APP Identifier** and **SDK Token**
 
 ### Config build.gradle
@@ -31,9 +28,10 @@ add dependency of whiteboard in the **app/build.gradle** file
 ```groovy
 dependencies {
     // Get the latest version number through the release notes.
-    implementation 'com.github.netless-io:whiteboard-android:$last-version'
+    implementation "com.github.netless-io:whiteboard-android:2.16.45"
 }
 ```
+### Releases
 Our [change log](https://developer.netless.link/android-en/home/android-changelog) has release history.
 
 The latest release is available on [jitpack](https://jitpack.io/v/netless-io/whiteboard-android)
@@ -43,12 +41,5 @@ Add the following line in the **app/proguard-rules.pro** file to prevent obfusca
 ```bash
 # SDK model
 -keep class com.herewhite.** { *; }
--keepattributes  *JavascriptInterface*
--keepattributes Signature
-# Gson specific classes
--keep class sun.misc.Unsafe { *; }
--keep class com.google.gson.stream.** { *; }
 # Application classes that will be serialized/deserialized over Gson
--keep class com.google.gson.examples.android.model.** { *; }
--keep class com.google.gson.** { *;}
 ```
