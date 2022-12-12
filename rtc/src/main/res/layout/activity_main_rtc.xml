@@ -15,13 +15,33 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <Button
-            android:id="@+id/exitRtc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Exit"
-            android:textAllCaps="false" />
+
+        <LinearLayout
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/exitRtc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Exit"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/startVideo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="startVideo"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/pauseVideo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="pauseVideo"
+                android:textAllCaps="false" />
+        </LinearLayout>
     </FrameLayout>
 
     <LinearLayout

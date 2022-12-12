@@ -43,12 +43,13 @@ import io.agora.rtc.video.VideoCanvas;
 import io.agora.rtc.video.VideoEncoderConfiguration;
 
 public class MainRtcActivity extends AppCompatActivity {
-    private static final String APP_ID = "123/12312313";
-    private static final String ROOM_UUID = "2b612720510f11ed9fbf251960392aac";
-    private static final String ROOM_TOKEN = "NETLESSROOM_YWs9c21nRzh3RzdLNk1kTkF5WCZub25jZT0yYmFlNWNjMC01MTBmLTExZWQtODZiOS1hMzhmMWY5ZjcyYmMmcm9sZT0xJnNpZz03ZDg2MGExMjU2Yjc3NDcwNDQxZDc4ZmMwYTQyZTcyMTc5YWNiMzAxZDZlYzk2NGQ0NjdhMzU4MWQyNmEyZjMwJnV1aWQ9MmI2MTI3MjA1MTBmMTFlZDlmYmYyNTE5NjAzOTJhYWM";
-    private static final String DEFAULT_UID = "5e62a5c0";
+    private static final String APP_ID = "122123/123132";
+    private static final String ROOM_UUID = "6d181120525e11ec89361798d9c15050";
+    private static final String ROOM_TOKEN = "WHITEcGFydG5lcl9pZD15TFExM0tTeUx5VzBTR3NkJnNpZz0wZWIzMmY5M2IzMGUzZTBiMTQ4NzQ3NGVmZTRhNTlkNWM2MjY4ZjFjOmFrPXlMUTEzS1N5THlXMFNHc2QmY3JlYXRlX3RpbWU9MTYzODMzMjYwNTUwNiZleHBpcmVfdGltZT0xNjY5ODY4NjA1NTA2Jm5vbmNlPTE2MzgzMzI2MDU1MDYwMCZyb2xlPXJvb20mcm9vbUlkPTZkMTgxMTIwNTI1ZTExZWM4OTM2MTc5OGQ5YzE1MDUwJnRlYW1JZD05SUQyMFBRaUVldTNPNy1mQmNBek9n";
+    private static final String DEFAULT_UID = "1233124";
 
     private static final int PERMISSION_REQ_ID = 22;
+
     // 如果需要保存 rtc 日志到 sdk 卡就需要 WRITE_EXTERNAL_STORAGE 权限
     private static final String[] REQUESTED_PERMISSIONS = {
             Manifest.permission.RECORD_AUDIO,
@@ -86,7 +87,6 @@ public class MainRtcActivity extends AppCompatActivity {
         // 如果用户需要用到 rtc 混音功能来解决回声和声音抑制问题，那么必须要在 whiteSDK 之前初始化 rtcEngine
         checkAndInitRtcEngine();
 
-
         findViewById(R.id.exitRtc).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,7 +97,7 @@ public class MainRtcActivity extends AppCompatActivity {
         findViewById(R.id.startVideo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                audioMixerBridge.startAudioMixing("https://lavaclass-cdn-sz.yyopenbuss.com/pictrues/dynamicConvert/e68cc2806adb11eda04a870992f19b96/resources/ppt/media/media1.mp3", false, false, 1);
+                audioMixerBridge.startAudioMixing("https://white-pan.oss-cn-shanghai.aliyuncs.com/101/oceans.mp4", false, false, 1);
             }
         });
 
