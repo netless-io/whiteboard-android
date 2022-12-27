@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.16.46] - 2022-12-27
+- 更新 `@netless/app-slide` 至 0.2.28, 修复部分 WebView 着色器编译问题。
 ## [2.16.45] - 2022-12-09
 - 更新 `@netless/app-slide` 至 0.2.27
 - 更新 `@netless/slide-rtc-plugin` 至 0.9.3， 修复 rtc 混音问题
