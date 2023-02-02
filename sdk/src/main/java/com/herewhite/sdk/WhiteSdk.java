@@ -35,7 +35,7 @@ import wendu.dsbridge.OnReturnValue;
  * `WhiteSdk` 类。
  */
 public class WhiteSdk {
-    private final static String SDK_VERSION = "2.16.48";
+    private final static String SDK_VERSION = "2.16.49";
 
     private final static Gson gson = new Gson();
     private static AudioMixerBridge sAudioMixerBridge;
