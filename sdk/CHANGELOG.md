@@ -1,8 +1,8 @@
 # 版本更新记录
-## [2.16.49] - 2023-02-02
-- - 更新 `@netless/app-slide` 至 0.2.31
+## [2.16.50] - 2023-02-03
+- 更新 `@netless/app-slide` 至 0.2.31
 ## [2.16.48] - 2023-01-13
-- - 更新 `@netless/app-slide` 至 0.2.30
+- 更新 `@netless/app-slide` 至 0.2.30
 ## [2.16.47] - 2023-01-06
 - 更新 `@netless/app-slide` 至 0.2.29
 - 更新 `@netless/slide-rtc-plugin` 至 0.10.1
