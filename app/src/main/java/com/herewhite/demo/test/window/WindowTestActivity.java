@@ -93,6 +93,43 @@ public class WindowTestActivity extends AppCompatActivity {
 
         mWhiteboardParent = findViewById(R.id.whiteParent);
 
+        // Slide 音量测试
+        findViewById(R.id.updateSlideVolume).setOnClickListener(new View.OnClickListener() {
+            int index = 0;
+            final List<Float> volumes = new ArrayList<Float>() {
+                {
+                    add(1.0f);
+                    add(0f);
+                    add(0.5f);
+                }
+            };
+
+
+            @Override
+            public void onClick(View v) {
+                mWhiteSdk.updateSlideVolume(volumes.get(index++ % volumes.size()));
+            }
+        });
+
+        findViewById(R.id.getSlideVolume).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mWhiteSdk.getSlideVolume(new Promise<Double>() {
+                    @Override
+                    public void then(Double volume) {
+                        showToast("current volume is:" + volume);
+                    }
+
+                    @Override
+                    public void catchEx(SDKError t) {
+
+                    }
+                });
+
+            }
+        });
+
+
         // 窗口比例
         findViewById(R.id.radio).setOnClickListener(new View.OnClickListener() {
             int index = 0;
@@ -156,8 +193,8 @@ public class WindowTestActivity extends AppCompatActivity {
         // 插入新的动态PPT
         findViewById(R.id.insertNewDynamic).setOnClickListener(v -> {
             // prefixUrl
-            String prefixUrl = "https://convertcdn.netless.link/dynamicConvert";
-            String taskUuid = "a136d855525a48a9844c678ad5027067";
+            String prefixUrl = "https://convertcdn.netless.group/test/dynamicConvert";
+            String taskUuid = "3a770365089b458b850619b7085ecdf5";
             WindowAppParam param = WindowAppParam.createSlideApp(taskUuid, prefixUrl, "Projector App");
             mRoom.addApp(param, insertPromise);
         });
