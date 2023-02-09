@@ -502,4 +502,33 @@ public class WhiteSdk {
             whiteboardView.evaluateJavascript("window.postMessage({'type': \"@slide/_request_log_\",'sessionId': " + sessionId + "});");
         }
     }
+
+    /**
+     * 更新当前 Slide 音量
+     * @param volume
+     */
+    public void updateSlideVolume(float volume) {
+        bridge.evaluateJavascript("window.postMessage({'type': \"@slide/_update_volume_\",'volume': " + volume + "});");
+    }
+
+    /**
+     * 获取当前 Slide 音量
+     *
+     * @param promise 成功返回音量信息，失败返回错误信息
+     */
+    public void getSlideVolume(Promise<Double> promise) {
+        sdkJsInterface.setPostMessageCallback(jsonObject -> {
+            try {
+                String type = jsonObject.optString("type");
+                if ("@slide/_report_volume_".equals(type)) {
+                    sdkJsInterface.setPostMessageCallback(null);
+                    promise.then(jsonObject.getDouble("volume"));
+                }
+            } catch (Exception e) {
+                sdkJsInterface.setPostMessageCallback(null);
+                promise.catchEx(SDKError.parseError(jsonObject));
+            }
+        });
+        bridge.evaluateJavascript("window.postMessage({'type': \"@slide/_get_volume_\"});");
+    }
 }

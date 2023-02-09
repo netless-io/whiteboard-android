@@ -12,6 +12,12 @@ public interface JsBridgeInterface {
     void callHandler(String method, Object[] args);
 
     /**
+     * 执行 js 脚本
+     * @param script
+     */
+    void evaluateJavascript(final String script);
+
+    /**
      * 触发获取焦点
      */
     default void callFocusView() {
