@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.16.52] - 2023-02-17
+- 更新 `@netless/app-slide` 至 0.2.33
 ## [2.16.51] - 2023-02-09
 - 更新 `@netless/app-slide` 至 0.2.32
 - `WhiteSDK` 新增 `getSlideVolume` 和 `updateSlideVolume` 方法用于获取和更新 ppt 内音频音量
