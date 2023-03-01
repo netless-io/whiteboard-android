@@ -26,8 +26,8 @@ android {
 }
 
 dependencies {
-    // implementation project(':sdk')
-    implementation 'com.github.netless-io:whiteboard-android:2.16.43'
+    implementation project(':sdk')
+    // implementation 'com.github.netless-io:whiteboard-android:2.16.43'
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 

@@ -28,6 +28,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private boolean log = false;
     private RenderEngineType renderEngine = RenderEngineType.canvas;
     private boolean enableInterrupterAPI = false;
+    private boolean enableSlideInterrupterAPI = false;
     private boolean preloadDynamicPPT = false;
     private boolean routeBackup = false;
     private boolean userCursor = false;
@@ -45,6 +46,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
      * pptParams 动态 ppt 专用参数
      */
     private PptParams pptParams = new PptParams();
+    private SlideAppOptions slideAppOptions = new SlideAppOptions();
     private HashMap<String, String> fonts;
     private boolean enableImgErrorCallback;
     /**
@@ -500,6 +502,22 @@ public class WhiteSdkConfiguration extends WhiteObject {
         this.useMultiViews = useMultiViews;
     }
 
+    public SlideAppOptions getSlideAppOptions() {
+        return slideAppOptions;
+    }
+
+    public void setSlideAppOptions(SlideAppOptions slideAppOptions) {
+        this.slideAppOptions = slideAppOptions;
+    }
+
+    public boolean isEnableSlideInterrupterAPI() {
+        return enableSlideInterrupterAPI;
+    }
+
+    public void setEnableSlideInterrupterAPI(boolean enableSlideInterrupterAPI) {
+        this.enableSlideInterrupterAPI = enableSlideInterrupterAPI;
+    }
+
     /**
      * 白板上绘画的渲染模式。
      *
@@ -594,5 +612,26 @@ public class WhiteSdkConfiguration extends WhiteObject {
             this.useServerWrap = useServerWrap;
         }
         /// @endcond
+    }
+
+    public static class SlideAppOptions extends WhiteObject {
+        private boolean showRenderError = false;
+        private boolean debug = false;
+
+        public boolean isShowRenderError() {
+            return showRenderError;
+        }
+
+        public void setShowRenderError(boolean showRenderError) {
+            this.showRenderError = showRenderError;
+        }
+
+        public boolean isDebug() {
+            return debug;
+        }
+
+        public void setDebug(boolean debug) {
+            this.debug = debug;
+        }
     }
 }

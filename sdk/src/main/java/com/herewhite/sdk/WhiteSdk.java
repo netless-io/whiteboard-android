@@ -21,6 +21,7 @@ import com.herewhite.sdk.internal.SdkJsInterfaceImpl;
 import com.herewhite.sdk.internal.StoreDelegate;
 import com.herewhite.sdk.internal.StoreJsInterfaceImpl;
 import com.herewhite.sdk.internal.WsJsInterfaceImpl;
+import com.herewhite.sdk.window.SlideListener;
 
 import org.json.JSONObject;
 
@@ -49,6 +50,7 @@ public class WhiteSdk {
     private RtcJsInterfaceImpl rtcJsInterface;
     @Nullable
     private AudioMixerImplement audioMixerImplement;
+    private SlideListener slideListener;
 
     /**
      * 初始化白板 SDK 实例。
@@ -530,5 +532,9 @@ public class WhiteSdk {
             }
         });
         bridge.evaluateJavascript("window.postMessage({'type': \"@slide/_get_volume_\"});");
+    }
+
+    public void setSlideListener(SlideListener slideListener) {
+        sdkJsInterface.setSlideListener(slideListener);
     }
 }
