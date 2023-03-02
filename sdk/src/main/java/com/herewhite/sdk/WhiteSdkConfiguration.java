@@ -46,6 +46,9 @@ public class WhiteSdkConfiguration extends WhiteObject {
      * pptParams 动态 ppt 专用参数
      */
     private PptParams pptParams = new PptParams();
+    /**
+     * SlideApp 的配置项
+     */
     private SlideAppOptions slideAppOptions = new SlideAppOptions();
     private HashMap<String, String> fonts;
     private boolean enableImgErrorCallback;
@@ -514,6 +517,16 @@ public class WhiteSdkConfiguration extends WhiteObject {
         return enableSlideInterrupterAPI;
     }
 
+    /**
+     * 开启/关闭 SlideApp 拦截替换功能。
+     * <p>
+     * 该方法可以开启或关闭 SlideApp 资源的拦截功能。
+     * 如果开启，在加载 url 资源时，SlideApp 会拦截图片并触发 {@link com.herewhite.sdk.window.SlideListener#slideUrlInterrupter(String, ResultCaller)} 回调，你可以在该回调中替换图片的地址。
+     *
+     * @param enableSlideInterrupterAPI 是否开启 SlideApp 资源拦截和替换功能：
+     *                             - `true`：开启。
+     *                             - `false`：（默认）关闭。
+     */
     public void setEnableSlideInterrupterAPI(boolean enableSlideInterrupterAPI) {
         this.enableSlideInterrupterAPI = enableSlideInterrupterAPI;
     }
@@ -614,8 +627,11 @@ public class WhiteSdkConfiguration extends WhiteObject {
         /// @endcond
     }
 
+    // 互动白板 SlideApp 的配置项。
     public static class SlideAppOptions extends WhiteObject {
+        // 是否显示渲染错误
         private boolean showRenderError = false;
+        // 是否开启调试模式
         private boolean debug = false;
 
         public boolean isShowRenderError() {

@@ -534,6 +534,13 @@ public class WhiteSdk {
         bridge.evaluateJavascript("window.postMessage({'type': \"@slide/_get_volume_\"});");
     }
 
+    /**
+     * 设置 SlideApp 回调。
+     * <p>
+     * SlideApp 通过 `SlideListener` 类向 app 报告内部运行时的各项事件。
+     *
+     * @param slideListener 通用回调事件，详见 {@link SlideListener SlideListener}
+     */
     public void setSlideListener(SlideListener slideListener) {
         sdkJsInterface.setSlideListener(slideListener);
     }
