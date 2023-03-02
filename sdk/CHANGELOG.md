@@ -1,4 +1,11 @@
 # 版本更新记录
+## [2.16.53] - 2023-02-17
+- 更新 `@netless/app-slide` 至 0.2.34
+- `WhiteSdkConfiguration` 新增 `enableSlideInterrupterAPI`
+  配置项。开启后，通过 `WhiteSdk.setSlideListener(SlideListener)`，实现 `SlideListener.slideUrlInterrupter` 对资源 url
+  进行处理。
+- `WhiteSdkConfiguration` 新增 `slideAppOptions` 配置项用于 SlideApp
+  显示配置。当前支持配置 `slideAppOptions.showRenderError`，用于配置显示/隐藏渲染错误提示。
 ## [2.16.52] - 2023-02-17
 - 更新 `@netless/app-slide` 至 0.2.33
 ## [2.16.51] - 2023-02-09
