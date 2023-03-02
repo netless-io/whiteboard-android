@@ -17,7 +17,6 @@ import com.herewhite.demo.R;
 import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.demo.utils.FileUtils;
 import com.herewhite.demo.utils.MapBuilder;
-import com.herewhite.sdk.CommonCallback;
 import com.herewhite.sdk.Room;
 import com.herewhite.sdk.RoomListener;
 import com.herewhite.sdk.RoomParams;
@@ -34,8 +33,6 @@ import com.herewhite.sdk.domain.WhiteDisplayerState;
 import com.herewhite.sdk.domain.WindowAppParam;
 import com.herewhite.sdk.domain.WindowParams;
 import com.herewhite.sdk.domain.WindowPrefersColorScheme;
-
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -193,8 +190,8 @@ public class WindowTestActivity extends AppCompatActivity {
         // 插入新的动态PPT
         findViewById(R.id.insertNewDynamic).setOnClickListener(v -> {
             // prefixUrl
-            String prefixUrl = "https://convertcdn.netless.group/test/dynamicConvert";
-            String taskUuid = "3a770365089b458b850619b7085ecdf5";
+            String prefixUrl = "https://white-us-doc-convert.s3.us-west-1.amazonaws.com/dynamicConvert";
+            String taskUuid = "0c17d99a3cfa41dc85a9b9a379d18912";
             WindowAppParam param = WindowAppParam.createSlideApp(taskUuid, prefixUrl, "Projector App");
             mRoom.addApp(param, insertPromise);
         });
@@ -272,6 +269,8 @@ public class WindowTestActivity extends AppCompatActivity {
         if (mRoom != null) {
             mRoom.disconnect();
         }
+        mWhiteboardView.removeAllViews();
+        mWhiteboardView.destroy();
     }
 
     private void joinRoom(String uuid, String token) {
@@ -283,13 +282,17 @@ public class WindowTestActivity extends AppCompatActivity {
         configuration.setFonts(new MapBuilder<String, String>().put("宋体", "https://your-cdn.com/Songti.ttf").build());
         // configuration.setEnableSyncedStore(true);
         configuration.setUseMultiViews(true);
+        configuration.setEnableSlideInterrupterAPI(true);
+
+        WhiteSdkConfiguration.SlideAppOptions slideAppOptions = new WhiteSdkConfiguration.SlideAppOptions();
+        slideAppOptions.setDebug(false);
+        slideAppOptions.setShowRenderError(false);
+        configuration.setSlideAppOptions(slideAppOptions);
 
         mWhiteSdk = new WhiteSdk(mWhiteboardView, this, configuration);
-        mWhiteSdk.setCommonCallbacks(new CommonCallback() {
-            @Override
-            public void onLogger(JSONObject object) {
-                logAction(object.toString());
-            }
+        mWhiteSdk.setSlideListener((sourceUrl, resultCaller) -> {
+            // ApiService.convertUrl(sourceUrl)
+            resultCaller.call(sourceUrl);
         });
 
         /* 设置自定义全局状态，在后续回调中 GlobalState 直接进行类型转换即可 */
@@ -365,6 +368,7 @@ public class WindowTestActivity extends AppCompatActivity {
             }
         });
     }
+
     //endregion
 
     //region log
