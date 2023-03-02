@@ -1,5 +1,0 @@
-MM package.json
-MM src/bridge/SDK.ts
-M  src/bridge/index.ts
-MM src/native/SDKCallbackHandler.ts
-MM yarn.lock
