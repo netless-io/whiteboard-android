@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.16.54] - 2023-03-29
+- 更新 `@netless/app-slide` 至 0.2.36
 ## [2.16.53] - 2023-03-02
 - 更新 `@netless/app-slide` 至 0.2.34
 - `WhiteSdkConfiguration` 新增 `enableSlideInterrupterAPI`
