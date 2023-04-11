@@ -46,11 +46,10 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
      * 兼容 API 文档中隐藏
      */
     public static Context getFixedContext(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if (Build.VERSION.SDK_INT >= 21 && Build.VERSION.SDK_INT < 23) {
             return context.createConfigurationContext(new Configuration());
-        } else {
-            return context;
         }
+        return context;
     }
     /// @endcond
 
@@ -58,6 +57,7 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
     @Override
     protected void onSizeChanged(int w, int h, int ow, int oh) {
         super.onSizeChanged(w, h, ow, oh);
+        if (isInEditMode()) return;
         if (autoResize) {
             delayStrategy.refreshViewSize();
         }
@@ -85,6 +85,7 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
     /// @endcond
 
     private void init() {
+        if (isInEditMode()) return;
         getSettings().setMediaPlaybackRequiresUserGesture(false);
         getSettings().setTextZoom(100);
         loadUrl("file:///android_asset/whiteboard/index.html");
