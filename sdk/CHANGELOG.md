@@ -6,6 +6,38 @@
 - 新增 `WindowParams.fullscreen` 属性，用于设置全屏模式的样式
 - 新增 `WindowParams.containerStyle`, `WindowParams.stageStyle`, `WindowParams.defaultBoxBodyStyle`, `WindowParams.defaultBoxStageStyle`, `WindowParams.theme` 属性，用于设置窗口样式
 - 添加 `Room.closeApp` 接口
+## [2.16.54] - 2023-03-29
+- 更新 `@netless/app-slide` 至 0.2.36
+## [2.16.53] - 2023-03-02
+- 更新 `@netless/app-slide` 至 0.2.34
+- `WhiteSdkConfiguration` 新增 `enableSlideInterrupterAPI`
+  配置项。开启后，通过 `WhiteSdk.setSlideListener(SlideListener)`，实现 `SlideListener.slideUrlInterrupter` 对资源 url 进行处理。
+- `WhiteSdkConfiguration` 新增 `slideAppOptions` 配置项用于 SlideApp
+  显示配置。当前支持配置 `slideAppOptions.showRenderError`，用于配置显示/隐藏渲染错误提示。
+## [2.16.52] - 2023-02-17
+- 更新 `@netless/app-slide` 至 0.2.33
+## [2.16.51] - 2023-02-09
+- 更新 `@netless/app-slide` 至 0.2.32
+- `WhiteSDK` 新增 `getSlideVolume` 和 `updateSlideVolume` 方法用于获取和更新 ppt 内音频音量
+## [2.16.50] - 2023-02-03
+- 更新 `@netless/app-slide` 至 0.2.31
+## [2.16.48] - 2023-01-13
+- 更新 `@netless/app-slide` 至 0.2.30
+## [2.16.47] - 2023-01-06
+- 更新 `@netless/app-slide` 至 0.2.29
+- 更新 `@netless/slide-rtc-plugin` 至 0.10.1
+## [2.16.46] - 2022-12-27
+- 更新 `@netless/app-slide` 至 0.2.28, 修复部分 WebView 着色器编译问题。
+## [2.16.45] - 2022-12-09
+- 更新 `@netless/app-slide` 至 0.2.27
+- 更新 `@netless/slide-rtc-plugin` 至 0.9.3， 修复 rtc 混音问题
+## [2.16.44] - 2022-12-01
+- 更新 `@netless/app-slide` 至 0.2.24
+- 更新 `@netless/window-manager`至 0.4.54
+## [2.16.43] - 2022-11-15
+- 更新 `@netless/app-slide` 至 0.2.23, 修复部分切页动画黑屏
+## [2.16.42] - 2022-10-27
+- 更新 `white-web-sdk` 至 2.16.37。修复 Text 教具导致的弹出键盘异常
 ## [2.16.41] - 2022-10-24
 - 修复部分低版本 WebView 未定义 globalThis 错误
 - 更新 `@netless/slide-rtc-plugin` 至 0.8.4， 修复 rtc 混音问题

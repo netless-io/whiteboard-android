@@ -4,20 +4,23 @@ import android.webkit.JavascriptInterface;
 
 import androidx.annotation.Nullable;
 
-import com.google.gson.Gson;
 import com.herewhite.sdk.CommonCallback;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
+import com.herewhite.sdk.window.SlideListener;
 
 import org.json.JSONObject;
 
+import wendu.dsbridge.CompletionHandler;
+
 public class SdkJsInterfaceImpl {
-    private final static Gson gson = new Gson();
 
     @Nullable
     private CommonCallback commonCallback;
     @Nullable
     private UrlInterrupter urlInterrupter;
+    @Nullable
+    private SlideListener slideListener;
 
     @Nullable
     private PostMessageCallback postMessageCallback;
@@ -43,6 +46,10 @@ public class SdkJsInterfaceImpl {
         this.urlInterrupter = urlInterrupter;
     }
 
+    public void setSlideListener(SlideListener slideListener) {
+        this.slideListener = slideListener;
+    }
+
     @JavascriptInterface
     public String urlInterrupter(Object args) {
         if (commonCallback != null) {
@@ -51,6 +58,16 @@ public class SdkJsInterfaceImpl {
             return String.valueOf(args);
         }
         return urlInterrupter.urlInterrupter(String.valueOf(args));
+    }
+
+    @JavascriptInterface
+    public void slideUrlInterrupter(Object args, CompletionHandler<String> handler) {
+        String url = String.valueOf(args);
+        if (slideListener != null) {
+            slideListener.slideUrlInterrupter(url, handler::complete);
+        } else {
+            handler.complete(url);
+        }
     }
 
     @JavascriptInterface

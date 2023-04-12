@@ -21,6 +21,7 @@ import com.herewhite.sdk.internal.SdkJsInterfaceImpl;
 import com.herewhite.sdk.internal.StoreDelegate;
 import com.herewhite.sdk.internal.StoreJsInterfaceImpl;
 import com.herewhite.sdk.internal.WsJsInterfaceImpl;
+import com.herewhite.sdk.window.SlideListener;
 
 import org.json.JSONObject;
 
@@ -49,6 +50,7 @@ public class WhiteSdk {
     private RtcJsInterfaceImpl rtcJsInterface;
     @Nullable
     private AudioMixerImplement audioMixerImplement;
+    private SlideListener slideListener;
 
     /**
      * 初始化白板 SDK 实例。
@@ -501,5 +503,45 @@ public class WhiteSdk {
             WhiteboardView whiteboardView = (WhiteboardView) bridge;
             whiteboardView.evaluateJavascript("window.postMessage({'type': \"@slide/_request_log_\",'sessionId': " + sessionId + "});");
         }
+    }
+
+    /**
+     * 更新当前 Slide 音量
+     * @param volume
+     */
+    public void updateSlideVolume(float volume) {
+        bridge.evaluateJavascript("window.postMessage({'type': \"@slide/_update_volume_\",'volume': " + volume + "});");
+    }
+
+    /**
+     * 获取当前 Slide 音量
+     *
+     * @param promise 成功返回音量信息，失败返回错误信息
+     */
+    public void getSlideVolume(Promise<Double> promise) {
+        sdkJsInterface.setPostMessageCallback(jsonObject -> {
+            try {
+                String type = jsonObject.optString("type");
+                if ("@slide/_report_volume_".equals(type)) {
+                    sdkJsInterface.setPostMessageCallback(null);
+                    promise.then(jsonObject.getDouble("volume"));
+                }
+            } catch (Exception e) {
+                sdkJsInterface.setPostMessageCallback(null);
+                promise.catchEx(SDKError.parseError(jsonObject));
+            }
+        });
+        bridge.evaluateJavascript("window.postMessage({'type': \"@slide/_get_volume_\"});");
+    }
+
+    /**
+     * 设置 SlideApp 回调。
+     * <p>
+     * SlideApp 通过 `SlideListener` 类向 app 报告内部运行时的各项事件。
+     *
+     * @param slideListener 通用回调事件，详见 {@link SlideListener SlideListener}
+     */
+    public void setSlideListener(SlideListener slideListener) {
+        sdkJsInterface.setSlideListener(slideListener);
     }
 }

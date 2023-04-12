@@ -28,6 +28,16 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/getSlideVolume"
+                style="@style/TestButton"
+                android:text="getSlideVolume" />
+
+            <Button
+                android:id="@+id/updateSlideVolume"
+                style="@style/TestButton"
+                android:text="updateSlideVolume" />
+
+            <Button
                 android:id="@+id/radio"
                 style="@style/TestButton"
                 android:text="setRadio" />

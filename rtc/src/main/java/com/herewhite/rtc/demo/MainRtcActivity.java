@@ -43,12 +43,13 @@ import io.agora.rtc.video.VideoCanvas;
 import io.agora.rtc.video.VideoEncoderConfiguration;
 
 public class MainRtcActivity extends AppCompatActivity {
-    private static final String APP_ID = "123/12312313";
-    private static final String ROOM_UUID = "2b612720510f11ed9fbf251960392aac";
-    private static final String ROOM_TOKEN = "NETLESSROOM_YWs9c21nRzh3RzdLNk1kTkF5WCZub25jZT0yYmFlNWNjMC01MTBmLTExZWQtODZiOS1hMzhmMWY5ZjcyYmMmcm9sZT0xJnNpZz03ZDg2MGExMjU2Yjc3NDcwNDQxZDc4ZmMwYTQyZTcyMTc5YWNiMzAxZDZlYzk2NGQ0NjdhMzU4MWQyNmEyZjMwJnV1aWQ9MmI2MTI3MjA1MTBmMTFlZDlmYmYyNTE5NjAzOTJhYWM";
-    private static final String DEFAULT_UID = "5e62a5c0";
+    private static final String APP_ID = "122123/123132";
+    private static final String ROOM_UUID = "6d181120525e11ec89361798d9c15050";
+    private static final String ROOM_TOKEN = "WHITEcGFydG5lcl9pZD15TFExM0tTeUx5VzBTR3NkJnNpZz0wZWIzMmY5M2IzMGUzZTBiMTQ4NzQ3NGVmZTRhNTlkNWM2MjY4ZjFjOmFrPXlMUTEzS1N5THlXMFNHc2QmY3JlYXRlX3RpbWU9MTYzODMzMjYwNTUwNiZleHBpcmVfdGltZT0xNjY5ODY4NjA1NTA2Jm5vbmNlPTE2MzgzMzI2MDU1MDYwMCZyb2xlPXJvb20mcm9vbUlkPTZkMTgxMTIwNTI1ZTExZWM4OTM2MTc5OGQ5YzE1MDUwJnRlYW1JZD05SUQyMFBRaUVldTNPNy1mQmNBek9n";
+    private static final String DEFAULT_UID = "1233124";
 
     private static final int PERMISSION_REQ_ID = 22;
+
     // 如果需要保存 rtc 日志到 sdk 卡就需要 WRITE_EXTERNAL_STORAGE 权限
     private static final String[] REQUESTED_PERMISSIONS = {
             Manifest.permission.RECORD_AUDIO,
@@ -70,6 +71,7 @@ public class MainRtcActivity extends AppCompatActivity {
     private WhiteboardView whiteboardView;
     private WhiteSdk whiteSdk;
     private Room room;
+    private AudioMixerBridgeImpl audioMixerBridge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,11 +87,24 @@ public class MainRtcActivity extends AppCompatActivity {
         // 如果用户需要用到 rtc 混音功能来解决回声和声音抑制问题，那么必须要在 whiteSDK 之前初始化 rtcEngine
         checkAndInitRtcEngine();
 
-
         findViewById(R.id.exitRtc).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        findViewById(R.id.startVideo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                audioMixerBridge.startAudioMixing("https://white-pan.oss-cn-shanghai.aliyuncs.com/101/oceans.mp4", false, false, 1);
+            }
+        });
+
+        findViewById(R.id.pauseVideo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                audioMixerBridge.pauseAudioMixing();
             }
         });
     }
@@ -170,10 +185,10 @@ public class MainRtcActivity extends AppCompatActivity {
 
         @Override
         // 混音状态变化时的回调
-        public void onAudioMixingStateChanged(int state, int errorCode) {
-            Log.d(AudioMixerBridgeImpl.TAG, "rtc onAudioMixingStateChanged state:" + state + " errorCode:" + errorCode);
+        public void onAudioMixingStateChanged(int state, int reason) {
+            Log.d(AudioMixerBridgeImpl.TAG, "rtcMix[RTC] onAudioMixingStateChanged state:" + state + " reason:" + reason);
             if (whiteSdk != null) {
-                whiteSdk.getAudioMixerImplement().setMediaState(state, errorCode);
+                whiteSdk.getAudioMixerImplement().setMediaState(state, reason);
             }
         }
     };
@@ -211,11 +226,12 @@ public class MainRtcActivity extends AppCompatActivity {
         configuration.setUserCursor(true);
         configuration.setUseMultiViews(true);
 
-        WhiteSdk.setAudioMixerBridge(new AudioMixerBridgeImpl(mRtcEngine, (state, code) -> {
+        audioMixerBridge = new AudioMixerBridgeImpl(mRtcEngine, (state, code) -> {
             if (whiteSdk.getAudioMixerImplement() != null) {
                 whiteSdk.getAudioMixerImplement().setMediaState(state, code);
             }
-        }));
+        });
+        WhiteSdk.setAudioMixerBridge(audioMixerBridge);
         whiteSdk = new WhiteSdk(whiteboardView, this, configuration);
         whiteSdk.setCommonCallbacks(new CommonCallback() {
             @Override
@@ -229,7 +245,7 @@ public class MainRtcActivity extends AppCompatActivity {
 
         // 如需支持用户头像，请在设置 WhiteSdkConfiguration 后，再调用 setUserPayload 方法，传入符合用户信息
         RoomParams roomParams = new RoomParams(uuid, token, DEFAULT_UID);
-        roomParams.setWritable(true);
+        roomParams.setWritable(false);
 
         HashMap<String, String> styleMap = new HashMap<>();
         styleMap.put("backgroundColor", "red");

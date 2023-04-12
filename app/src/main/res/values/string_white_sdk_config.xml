@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- 配置sdk app 参数-->
+    <!-- [NotEmpty] 配置 sdk app 参数-->
     <string name="sdk_app_id">""</string>
+    <!-- [Optional] 优先使用配置的 Room 参数-->
     <string name="sdk_app_token">""</string>
-    <!-- 配置有效room参数方便测试 -->
+    <!-- 配置有效 Room 参数 -->
     <string name="room_uuid">""</string>
     <string name="room_token">""</string>
 </resources>

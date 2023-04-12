@@ -110,4 +110,31 @@ public class ApiService {
             }
         });
     }
+
+    public static String convertUrl(String sourceUrl) {
+        Map<String, Object> roomSpec = new HashMap<>();
+        roomSpec.put("src", sourceUrl);
+        RequestBody body = RequestBody.create(
+                MediaType.parse("application/json; charset=utf-8"),
+                gson.toJson(roomSpec)
+        );
+        Request request = new Request.Builder()
+                .url("https://abacus-api-us.netless.group/aws/s3/presigned")
+                .addHeader("region", "us-sv")
+                .addHeader("Content-Type", "application/json")
+                .post(body)
+                .build();
+
+        String signedUrl = sourceUrl;
+        try {
+            Call call = client.newCall(request);
+            Response response = call.execute();
+            if (response.code() >= 200 && response.code() < 300) {
+                SignedResult result = gson.fromJson(response.body().string(), SignedResult.class);
+                signedUrl = result.signedUrl;
+            }
+        } catch (Throwable ignored) {
+        }
+        return signedUrl;
+    }
 }

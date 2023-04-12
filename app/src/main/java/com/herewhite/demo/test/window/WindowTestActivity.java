@@ -17,7 +17,6 @@ import com.herewhite.demo.R;
 import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.demo.utils.FileUtils;
 import com.herewhite.demo.utils.MapBuilder;
-import com.herewhite.sdk.CommonCallback;
 import com.herewhite.sdk.Room;
 import com.herewhite.sdk.RoomListener;
 import com.herewhite.sdk.RoomParams;
@@ -35,8 +34,6 @@ import com.herewhite.sdk.domain.WhiteDisplayerState;
 import com.herewhite.sdk.domain.WindowAppParam;
 import com.herewhite.sdk.domain.WindowParams;
 import com.herewhite.sdk.domain.WindowPrefersColorScheme;
-
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -93,6 +90,43 @@ public class WindowTestActivity extends AppCompatActivity {
         mWhiteboardView.setWebViewClient(client);
 
         mWhiteboardParent = findViewById(R.id.whiteParent);
+
+        // Slide 音量测试
+        findViewById(R.id.updateSlideVolume).setOnClickListener(new View.OnClickListener() {
+            int index = 0;
+            final List<Float> volumes = new ArrayList<Float>() {
+                {
+                    add(1.0f);
+                    add(0f);
+                    add(0.5f);
+                }
+            };
+
+
+            @Override
+            public void onClick(View v) {
+                mWhiteSdk.updateSlideVolume(volumes.get(index++ % volumes.size()));
+            }
+        });
+
+        findViewById(R.id.getSlideVolume).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mWhiteSdk.getSlideVolume(new Promise<Double>() {
+                    @Override
+                    public void then(Double volume) {
+                        showToast("current volume is:" + volume);
+                    }
+
+                    @Override
+                    public void catchEx(SDKError t) {
+
+                    }
+                });
+
+            }
+        });
+
 
         // 窗口比例
         findViewById(R.id.radio).setOnClickListener(new View.OnClickListener() {
@@ -156,8 +190,8 @@ public class WindowTestActivity extends AppCompatActivity {
         // 插入新的动态PPT
         findViewById(R.id.insertNewDynamic).setOnClickListener(v -> {
             // prefixUrl
-            String prefixUrl = "https://convertcdn.netless.link/dynamicConvert";
-            String taskUuid = "a136d855525a48a9844c678ad5027067";
+            String prefixUrl = "https://white-us-doc-convert.s3.us-west-1.amazonaws.com/dynamicConvert";
+            String taskUuid = "0c17d99a3cfa41dc85a9b9a379d18912";
             WindowAppParam param = WindowAppParam.createSlideApp(taskUuid, prefixUrl, "Projector App");
             mRoom.addApp(param, insertPromise);
         });
@@ -235,6 +269,8 @@ public class WindowTestActivity extends AppCompatActivity {
         if (mRoom != null) {
             mRoom.disconnect();
         }
+        mWhiteboardView.removeAllViews();
+        mWhiteboardView.destroy();
     }
 
     private void joinRoom(String uuid, String token) {
@@ -246,13 +282,17 @@ public class WindowTestActivity extends AppCompatActivity {
         configuration.setFonts(new MapBuilder<String, String>().put("宋体", "https://your-cdn.com/Songti.ttf").build());
         // configuration.setEnableSyncedStore(true);
         configuration.setUseMultiViews(true);
+        configuration.setEnableSlideInterrupterAPI(true);
+
+        WhiteSdkConfiguration.SlideAppOptions slideAppOptions = new WhiteSdkConfiguration.SlideAppOptions();
+        slideAppOptions.setDebug(false);
+        slideAppOptions.setShowRenderError(false);
+        configuration.setSlideAppOptions(slideAppOptions);
 
         mWhiteSdk = new WhiteSdk(mWhiteboardView, this, configuration);
-        mWhiteSdk.setCommonCallbacks(new CommonCallback() {
-            @Override
-            public void onLogger(JSONObject object) {
-                logAction(object.toString());
-            }
+        mWhiteSdk.setSlideListener((sourceUrl, resultCaller) -> {
+            // ApiService.convertUrl(sourceUrl)
+            resultCaller.call(sourceUrl);
         });
 
         /* 设置自定义全局状态，在后续回调中 GlobalState 直接进行类型转换即可 */
@@ -327,6 +367,7 @@ public class WindowTestActivity extends AppCompatActivity {
             }
         });
     }
+
     //endregion
 
     //region log

@@ -56,7 +56,8 @@ public class Appliance {
      */
     public final static String SHAPE = "shape";
     /**
-     * 橡皮工具（用来擦除铅笔笔迹的局部）
+     * 橡皮工具
+     * 用于擦除局部铅笔笔迹的橡皮工具。该工具仅对 NewPencil 生效，使用前需要先设置 disableNewPencil 为 false
      */
     public final static String PENCIL_ERASER = "pencilEraser";
 }
