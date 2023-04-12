@@ -17,6 +17,7 @@ import wendu.dsbridge.OnReturnValue;
  * `WhiteboardView` 类，用于配置白板界面。
  */
 public class WhiteboardView extends DWebView implements JsBridgeInterface {
+    private static String entryUrl = "file:///android_asset/whiteboard/index.html";
 
     private boolean autoResize = true;
     private RefreshViewSizeStrategy delayStrategy;
@@ -84,11 +85,15 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
     }
     /// @endcond
 
+    public static void setEntryUrl(String entryUrl) {
+        WhiteboardView.entryUrl = entryUrl;
+    }
+    
     private void init() {
         if (isInEditMode()) return;
         getSettings().setMediaPlaybackRequiresUserGesture(false);
         getSettings().setTextZoom(100);
-        loadUrl("file:///android_asset/whiteboard/index.html");
+        loadUrl(entryUrl);
         setWebChromeClient(new FixWebChromeClient());
         // 100ms，减少用户体验问题，防止动画过程中频繁调用问题
         delayStrategy = new RefreshViewSizeStrategy(100);
