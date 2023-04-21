@@ -58,6 +58,12 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private Boolean useMultiViews = false;
 
     /**
+     * 配置白板的 API 服务器域名列表，可以用于服务器代理。配置后，白板不再使用 sdk 自带配置。
+     * @example [api.example.com]
+     */
+    private List<String> apiHosts;
+
+    /**
      * 初始化互动白板 SDK 配置。
      *
      *
@@ -529,6 +535,20 @@ public class WhiteSdkConfiguration extends WhiteObject {
      */
     public void setEnableSlideInterrupterAPI(boolean enableSlideInterrupterAPI) {
         this.enableSlideInterrupterAPI = enableSlideInterrupterAPI;
+    }
+
+    public List<String> getApiHosts() {
+        return apiHosts;
+    }
+
+    /**
+     * 配置白板的 API 服务器域名列表
+     * 可以用于服务器代理。配置后，白板不再使用 sdk 自带配置。
+     *
+     * @param apiHosts 白板的 API 服务器域名列表 [api.example.com]。
+     */
+    public void setApiHosts(List<String> apiHosts) {
+        this.apiHosts = apiHosts;
     }
 
     /**

@@ -45,6 +45,7 @@ public class RoomParams extends WhiteObject {
     private boolean disableTextOperations = false;
     private boolean nativeWebSocket;
     private boolean floatBar = false;
+    private String modulesOrigin;
 
     /**
      * 初始化房间配置参数。
@@ -441,5 +442,22 @@ public class RoomParams extends WhiteObject {
 
     public void setUsingFloatBar(boolean floatBar) {
         this.floatBar = floatBar;
+    }
+
+    /**
+     * 获取白板请求 modules 数据的地址
+     * @return
+     */
+    public String getModulesOrigin() {
+        return modulesOrigin;
+    }
+
+    /**
+     * 设置白板请求 modules 数据的地址
+     * 配置后不会请求白板默认地址
+     * @param modulesOrigin 示例 https://modules.example.com
+     */
+    public void setModulesOrigin(String modulesOrigin) {
+        this.modulesOrigin = modulesOrigin;
     }
 }
