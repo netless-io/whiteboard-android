@@ -1,4 +1,9 @@
 # 版本更新记录
+## [2.16.55] - 2023-03-29
+- 更新 `white-web-sdk` 至 2.16.42。
+- `WhiteSdkConfiguration` 新增 `apiHosts` 配置项, 用于配置白板的 API 服务器域名列表。
+- `RoomParams` 新增 `modulesOrigin`, `PlayerConfiguration` 新增 `modulesOrigin` 配置项。用于配置白板请求 modules 数据的地址。
+- 修复新版 Android Studio 无法预览布局问题
 ## [2.16.54] - 2023-03-29
 - 更新 `@netless/app-slide` 至 0.2.36
 ## [2.16.53] - 2023-03-02
