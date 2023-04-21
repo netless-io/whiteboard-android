@@ -1,5 +1,5 @@
 # 版本更新记录
-## [2.16.55] - 2023-03-29
+## [2.16.55] - 2023-04-21
 - 更新 `white-web-sdk` 至 2.16.42。
 - `WhiteSdkConfiguration` 新增 `apiHosts` 配置项, 用于配置白板的 API 服务器域名列表。
 - `RoomParams` 新增 `modulesOrigin`, `PlayerConfiguration` 新增 `modulesOrigin` 配置项。用于配置白板请求 modules 数据的地址。
