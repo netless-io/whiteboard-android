@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.16.56] - 2023-06-14
+- 更新 `@netless/app-slide` 至 0.2.38
 ## [2.16.55] - 2023-04-21
 - 更新 `white-web-sdk` 至 2.16.42。
 - `WhiteSdkConfiguration` 新增 `apiHosts` 配置项, 用于配置白板的 API 服务器域名列表。
