@@ -29,6 +29,11 @@ public class WindowParams extends WhiteObject {
      */
     private WindowPrefersColorScheme prefersColorScheme;
 
+    /**
+     * 是否全屏
+     */
+    private Boolean fullscreen;
+
     public Float getContainerSizeRatio() {
         return containerSizeRatio;
     }
@@ -80,5 +85,14 @@ public class WindowParams extends WhiteObject {
 
     public void setPrefersColorScheme(WindowPrefersColorScheme prefersColorScheme) {
         this.prefersColorScheme = prefersColorScheme;
+    }
+
+    public Boolean getFullscreen() {
+        return fullscreen;
+    }
+
+    public WindowParams setFullscreen(Boolean fullscreen) {
+        this.fullscreen = fullscreen;
+        return this;
     }
 }
