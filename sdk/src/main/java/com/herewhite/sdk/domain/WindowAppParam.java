@@ -108,7 +108,7 @@ public class WindowAppParam {
         }
     }
 
-    private static class ProjectorOptions extends Options {
+    public static class ProjectorOptions extends Options {
         private final String scenePath;
 
         public ProjectorOptions(String scenePath, String title) {
@@ -117,7 +117,7 @@ public class WindowAppParam {
         }
     }
 
-    private static class ProjectorAttributes extends Attributes {
+    public static class ProjectorAttributes extends Attributes {
         @SerializedName("taskId")
         private final String taskUuid;
         @SerializedName("url")
