@@ -1,4 +1,8 @@
 # 版本更新记录
+## [2.16.59] - 2023-07-06
+- 新增 `Room.dispatchDocsEvent`, 用于控制多窗口下文档的切换。
+- 新增 `WindowParams.fullscreen`, 用于控制窗口是否全屏。
+- 更新 `ProjectorAttributes` 和 `ProjectorOptions`, 方便自定义 SlideApp 插入。
 ## [2.16.58] - 2023-07-04
 - 新增 `Region.eu` 服务欧洲区域，废弃 `Region.gb_lon`。
 ## [2.16.56] - 2023-06-14
