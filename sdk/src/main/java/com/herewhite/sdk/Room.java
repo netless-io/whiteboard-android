@@ -27,6 +27,7 @@ import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.SceneState;
 import com.herewhite.sdk.domain.ViewMode;
 import com.herewhite.sdk.domain.WindowAppParam;
+import com.herewhite.sdk.domain.WindowDocsEvent;
 import com.herewhite.sdk.domain.WindowPrefersColorScheme;
 import com.herewhite.sdk.internal.Logger;
 import com.herewhite.sdk.internal.RoomDelegate;
@@ -1360,6 +1361,23 @@ public class Room extends Displayer {
     public void setPrefersColorScheme(WindowPrefersColorScheme colorScheme) {
         String colorSchemeStr = gson.toJsonTree(colorScheme).getAsString();
         bridge.callHandler("room.setPrefersColorScheme", new Object[]{colorSchemeStr});
+    }
+
+
+    /**
+     * 发送文档操作事件
+     *
+     * @param docsEvent
+     * @param promise
+     */
+    public void dispatchDocsEvent(WindowDocsEvent docsEvent, Promise<Boolean> promise) {
+        String event = docsEvent.getEvent();
+        WindowDocsEvent.Options options = docsEvent.getOptions();
+        bridge.callHandler("room.dispatchDocsEvent", new Object[]{event, options}, (OnReturnValue<Boolean>) value -> {
+            if (promise != null) {
+                promise.then(value);
+            }
+        });
     }
 
     void setRoomListener(RoomListener roomCallbacks) {
