@@ -432,8 +432,15 @@ public class RoomParams extends WhiteObject {
         return nativeWebSocket;
     }
 
+    /**
+     * 设置是否使用原生 WebSocket。
+     *
+     * @deprecated 由于依赖服务停止维护，该方法已废弃。
+     * @param nativeWebSocket
+     */
+    @Deprecated
     public void setUseNativeWebSocket(boolean nativeWebSocket) {
-        this.nativeWebSocket = nativeWebSocket;
+        // this.nativeWebSocket = nativeWebSocket;
     }
 
     public boolean isUsingFloatBar() {
