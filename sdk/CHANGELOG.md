@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.16.60] - 2023-08-11
+- 更新 `@netless/app-slide` 至 0.2.41
 ## [2.16.59] - 2023-07-06
 - 新增 `Room.dispatchDocsEvent`, 用于控制多窗口下文档的切换。
 - 新增 `WindowParams.fullscreen`, 用于控制窗口是否全屏。
