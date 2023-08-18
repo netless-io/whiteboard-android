@@ -39,7 +39,7 @@ public class WindowAppParam {
     /**
      * 构建由新转换服务转换的 App 参数
      * @param taskUuid
-     * @param prefixUrl
+     * @param prefixUrl 以 http 或 https 开头的 url, 例如 https://convertcdn.netless.link/dynamicConvert. 请注意不以 / 结尾。
      * @param title
      * @return
      */

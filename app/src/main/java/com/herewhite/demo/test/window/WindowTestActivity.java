@@ -190,8 +190,8 @@ public class WindowTestActivity extends AppCompatActivity {
         // 插入新的动态PPT
         findViewById(R.id.insertNewDynamic).setOnClickListener(v -> {
             // prefixUrl
-            String prefixUrl = "https://white-us-doc-convert.s3.us-west-1.amazonaws.com/dynamicConvert";
-            String taskUuid = "0c17d99a3cfa41dc85a9b9a379d18912";
+            String prefixUrl = "https://convertcdn.netless.link/dynamicConvert";
+            String taskUuid = "47f359400ab1444986872db1723bb793";
             WindowAppParam param = WindowAppParam.createSlideApp(taskUuid, prefixUrl, "Projector App");
             mRoom.addApp(param, insertPromise);
         });
