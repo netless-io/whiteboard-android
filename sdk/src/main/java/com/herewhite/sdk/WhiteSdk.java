@@ -20,7 +20,6 @@ import com.herewhite.sdk.internal.RtcJsInterfaceImpl;
 import com.herewhite.sdk.internal.SdkJsInterfaceImpl;
 import com.herewhite.sdk.internal.StoreDelegate;
 import com.herewhite.sdk.internal.StoreJsInterfaceImpl;
-import com.herewhite.sdk.internal.WsJsInterfaceImpl;
 import com.herewhite.sdk.window.SlideListener;
 
 import org.json.JSONObject;
@@ -125,8 +124,6 @@ public class WhiteSdk {
             bridge.addJavascriptObject(rtcJsInterface, "rtc");
             whiteSdkConfiguration.setEnableRtcIntercept(true);
         }
-
-        bridge.addJavascriptObject(new WsJsInterfaceImpl(bridge, context), "ws");
 
         bridge.addJavascriptObject(this.sdkJsInterface, "sdk");
         bridge.addJavascriptObject(this.roomJsInterface, "room");
