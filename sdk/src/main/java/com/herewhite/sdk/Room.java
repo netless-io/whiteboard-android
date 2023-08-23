@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.herewhite.sdk.domain.AddPageParam;
 import com.herewhite.sdk.domain.AkkoEvent;
 import com.herewhite.sdk.domain.Appliance;
@@ -26,6 +27,7 @@ import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.SceneState;
 import com.herewhite.sdk.domain.ViewMode;
+import com.herewhite.sdk.domain.WindowAppSyncAttrs;
 import com.herewhite.sdk.domain.WindowAppParam;
 import com.herewhite.sdk.domain.WindowDocsEvent;
 import com.herewhite.sdk.domain.WindowPrefersColorScheme;
@@ -34,6 +36,8 @@ import com.herewhite.sdk.internal.RoomDelegate;
 
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
+import java.util.Map;
 import java.util.UUID;
 
 import wendu.dsbridge.OnReturnValue;
@@ -60,6 +64,7 @@ public class Room extends Displayer {
     };
     //endregion
     private RoomDelegate roomDelegate;
+
     /**
      * 文档中隐藏，只有 sdk 内部初始化才有意义
      */
@@ -1333,6 +1338,53 @@ public class Room extends Displayer {
         bridge.callHandler("room.closeApp", new Object[]{appId}, value -> {
             if (promise != null) {
                 promise.then(true);
+            }
+        });
+    }
+
+    /**
+     * 切换窗口
+     * @param appId
+     */
+    public void focusApp(String appId) {
+        bridge.callHandler("room.focusApp", new Object[]{appId});
+    }
+
+    /**
+     * 查询窗口
+     * @param appId
+     * @param promise
+     */
+    public void queryApp(String appId, Promise<WindowAppSyncAttrs> promise) {
+        if (promise == null) {
+            throw new IllegalArgumentException("promise is null");
+        }
+        bridge.callHandler("room.queryApp", new Object[]{appId}, (String value) -> {
+            SDKError error = SDKError.promiseError(value);
+            if (error != null) {
+                promise.catchEx(error);
+            } else {
+                promise.then(gson.fromJson(value, WindowAppSyncAttrs.class));
+            }
+        });
+    }
+
+    /**
+     * 查询所有窗口
+     * @param promise
+     */
+    public void queryAllApps(Promise<Map<String, WindowAppSyncAttrs>> promise) {
+        if (promise == null) {
+            throw new IllegalArgumentException("promise is null");
+        }
+        bridge.callHandler("room.queryAllApps", new Object[]{}, (String value) -> {
+            SDKError sdkError = SDKError.promiseError(value);
+            if (sdkError != null) {
+                promise.catchEx(sdkError);
+            } else {
+                Type type = new TypeToken<Map<String, WindowAppSyncAttrs>>() {
+                }.getType();
+                promise.then(gson.fromJson(value, type));
             }
         });
     }
