@@ -1,8 +1,8 @@
 # 版本更新记录
 ## [2.16.62] - 2023-08-23
 - 新增 `Room.focusApp`，用于设置多窗口下焦点窗口。
-- 新增 `Room.queryApp`，用于查询指定窗口信息。
-- 新增 `Room.queryAllApps`，用于查询所有窗口信息。
+- 新增 `Room.queryApp`，用于查询指定 App 信息。
+- 新增 `Room.queryAllApps`，用于查询所有 App 信息。
 ## [2.16.61] - 2023-08-18
 - 修复 window-manager 打包错误。
 - 下假 FPA 功能，移除 FPA 依赖。

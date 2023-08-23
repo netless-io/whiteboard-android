@@ -8,6 +8,7 @@ Cutting a Release
 
 2. Set versions:
    ```
+   # sed -n 's/.*\[/\[/p' sdk/CHANGELOG.md | head -n 1 | sed 's/\[\(.*\)\].*/\1/'
    export RELEASE_VERSION=X.Y.Z
    ```
 3. Update versions:

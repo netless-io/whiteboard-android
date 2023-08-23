@@ -1343,7 +1343,7 @@ public class Room extends Displayer {
     }
 
     /**
-     * 切换窗口
+     * 设置多窗口下焦点窗口
      * @param appId
      */
     public void focusApp(String appId) {
@@ -1351,7 +1351,7 @@ public class Room extends Displayer {
     }
 
     /**
-     * 查询窗口
+     * 查询窗口信息
      * @param appId
      * @param promise
      */
@@ -1370,7 +1370,7 @@ public class Room extends Displayer {
     }
 
     /**
-     * 查询所有窗口
+     * 查询所有窗口信息
      * @param promise
      */
     public void queryAllApps(Promise<Map<String, WindowAppSyncAttrs>> promise) {
