@@ -45,7 +45,7 @@ allprojects {
 ```groovy
 dependencies {
     // 数字请根据最新版自行添加
-    implementation "com.github.netless-io:whiteboard-android:2.16.61"
+    implementation "com.github.netless-io:whiteboard-android:2.16.62"
 }
 ```
 
