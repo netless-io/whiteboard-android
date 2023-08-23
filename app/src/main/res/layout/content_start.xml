@@ -1,92 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".StartActivity"
-    tools:showIn="@layout/activity_start">
+    android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:autofillHints="@string/uuid"
-        android:ems="10"
-        android:hint="@string/uuid"
-        android:inputType="text"
-        android:textAllCaps="false"
-        app:layout_constraintBottom_toTopOf="@+id/button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:targetApi="o" />
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:onClick="joinRoom"
-        android:text="@string/join"
-        app:layout_constraintBottom_toTopOf="@+id/button2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+        <Button
+            android:id="@+id/button"
+            style="@style/HomeTestButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="joinRoom"
+            android:text="@string/join" />
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:onClick="joinNewRoom"
-        android:text="@string/create"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/button2"
+            style="@style/HomeTestButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="joinNewRoom"
+            android:text="@string/create" />
 
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:onClick="replayRoom"
-        android:text="@string/replay"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2" />
+        <Button
+            android:id="@+id/button3"
+            style="@style/HomeTestButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="replayRoom"
+            android:text="@string/replay" />
 
-    <Button
-        android:id="@+id/button4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="8dp"
-        android:onClick="pureReplay"
-        android:text="@string/pureReplay"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button3"
-        app:layout_constraintVertical_bias="0.72" />
+        <Button
+            android:id="@+id/button4"
+            style="@style/HomeTestButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="pureReplay"
+            android:text="@string/pureReplay" />
 
-    <Button
-        android:id="@+id/button5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="8dp"
-        android:onClick="windowTest"
-        android:text="@string/windowTest"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button4"
-        app:layout_constraintVertical_bias="0.72" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/button5"
+            style="@style/HomeTestButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="windowTest"
+            android:text="@string/windowTest" />
+
+        <Button
+            android:id="@+id/button6"
+            style="@style/HomeTestButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="windowAppsTest"
+            android:text="@string/windowAppsTest" />
+    </LinearLayout>
+
+</ScrollView>

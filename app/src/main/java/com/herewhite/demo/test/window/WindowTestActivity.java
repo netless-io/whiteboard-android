@@ -30,6 +30,7 @@ import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.WhiteDisplayerState;
+import com.herewhite.sdk.domain.WindowAppSyncAttrs;
 import com.herewhite.sdk.domain.WindowAppParam;
 import com.herewhite.sdk.domain.WindowParams;
 import com.herewhite.sdk.domain.WindowPrefersColorScheme;
@@ -43,6 +44,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 import wendu.dsbridge.DWebView;
@@ -72,6 +74,8 @@ public class WindowTestActivity extends AppCompatActivity {
 
         }
     };
+
+    Map<String, WindowAppSyncAttrs> apps = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,6 +210,52 @@ public class WindowTestActivity extends AppCompatActivity {
                 @Override
                 public void catchEx(SDKError t) {
 
+                }
+            });
+        });
+
+        findViewById(R.id.focusApp).setOnClickListener(v -> {
+            String[] ids = WindowTestActivity.this.apps.keySet().toArray(new String[0]);
+            mRoom.focusApp(ids[0]);
+        });
+
+        findViewById(R.id.queryApps).setOnClickListener(v -> {
+            mRoom.queryAllApps(new Promise<Map<String, WindowAppSyncAttrs>>() {
+                @Override
+                public void then(Map<String, WindowAppSyncAttrs> apps) {
+                    Log.e("queryAllApps", apps.toString());
+                    WindowTestActivity.this.apps = apps;
+                }
+
+                @Override
+                public void catchEx(SDKError t) {
+                    Log.e("queryApps error", t.toString());
+                }
+            });
+        });
+
+        findViewById(R.id.queryApp).setOnClickListener(v -> {
+            String[] ids = WindowTestActivity.this.apps.keySet().toArray(new String[0]);
+            mRoom.queryApp(ids[0], new Promise<WindowAppSyncAttrs>() {
+                @Override
+                public void then(WindowAppSyncAttrs attrs) {
+                    Log.e("queryApp", gson.toJson(attrs));
+                }
+
+                @Override
+                public void catchEx(SDKError t) {
+                    Log.e("queryApp error", t.toString());
+                }
+            });
+
+            // 查询不存在的 appId 触发 catchEx
+            mRoom.queryApp("not_exited_appId", new Promise<WindowAppSyncAttrs>() {
+                @Override
+                public void then(WindowAppSyncAttrs attrs) {}
+
+                @Override
+                public void catchEx(SDKError t) {
+                    Log.e("queryApp error", t.getMessage());
                 }
             });
         });
