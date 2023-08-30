@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.16.63] - 2023-08-30
+- 修复 `WhiteWindowParams.fullscreen` 参数在第二次打开 app 没有最大化的错误
 ## [2.16.62] - 2023-08-23
 - 新增 `Room.focusApp`，用于设置多窗口下焦点窗口。
 - 新增 `Room.queryApp`，用于查询指定 App 信息。
