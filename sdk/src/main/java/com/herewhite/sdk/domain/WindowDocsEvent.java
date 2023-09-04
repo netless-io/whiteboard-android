@@ -16,6 +16,16 @@ public class WindowDocsEvent {
         this.event = event;
     }
 
+    /**
+     * @param event 文档事件。包括以下几种：
+     * prevPage：上一页。
+     * nextPage: 下一页。
+     * prevStep：上一步。
+     * nextStep：下一步。
+     * jumpToPage：跳转至页码。
+     *
+     * @param options 事件参数。仅当 event 为 "jumpToPage" 时需要传入，用于指定期望跳转的页码。
+     */
     public WindowDocsEvent(String event, Options options) {
         this.event = event;
         this.options = options;

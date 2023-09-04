@@ -56,6 +56,12 @@ abstract public class SampleBaseActivity extends BaseActivity {
         setupRoom();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        whiteboardView.destroy();
+    }
+
     private void setupRoom() {
         DemoAPI.Result result = new DemoAPI.Result() {
             @Override
