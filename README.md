@@ -42,7 +42,7 @@ add dependency of whiteboard in the **app/build.gradle** file
 ```groovy
 dependencies {
     // Get the latest version number through the release notes.
-    implementation "com.github.netless-io:whiteboard-android:2.16.63"
+    implementation "com.github.netless-io:whiteboard-android:2.16.64"
 }
 ```
 
