@@ -27,10 +27,10 @@ import okhttp3.Response;
  */
 
 public class DemoAPI {
-    private static final String TAG = DemoAPI.class.getSimpleName();
     public static final String DEFAULT_UID = "5e62a5c0-8c15-4b00-a9fc-0e309e91da30";
-
+    private static final String TAG = DemoAPI.class.getSimpleName();
     private static DemoAPI instance;
+    private final OkHttpClient client = new OkHttpClient();
     private String sdkToken;
     private String appId;
     private String roomUUID;
@@ -42,6 +42,26 @@ public class DemoAPI {
         }
 
         return instance;
+    }
+
+    private static void unzip(File zipFile, File targetDirectory) throws IOException {
+        try (ZipInputStream zis = new ZipInputStream(new BufferedInputStream(new FileInputStream(zipFile)))) {
+            ZipEntry ze;
+            while ((ze = zis.getNextEntry()) != null) {
+                File file = new File(targetDirectory, ze.getName());
+                File dir = ze.isDirectory() ? file : file.getParentFile();
+                if (!dir.isDirectory() && !dir.mkdirs())
+                    throw new FileNotFoundException("Failed to ensure directory: " + dir.getAbsolutePath());
+                if (ze.isDirectory())
+                    continue;
+                try (FileOutputStream fos = new FileOutputStream(file)) {
+                    int count;
+                    byte[] buffer = new byte[8192];
+                    while ((count = zis.read(buffer)) != -1)
+                        fos.write(buffer, 0, count);
+                }
+            }
+        }
     }
 
     public void init(Context context) {
@@ -74,12 +94,6 @@ public class DemoAPI {
 
     public boolean invalidToken() {
         return !hasDemoInfo() && sdkToken.length() <= 50;
-    }
-
-    public interface Result {
-        void success(String uuid, String token);
-
-        void fail(String message);
     }
 
     public void getNewRoom(final Result result) {
@@ -122,8 +136,6 @@ public class DemoAPI {
         });
     }
 
-    private final OkHttpClient client = new OkHttpClient();
-
     public void downloadZip(String zipUrl, String des) {
         Request request = new Request.Builder().url(zipUrl).build();
         Call call = client.newCall(request);
@@ -156,23 +168,9 @@ public class DemoAPI {
         });
     }
 
-    private static void unzip(File zipFile, File targetDirectory) throws IOException {
-        try (ZipInputStream zis = new ZipInputStream(new BufferedInputStream(new FileInputStream(zipFile)))) {
-            ZipEntry ze;
-            while ((ze = zis.getNextEntry()) != null) {
-                File file = new File(targetDirectory, ze.getName());
-                File dir = ze.isDirectory() ? file : file.getParentFile();
-                if (!dir.isDirectory() && !dir.mkdirs())
-                    throw new FileNotFoundException("Failed to ensure directory: " + dir.getAbsolutePath());
-                if (ze.isDirectory())
-                    continue;
-                try (FileOutputStream fos = new FileOutputStream(file)) {
-                    int count;
-                    byte[] buffer = new byte[8192];
-                    while ((count = zis.read(buffer)) != -1)
-                        fos.write(buffer, 0, count);
-                }
-            }
-        }
+    public interface Result {
+        void success(String uuid, String token);
+
+        void fail(String message);
     }
 }

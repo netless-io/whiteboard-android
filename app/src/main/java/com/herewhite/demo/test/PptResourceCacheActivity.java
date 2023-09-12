@@ -1,4 +1,3 @@
-
 package com.herewhite.demo.test;
 
 import android.annotation.SuppressLint;
@@ -18,9 +17,9 @@ import androidx.annotation.VisibleForTesting;
 
 import com.google.gson.Gson;
 import com.herewhite.demo.BaseActivity;
-import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.demo.R;
 import com.herewhite.demo.StartActivity;
+import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.demo.utils.MapBuilder;
 import com.herewhite.sdk.AbstractRoomCallbacks;
 import com.herewhite.sdk.CommonCallbacks;
@@ -77,11 +76,6 @@ public class PptResourceCacheActivity extends BaseActivity {
 
     final Gson gson = new Gson();
     final DemoAPI demoAPI = DemoAPI.get();
-
-    // Room Params
-    private String uuid;
-    private String token;
-
     WhiteboardView mWhiteboardView;
     @VisibleForTesting
     WhiteSdk mWhiteSdk;
@@ -90,24 +84,10 @@ public class PptResourceCacheActivity extends BaseActivity {
     @VisibleForTesting
     RoomCallbacks mRoomCallbackHock = new AbstractRoomCallbacks() {
     };
-
+    // Room Params
+    private String uuid;
+    private String token;
     private PptResourceManager pptResourceManager;
-
-    /**
-     * 自定义 GlobalState 示例
-     * 继承自 GlobalState 的子类，然后调用 {@link WhiteDisplayerState#setCustomGlobalStateClass(Class)}
-     */
-    class MyGlobalState extends GlobalState {
-        public String getOne() {
-            return one;
-        }
-
-        public void setOne(String one) {
-            this.one = one;
-        }
-
-        String one;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -308,7 +288,6 @@ public class PptResourceCacheActivity extends BaseActivity {
             }
         });
     }
-    //endregion
 
     //region private
     private void alert(final String title, final String detail) {
@@ -326,6 +305,7 @@ public class PptResourceCacheActivity extends BaseActivity {
             alertDialog.show();
         });
     }
+    //endregion
 
     private void addCustomEventListener() {
         mRoom.addMagixEventListener(EVENT_NAME, event -> {
@@ -339,14 +319,14 @@ public class PptResourceCacheActivity extends BaseActivity {
         super.onConfigurationChanged(newConfig);
     }
 
-    //endregion
-
     //region menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.room_command, menu);
         return true;
     }
+
+    //endregion
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -734,12 +714,12 @@ public class PptResourceCacheActivity extends BaseActivity {
         mRoom.moveCamera(cameraConfig);
     }
 
-    //endregion
-
     //region log
     void logRoomInfo(String str) {
         Log.i(ROOM_INFO, Thread.currentThread().getStackTrace()[3].getMethodName() + " " + str);
     }
+
+    //endregion
 
     void logAction(String str) {
         Log.i(ROOM_ACTION, Thread.currentThread().getStackTrace()[3].getMethodName() + " " + str);
@@ -752,6 +732,22 @@ public class PptResourceCacheActivity extends BaseActivity {
     void showToast(Object o) {
         Log.i("showToast", o.toString());
         Toast.makeText(this, o.toString(), Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * 自定义 GlobalState 示例
+     * 继承自 GlobalState 的子类，然后调用 {@link WhiteDisplayerState#setCustomGlobalStateClass(Class)}
+     */
+    class MyGlobalState extends GlobalState {
+        String one;
+
+        public String getOne() {
+            return one;
+        }
+
+        public void setOne(String one) {
+            this.one = one;
+        }
     }
     //endregion
 }

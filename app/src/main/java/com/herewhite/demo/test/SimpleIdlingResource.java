@@ -16,10 +16,10 @@
 
 package com.herewhite.demo.test;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import androidx.annotation.Nullable;
 import androidx.test.espresso.IdlingResource;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * A very simple implementation of {@link IdlingResource}.

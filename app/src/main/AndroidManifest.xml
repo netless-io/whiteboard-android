@@ -97,9 +97,10 @@
             android:screenOrientation="landscape" />
         <activity android:name=".test.SyncedStoreActivity" />
 
-        <activity android:name=".test.window.WindowAppsActivity"
+        <activity
+            android:name=".test.window.WindowAppsActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:screenOrientation="landscape"/>
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>

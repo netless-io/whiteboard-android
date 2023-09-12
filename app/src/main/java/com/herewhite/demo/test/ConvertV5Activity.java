@@ -7,8 +7,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.demo.R;
+import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.sdk.ConverterCallbacks;
 import com.herewhite.sdk.converter.ConvertType;
 import com.herewhite.sdk.converter.ConverterV5;
@@ -21,6 +21,23 @@ import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
 public class ConvertV5Activity extends AppCompatActivity {
+    ConverterCallbacks callbacks = new ConverterCallbacks() {
+        @Override
+        public void onFailure(ConvertException e) {
+            logAction(e.getMessage());
+        }
+
+        @Override
+        public void onFinish(ConvertedFiles ppt, ConversionInfo convertInfo) {
+            logAction(convertInfo.toString());
+        }
+
+        @Override
+        public void onProgress(Double progress, ConversionInfo convertInfo) {
+            logAction(String.valueOf(progress));
+        }
+    };
+    Random r = new Random();
     private TextView display;
     private Button start;
 
@@ -74,25 +91,12 @@ public class ConvertV5Activity extends AppCompatActivity {
         runOnUiThread(() -> display.append("\nTest Result" + success));
     }
 
-    ConverterCallbacks callbacks = new ConverterCallbacks() {
-        @Override
-        public void onFailure(ConvertException e) {
-            logAction(e.getMessage());
-        }
-
-        @Override
-        public void onFinish(ConvertedFiles ppt, ConversionInfo convertInfo) {
-            logAction(convertInfo.toString());
-        }
-
-        @Override
-        public void onProgress(Double progress, ConversionInfo convertInfo) {
-            logAction(String.valueOf(progress));
-        }
-    };
-
     void logAction(String str) {
         Log.i("ConvertV5Activity", Thread.currentThread().getStackTrace()[3].getMethodName() + " " + str);
+    }
+
+    private int randomInt(int max) {
+        return r.nextInt(max);
     }
 
     class TestCallback implements ConverterCallbacks {
@@ -122,11 +126,5 @@ public class ConvertV5Activity extends AppCompatActivity {
             latch.countDown();
             countFailure++;
         }
-    }
-
-    Random r = new Random();
-
-    private int randomInt(int max) {
-        return r.nextInt(max);
     }
 }

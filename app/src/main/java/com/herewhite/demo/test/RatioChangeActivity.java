@@ -1,4 +1,3 @@
-
 package com.herewhite.demo.test;
 
 import android.app.AlertDialog;
@@ -12,13 +11,10 @@ import android.widget.Toast;
 
 import androidx.annotation.VisibleForTesting;
 
-import com.alibaba.sdk.android.httpdns.HttpDns;
-import com.alibaba.sdk.android.httpdns.HttpDnsService;
 import com.google.gson.Gson;
 import com.herewhite.demo.BaseActivity;
-import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.demo.R;
-import com.herewhite.demo.WhiteWebViewClient;
+import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.demo.utils.MapBuilder;
 import com.herewhite.sdk.AbstractRoomCallbacks;
 import com.herewhite.sdk.CommonCallbacks;
@@ -35,8 +31,6 @@ import com.herewhite.sdk.domain.WhiteDisplayerState;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
 import wendu.dsbridge.DWebView;
@@ -51,30 +45,20 @@ public class RatioChangeActivity extends BaseActivity {
     private static final String EVENT_NAME = "WhiteCommandCustomEvent";
     private static final String ROOM_INFO = "RoomInfo";
     private static final String ROOM_ACTION = "RoomAction";
-
+    private static final int RATIO_TYPE_1_1 = 0;
+    private static final int RATIO_TYPE_16_9 = 1;
+    private static final int RATIO_TYPE_4_3 = 2;
     final Gson gson = new Gson();
     final DemoAPI demoAPI = DemoAPI.get();
-
     WhiteboardView mWhiteboardView;
     @VisibleForTesting
     WhiteSdk mWhiteSdk;
     @VisibleForTesting
     Room mRoom;
+    private int currentRatioType = 0;
 
-    /**
-     * 自定义 GlobalState 示例
-     * 继承自 GlobalState 的子类，然后调用 {@link WhiteDisplayerState#setCustomGlobalStateClass(Class)}
-     */
-    class MyGlobalState extends GlobalState {
-        public String getOne() {
-            return one;
-        }
-
-        public void setOne(String one) {
-            this.one = one;
-        }
-
-        String one;
+    public static int dp2px(float dpValue) {
+        return (int) (0.5f + dpValue * Resources.getSystem().getDisplayMetrics().density);
     }
 
     @Override
@@ -85,9 +69,6 @@ public class RatioChangeActivity extends BaseActivity {
         mWhiteboardView = findViewById(R.id.white);
         DWebView.setWebContentsDebuggingEnabled(true);
         mWhiteboardView.getSettings().setAllowUniversalAccessFromFileURLs(true);
-
-        // 使用阿里云的 HttpDns，避免 DNS 污染等问题
-        useHttpDnsService(false);
 
         getRoomToken(demoAPI.getRoomUUID());
 
@@ -117,12 +98,6 @@ public class RatioChangeActivity extends BaseActivity {
             updateLayout();
         });
     }
-
-    private static final int RATIO_TYPE_1_1 = 0;
-    private static final int RATIO_TYPE_16_9 = 1;
-    private static final int RATIO_TYPE_4_3 = 2;
-
-    private int currentRatioType = 0;
 
     private void updateLayout() {
         ViewGroup.LayoutParams layoutParams = mWhiteboardView.getLayoutParams();
@@ -285,15 +260,6 @@ public class RatioChangeActivity extends BaseActivity {
             alertDialog.show();
         });
     }
-
-    private void useHttpDnsService(boolean use) {
-        if (use) {
-            /** 直接使用此 id 即可，sdk 已经在阿里云 HttpDns 后台做过配置 */
-            HttpDnsService httpDnsService = HttpDns.getService(getApplicationContext(), "188301");
-            httpDnsService.setPreResolveHosts(new ArrayList<>(Arrays.asList("expresscloudharestoragev2.herewhite.com", "cloudharev2.herewhite.com", "scdncloudharestoragev3.herewhite.com", "cloudcapiv4.herewhite.com")));
-            mWhiteboardView.setWebViewClient(new WhiteWebViewClient(httpDnsService));
-        }
-    }
     //endregion
 
     //region log
@@ -315,7 +281,19 @@ public class RatioChangeActivity extends BaseActivity {
     }
     //endregion
 
-    public static int dp2px(float dpValue) {
-        return (int) (0.5f + dpValue * Resources.getSystem().getDisplayMetrics().density);
+    /**
+     * 自定义 GlobalState 示例
+     * 继承自 GlobalState 的子类，然后调用 {@link WhiteDisplayerState#setCustomGlobalStateClass(Class)}
+     */
+    class MyGlobalState extends GlobalState {
+        String one;
+
+        public String getOne() {
+            return one;
+        }
+
+        public void setOne(String one) {
+            this.one = one;
+        }
     }
 }

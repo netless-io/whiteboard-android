@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".PlayActivity">
-
-    <com.herewhite.demo.player.ijk.widget.media.IjkVideoView
-        android:id="@+id/ijk_video_view"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@android:color/black"
-        android:visibility="gone" />
 
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/exo_video_view"
@@ -46,29 +39,29 @@
 
         <Button
             android:id="@+id/button_play"
-            android:onClick="play"
-            android:enabled="false"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="4"
+            android:enabled="false"
+            android:onClick="play"
             android:text="@string/play" />
 
         <Button
             android:id="@+id/button_pause"
-            android:onClick="pause"
-            android:enabled="false"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:enabled="false"
+            android:onClick="pause"
             android:text="@string/pause" />
 
         <Button
             android:id="@+id/button_reset"
-            android:onClick="reset"
-            android:enabled="false"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:enabled="false"
+            android:onClick="reset"
             android:text="@string/rest" />
 
     </LinearLayout>

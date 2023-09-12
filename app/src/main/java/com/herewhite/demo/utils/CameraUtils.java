@@ -31,23 +31,23 @@ public class CameraUtils {
     }
 
 
-public static float getScale(Context context, WhiteboardView whiteboardView) {
-    // 假定 insertImage 图片信息
-    int imageWidth = 600;
-    int imageHeight = 400;
+    public static float getScale(Context context, WhiteboardView whiteboardView) {
+        // 假定 insertImage 图片信息
+        int imageWidth = 600;
+        int imageHeight = 400;
 
-    // View 容器的宽高 DP 值，即白板坐标系 scale 为 1 可是宽高
-    int whiteboardWidth = (int) px2dp(context, whiteboardView.getWidth());
-    int whiteboardHeight = (int) px2dp(context, whiteboardView.getHeight());
+        // View 容器的宽高 DP 值，即白板坐标系 scale 为 1 可是宽高
+        int whiteboardWidth = (int) px2dp(context, whiteboardView.getWidth());
+        int whiteboardHeight = (int) px2dp(context, whiteboardView.getHeight());
 
-    float scaleByW = whiteboardWidth * 1f / imageWidth;
-    float scaleByH = whiteboardHeight * 1f / imageHeight;
+        float scaleByW = whiteboardWidth * 1f / imageWidth;
+        float scaleByH = whiteboardHeight * 1f / imageHeight;
 
-    // Center 模式的 scale 值
-    float scale = Math.min(scaleByW, scaleByH);
-    // CenterCrop 模式的 scale 值
-    // float scale = Math.max(scaleByW, scaleByH);
+        // Center 模式的 scale 值
+        float scale = Math.min(scaleByW, scaleByH);
+        // CenterCrop 模式的 scale 值
+        // float scale = Math.max(scaleByW, scaleByH);
 
-    return scale;
-}
+        return scale;
+    }
 }

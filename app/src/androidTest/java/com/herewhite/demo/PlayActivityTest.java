@@ -1,16 +1,5 @@
 package com.herewhite.demo;
 
-import android.view.MenuItem;
-
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.Test;
-
-import androidx.test.espresso.IdlingRegistry;
-import androidx.test.espresso.IdlingResource;
-import androidx.test.espresso.ViewInteraction;
-import androidx.test.rule.ActivityTestRule;
-
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
@@ -24,14 +13,27 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 
+import android.view.MenuItem;
+
+import androidx.test.espresso.IdlingRegistry;
+import androidx.test.espresso.IdlingResource;
+import androidx.test.espresso.ViewInteraction;
+import androidx.test.rule.ActivityTestRule;
+
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.SDKError;
+
+import org.junit.After;
+import org.junit.Rule;
+import org.junit.Test;
 
 public class PlayActivityTest {
     private PlayActivity mActivity;
     private IdlingResource mIdlingResource;
 
-    @Rule
+    static MenuItemTitleMatcher withTitle(String title) {
+        return new MenuItemTitleMatcher(title);
+    }    @Rule
     public ActivityTestRule<PlayActivity> activityRule = new ActivityTestRule<PlayActivity>(PlayActivity.class) {
         @Override
         protected void afterActivityLaunched() {
@@ -99,7 +101,5 @@ public class PlayActivityTest {
         }
     }
 
-    static MenuItemTitleMatcher withTitle(String title) {
-        return new MenuItemTitleMatcher(title);
-    }
+
 }

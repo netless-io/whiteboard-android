@@ -19,14 +19,12 @@ import okhttp3.WebSocketListener;
 
 public class WebSocketTestActivity extends AppCompatActivity {
     private static final String TAG = WebSocketTestActivity.class.getSimpleName();
-
+    OkHttpClient client = new OkHttpClient.Builder().build();
     private TextView display;
     private EditText messageInput;
     private Button connect;
     private Button close;
     private Button send;
-
-    OkHttpClient client = new OkHttpClient.Builder().build();
     private WebSocket realWebSocket;
 
     @Override

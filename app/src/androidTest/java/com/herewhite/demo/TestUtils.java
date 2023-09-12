@@ -1,9 +1,8 @@
 package com.herewhite.demo;
 
-import android.view.View;
+import static androidx.test.espresso.action.ViewActions.actionWithAssertions;
 
-import org.hamcrest.Matcher;
-import org.hamcrest.StringDescription;
+import android.view.View;
 
 import androidx.test.espresso.IdlingRegistry;
 import androidx.test.espresso.IdlingResource;
@@ -14,7 +13,8 @@ import androidx.test.espresso.action.Press;
 import androidx.test.espresso.action.Swipe;
 import androidx.test.espresso.matcher.ViewMatchers;
 
-import static androidx.test.espresso.action.ViewActions.actionWithAssertions;
+import org.hamcrest.Matcher;
+import org.hamcrest.StringDescription;
 
 class TestUtils {
     public static void sleep(long time) {
@@ -75,6 +75,27 @@ class TestUtils {
         });
     }
 
+    public static ViewAction downToUp(float startX, float startY, float endX, float endY) {
+        return new GeneralSwipeAction(
+                Swipe.FAST,
+                view -> {
+                    final int[] xy = new int[2];
+                    view.getLocationOnScreen(xy);
+                    final float x = xy[0] + startX;
+                    final float y = xy[1] + startY;
+                    return new float[]{x, y};
+                },
+                view -> {
+                    final int[] xy = new int[2];
+                    view.getLocationOnScreen(xy);
+                    final float x = xy[0] + endX;
+                    final float y = xy[1] + endY;
+                    return new float[]{x, y};
+                },
+                Press.FINGER
+        );
+    }
+
     private static class LayoutChangeCallback implements IdlingResource, View.OnLayoutChangeListener {
         private Matcher<View> matcher;
         private IdlingResource.ResourceCallback callback;
@@ -104,26 +125,5 @@ class TestUtils {
             matched = matcher.matches(v);
             callback.onTransitionToIdle();
         }
-    }
-
-    public static ViewAction downToUp(float startX, float startY, float endX, float endY) {
-        return new GeneralSwipeAction(
-                Swipe.FAST,
-                view -> {
-                    final int[] xy = new int[2];
-                    view.getLocationOnScreen(xy);
-                    final float x = xy[0] + startX;
-                    final float y = xy[1] + startY;
-                    return new float[]{x, y};
-                },
-                view -> {
-                    final int[] xy = new int[2];
-                    view.getLocationOnScreen(xy);
-                    final float x = xy[0] + endX;
-                    final float y = xy[1] + endY;
-                    return new float[]{x, y};
-                },
-                Press.FINGER
-        );
     }
 }

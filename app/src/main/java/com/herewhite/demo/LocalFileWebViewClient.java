@@ -8,24 +8,23 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-
 public class LocalFileWebViewClient extends WebViewClient {
     private static final String DynamicPpTDomain = "https://convertcdn.netless.link";
     private static final String TAG = "LocalFile";
+    private String pptDirectory = "";
 
     public void setPptDirectory(String pptDirectory) {
         this.pptDirectory = pptDirectory;
     }
-
-    private String pptDirectory = "";
 
     @SuppressWarnings(value = "deprecation")
     @Override

@@ -29,7 +29,6 @@ import androidx.test.espresso.UiController;
 import androidx.test.espresso.idling.CountingIdlingResource;
 import androidx.test.rule.ActivityTestRule;
 
-import com.herewhite.demo.R;
 import com.herewhite.demo.utils.SimpleViewAction;
 import com.herewhite.sdk.AbstractRoomCallbacks;
 import com.herewhite.sdk.domain.AnimationMode;
@@ -55,10 +54,9 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 
 public class RoomActivityTest {
-    private RoomActivity mActivity;
-    private IdlingResource mIdlingResource;
-
-    @Rule
+    public static final int GRID_NUM = 10;
+    public static final double GRID_SIZE = 200d;
+    private final String PUT_TEST_DIR = "/test";    @Rule
     public ActivityTestRule<RoomActivity> activityRule = new ActivityTestRule<RoomActivity>(RoomActivity.class) {
         @Override
         protected void afterActivityLaunched() {
@@ -68,7 +66,18 @@ public class RoomActivityTest {
             IdlingRegistry.getInstance().register(mIdlingResource);
         }
     };
+    private final String PUT_TEST_PAGE = "page";
+    private final String PUT_TEST_PATH = PUT_TEST_DIR + "/" + PUT_TEST_PAGE;
+    private final String PUT_TEST_PAGE_TARGET = "pagetarget";
+    private final String PUT_TEST_PATH_TARGET = PUT_TEST_DIR + "/" + PUT_TEST_PAGE_TARGET;
+    SceneState currentSceneState = null;
+    String errorMessage;
+    private RoomActivity mActivity;
+    private IdlingResource mIdlingResource;
 
+    static MenuItemTitleMatcher withTitle(String title) {
+        return new MenuItemTitleMatcher(title);
+    }
 
     /**
      * 使用onView方式无法绕过列表过长问题
@@ -192,7 +201,6 @@ public class RoomActivityTest {
         onData(allOf(is(instanceOf(MenuItem.class)), withTitle(mActivity.getString(R.string.zoomChange_command)))).perform(click());
     }
 
-
     @Test
     public void testSetAndGet_MemberState() {
         onIdle();
@@ -218,11 +226,6 @@ public class RoomActivityTest {
 
             }
         });
-    }
-
-    class LocalGlobalState extends GlobalState {
-        private String globalString = "globalString";
-        private int globalInt = 0x1234;
     }
 
     @Test
@@ -280,9 +283,6 @@ public class RoomActivityTest {
         onView(isRoot()).perform(waitFor(500));
     }
 
-    public static final int GRID_NUM = 10;
-    public static final double GRID_SIZE = 200d;
-
     @Test
     @Ignore
     public void testDrawLineNet() {
@@ -328,76 +328,6 @@ public class RoomActivityTest {
 
             onView(isRoot()).perform(waitFor(500));
             onView(withId(R.id.white)).perform(downToUp(0, centerY, mActivity.mWhiteboardView.getWidth(), centerY));
-        }
-    }
-
-    class FakeRoomCallbacks extends AbstractRoomCallbacks {
-        static final String MODIFY_STATE = "modifyState";
-        // 无法依赖 modifyState 确定 zoomChange 成功，not used
-        static final String MODIFY_STATE_ZOOM = "modifyStateZoom";
-        static final String ROOM_PHASE_CONNECTED = "roomPhaseConnected";
-        static final String ROOM_PHASE_DISCONNECTED = "roomPhaseDisconnected";
-
-        public long canUndoSteps;
-        public long canRedoSteps;
-        private RoomState modifyState;
-        private RoomPhase roomPhase;
-
-        private CountingIdlingResource idlingResource = new CountingIdlingResource("RoomCallbacks");
-        private volatile String optKey;
-
-        @Override
-        public void onCanUndoStepsUpdate(long canUndoSteps) {
-            this.canUndoSteps = canUndoSteps;
-            super.onCanUndoStepsUpdate(canUndoSteps);
-        }
-
-        @Override
-        public void onCanRedoStepsUpdate(long canRedoSteps) {
-            this.canRedoSteps = canRedoSteps;
-            super.onCanRedoStepsUpdate(canRedoSteps);
-        }
-
-        @Override
-        public void onRoomStateChanged(RoomState modifyState) {
-            this.modifyState = modifyState;
-            if (modifyState.getCameraState() != null && modifyState.getCameraState().getScale() != null) {
-                checkAndMark(MODIFY_STATE_ZOOM);
-            }
-            if (modifyState.getBroadcastState() != null) {
-                checkAndMark(MODIFY_STATE);
-            }
-            super.onRoomStateChanged(modifyState);
-        }
-
-        @Override
-        public void onPhaseChanged(RoomPhase phase) {
-            this.roomPhase = phase;
-            if (phase == RoomPhase.connected) {
-                checkAndMark(ROOM_PHASE_CONNECTED);
-            } else if (phase == RoomPhase.disconnected) {
-                checkAndMark(ROOM_PHASE_DISCONNECTED);
-            }
-            super.onPhaseChanged(phase);
-        }
-
-        private void checkAndMark(String key) {
-            if (key.equals(optKey) && !idlingResource.isIdleNow()) {
-                idlingResource.decrement();
-            }
-        }
-
-        public void registerIdle() {
-            IdlingRegistry.getInstance().register(idlingResource);
-        }
-
-        public void unregisterIdle() {
-            IdlingRegistry.getInstance().unregister(idlingResource);
-        }
-
-        public void start(String key) {
-            idlingResource.increment();
-            optKey = key;
         }
     }
 
@@ -474,43 +404,6 @@ public class RoomActivityTest {
             }
         });
     }
-
-    class SetScenePathResult implements Promise<Boolean> {
-        CountingIdlingResource idlingResource = new CountingIdlingResource("SetScenePathResult");
-        volatile String errorMessage;
-        boolean success;
-
-        SetScenePathResult() {
-
-        }
-
-        @Override
-        public void then(Boolean success) {
-            this.success = success;
-            idlingResource.decrement();
-        }
-
-        @Override
-        public void catchEx(SDKError t) {
-            errorMessage = t.getMessage();
-            idlingResource.decrement();
-        }
-
-        public void register() {
-            IdlingRegistry.getInstance().register(idlingResource);
-        }
-
-        public void unregister() {
-            IdlingRegistry.getInstance().unregister(idlingResource);
-        }
-
-
-        public void start() {
-            idlingResource.increment();
-        }
-    }
-
-    SceneState currentSceneState = null;
 
     @Test
     public void setScenePath() {
@@ -616,8 +509,6 @@ public class RoomActivityTest {
         });
     }
 
-    String errorMessage;
-
     @Test
     public void setScenePath_should_start_with_slash_CDL() {
         onIdle();
@@ -647,53 +538,6 @@ public class RoomActivityTest {
             assertEquals("path \"invalid/path\" should start with \"/\"", errorMessage);
         } catch (InterruptedException e) {
             fail();
-        }
-    }
-
-    private final String PUT_TEST_DIR = "/test";
-    private final String PUT_TEST_PAGE = "page";
-    private final String PUT_TEST_PATH = PUT_TEST_DIR + "/" + PUT_TEST_PAGE;
-
-    private final String PUT_TEST_PAGE_TARGET = "pagetarget";
-    private final String PUT_TEST_PATH_TARGET = PUT_TEST_DIR + "/" + PUT_TEST_PAGE_TARGET;
-
-    class SimpleLatchDownPromise<T> implements Promise<T> {
-        private final CountDownLatch latch;
-
-        public SimpleLatchDownPromise(CountDownLatch latch) {
-            this.latch = latch;
-        }
-
-        @Override
-        public void then(T t) {
-            latch.countDown();
-        }
-
-        @Override
-        public void catchEx(SDKError t) {
-            latch.countDown();
-        }
-    }
-
-    class SceneStateRecover {
-        private final SceneState sceneState;
-
-        public SceneStateRecover(SceneState sceneState) {
-            this.sceneState = sceneState;
-        }
-
-        public void restore() {
-            SetScenePathResult result = new SetScenePathResult();
-            result.register();
-            onIdle((Callable<Void>) () -> {
-                result.start();
-                mActivity.mRoom.setScenePath(sceneState.getScenePath(), result);
-                return null;
-            });
-            onIdle((Callable<Void>) () -> {
-                result.unregister();
-                return null;
-            });
         }
     }
 
@@ -777,7 +621,155 @@ public class RoomActivityTest {
         }
     }
 
-    static MenuItemTitleMatcher withTitle(String title) {
-        return new MenuItemTitleMatcher(title);
+    class LocalGlobalState extends GlobalState {
+        private String globalString = "globalString";
+        private int globalInt = 0x1234;
     }
+
+    class FakeRoomCallbacks extends AbstractRoomCallbacks {
+        static final String MODIFY_STATE = "modifyState";
+        // 无法依赖 modifyState 确定 zoomChange 成功，not used
+        static final String MODIFY_STATE_ZOOM = "modifyStateZoom";
+        static final String ROOM_PHASE_CONNECTED = "roomPhaseConnected";
+        static final String ROOM_PHASE_DISCONNECTED = "roomPhaseDisconnected";
+
+        public long canUndoSteps;
+        public long canRedoSteps;
+        private RoomState modifyState;
+        private RoomPhase roomPhase;
+
+        private CountingIdlingResource idlingResource = new CountingIdlingResource("RoomCallbacks");
+        private volatile String optKey;
+
+        @Override
+        public void onCanUndoStepsUpdate(long canUndoSteps) {
+            this.canUndoSteps = canUndoSteps;
+            super.onCanUndoStepsUpdate(canUndoSteps);
+        }
+
+        @Override
+        public void onCanRedoStepsUpdate(long canRedoSteps) {
+            this.canRedoSteps = canRedoSteps;
+            super.onCanRedoStepsUpdate(canRedoSteps);
+        }
+
+        @Override
+        public void onRoomStateChanged(RoomState modifyState) {
+            this.modifyState = modifyState;
+            if (modifyState.getCameraState() != null && modifyState.getCameraState().getScale() != null) {
+                checkAndMark(MODIFY_STATE_ZOOM);
+            }
+            if (modifyState.getBroadcastState() != null) {
+                checkAndMark(MODIFY_STATE);
+            }
+            super.onRoomStateChanged(modifyState);
+        }
+
+        @Override
+        public void onPhaseChanged(RoomPhase phase) {
+            this.roomPhase = phase;
+            if (phase == RoomPhase.connected) {
+                checkAndMark(ROOM_PHASE_CONNECTED);
+            } else if (phase == RoomPhase.disconnected) {
+                checkAndMark(ROOM_PHASE_DISCONNECTED);
+            }
+            super.onPhaseChanged(phase);
+        }
+
+        private void checkAndMark(String key) {
+            if (key.equals(optKey) && !idlingResource.isIdleNow()) {
+                idlingResource.decrement();
+            }
+        }
+
+        public void registerIdle() {
+            IdlingRegistry.getInstance().register(idlingResource);
+        }
+
+        public void unregisterIdle() {
+            IdlingRegistry.getInstance().unregister(idlingResource);
+        }
+
+        public void start(String key) {
+            idlingResource.increment();
+            optKey = key;
+        }
+    }
+
+    class SetScenePathResult implements Promise<Boolean> {
+        CountingIdlingResource idlingResource = new CountingIdlingResource("SetScenePathResult");
+        volatile String errorMessage;
+        boolean success;
+
+        SetScenePathResult() {
+
+        }
+
+        @Override
+        public void then(Boolean success) {
+            this.success = success;
+            idlingResource.decrement();
+        }
+
+        @Override
+        public void catchEx(SDKError t) {
+            errorMessage = t.getMessage();
+            idlingResource.decrement();
+        }
+
+        public void register() {
+            IdlingRegistry.getInstance().register(idlingResource);
+        }
+
+        public void unregister() {
+            IdlingRegistry.getInstance().unregister(idlingResource);
+        }
+
+
+        public void start() {
+            idlingResource.increment();
+        }
+    }
+
+    class SimpleLatchDownPromise<T> implements Promise<T> {
+        private final CountDownLatch latch;
+
+        public SimpleLatchDownPromise(CountDownLatch latch) {
+            this.latch = latch;
+        }
+
+        @Override
+        public void then(T t) {
+            latch.countDown();
+        }
+
+        @Override
+        public void catchEx(SDKError t) {
+            latch.countDown();
+        }
+    }
+
+    class SceneStateRecover {
+        private final SceneState sceneState;
+
+        public SceneStateRecover(SceneState sceneState) {
+            this.sceneState = sceneState;
+        }
+
+        public void restore() {
+            SetScenePathResult result = new SetScenePathResult();
+            result.register();
+            onIdle((Callable<Void>) () -> {
+                result.start();
+                mActivity.mRoom.setScenePath(sceneState.getScenePath(), result);
+                return null;
+            });
+            onIdle((Callable<Void>) () -> {
+                result.unregister();
+                return null;
+            });
+        }
+    }
+
+
 }

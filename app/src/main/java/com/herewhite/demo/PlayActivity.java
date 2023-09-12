@@ -20,9 +20,7 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.util.Util;
 import com.google.gson.Gson;
 import com.herewhite.demo.common.DemoAPI;
-import com.herewhite.demo.player.exo.WhiteExoPlayer;
-import com.herewhite.demo.player.ijk.WhiteIjkPlayer;
-import com.herewhite.demo.player.ijk.widget.media.IjkVideoView;
+import com.herewhite.demo.player.WhiteExoPlayer;
 import com.herewhite.sdk.Player;
 import com.herewhite.sdk.PlayerEventListener;
 import com.herewhite.sdk.WhiteSdk;
@@ -43,12 +41,11 @@ import java.util.concurrent.TimeUnit;
 public class PlayActivity extends BaseActivity implements PlayerEventListener {
     private final String TAG = "player";
     private final String TAG_Native = "nativePlayer";
-
-    private DemoAPI demoAPI = DemoAPI.get();
-    Gson gson = new Gson();
-
     protected WhiteboardView mWhiteboardView;
     protected SeekBar mSeekBar;
+    //region seekBar
+    protected Handler mSeekBarUpdateHandler = new Handler();
+    Gson gson = new Gson();
     /*
      * 如果不需要音视频混合播放，可以直接操作 Player
      */
@@ -58,10 +55,21 @@ public class PlayActivity extends BaseActivity implements PlayerEventListener {
     Player mPlaybackPlayer;
     @Nullable
     NativePlayer mWhiteMediaPlayer;
-
+    private DemoAPI demoAPI = DemoAPI.get();
     private boolean mUserIsSeeking;
-    // 是否使用 ExoPlayer，true 使用 EXOPlayer，false 则使用 IjkPlayer，默认为 true
-    private boolean mIsUsedExoPlayer = true;
+    protected Runnable mUpdateSeekBar = new Runnable() {
+        @Override
+        public void run() {
+            if (mUserIsSeeking) {
+                return;
+            }
+            // FIXME:正在 seek 时，progress 会被重置到旧的时间，只有 seek 完成，progress 才会恢复正确
+            float progress = playerProgress();
+            Log.v(TAG, "progress: " + progress);
+            mSeekBar.setProgress((int) progress);
+            mSeekBarUpdateHandler.postDelayed(this, 100);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +87,7 @@ public class PlayActivity extends BaseActivity implements PlayerEventListener {
     @Override
     protected void onStart() {
         super.onStart();
-        if (mIsUsedExoPlayer && Util.SDK_INT > 23 && mWhiteMediaPlayer != null) {
+        if (Util.SDK_INT > 23 && mWhiteMediaPlayer != null) {
             ((WhiteExoPlayer) mWhiteMediaPlayer).onResume();
         }
     }
@@ -87,7 +95,7 @@ public class PlayActivity extends BaseActivity implements PlayerEventListener {
     @Override
     protected void onResume() {
         super.onResume();
-        if (mIsUsedExoPlayer && Util.SDK_INT <= 23 && mWhiteMediaPlayer != null) {
+        if (Util.SDK_INT <= 23 && mWhiteMediaPlayer != null) {
             ((WhiteExoPlayer) mWhiteMediaPlayer).onResume();
         }
     }
@@ -95,7 +103,7 @@ public class PlayActivity extends BaseActivity implements PlayerEventListener {
     @Override
     protected void onPause() {
         super.onPause();
-        if (mIsUsedExoPlayer && Util.SDK_INT <= 23 && mWhiteMediaPlayer != null) {
+        if (Util.SDK_INT <= 23 && mWhiteMediaPlayer != null) {
             ((WhiteExoPlayer) mWhiteMediaPlayer).onPause();
         }
     }
@@ -103,7 +111,7 @@ public class PlayActivity extends BaseActivity implements PlayerEventListener {
     @Override
     protected void onStop() {
         super.onStop();
-        if (mIsUsedExoPlayer && Util.SDK_INT > 23 && mWhiteMediaPlayer != null) {
+        if (Util.SDK_INT > 23 && mWhiteMediaPlayer != null) {
             ((WhiteExoPlayer) mWhiteMediaPlayer).onPause();
         }
     }
@@ -115,11 +123,7 @@ public class PlayActivity extends BaseActivity implements PlayerEventListener {
             mPlayerSyncManager.pause();
         }
         if (mWhiteMediaPlayer != null) {
-            if (mIsUsedExoPlayer) {
-                ((WhiteExoPlayer) mWhiteMediaPlayer).release();
-            } else {
-                ((WhiteIjkPlayer) mWhiteMediaPlayer).release();
-            }
+            ((WhiteExoPlayer) mWhiteMediaPlayer).release();
             mWhiteMediaPlayer = null;
         }
         mSeekBarUpdateHandler.removeCallbacks(mUpdateSeekBar);
@@ -147,20 +151,12 @@ public class PlayActivity extends BaseActivity implements PlayerEventListener {
         final String uuid = getIntent().getStringExtra(StartActivity.EXTRA_ROOM_UUID);
 
         try {
-            if (mIsUsedExoPlayer) {
-                // WhiteExoPlayer demo
-                PlayerView playerView = findViewById(R.id.exo_video_view);
-                playerView.setVisibility(View.VISIBLE);
-                mWhiteMediaPlayer = new WhiteExoPlayer(this);
-                ((WhiteExoPlayer) mWhiteMediaPlayer).setPlayerView(playerView);
-                ((WhiteExoPlayer) mWhiteMediaPlayer).setVideoPath("https://white-pan.oss-cn-shanghai.aliyuncs.com/101/oceans.mp4");
-            } else {
-                // WhiteIjkPlayer demo
-                IjkVideoView videoView = findViewById(R.id.ijk_video_view);
-                videoView.setVisibility(View.VISIBLE);
-                mWhiteMediaPlayer = new WhiteIjkPlayer(videoView);
-                ((WhiteIjkPlayer) mWhiteMediaPlayer).setVideoPath("https://white-pan.oss-cn-shanghai.aliyuncs.com/101/oceans.mp4");
-            }
+            // WhiteExoPlayer demo
+            PlayerView playerView = findViewById(R.id.exo_video_view);
+            playerView.setVisibility(View.VISIBLE);
+            mWhiteMediaPlayer = new WhiteExoPlayer(this);
+            ((WhiteExoPlayer) mWhiteMediaPlayer).setPlayerView(playerView);
+            ((WhiteExoPlayer) mWhiteMediaPlayer).setVideoPath("https://white-pan.oss-cn-shanghai.aliyuncs.com/101/oceans.mp4");
 
             mPlayerSyncManager = new PlayerSyncManager(mWhiteMediaPlayer, new PlayerSyncManager.Callbacks() {
                 @Override
@@ -235,6 +231,8 @@ public class PlayActivity extends BaseActivity implements PlayerEventListener {
         Log.i(TAG, gson.toJson(mPlaybackPlayer.getPlayerState()));
     }
 
+    //endregion
+
     public void getPhase(MenuItem item) {
         Log.i(TAG, gson.toJson(mPlaybackPlayer.getPlayerPhase()));
     }
@@ -253,8 +251,6 @@ public class PlayActivity extends BaseActivity implements PlayerEventListener {
         });
     }
 
-    //endregion
-
     protected void play() {
         if (isPlayable()) {
             mPlayerSyncManager.play();
@@ -272,12 +268,8 @@ public class PlayActivity extends BaseActivity implements PlayerEventListener {
 
     protected void seek(Long time, TimeUnit timeUnit) {
         if (isPlayable()) {
-            // nativePlayer 会调用 PlayerSync
-            if (mIsUsedExoPlayer) {
-                ((WhiteExoPlayer) mWhiteMediaPlayer).seek(time, timeUnit);
-            } else {
-                ((WhiteIjkPlayer) mWhiteMediaPlayer).seek(time, timeUnit);
-            }
+
+            ((WhiteExoPlayer) mWhiteMediaPlayer).seek(time, timeUnit);
             mSeekBarUpdateHandler.removeCallbacks(mUpdateSeekBar);
             mSeekBarUpdateHandler.postDelayed(mUpdateSeekBar, 100);
         }
@@ -291,22 +283,6 @@ public class PlayActivity extends BaseActivity implements PlayerEventListener {
             mSeekBar.setProgress((int) playerProgress());
         }
     }
-
-    //region seekBar
-    protected Handler mSeekBarUpdateHandler = new Handler();
-    protected Runnable mUpdateSeekBar = new Runnable() {
-        @Override
-        public void run() {
-            if (mUserIsSeeking) {
-                return;
-            }
-            // FIXME:正在 seek 时，progress 会被重置到旧的时间，只有 seek 完成，progress 才会恢复正确
-            float progress = playerProgress();
-            Log.v(TAG, "progress: " + progress);
-            mSeekBar.setProgress((int) progress);
-            mSeekBarUpdateHandler.postDelayed(this, 100);
-        }
-    };
 
     protected void setupSeekBar() {
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -402,11 +378,7 @@ public class PlayActivity extends BaseActivity implements PlayerEventListener {
 
                 setupSeekBar();
                 if (mWhiteMediaPlayer != null) {
-                    if (mIsUsedExoPlayer) {
-                        ((WhiteExoPlayer) mWhiteMediaPlayer).setPlayerSyncManager(mPlayerSyncManager);
-                    } else {
-                        ((WhiteIjkPlayer) mWhiteMediaPlayer).setPlayerSyncManager(mPlayerSyncManager);
-                    }
+                    ((WhiteExoPlayer) mWhiteMediaPlayer).setPlayerSyncManager(mPlayerSyncManager);
                 }
                 // seek 一次才能主动触发
                 mPlaybackPlayer.seekToScheduleTime(0);

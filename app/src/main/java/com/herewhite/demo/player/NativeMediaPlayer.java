@@ -22,9 +22,16 @@ public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, 
         MediaPlayer.OnSeekCompleteListener,
         MediaPlayer.OnInfoListener,
         MediaPlayer.OnCompletionListener {
+    private static final int STATE_IDLE = 0;
+    private static final int STATE_PLAY_PENDING = 1;
+    private static final int STATE_READY = 2;
+    private static final int STATE_PLAYING = 3;
+    private static final int STATE_PAUSED = 4;
+    private static final int STATE_ERROR = 5;
+    private final Handler mHandler = new Handler();
+    private final String TAG = "nativePlayer info";
     private MediaPlayer mMediaPlayer;
     private SurfaceHolder mSurfaceHolder;
-    private final Handler mHandler = new Handler();
     private PlayerSyncManager playerSyncManager;
     /**
      * NativePlayerPhase 状态，与 mediaPlayer State 并不一致，需要进行一些转换。
@@ -32,13 +39,6 @@ public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, 
      * https://developer.android.google.cn/reference/android/media/MediaPlayer.html#state-diagram
      */
     private NativePlayerPhase phase;
-
-    private static final int STATE_IDLE = 0;
-    private static final int STATE_PLAY_PENDING = 1;
-    private static final int STATE_READY = 2;
-    private static final int STATE_PLAYING = 3;
-    private static final int STATE_PAUSED = 4;
-    private static final int STATE_ERROR = 5;
     /**
      * mediaPlayer 没有提供可以状态 API，需要开发者手动进行维护
      */
@@ -47,8 +47,6 @@ public class NativeMediaPlayer implements NativePlayer, SurfaceHolder.Callback, 
      * 跳转位置
      */
     private int mSeekToPos = 0;
-
-    private final String TAG = "nativePlayer info";
 
     public NativeMediaPlayer(Context context, String uri) throws IOException {
         mMediaPlayer = new MediaPlayer();

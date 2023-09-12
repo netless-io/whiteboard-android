@@ -1,4 +1,3 @@
-
 package com.herewhite.demo.test.window;
 
 import android.content.Intent;
@@ -30,8 +29,8 @@ import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.WhiteDisplayerState;
-import com.herewhite.sdk.domain.WindowAppSyncAttrs;
 import com.herewhite.sdk.domain.WindowAppParam;
+import com.herewhite.sdk.domain.WindowAppSyncAttrs;
 import com.herewhite.sdk.domain.WindowParams;
 import com.herewhite.sdk.domain.WindowPrefersColorScheme;
 
@@ -63,6 +62,8 @@ public class WindowTestActivity extends AppCompatActivity {
     FrameLayout mWhiteboardParent;
 
     Stack<String> appIds = new Stack<>();
+    Map<String, WindowAppSyncAttrs> apps = new HashMap<>();
+    long lastUpdate = 0;
     private Promise<String> insertPromise = new Promise<String>() {
         @Override
         public void then(String appId) {
@@ -74,8 +75,6 @@ public class WindowTestActivity extends AppCompatActivity {
 
         }
     };
-
-    Map<String, WindowAppSyncAttrs> apps = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +95,6 @@ public class WindowTestActivity extends AppCompatActivity {
 
         // Slide 音量测试
         findViewById(R.id.updateSlideVolume).setOnClickListener(new View.OnClickListener() {
-            int index = 0;
             final List<Float> volumes = new ArrayList<Float>() {
                 {
                     add(1.0f);
@@ -104,7 +102,7 @@ public class WindowTestActivity extends AppCompatActivity {
                     add(0.5f);
                 }
             };
-
+            int index = 0;
 
             @Override
             public void onClick(View v) {
@@ -133,7 +131,6 @@ public class WindowTestActivity extends AppCompatActivity {
 
         // 窗口比例
         findViewById(R.id.radio).setOnClickListener(new View.OnClickListener() {
-            int index = 0;
             final List<Float> ratios = new ArrayList<Float>() {
                 {
                     add(1.0f);
@@ -141,6 +138,7 @@ public class WindowTestActivity extends AppCompatActivity {
                     add(9f / 16);
                 }
             };
+            int index = 0;
 
             @Override
             public void onClick(View v) {
@@ -150,7 +148,6 @@ public class WindowTestActivity extends AppCompatActivity {
 
         // 窗口暗色模式
         findViewById(R.id.colorScheme).setOnClickListener(new View.OnClickListener() {
-            int index = 0;
             final List<WindowPrefersColorScheme> colorSchemes = new ArrayList<WindowPrefersColorScheme>() {
                 {
                     add(WindowPrefersColorScheme.Dark);
@@ -158,6 +155,7 @@ public class WindowTestActivity extends AppCompatActivity {
                     add(WindowPrefersColorScheme.Auto);
                 }
             };
+            int index = 0;
 
             @Override
             public void onClick(View v) {
@@ -251,7 +249,8 @@ public class WindowTestActivity extends AppCompatActivity {
             // 查询不存在的 appId 触发 catchEx
             mRoom.queryApp("not_exited_appId", new Promise<WindowAppSyncAttrs>() {
                 @Override
-                public void then(WindowAppSyncAttrs attrs) {}
+                public void then(WindowAppSyncAttrs attrs) {
+                }
 
                 @Override
                 public void catchEx(SDKError t) {
@@ -300,8 +299,6 @@ public class WindowTestActivity extends AppCompatActivity {
         Intent intent = new Intent(this, WindowRestoreActivity.class);
         startActivity(intent);
     }
-
-    long lastUpdate = 0;
 
     private void lockRatio() {
         ViewGroup.LayoutParams layoutParams = mWhiteboardParent.getLayoutParams();
