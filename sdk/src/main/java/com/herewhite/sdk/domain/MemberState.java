@@ -11,6 +11,7 @@ public class MemberState extends WhiteObject {
     private int[] strokeColor;
     private Double strokeWidth;
     private Double textSize;
+    private int[] textColor;
     private Boolean textCanSelectText;
     private Boolean dottedLine;
 
@@ -90,6 +91,13 @@ public class MemberState extends WhiteObject {
         this.strokeColor = strokeColor;
     }
 
+    public int[] getTextColor() {
+        return textColor;
+    }
+
+    public void setTextColor(int[] textColor) {
+        this.textColor = textColor;
+    }
 
     /**
      * 获取用户设置的线条粗细。
