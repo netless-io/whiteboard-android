@@ -351,13 +351,41 @@ public class Room extends Displayer {
     //endregion
 
     /**
-     * 插入文字
+     * 在指定位置插入文字
      * @param x
      * @param y
      * @param text
      */
     public void insertText(int x, int y, String text) {
-        bridge.callHandler("room.insertText", new Object[]{x, y, text});
+        bridge.callHandler("room.insertText", new Object[]{x, y, text}, null);
+    }
+
+    /**
+     * 在指定位置插入文字
+     * @param x
+     * @param y
+     * @param text
+     * @param promise 完成回调，其中返回值为插入文字的 id
+     */
+    public void insertText(int x, int y, String text, Promise<String> promise) {
+        bridge.callHandler("room.insertText", new Object[]{x, y, text}, new OnReturnValue<String>() {
+            @Override
+            public void onValue(String id) {
+                if (promise != null) {
+                    promise.then(id);
+                }
+            }
+        });
+    }
+
+    /**
+     * 编辑指定文字的内容
+     *
+     * @param id 为 ``insertText()`` 的回调值
+     * @param text
+     */
+    public void updateText(String id, String text) {
+        bridge.callHandler("room.updateText", new Object[]{id, text});
     }
 
     //region GET API
