@@ -653,6 +653,11 @@ public class WhiteSdkConfiguration extends WhiteObject {
         private boolean showRenderError = false;
         // 是否开启调试模式
         private boolean debug = false;
+        /**
+         * 用于控制是否可以通过点击 ppt 画面执行下一步功能。
+         * 建议移动端开启，移动端受限于屏幕尺寸，交互 UI 较小，如果开启此功能会比较方便执行下一步。
+         */
+        private boolean enableGlobalClick = true;
 
         public boolean isShowRenderError() {
             return showRenderError;
@@ -668,6 +673,14 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
         public void setDebug(boolean debug) {
             this.debug = debug;
+        }
+
+        public boolean isEnableGlobalClick() {
+            return enableGlobalClick;
+        }
+
+        public void setEnableGlobalClick(boolean enableGlobalClick) {
+            this.enableGlobalClick = enableGlobalClick;
         }
     }
 }
