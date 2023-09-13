@@ -1,4 +1,9 @@
 # 版本更新记录
+## [2.16.65] - 2023-09-13
+- 新增 `MemberState.setTextColor`, 独立设置 Text 教具颜色。
+- 新增 `SlideAppOptions.enableGlobalClick`, 用于控制是否可以通过点击 ppt 画面执行下一步功能, 默认开启。
+- 新增 `Room.updateText`, 用于更新调用 `Room.insertText` 插入的文本。
+- 更新 `@netless/app-slide` 至 0.2.42。
 ## [2.16.64] - 2023-09-06
 - 更新 `white-web-sdk` 至 2.16.44。
 ## [2.16.63] - 2023-08-30

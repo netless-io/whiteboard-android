@@ -654,6 +654,8 @@ public class WhiteSdkConfiguration extends WhiteObject {
         // 是否开启调试模式
         private boolean debug = false;
         /**
+         * 是否开启全局点击功能 (默认开启)
+         *
          * 用于控制是否可以通过点击 ppt 画面执行下一步功能。
          * 建议移动端开启，移动端受限于屏幕尺寸，交互 UI 较小，如果开启此功能会比较方便执行下一步。
          */
