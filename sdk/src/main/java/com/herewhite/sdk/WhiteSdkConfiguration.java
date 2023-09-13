@@ -661,6 +661,21 @@ public class WhiteSdkConfiguration extends WhiteObject {
          */
         private boolean enableGlobalClick = true;
 
+        /** 设置最小 fps, 应用会尽量保证实际 fps 高于此值, 此值越小, cpu 开销越小。默认值: 25 */
+        private Integer minFPS = 25;
+
+        /** 设置最大 fps, 应用会保证实际 fps 低于此值, 此值越小, cpu 开销越小。默认值: 40 */
+        private Integer maxFPS = 40;
+
+        /**
+         * 设置渲染分辨倍率, 原始 ppt 有自己的像素尺寸，当在 2k 或者 4k 屏幕下，如果按原始 ppt 分辨率显示，画面会比较模糊。可以调整此值，使画面更清晰，同时性能开销也变高。
+         * 默认值: 1
+         */
+        private Double resolution;
+
+        /** 取值范围 1~4 */
+        private Integer maxResolutionLevel;
+
         public boolean isShowRenderError() {
             return showRenderError;
         }
@@ -683,6 +698,38 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
         public void setEnableGlobalClick(boolean enableGlobalClick) {
             this.enableGlobalClick = enableGlobalClick;
+        }
+
+        public Integer getMinFPS() {
+            return minFPS;
+        }
+
+        public void setMinFPS(Integer minFPS) {
+            this.minFPS = minFPS;
+        }
+
+        public Integer getMaxFPS() {
+            return maxFPS;
+        }
+
+        public void setMaxFPS(Integer maxFPS) {
+            this.maxFPS = maxFPS;
+        }
+
+        public Double getResolution() {
+            return resolution;
+        }
+
+        public void setResolution(Double resolution) {
+            this.resolution = resolution;
+        }
+
+        public Integer getMaxResolutionLevel() {
+            return maxResolutionLevel;
+        }
+
+        public void setMaxResolutionLevel(Integer maxResolutionLevel) {
+            this.maxResolutionLevel = maxResolutionLevel;
         }
     }
 }
