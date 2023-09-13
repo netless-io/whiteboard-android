@@ -334,6 +334,11 @@ public class WindowTestActivity extends AppCompatActivity {
         WhiteSdkConfiguration.SlideAppOptions slideAppOptions = new WhiteSdkConfiguration.SlideAppOptions();
         slideAppOptions.setDebug(false);
         slideAppOptions.setShowRenderError(false);
+        slideAppOptions.setEnableGlobalClick(false);
+        slideAppOptions.setMinFPS(1);
+        slideAppOptions.setMaxFPS(2);
+        slideAppOptions.setResolution(0.5);
+        slideAppOptions.setMaxResolutionLevel(1);
         configuration.setSlideAppOptions(slideAppOptions);
 
         mWhiteSdk = new WhiteSdk(mWhiteboardView, this, configuration);
