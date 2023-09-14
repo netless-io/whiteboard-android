@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.16.66] - 2023-09-14
+- 新增 `SlideAppOptions.minFPS`, `SlideAppOptions.maxFPS`, 用于控制 PPT 动画帧率。
+- 新增 `SlideAppOptions.resolution`, `SlideAppOptions.maxResolutionLevel`, 用于控制 PPT 渲染分辨率。
 ## [2.16.65] - 2023-09-13
 - 新增 `MemberState.setTextColor`, 独立设置 Text 教具颜色。
 - 新增 `SlideAppOptions.enableGlobalClick`, 用于控制是否可以通过点击 ppt 画面执行下一步功能, 默认开启。
