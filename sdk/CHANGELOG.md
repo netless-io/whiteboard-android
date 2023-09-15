@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.16.67] - 2023-09-15
+- 新增 `SlideAppOptions.bgColor`, `SlideAppOptions.forceCanvas`, 用于控制 PPT 渲染。
 ## [2.16.66] - 2023-09-14
 - 新增 `SlideAppOptions.minFPS`, `SlideAppOptions.maxFPS`, 用于控制 PPT 动画帧率。
 - 新增 `SlideAppOptions.resolution`, `SlideAppOptions.maxResolutionLevel`, 用于控制 PPT 渲染分辨率。
