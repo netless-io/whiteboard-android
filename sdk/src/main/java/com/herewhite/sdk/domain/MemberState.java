@@ -6,14 +6,43 @@ package com.herewhite.sdk.domain;
  * `MemberState` 类，用于设置互动白板实时房间的白板工具状态。
  */
 public class MemberState extends WhiteObject {
+    /**
+     * 白板工具名称，详见 {@link Appliance}。
+     */
     private String currentApplianceName;
+
+    /**
+     * 图形工具的类型。
+     */
     private ShapeType shapeType;
+    /**
+     * 线条颜色，为 RGB 格式，例如，[0, 0, 255] 表示蓝色。
+     */
     private int[] strokeColor;
+    /**
+     * 线条粗细。
+     */
     private Double strokeWidth;
+    /**
+     * 字体大小。Chrome 浏览器对于小于 12 的字体会自动调整为 12。
+     */
     private Double textSize;
+    /**
+     * 文本颜色，为 RGB 格式，例如，[0, 0, 255] 表示蓝色。
+     */
     private int[] textColor;
+    /**
+     * 文本是否可直接选择
+     */
     private Boolean textCanSelectText;
+    /**
+     * 新铅笔是否画虚线
+     */
     private Boolean dottedLine;
+    /**
+     * 铅笔橡皮的尺寸，取值 1~3
+     */
+    private Integer pencilEraserSize;
 
     public MemberState() {
     }
@@ -171,5 +200,24 @@ public class MemberState extends WhiteObject {
      */
     public void setDottedLine(Boolean dottedLine) {
         this.dottedLine = dottedLine;
+    }
+
+    /**
+     * 获取铅笔橡皮的尺寸
+     *
+     * @return
+     */
+    public Integer getPencilEraserSize() {
+        return pencilEraserSize;
+    }
+
+    /**
+     * 设置铅笔橡皮的尺寸
+     * 如需更改此配置，需要在加入房间时设置 {@link com.herewhite.sdk.RoomParams#setDisableNewPencil (false)}}
+     *
+     * @param pencilEraserSize 铅笔橡皮的尺寸，取值 1~3
+     */
+    public void setPencilEraserSize(Integer pencilEraserSize) {
+        this.pencilEraserSize = pencilEraserSize;
     }
 }
