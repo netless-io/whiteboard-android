@@ -676,6 +676,12 @@ public class WhiteSdkConfiguration extends WhiteObject {
         /** 取值范围 1~4 */
         private Integer maxResolutionLevel;
 
+        /** 切页动画背景色 */
+        private String bgColor;
+
+        /** 强制使用 2D 渲染 */
+        private Boolean forceCanvas = false;
+
         public boolean isShowRenderError() {
             return showRenderError;
         }
@@ -730,6 +736,22 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
         public void setMaxResolutionLevel(Integer maxResolutionLevel) {
             this.maxResolutionLevel = maxResolutionLevel;
+        }
+
+        public String getBgColor() {
+            return bgColor;
+        }
+
+        public void setBgColor(String bgColor) {
+            this.bgColor = bgColor;
+        }
+
+        public Boolean getForceCanvas() {
+            return forceCanvas;
+        }
+
+        public void setForceCanvas(Boolean forceCanvas) {
+            this.forceCanvas = forceCanvas;
         }
     }
 }
