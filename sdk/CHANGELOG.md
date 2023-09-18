@@ -1,4 +1,8 @@
 # 版本更新记录
+## [2.16.68] - 2023-09-18
+- 更新 `@netless/app-slide` 至 0.2.43。
+- 更新 `SlideAppOptions.maxResolutionLevel`, 取值范围变更为 0-4。
+- 新增 `MemberState.pencilEraserSize`, 用于更改局部橡皮擦尺寸，取之范围 1-3。
 ## [2.16.67] - 2023-09-15
 - 新增 `SlideAppOptions.bgColor`, `SlideAppOptions.forceCanvas`, 用于控制 PPT 渲染。
 ## [2.16.66] - 2023-09-14

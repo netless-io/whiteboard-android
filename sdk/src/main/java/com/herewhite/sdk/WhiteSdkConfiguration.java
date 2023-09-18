@@ -673,7 +673,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
          */
         private Double resolution;
 
-        /** 取值范围 1~4 */
+        /** 取值范围 0~4 */
         private Integer maxResolutionLevel;
 
         /** 切页动画背景色 */
