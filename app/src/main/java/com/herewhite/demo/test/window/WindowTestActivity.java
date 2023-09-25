@@ -89,7 +89,7 @@ public class WindowTestActivity extends AppCompatActivity {
         // 使用 LocalFileWebViewClient 对 动态 ppt 拦截进行替换，先查看本地是否有，如果没有再发出网络请求
         LocalFileWebViewClient client = new LocalFileWebViewClient();
         client.setPptDirectory(getCacheDir().getAbsolutePath());
-        mWhiteboardView.setWebViewClient(client);
+        // mWhiteboardView.setWebViewClient(client);
 
         mWhiteboardParent = findViewById(R.id.whiteParent);
 

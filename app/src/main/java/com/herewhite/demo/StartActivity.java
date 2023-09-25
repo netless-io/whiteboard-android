@@ -21,8 +21,8 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
     }
 
     String getUuid() {
@@ -61,10 +61,9 @@ public class StartActivity extends AppCompatActivity {
         }
 
         Intent intent = new Intent(this, RoomActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         String uuid = getUuid();
-        if (uuid.length() > 0) {
-            intent.putExtra(EXTRA_ROOM_UUID, uuid);
-        }
+        if (uuid.length() > 0) intent.putExtra(EXTRA_ROOM_UUID, uuid);
         startActivity(intent);
     }
 

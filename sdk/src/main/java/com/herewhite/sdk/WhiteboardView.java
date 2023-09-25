@@ -89,12 +89,12 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
         WhiteboardView.entryUrl = entryUrl;
     }
     
-    private void init() {
+    public void init() {
         if (isInEditMode()) return;
         getSettings().setMediaPlaybackRequiresUserGesture(false);
         getSettings().setTextZoom(100);
         loadUrl(entryUrl);
-        setWebChromeClient(new FixWebChromeClient());
+        // setWebChromeClient(new FixWebChromeClient());
         // 100ms，减少用户体验问题，防止动画过程中频繁调用问题
         delayStrategy = new RefreshViewSizeStrategy(100);
     }

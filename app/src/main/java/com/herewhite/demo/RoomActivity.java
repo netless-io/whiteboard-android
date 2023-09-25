@@ -2,6 +2,7 @@ package com.herewhite.demo;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -12,12 +13,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.CookieManager;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.VisibleForTesting;
 
 import com.google.gson.Gson;
 import com.herewhite.demo.common.DemoAPI;
+import com.herewhite.demo.common.PostLogger;
 import com.herewhite.demo.utils.MapBuilder;
 import com.herewhite.sdk.AbstractRoomCallbacks;
 import com.herewhite.sdk.CommonCallback;
@@ -96,18 +100,32 @@ public class RoomActivity extends BaseActivity {
         return DemoAPI.DEFAULT_UID;
     }
 
+    static int lastHash = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
 
+        FrameLayout layout = findViewById(R.id.whiteboard_container);
         mWhiteboardView = findViewById(R.id.white);
+//        mWhiteboardView = new WhiteboardView(this);
+//        layout.addView(mWhiteboardView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+
         mWhiteboardView.getSettings().setAllowUniversalAccessFromFileURLs(true);
 
         // 使用 LocalFileWebViewClient 对 动态 ppt 拦截进行替换，先查看本地是否有，如果没有再发出网络请求
         LocalFileWebViewClient client = new LocalFileWebViewClient();
         client.setPptDirectory(getCacheDir().getAbsolutePath());
-        mWhiteboardView.setWebViewClient(client);
+        // mWhiteboardView.setWebViewClient(client);
+
+        if (System.identityHashCode(mWhiteboardView) == lastHash) {
+            PostLogger.log("reuse " + mWhiteboardView.toString() + " " + mWhiteboardView.hashCode());
+            mWhiteboardView.init();
+        } else {
+            PostLogger.log("new " + mWhiteboardView.toString() + " " + mWhiteboardView.hashCode());
+        }
+        lastHash = System.identityHashCode(mWhiteboardView);
 
         // 测试支持
         testMarkIdling(false);
@@ -116,10 +134,29 @@ public class RoomActivity extends BaseActivity {
         findViewById(R.id.sendSync).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RectangleConfig config = new RectangleConfig(200d, 400d);
-                mRoom.moveCameraToContainer(config);
+                if (mWhiteboardView.getX5WebViewExtension() != null) {
+                    PostLogger.log("use X5WebView");
+                } else {
+                    PostLogger.log("use system WebView");
+                }
             }
         });
+
+        findViewById(R.id.sendSync2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        PostLogger.log(mWhiteboardView.toString() + " " + mWhiteboardView.hashCode());
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        PostLogger.log("isFinished" + " " + isFinishing() + " RoomActivity");
     }
 
     private void setupRoom() {
@@ -147,6 +184,13 @@ public class RoomActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        // mWhiteboardView.removeAllViews();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        PostLogger.log("onNewIntent" + " RoomActivity");
     }
 
     //region room

@@ -104,7 +104,7 @@ public class PptResourceCacheActivity extends BaseActivity {
 
         PptCacheWebViewClient client = new PptCacheWebViewClient();
         client.setPptResourceManager(pptResourceManager);
-        mWhiteboardView.setWebViewClient(client);
+        // mWhiteboardView.setWebViewClient(client);
 
         // 测试支持
         testMarkIdling(false);

@@ -57,11 +57,11 @@ public class Scaffold {
 
     public void fetchJsVariable(WhiteboardView whiteboardView, String variableName) {
         String jsCode = "JSON.stringify(" + variableName + ");";
-        whiteboardView.evaluateJavascript(jsCode, new ValueCallback<String>() {
-            @Override
-            public void onReceiveValue(String value) {
-                // log the value
-            }
-        });
+//        whiteboardView.evaluateJavascript(jsCode, new ValueCallback<String>() {
+//            @Override
+//            public void onReceiveValue(String value) {
+//                // log the value
+//            }
+//        });
     }
 }
