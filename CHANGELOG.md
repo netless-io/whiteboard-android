@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.16.71] - 2023-10-12
+- 更新 `window-manager` 至 0.4.62。DocViewer 支持抓手工具
 ## [2.16.70] - 2023-10-12
 - 更新 `white-web-sdk` 至 2.16.45。
 - 新增 `RoomParams.optimizeOptions` ，用于配置白板渲染优化。
