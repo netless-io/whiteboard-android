@@ -1460,6 +1460,16 @@ public class Room extends Displayer {
         });
     }
 
+    /**
+     * 默认情况下，所有同步消息会按比较平滑的速度处理，以此保证观感的流畅性。
+     * 如果设置此项为 ``true``，则所有消息一经收到立刻处理，从而保证同步的实时性。
+     *
+     * @param useSyncMode
+     */
+    public void setSyncMode(boolean useSyncMode) {
+        bridge.callHandler("room.syncMode", new Object[]{useSyncMode});
+    }
+
     void setRoomListener(RoomListener roomCallbacks) {
         this.roomListener = roomCallbacks;
     }
