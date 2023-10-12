@@ -3,6 +3,7 @@ package com.herewhite.sdk;
 import com.herewhite.sdk.domain.CameraBound;
 import com.herewhite.sdk.domain.MemberInformation;
 import com.herewhite.sdk.domain.Region;
+import com.herewhite.sdk.domain.RoomOptimizeOptions;
 import com.herewhite.sdk.domain.WhiteObject;
 import com.herewhite.sdk.domain.WindowParams;
 
@@ -46,6 +47,11 @@ public class RoomParams extends WhiteObject {
     private boolean nativeWebSocket;
     private boolean floatBar = false;
     private String modulesOrigin;
+
+    /**
+     * 白板渲染优化配置项。
+     */
+    private RoomOptimizeOptions optimizeOptions;
 
     /**
      * 初始化房间配置参数。
@@ -466,5 +472,13 @@ public class RoomParams extends WhiteObject {
      */
     public void setModulesOrigin(String modulesOrigin) {
         this.modulesOrigin = modulesOrigin;
+    }
+
+    public RoomOptimizeOptions getOptimizeOptions() {
+        return optimizeOptions;
+    }
+
+    public void setOptimizeOptions(RoomOptimizeOptions optimizeOptions) {
+        this.optimizeOptions = optimizeOptions;
     }
 }
