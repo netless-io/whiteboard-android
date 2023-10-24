@@ -4,7 +4,7 @@ whiteboard-android is an Android package of the Whiteboard SDK, providing interf
 
 [Jitpack Release](https://jitpack.io/com/github/netless-io/whiteboard-android/)
 
-English | [简体中文](./README-zh_CN.md)
+English | [简体中文](./README_zh_CN.md)
 
 ## Run Demo
 
