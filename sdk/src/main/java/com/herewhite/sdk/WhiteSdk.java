@@ -214,7 +214,7 @@ public class WhiteSdk {
                     Long observerId = jsonObject.get("observerId").getAsLong();
                     Boolean isWritable = jsonObject.get("isWritable").getAsBoolean();
 
-                    room.setSyncRoomState(jsonState.toString());
+                    room.setSyncRoomState(jsonState.toString(), !roomParams.isDisableInitialStateCallback());
                     room.setObserverId(observerId);
                     room.setWritable(isWritable);
 

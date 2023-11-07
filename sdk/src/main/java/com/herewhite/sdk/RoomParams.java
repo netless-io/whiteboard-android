@@ -53,6 +53,12 @@ public class RoomParams extends WhiteObject {
      */
     private RoomOptimizeOptions optimizeOptions;
 
+
+    /**
+     * 是否禁止初始化时的回调
+     */
+    private boolean disableInitialStateCallback = false;
+
     /**
      * 初始化房间配置参数。
      *
@@ -480,5 +486,25 @@ public class RoomParams extends WhiteObject {
 
     public void setOptimizeOptions(RoomOptimizeOptions optimizeOptions) {
         this.optimizeOptions = optimizeOptions;
+    }
+
+    /**
+     * 获取是否禁止初始化状态回调。
+     *
+     * @return
+     */
+    public boolean isDisableInitialStateCallback() {
+        return disableInitialStateCallback;
+    }
+
+    /**
+     * 禁止初始化状态回调
+     *
+     * @param disableInitialStateCallback
+     *  - `true`：禁止。
+     *  - `false`：（默认）不禁止。
+     */
+    public void setDisableInitialStateCallback(boolean disableInitialStateCallback) {
+        this.disableInitialStateCallback = disableInitialStateCallback;
     }
 }

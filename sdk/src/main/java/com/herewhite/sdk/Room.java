@@ -106,8 +106,8 @@ public class Room extends Displayer {
         this.writable = writable;
     }
 
-    void setSyncRoomState(String stateJSON) {
-        syncRoomState.syncDisplayerState(stateJSON);
+    void setSyncRoomState(String stateJSON, boolean notify) {
+        syncRoomState.syncDisplayerState(stateJSON, notify);
     }
 
     //region Set API
