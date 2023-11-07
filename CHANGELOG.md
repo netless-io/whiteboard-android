@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.16.73] - 2023-11-07
+- 新增 `RoomParams.disableInitialStateCallback` 参数, 用于禁止加入房间后的全量状态回调, 默认 false
+  开启。如设置 true, 加入房间成功需要主动调用 `Room.getRoomState()` 获取状态值。
 ## [2.16.72] - 2023-11-07
 - 更新 `@netless/app-slide` 至 0.2.46, 修复全局音量设置
 ## [2.16.71] - 2023-10-12
