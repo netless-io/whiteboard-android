@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.16.74] - 2023-11-17
+- 修复 `WindowParams.fullscreen` 开启后状态栏闪烁问题
 ## [2.16.73] - 2023-11-07
 - 新增 `RoomParams.disableInitialStateCallback` 参数, 用于禁止加入房间后的全量状态回调, 默认 false
   开启。如设置 true, 加入房间成功需要主动调用 `Room.getRoomState()` 获取状态值。
