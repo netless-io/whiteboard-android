@@ -9,15 +9,16 @@ import io.agora.rtc.RtcEngine;
 /**
  * 用户需要自己实现 rtc 混音逻辑
  */
-public class AudioMixerBridgeImpl implements AudioMixerBridge {
-    public static final String TAG = AudioMixerBridgeImpl.class.getSimpleName();
+public class AgoraAudioMixerBridge implements AudioMixerBridge {
+    public static final String TAG = AgoraAudioMixerBridge.class.getSimpleName();
+    public static final int AUDIO_MIXING_STATE_FAILED = 714;
 
     private RtcEngine rtcEngine;
-    private ResultCallback callback;
+    private ResultCallback resultCallback;
 
-    public AudioMixerBridgeImpl(RtcEngine rtcEngine, ResultCallback callback) {
+    public AgoraAudioMixerBridge(RtcEngine rtcEngine, ResultCallback resultCallback) {
         this.rtcEngine = rtcEngine;
-        this.callback = callback;
+        this.resultCallback = resultCallback;
     }
 
     @Override
@@ -25,7 +26,7 @@ public class AudioMixerBridgeImpl implements AudioMixerBridge {
         int code = rtcEngine.startAudioMixing(filepath, loopback, replace, cycle);
         Log.d(TAG, "rtcMix startAudioMixing " + filepath + " " + code);
         if (code != 0) {
-            onMediaStateChanged(714, code);
+            onMediaStateChanged(AUDIO_MIXING_STATE_FAILED, code);
         }
     }
 
@@ -67,7 +68,7 @@ public class AudioMixerBridgeImpl implements AudioMixerBridge {
 
     private void onMediaStateChanged(int state, int code) {
         Log.d(TAG, "rtcMix onMediaStateChanged " + code);
-        callback.onMediaStateChanged(state, code);
+        resultCallback.onMediaStateChanged(state, code);
     }
 
     public interface ResultCallback {

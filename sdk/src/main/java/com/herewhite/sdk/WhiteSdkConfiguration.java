@@ -36,6 +36,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private boolean disableDeviceInputs = false;
     private boolean enableIFramePlugin = false;
     private boolean enableRtcIntercept = false;
+    private boolean enableRtcAudioEffectIntercept = false;
     private boolean enableSyncedStore = false;
     private boolean disableNewPencilStroke = false;
     private LoggerOptions loggerOptions;
@@ -167,6 +168,24 @@ public class WhiteSdkConfiguration extends WhiteObject {
         this.enableRtcIntercept = enableRtcIntercept;
     }
     /// @endcond
+
+    public boolean isEnableRtcAudioEffectIntercept() {
+        return enableRtcAudioEffectIntercept;
+    }
+
+    /**
+     * 设置是否启用 RTC SDK 的音效方法播放动态 PPT 中的音频。
+     *
+     * @since 2.16.75
+     * <p>
+     * 当同时使用 Agora RTC SDK 和互动白板 SDK, 且互动白板中展示的动态 PPT 中包含音频文件时，你可以调用 RTC SDK 的音效方法播放动态 PPT 中的音频，以保证音频正常播放。
+     * @note 初始化 `WhiteSdk` 时，如果你实现并传入 {@link AudioEffectBridge AudioEffectBridge} 类，SDK 会自动设置 `setEnableRtcAudioEffectIntercept(true)`。你无需主动调用该方法。
+     * @param enableRtcAudioEffectIntercept
+     */
+    public void setEnableRtcAudioEffectIntercept(boolean enableRtcAudioEffectIntercept) {
+        this.enableRtcAudioEffectIntercept = enableRtcAudioEffectIntercept;
+    }
+
 
     /**
      * 文档中隐藏

@@ -39,6 +39,7 @@ public class WhiteSdk {
 
     private final static Gson gson = new Gson();
     private static AudioMixerBridge sAudioMixerBridge;
+    private static AudioEffectBridge sAudioEffectBridge;
     private final JsBridgeInterface bridge;
     private final RoomJsInterfaceImpl roomJsInterface;
     private final PlayerJsInterfaceImpl playerJsInterface;
@@ -49,6 +50,7 @@ public class WhiteSdk {
     private RtcJsInterfaceImpl rtcJsInterface;
     @Nullable
     private AudioMixerImplement audioMixerImplement;
+    private AudioEffectImplement audioEffectImplement;
     private SlideListener slideListener;
 
     /**
@@ -94,6 +96,14 @@ public class WhiteSdk {
         sdkJsInterface.setUrlInterrupter(urlInterrupter);
     }
 
+    WhiteSdk(JsBridgeInterface bridge,
+             Context context,
+             WhiteSdkConfiguration whiteSdkConfiguration,
+             CommonCallback commonCallback,
+             AudioMixerBridge audioMixerBridge) {
+        this(bridge, context, whiteSdkConfiguration, commonCallback, audioMixerBridge, null);
+    }
+
     /**
      * 初始化白板 SDK 实例。
      * <p>
@@ -105,7 +115,12 @@ public class WhiteSdk {
      * @param commonCallback        通用事件回调，详见 {@link com.herewhite.sdk.CommonCallback CommonCallback}。
      * @param audioMixerBridge      混音设置，详见 {@link com.herewhite.sdk.AudioMixerBridge AudioMixerBridge}。当你同时使用 Agora RTC SDK 和互动白板 SDK, 且白板中展示的动态 PPT 中包含音频文件时，你可以调用 `AudioMixerBridge` 接口，将动态 PPT 中的所有音频交给 Agora RTC SDK 进行混音播放。
      */
-    public WhiteSdk(JsBridgeInterface bridge, Context context, WhiteSdkConfiguration whiteSdkConfiguration, @Nullable CommonCallback commonCallback, @Nullable AudioMixerBridge audioMixerBridge) {
+    public WhiteSdk(JsBridgeInterface bridge,
+                    Context context,
+                    WhiteSdkConfiguration whiteSdkConfiguration,
+                    @Nullable CommonCallback commonCallback,
+                    @Nullable AudioMixerBridge audioMixerBridge,
+                    @Nullable AudioEffectBridge audioEffectBridge) {
         this.bridge = bridge;
         densityDpi = Utils.getDensityDpi(context);
         roomJsInterface = new RoomJsInterfaceImpl();
@@ -117,12 +132,24 @@ public class WhiteSdk {
         if (audioMixerBridge == null) {
             audioMixerBridge = sAudioMixerBridge;
         }
+
+        if (audioEffectBridge == null) {
+            audioEffectBridge = sAudioEffectBridge;
+        }
+
         if (audioMixerBridge != null) {
             audioMixerImplement = new AudioMixerImplement(bridge);
-
-            rtcJsInterface = new RtcJsInterfaceImpl(audioMixerBridge);
-            bridge.addJavascriptObject(rtcJsInterface, "rtc");
             whiteSdkConfiguration.setEnableRtcIntercept(true);
+        }
+
+        if (audioEffectBridge != null) {
+            audioEffectImplement = new AudioEffectImplement(bridge);
+            whiteSdkConfiguration.setEnableRtcAudioEffectIntercept(true);
+        }
+
+        if (audioMixerBridge != null || audioEffectBridge != null) {
+            rtcJsInterface = new RtcJsInterfaceImpl(audioMixerBridge, audioEffectBridge);
+            bridge.addJavascriptObject(rtcJsInterface, "rtc");
         }
 
         bridge.addJavascriptObject(this.sdkJsInterface, "sdk");
@@ -151,6 +178,10 @@ public class WhiteSdk {
         sAudioMixerBridge = audioMixerBridge;
     }
 
+    public static void setAudioEffectBridge(AudioEffectBridge audioEffectBridge) {
+        sAudioEffectBridge = audioEffectBridge;
+    }
+
     /**
      * 设置通用事件回调。
      * <p>
@@ -169,6 +200,17 @@ public class WhiteSdk {
      */
     public AudioMixerImplement getAudioMixerImplement() {
         return audioMixerImplement;
+    }
+
+    /**
+     * 获取 {@link AudioEffectImplement} 实例。
+     * 此实例用于接收音效相关的回调。
+     *
+     * @since 2.16.73
+     * @return
+     */
+    public AudioEffectImplement getAudioEffectImplement() {
+        return audioEffectImplement;
     }
 
     /**
@@ -540,5 +582,39 @@ public class WhiteSdk {
      */
     public void setSlideListener(SlideListener slideListener) {
         sdkJsInterface.setSlideListener(slideListener);
+    }
+
+    public static class Builder {
+        private JsBridgeInterface bridge;
+        private Context context;
+        private WhiteSdkConfiguration whiteSdkConfiguration;
+        private CommonCallback commonCallback;
+        private AudioMixerBridge audioMixerBridge;
+        private AudioEffectBridge audioEffectBridge;
+
+        public Builder(WhiteboardView whiteboardView, WhiteSdkConfiguration whiteSdkConfiguration) {
+            this.bridge = whiteboardView;
+            this.context = whiteboardView.getContext();
+            this.whiteSdkConfiguration = whiteSdkConfiguration;
+        }
+
+        public Builder setCommonCallback(CommonCallback commonCallback) {
+            this.commonCallback = commonCallback;
+            return this;
+        }
+
+        public Builder setAudioMixerBridge(AudioMixerBridge audioMixerBridge) {
+            this.audioMixerBridge = audioMixerBridge;
+            return this;
+        }
+
+        public Builder setAudioEffectBridge(AudioEffectBridge audioEffectBridge) {
+            this.audioEffectBridge = audioEffectBridge;
+            return this;
+        }
+
+        public WhiteSdk build() {
+            return new WhiteSdk(bridge, context, whiteSdkConfiguration, commonCallback, audioMixerBridge, audioEffectBridge);
+        }
     }
 }
