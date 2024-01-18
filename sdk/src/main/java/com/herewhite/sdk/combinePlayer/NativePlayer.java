@@ -35,7 +35,7 @@ public interface NativePlayer {
     /**
      * 获取视频播放阶段。
      *
-     * @return 视频播放阶段，详见 {@link NativePlayer#NativePlayerPhase NativePlayerPhase}。
+     * @return 视频播放阶段，详见 {@link NativePlayer.NativePlayerPhase NativePlayerPhase}。
      */
     NativePlayerPhase getPhase();
 

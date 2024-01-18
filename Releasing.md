@@ -7,9 +7,9 @@ Cutting a Release
 1. Update `CHANGELOG.md`.
 
 2. Set versions:
-   ```
-   # sed -n 's/.*\[/\[/p' sdk/CHANGELOG.md | head -n 1 | sed 's/\[\(.*\)\].*/\1/'
-   export RELEASE_VERSION=X.Y.Z
+   ```shell
+   export RELEASE_VERSION=$(awk -F '[][]' '/\[/{print $2; exit}' CHANGELOG.md) \
+   && echo "RELEASE_VERSION=$RELEASE_VERSION"
    ```
 3. Update versions:
    ```shell

@@ -43,27 +43,7 @@ public class DemoAPI {
 
         return instance;
     }
-
-    private static void unzip(File zipFile, File targetDirectory) throws IOException {
-        try (ZipInputStream zis = new ZipInputStream(new BufferedInputStream(new FileInputStream(zipFile)))) {
-            ZipEntry ze;
-            while ((ze = zis.getNextEntry()) != null) {
-                File file = new File(targetDirectory, ze.getName());
-                File dir = ze.isDirectory() ? file : file.getParentFile();
-                if (!dir.isDirectory() && !dir.mkdirs())
-                    throw new FileNotFoundException("Failed to ensure directory: " + dir.getAbsolutePath());
-                if (ze.isDirectory())
-                    continue;
-                try (FileOutputStream fos = new FileOutputStream(file)) {
-                    int count;
-                    byte[] buffer = new byte[8192];
-                    while ((count = zis.read(buffer)) != -1)
-                        fos.write(buffer, 0, count);
-                }
-            }
-        }
-    }
-
+    
     public void init(Context context) {
         appId = context.getString(R.string.sdk_app_id);
         sdkToken = context.getString(R.string.sdk_app_token);
@@ -102,9 +82,9 @@ public class DemoAPI {
             return;
         }
 
-        ApiService.createRoom(sdkToken, 100, "cn-hz", new ApiCallback<CreateRoomResult>() {
+        ApiService.createRoom(sdkToken, 100, "cn-hz", new ApiCallback<RoomCreationResult>() {
             @Override
-            public void onSuccess(CreateRoomResult data) {
+            public void onSuccess(RoomCreationResult data) {
                 roomUUID = data.uuid;
                 getRoomToken(data.uuid, result);
             }
@@ -132,38 +112,6 @@ public class DemoAPI {
             @Override
             public void onFailure(String message) {
                 result.fail(message);
-            }
-        });
-    }
-
-    public void downloadZip(String zipUrl, String des) {
-        Request request = new Request.Builder().url(zipUrl).build();
-        Call call = client.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.e(TAG, "download error: " + e.toString());
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    throw new IOException(("下载失败: " + response));
-                }
-                String path = des + "/convertcdn.netless.link/dynamicConvert";
-                File file = new File(path);
-                if (!file.exists()) {
-                    boolean success = file.mkdirs();
-                    Log.i("LocalFile", "success: " + success + " path: " + path);
-                } else {
-                    Log.i("LocalFile", path + " is exist");
-                }
-
-                FileOutputStream fos = new FileOutputStream(path + "/1.zip", false);
-                fos.write(response.body().bytes());
-                fos.close();
-                unzip(new File(path + "/1.zip"), new File(path));
-                Log.i("LocalFile", "unzip");
             }
         });
     }
