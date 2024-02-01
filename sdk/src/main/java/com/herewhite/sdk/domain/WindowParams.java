@@ -34,6 +34,8 @@ public class WindowParams extends WhiteObject {
      */
     private Boolean fullscreen;
 
+    private Boolean polling;
+
     public Float getContainerSizeRatio() {
         return containerSizeRatio;
     }
@@ -94,5 +96,13 @@ public class WindowParams extends WhiteObject {
     public WindowParams setFullscreen(Boolean fullscreen) {
         this.fullscreen = fullscreen;
         return this;
+    }
+
+    public Boolean getPolling() {
+        return polling;
+    }
+
+    public void setPolling(Boolean polling) {
+        this.polling = polling;
     }
 }
