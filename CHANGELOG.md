@@ -1,7 +1,10 @@
 # 版本更新记录
+## [2.16.80] - 2024-02-01
+- 更新 `window-manager` 至 0.4.48
+- 新增 `WindowParams.polling` 参数
 ## [2.16.79] - 2024-01-10
 - 更新 `@netless/app-slide` 至 0.2.51, 修复淡入淡出动画闪烁。
-  更新 `window-manager` 至 0.4.66
+- 更新 `window-manager` 至 0.4.66
 ## [2.16.77] - 2023-12-20
 - 更新 `@netless/app-slide` 至 0.2.49, 新增 ppt 事件埋点
 - 更新 `white-web-sdk` 至 2.16.48

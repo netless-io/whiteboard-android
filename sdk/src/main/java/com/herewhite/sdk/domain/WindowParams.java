@@ -102,7 +102,8 @@ public class WindowParams extends WhiteObject {
         return polling;
     }
 
-    public void setPolling(Boolean polling) {
+    public WindowParams setPolling(Boolean polling) {
         this.polling = polling;
+        return this;
     }
 }
