@@ -1,4 +1,8 @@
 # 版本更新记录
+## [2.17.0-alpha.13] - 2014-02-18
+- 更新 `@netless/window-manager` 至 1.0.0-canary.79
+- 更新 `@netless/app-slide` 至 0.3.0-canary.21
+- 更新 `white-web-sdk` 至 2.16.48
 ## [2.17.0-alpha.6] - PENDING
 - 更新 `@netless/window-manager` 至 1.0.0-canary.68
 - 更新 `@netless/app-slide` 至 0.3.0-canary.10
