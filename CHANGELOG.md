@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.16.81] - Pending
+- 更新 `@netless/app-slide` 至 0.2.53
+- 更新 `@netless/slide-rtc-plugin` 至 1.3.0
 ## [2.16.80] - 2024-02-01
 - 更新 `window-manager` 至 0.4.48
 - 新增 `WindowParams.polling` 参数
