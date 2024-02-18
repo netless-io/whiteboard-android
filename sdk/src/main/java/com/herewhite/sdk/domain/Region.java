@@ -36,9 +36,17 @@ public enum Region {
     in_mum,
     /**
      * `gb_lon`：英国伦敦。
+     * 该数据中心为欧洲地区提供服务。
+     * @deprecated 此区域已废弃。请使用 {@link #eu eu}。
+     */
+    @Deprecated
+    @SerializedName("gb-lon")
+    gb_lon,
+    /**
+     * `eu`：欧洲。
      *
      * 该数据中心为欧洲地区提供服务。
      */
-    @SerializedName("gb-lon")
-    gb_lon;
+    @SerializedName("eu")
+    eu;
 }

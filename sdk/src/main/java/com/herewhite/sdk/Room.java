@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.herewhite.sdk.domain.AddPageParam;
 import com.herewhite.sdk.domain.AkkoEvent;
 import com.herewhite.sdk.domain.Appliance;
@@ -26,13 +27,17 @@ import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.SceneState;
 import com.herewhite.sdk.domain.ViewMode;
+import com.herewhite.sdk.domain.WindowAppSyncAttrs;
 import com.herewhite.sdk.domain.WindowAppParam;
+import com.herewhite.sdk.domain.WindowDocsEvent;
 import com.herewhite.sdk.domain.WindowPrefersColorScheme;
 import com.herewhite.sdk.internal.Logger;
 import com.herewhite.sdk.internal.RoomDelegate;
 
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
+import java.util.Map;
 import java.util.UUID;
 
 import wendu.dsbridge.OnReturnValue;
@@ -59,6 +64,7 @@ public class Room extends Displayer {
     };
     //endregion
     private RoomDelegate roomDelegate;
+
     /**
      * 文档中隐藏，只有 sdk 内部初始化才有意义
      */
@@ -100,8 +106,8 @@ public class Room extends Displayer {
         this.writable = writable;
     }
 
-    void setSyncRoomState(String stateJSON) {
-        syncRoomState.syncDisplayerState(stateJSON);
+    void setSyncRoomState(String stateJSON, boolean notify) {
+        syncRoomState.syncDisplayerState(stateJSON, notify);
     }
 
     //region Set API
@@ -345,13 +351,41 @@ public class Room extends Displayer {
     //endregion
 
     /**
-     * 插入文字
+     * 在指定位置插入文字
      * @param x
      * @param y
      * @param text
      */
     public void insertText(int x, int y, String text) {
-        bridge.callHandler("room.insertText", new Object[]{x, y, text});
+        bridge.callHandler("room.insertText", new Object[]{x, y, text}, null);
+    }
+
+    /**
+     * 在指定位置插入文字
+     * @param x
+     * @param y
+     * @param text
+     * @param promise 完成回调，其中返回值为插入文字的 id
+     */
+    public void insertText(int x, int y, String text, Promise<String> promise) {
+        bridge.callHandler("room.insertText", new Object[]{x, y, text}, new OnReturnValue<String>() {
+            @Override
+            public void onValue(String id) {
+                if (promise != null) {
+                    promise.then(id);
+                }
+            }
+        });
+    }
+
+    /**
+     * 编辑指定文字的内容
+     *
+     * @param id 为 ``insertText()`` 的回调值
+     * @param text
+     */
+    public void updateText(String id, String text) {
+        bridge.callHandler("room.updateText", new Object[]{id, text});
     }
 
     //region GET API
@@ -1337,6 +1371,53 @@ public class Room extends Displayer {
     }
 
     /**
+     * 设置多窗口下焦点窗口
+     * @param appId
+     */
+    public void focusApp(String appId) {
+        bridge.callHandler("room.focusApp", new Object[]{appId});
+    }
+
+    /**
+     * 查询窗口信息
+     * @param appId
+     * @param promise
+     */
+    public void queryApp(String appId, Promise<WindowAppSyncAttrs> promise) {
+        if (promise == null) {
+            throw new IllegalArgumentException("promise is null");
+        }
+        bridge.callHandler("room.queryApp", new Object[]{appId}, (String value) -> {
+            SDKError error = SDKError.promiseError(value);
+            if (error != null) {
+                promise.catchEx(error);
+            } else {
+                promise.then(gson.fromJson(value, WindowAppSyncAttrs.class));
+            }
+        });
+    }
+
+    /**
+     * 查询所有窗口信息
+     * @param promise
+     */
+    public void queryAllApps(Promise<Map<String, WindowAppSyncAttrs>> promise) {
+        if (promise == null) {
+            throw new IllegalArgumentException("promise is null");
+        }
+        bridge.callHandler("room.queryAllApps", new Object[]{}, (String value) -> {
+            SDKError sdkError = SDKError.promiseError(value);
+            if (sdkError != null) {
+                promise.catchEx(sdkError);
+            } else {
+                Type type = new TypeToken<Map<String, WindowAppSyncAttrs>>() {
+                }.getType();
+                promise.then(gson.fromJson(value, type));
+            }
+        });
+    }
+
+    /**
      * 恢复当前多窗口状态
      * @param attributes
      */
@@ -1360,6 +1441,33 @@ public class Room extends Displayer {
     public void setPrefersColorScheme(WindowPrefersColorScheme colorScheme) {
         String colorSchemeStr = gson.toJsonTree(colorScheme).getAsString();
         bridge.callHandler("room.setPrefersColorScheme", new Object[]{colorSchemeStr});
+    }
+
+
+    /**
+     * 发送文档操作事件
+     *
+     * @param docsEvent
+     * @param promise
+     */
+    public void dispatchDocsEvent(WindowDocsEvent docsEvent, Promise<Boolean> promise) {
+        String event = docsEvent.getEvent();
+        WindowDocsEvent.Options options = docsEvent.getOptions();
+        bridge.callHandler("room.dispatchDocsEvent", new Object[]{event, options}, (OnReturnValue<Boolean>) value -> {
+            if (promise != null) {
+                promise.then(value);
+            }
+        });
+    }
+
+    /**
+     * 默认情况下，所有同步消息会按比较平滑的速度处理，以此保证观感的流畅性。
+     * 如果设置此项为 ``true``，则所有消息一经收到立刻处理，从而保证同步的实时性。
+     *
+     * @param useSyncMode
+     */
+    public void setSyncMode(boolean useSyncMode) {
+        bridge.callHandler("room.syncMode", new Object[]{useSyncMode});
     }
 
     void setRoomListener(RoomListener roomCallbacks) {

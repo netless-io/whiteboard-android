@@ -1,4 +1,3 @@
-
 package com.herewhite.demo.test;
 
 import android.os.Bundle;

@@ -15,17 +15,16 @@
             android:visibility="visible" />
     </FrameLayout>
 
-    <HorizontalScrollView
-        android:layout_width="match_parent"
+    <ScrollView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_gravity="start"
         android:layout_marginBottom="10dp">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <Button
                 android:id="@+id/getSlideVolume"
@@ -73,6 +72,21 @@
                 android:text="closeApp" />
 
             <Button
+                android:id="@+id/focusApp"
+                style="@style/TestButton"
+                android:text="focusApp" />
+
+            <Button
+                android:id="@+id/queryApps"
+                style="@style/TestButton"
+                android:text="queryApps" />
+
+            <Button
+                android:id="@+id/queryApp"
+                style="@style/TestButton"
+                android:text="queryApp" />
+
+            <Button
                 android:id="@+id/lockRatio"
                 style="@style/TestButton"
                 android:text="lockRatio" />
@@ -87,5 +101,5 @@
                 style="@style/TestButton"
                 android:text="saveAttributes" />
         </LinearLayout>
-    </HorizontalScrollView>
+    </ScrollView>
 </FrameLayout>

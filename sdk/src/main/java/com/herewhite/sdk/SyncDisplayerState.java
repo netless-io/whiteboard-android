@@ -133,10 +133,14 @@ class SyncDisplayerState<T> {
     }
 
     public void syncDisplayerState(String stateJSON) {
+        syncDisplayerState(stateJSON, true);
+    }
+
+    public void syncDisplayerState(String stateJSON, boolean notify) {
         JsonObject modifyStateJSON = compareAndModifyStateJSON(parser.parse(stateJSON).getAsJsonObject());
-        if (listener != null) {
-            if (modifyStateJSON != null) {
-                T modifyState = gson.fromJson(modifyStateJSON, this.clazz);
+        if (modifyStateJSON != null) {
+            T modifyState = gson.fromJson(modifyStateJSON, this.clazz);
+            if (notify && listener != null) {
                 this.listener.onDisplayerStateChanged(modifyState);
             }
         }

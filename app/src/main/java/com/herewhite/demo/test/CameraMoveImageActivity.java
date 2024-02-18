@@ -11,8 +11,8 @@ import android.widget.ImageView;
 import androidx.annotation.Nullable;
 
 import com.herewhite.demo.BaseActivity;
-import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.demo.R;
+import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.demo.utils.EmptyRoomListener;
 import com.herewhite.sdk.Room;
 import com.herewhite.sdk.RoomParams;

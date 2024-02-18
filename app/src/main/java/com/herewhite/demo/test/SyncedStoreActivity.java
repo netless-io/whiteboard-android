@@ -11,7 +11,6 @@ import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.WhiteObject;
 
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class SyncedStoreActivity extends SampleBaseActivity {
     static final String TAG = SyncedStoreActivity.class.getSimpleName();
@@ -21,29 +20,6 @@ public class SyncedStoreActivity extends SampleBaseActivity {
 
     private SyncedStore syncedStore;
     private MainStorage mainStorage;
-
-    static class MainStorage extends WhiteObject {
-        public Integer intValue;
-        public String strValue;
-        public ObjValue objValue;
-        public Obj2Value obj2Value;
-
-        public MainStorage() {
-        }
-
-        public MainStorage(Integer intValue, String strValue) {
-            this.intValue = intValue;
-            this.strValue = strValue;
-        }
-
-        public static class ObjValue {
-            String strValue;
-        }
-
-        public static class Obj2Value {
-            ObjValue objValue;
-        }
-    }
 
     @Override
     protected View getContentView() {
@@ -148,5 +124,28 @@ public class SyncedStoreActivity extends SampleBaseActivity {
                 alert("connectStorage error", Arrays.toString(t.getStackTrace()));
             }
         });
+    }
+
+    static class MainStorage extends WhiteObject {
+        public Integer intValue;
+        public String strValue;
+        public ObjValue objValue;
+        public Obj2Value obj2Value;
+
+        public MainStorage() {
+        }
+
+        public MainStorage(Integer intValue, String strValue) {
+            this.intValue = intValue;
+            this.strValue = strValue;
+        }
+
+        public static class ObjValue {
+            String strValue;
+        }
+
+        public static class Obj2Value {
+            ObjValue objValue;
+        }
     }
 }

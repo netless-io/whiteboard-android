@@ -2,11 +2,11 @@ package com.herewhite.demo.utils;
 
 import android.view.View;
 
-import org.hamcrest.Matcher;
-
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.matcher.ViewMatchers;
+
+import org.hamcrest.Matcher;
 
 public class SimpleViewAction implements ViewAction {
     public SimpleViewAction() {

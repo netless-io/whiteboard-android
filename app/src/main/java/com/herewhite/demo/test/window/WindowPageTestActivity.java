@@ -9,7 +9,7 @@ import com.herewhite.demo.BaseActivity;
 import com.herewhite.demo.R;
 import com.herewhite.demo.common.ApiCallback;
 import com.herewhite.demo.common.ApiService;
-import com.herewhite.demo.common.CreateRoomResult;
+import com.herewhite.demo.common.RoomCreationResult;
 import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.demo.utils.FileUtils;
 import com.herewhite.demo.utils.MapBuilder;
@@ -78,9 +78,9 @@ public class WindowPageTestActivity extends BaseActivity {
 
     private void createNewRoom() {
         String sdkToken = DemoAPI.get().getSdkToken();
-        ApiService.createRoom(sdkToken, 100, "cn-hz", new ApiCallback<CreateRoomResult>() {
+        ApiService.createRoom(sdkToken, 100, "cn-hz", new ApiCallback<RoomCreationResult>() {
             @Override
-            public void onSuccess(CreateRoomResult data) {
+            public void onSuccess(RoomCreationResult data) {
                 roomUuid = data.uuid;
                 ApiService.createRoomToken(sdkToken, roomUuid, "cn-hz", new ApiCallback<String>() {
                     @Override

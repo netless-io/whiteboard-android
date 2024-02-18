@@ -3,6 +3,7 @@ package com.herewhite.sdk;
 import com.herewhite.sdk.domain.CameraBound;
 import com.herewhite.sdk.domain.MemberInformation;
 import com.herewhite.sdk.domain.Region;
+import com.herewhite.sdk.domain.RoomOptimizeOptions;
 import com.herewhite.sdk.domain.WhiteObject;
 import com.herewhite.sdk.domain.WindowParams;
 
@@ -45,6 +46,18 @@ public class RoomParams extends WhiteObject {
     private boolean disableTextOperations = false;
     private boolean nativeWebSocket;
     private boolean floatBar = false;
+    private String modulesOrigin;
+
+    /**
+     * 白板渲染优化配置项。
+     */
+    private RoomOptimizeOptions optimizeOptions;
+
+
+    /**
+     * 是否禁止初始化时的回调
+     */
+    private boolean disableInitialStateCallback = false;
 
     /**
      * 初始化房间配置参数。
@@ -431,8 +444,15 @@ public class RoomParams extends WhiteObject {
         return nativeWebSocket;
     }
 
+    /**
+     * 设置是否使用原生 WebSocket。
+     *
+     * @deprecated 由于依赖服务停止维护，该方法已废弃。
+     * @param nativeWebSocket
+     */
+    @Deprecated
     public void setUseNativeWebSocket(boolean nativeWebSocket) {
-        this.nativeWebSocket = nativeWebSocket;
+        // this.nativeWebSocket = nativeWebSocket;
     }
 
     public boolean isUsingFloatBar() {
@@ -441,5 +461,50 @@ public class RoomParams extends WhiteObject {
 
     public void setUsingFloatBar(boolean floatBar) {
         this.floatBar = floatBar;
+    }
+
+    /**
+     * 获取白板请求 modules 数据的地址
+     * @return
+     */
+    public String getModulesOrigin() {
+        return modulesOrigin;
+    }
+
+    /**
+     * 设置白板请求 modules 数据的地址
+     * 配置后不会请求白板默认地址
+     * @param modulesOrigin 示例 https://modules.example.com
+     */
+    public void setModulesOrigin(String modulesOrigin) {
+        this.modulesOrigin = modulesOrigin;
+    }
+
+    public RoomOptimizeOptions getOptimizeOptions() {
+        return optimizeOptions;
+    }
+
+    public void setOptimizeOptions(RoomOptimizeOptions optimizeOptions) {
+        this.optimizeOptions = optimizeOptions;
+    }
+
+    /**
+     * 获取是否禁止初始化状态回调。
+     *
+     * @return
+     */
+    public boolean isDisableInitialStateCallback() {
+        return disableInitialStateCallback;
+    }
+
+    /**
+     * 禁止初始化状态回调
+     *
+     * @param disableInitialStateCallback
+     *  - `true`：禁止。
+     *  - `false`：（默认）不禁止。
+     */
+    public void setDisableInitialStateCallback(boolean disableInitialStateCallback) {
+        this.disableInitialStateCallback = disableInitialStateCallback;
     }
 }

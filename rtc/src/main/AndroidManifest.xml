@@ -33,7 +33,8 @@
         </activity>
         <activity
             android:name=".MainRtcActivity"
-            android:screenOrientation="landscape">
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
     </application>

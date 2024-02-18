@@ -4,12 +4,12 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.herewhite.demo.common.DemoAPI;
+import com.herewhite.demo.test.window.WindowAppsActivity;
 import com.herewhite.demo.test.window.WindowTestActivity;
 
 public class StartActivity extends AppCompatActivity {
@@ -26,8 +26,7 @@ public class StartActivity extends AppCompatActivity {
     }
 
     String getUuid() {
-        EditText text = findViewById(R.id.editText);
-        return text.getText().toString();
+        return "";
     }
 
     void tokenAlert() {
@@ -115,6 +114,16 @@ public class StartActivity extends AppCompatActivity {
         }
 
         Intent intent = new Intent(this, WindowTestActivity.class);
+        startActivity(intent);
+    }
+
+    public void windowAppsTest(View view) {
+        if (demoAPI.invalidToken()) {
+            tokenAlert();
+            return;
+        }
+
+        Intent intent = new Intent(this, WindowAppsActivity.class);
         startActivity(intent);
     }
 }

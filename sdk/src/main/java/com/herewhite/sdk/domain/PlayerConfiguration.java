@@ -26,6 +26,12 @@ public class PlayerConfiguration extends WhiteObject {
     private String mediaURL;
 
     /**
+     * 白板请求 modules 数据的地址，配置后不会请求白板默认地址
+     * @example https://modules.example.com
+     */
+    private String modulesOrigin;
+
+    /**
      * 回放房间的构造方法，用于初始化回放房间实例。
      *
      * @param room      房间 UUID，即房间唯一标识符，必须和加入互动白板房间实例时设置的房间 UUID 一致。
@@ -214,5 +220,22 @@ public class PlayerConfiguration extends WhiteObject {
 
     public void setWindowParams(WindowParams windowParams) {
         this.windowParams = windowParams;
+    }
+
+    /**
+     * 获取白板请求 modules 数据的地址
+     * @return
+     */
+    public String getModulesOrigin() {
+        return modulesOrigin;
+    }
+
+    /**
+     * 设置白板请求 modules 数据的地址
+     * 配置后不会请求白板默认地址
+     * @param modulesOrigin 示例 https://modules.example.com
+     */
+    public void setModulesOrigin(String modulesOrigin) {
+        this.modulesOrigin = modulesOrigin;
     }
 }

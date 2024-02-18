@@ -1,4 +1,3 @@
-
 package com.herewhite.demo.test.window;
 
 import android.content.Intent;
@@ -32,6 +31,7 @@ import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.WhiteDisplayerState;
 import com.herewhite.sdk.domain.WindowAppParam;
+import com.herewhite.sdk.domain.WindowAppSyncAttrs;
 import com.herewhite.sdk.domain.WindowParams;
 import com.herewhite.sdk.domain.WindowPrefersColorScheme;
 
@@ -44,6 +44,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 import wendu.dsbridge.DWebView;
@@ -62,6 +63,8 @@ public class WindowTestActivity extends AppCompatActivity {
     FrameLayout mWhiteboardParent;
 
     Stack<String> appIds = new Stack<>();
+    Map<String, WindowAppSyncAttrs> apps = new HashMap<>();
+    long lastUpdate = 0;
     private Promise<String> insertPromise = new Promise<String>() {
         @Override
         public void then(String appId) {
@@ -93,7 +96,6 @@ public class WindowTestActivity extends AppCompatActivity {
 
         // Slide 音量测试
         findViewById(R.id.updateSlideVolume).setOnClickListener(new View.OnClickListener() {
-            int index = 0;
             final List<Float> volumes = new ArrayList<Float>() {
                 {
                     add(1.0f);
@@ -101,7 +103,7 @@ public class WindowTestActivity extends AppCompatActivity {
                     add(0.5f);
                 }
             };
-
+            int index = 0;
 
             @Override
             public void onClick(View v) {
@@ -130,7 +132,6 @@ public class WindowTestActivity extends AppCompatActivity {
 
         // 窗口比例
         findViewById(R.id.radio).setOnClickListener(new View.OnClickListener() {
-            int index = 0;
             final List<Float> ratios = new ArrayList<Float>() {
                 {
                     add(1.0f);
@@ -138,6 +139,7 @@ public class WindowTestActivity extends AppCompatActivity {
                     add(9f / 16);
                 }
             };
+            int index = 0;
 
             @Override
             public void onClick(View v) {
@@ -147,7 +149,6 @@ public class WindowTestActivity extends AppCompatActivity {
 
         // 窗口暗色模式
         findViewById(R.id.colorScheme).setOnClickListener(new View.OnClickListener() {
-            int index = 0;
             final List<WindowPrefersColorScheme> colorSchemes = new ArrayList<WindowPrefersColorScheme>() {
                 {
                     add(WindowPrefersColorScheme.Dark);
@@ -155,6 +156,7 @@ public class WindowTestActivity extends AppCompatActivity {
                     add(WindowPrefersColorScheme.Auto);
                 }
             };
+            int index = 0;
 
             @Override
             public void onClick(View v) {
@@ -190,8 +192,8 @@ public class WindowTestActivity extends AppCompatActivity {
         // 插入新的动态PPT
         findViewById(R.id.insertNewDynamic).setOnClickListener(v -> {
             // prefixUrl
-            String prefixUrl = "https://white-us-doc-convert.s3.us-west-1.amazonaws.com/dynamicConvert";
-            String taskUuid = "0c17d99a3cfa41dc85a9b9a379d18912";
+            String prefixUrl = "https://convertcdn.netless.link/dynamicConvert";
+            String taskUuid = "47f359400ab1444986872db1723bb793";
             WindowAppParam param = WindowAppParam.createSlideApp(taskUuid, prefixUrl, "Projector App");
             mRoom.addApp(param, insertPromise);
         });
@@ -206,6 +208,53 @@ public class WindowTestActivity extends AppCompatActivity {
                 @Override
                 public void catchEx(SDKError t) {
 
+                }
+            });
+        });
+
+        findViewById(R.id.focusApp).setOnClickListener(v -> {
+            String[] ids = WindowTestActivity.this.apps.keySet().toArray(new String[0]);
+            mRoom.focusApp(ids[0]);
+        });
+
+        findViewById(R.id.queryApps).setOnClickListener(v -> {
+            mRoom.queryAllApps(new Promise<Map<String, WindowAppSyncAttrs>>() {
+                @Override
+                public void then(Map<String, WindowAppSyncAttrs> apps) {
+                    Log.e("queryAllApps", apps.toString());
+                    WindowTestActivity.this.apps = apps;
+                }
+
+                @Override
+                public void catchEx(SDKError t) {
+                    Log.e("queryApps error", t.toString());
+                }
+            });
+        });
+
+        findViewById(R.id.queryApp).setOnClickListener(v -> {
+            String[] ids = WindowTestActivity.this.apps.keySet().toArray(new String[0]);
+            mRoom.queryApp(ids[0], new Promise<WindowAppSyncAttrs>() {
+                @Override
+                public void then(WindowAppSyncAttrs attrs) {
+                    Log.e("queryApp", gson.toJson(attrs));
+                }
+
+                @Override
+                public void catchEx(SDKError t) {
+                    Log.e("queryApp error", t.toString());
+                }
+            });
+
+            // 查询不存在的 appId 触发 catchEx
+            mRoom.queryApp("not_exited_appId", new Promise<WindowAppSyncAttrs>() {
+                @Override
+                public void then(WindowAppSyncAttrs attrs) {
+                }
+
+                @Override
+                public void catchEx(SDKError t) {
+                    Log.e("queryApp error", t.getMessage());
                 }
             });
         });
@@ -251,8 +300,6 @@ public class WindowTestActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    long lastUpdate = 0;
-
     private void lockRatio() {
         ViewGroup.LayoutParams layoutParams = mWhiteboardParent.getLayoutParams();
         int width = mWhiteboardParent.getWidth();
@@ -287,6 +334,11 @@ public class WindowTestActivity extends AppCompatActivity {
         WhiteSdkConfiguration.SlideAppOptions slideAppOptions = new WhiteSdkConfiguration.SlideAppOptions();
         slideAppOptions.setDebug(false);
         slideAppOptions.setShowRenderError(false);
+        slideAppOptions.setEnableGlobalClick(false);
+        slideAppOptions.setMinFPS(1);
+        slideAppOptions.setMaxFPS(2);
+        slideAppOptions.setResolution(0.5);
+        slideAppOptions.setMaxResolutionLevel(1);
         configuration.setSlideAppOptions(slideAppOptions);
 
         mWhiteSdk = new WhiteSdk(mWhiteboardView, this, configuration);

@@ -14,8 +14,9 @@ import android.webkit.WebView;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
-import com.alibaba.sdk.android.httpdns.HttpDns;
-import com.alibaba.sdk.android.httpdns.HttpDnsService;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.gson.Gson;
 import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.sdk.Player;
@@ -31,21 +32,33 @@ import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 public class PureReplayActivity extends AppCompatActivity implements PlayerEventListener {
+    private final String TAG = "player";
     protected WhiteboardView whiteboardView;
     @Nullable
     protected Player player;
-    Gson gson = new Gson();
     protected boolean mUserIsSeeking = false;
     protected SeekBar mSeekBar;
-    private final String TAG = "player";
+    //region seekBar
+    protected Handler mSeekBarUpdateHandler = new Handler();
+    protected Runnable mUpdateSeekBar = new Runnable() {
+        @Override
+        public void run() {
+            if (mUserIsSeeking) {
+                return;
+            }
+            float progress = playerProgress();
+            if (player.getPlayerPhase() == PlayerPhase.playing) {
+                Log.v(TAG, "progress: " + progress);
+                mSeekBar.setProgress((int) progress);
+            }
+
+            mSeekBarUpdateHandler.postDelayed(this, 100);
+        }
+    };
+    Gson gson = new Gson();
     private DemoAPI demoAPI = DemoAPI.get();
 
     @Override
@@ -56,8 +69,6 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
         whiteboardView = findViewById(R.id.white);
 
         WebView.setWebContentsDebuggingEnabled(true);
-        //是否开启 httpDns
-        useHttpDnsService(false);
         setupPlayer();
     }
 
@@ -81,17 +92,6 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
             demoAPI.getNewRoom(result);
         } else {
             alert("无数据", "没有房间 uuid");
-        }
-    }
-
-    protected void useHttpDnsService(boolean use) {
-        if (use) {
-            // 阿里云 httpDns 替换
-            HttpDnsService httpDns = HttpDns.getService(getApplicationContext(), "188301");
-            httpDns.setPreResolveHosts(new ArrayList<>(
-                    Arrays.asList("expresscloudharestoragev2.herewhite.com", "cloudharev2.herewhite.com",
-                            "scdncloudharestoragev3.herewhite.com", "cloudcapiv4.herewhite.com")));
-            whiteboardView.setWebViewClient(new WhiteWebViewClient(httpDns));
         }
     }
 
@@ -124,6 +124,8 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
         Log.i(TAG, gson.toJson(player.getPlayerState()));
     }
 
+    //endregion
+
     public void getPhase(MenuItem item) {
         Log.i(TAG, gson.toJson(player.getPlayerPhase()));
     }
@@ -142,8 +144,6 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
         });
     }
 
-    //endregion
-
     //region Play Action
     protected void play() {
         if (player != null) {
@@ -159,6 +159,9 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
             mSeekBarUpdateHandler.removeCallbacks(mUpdateSeekBar);
         }
     }
+    //endregion
+
+    //region button action
 
     protected void seek(Long time, TimeUnit timeUnit) {
         if (player != null) {
@@ -178,9 +181,6 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
             mSeekBarUpdateHandler.postDelayed(mUpdateSeekBar, 100);
         }
     }
-    //endregion
-
-    //region button action
 
     void enableBtn() {
         findViewById(R.id.button_play).setEnabled(true);
@@ -192,6 +192,8 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
         play();
     }
 
+    //endregion
+
     public void pause(android.view.View button) {
         pause();
     }
@@ -199,26 +201,6 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
     public void reset(android.view.View button) {
         seek(0l);
     }
-
-    //endregion
-
-    //region seekBar
-    protected Handler mSeekBarUpdateHandler = new Handler();
-    protected Runnable mUpdateSeekBar = new Runnable() {
-        @Override
-        public void run() {
-            if (mUserIsSeeking) {
-                return;
-            }
-            float progress = playerProgress();
-            if (player.getPlayerPhase() == PlayerPhase.playing) {
-                Log.v(TAG, "progress: " + progress);
-                mSeekBar.setProgress((int) progress);
-            }
-
-            mSeekBarUpdateHandler.postDelayed(this, 100);
-        }
-    };
 
     protected void setupSeekBar() {
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

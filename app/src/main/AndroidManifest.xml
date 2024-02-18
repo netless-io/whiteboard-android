@@ -59,6 +59,11 @@
             android:screenOrientation="landscape" />
 
         <activity
+            android:name=".test.window.WindowFullscreenActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:screenOrientation="landscape" />
+
+        <activity
             android:name=".test.window.WindowRestoreActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:screenOrientation="landscape" />
@@ -91,6 +96,11 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:screenOrientation="landscape" />
         <activity android:name=".test.SyncedStoreActivity" />
+
+        <activity
+            android:name=".test.window.WindowAppsActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>

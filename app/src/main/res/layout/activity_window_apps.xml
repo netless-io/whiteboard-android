@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.herewhite.sdk.WhiteboardView
+        android:id="@+id/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible" />
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/insertPlayer"
+                style="@style/TestButton"
+                android:text="player" />
+
+            <Button
+                android:id="@+id/insertStatic"
+                style="@style/TestButton"
+                android:text="static" />
+
+            <Button
+                android:id="@+id/insertDynamic"
+                style="@style/TestButton"
+                android:text="dynamic" />
+
+            <Button
+                android:id="@+id/insertNewDynamic"
+                style="@style/TestButton"
+                android:text="newDynamic" />
+
+            <Button
+                android:id="@+id/closeApp"
+                style="@style/TestButton"
+                android:text="closeApp" />
+
+            <Button
+                android:id="@+id/focusApp"
+                style="@style/TestButton"
+                android:text="focusApp" />
+
+            <Button
+                android:id="@+id/queryApps"
+                style="@style/TestButton"
+                android:text="queryApps" />
+
+            <Button
+                android:id="@+id/queryApp"
+                style="@style/TestButton"
+                android:text="queryApp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/logDisplay"
+        android:layout_width="120dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:background="#7FFFFFFF" />
+</FrameLayout>

@@ -21,8 +21,8 @@ import java.util.List;
 
 public class CameraBoundScenesActivity extends SampleBaseActivity {
 
-    private ActivityCameraBoundBinding binding;
     List<Image> images = new ArrayList<>();
+    private ActivityCameraBoundBinding binding;
 
     @Override
     protected View getContentView() {

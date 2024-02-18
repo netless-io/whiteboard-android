@@ -1,4 +1,3 @@
-
 package com.herewhite.demo;
 
 import android.annotation.SuppressLint;
@@ -17,8 +16,6 @@ import android.widget.Toast;
 
 import androidx.annotation.VisibleForTesting;
 
-import com.alibaba.sdk.android.httpdns.HttpDns;
-import com.alibaba.sdk.android.httpdns.HttpDnsService;
 import com.google.gson.Gson;
 import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.demo.utils.MapBuilder;
@@ -62,8 +59,6 @@ import com.herewhite.sdk.domain.WhiteDisplayerState;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -80,11 +75,6 @@ public class RoomActivity extends BaseActivity {
 
     final Gson gson = new Gson();
     final DemoAPI demoAPI = DemoAPI.get();
-
-    // Room Params
-    private String uuid;
-    private String token;
-
     WhiteboardView mWhiteboardView;
     @VisibleForTesting
     WhiteSdk mWhiteSdk;
@@ -93,21 +83,17 @@ public class RoomActivity extends BaseActivity {
     @VisibleForTesting
     RoomCallbacks mRoomCallbackHock = new AbstractRoomCallbacks() {
     };
+    // Room Params
+    private String uuid;
+    private String token;
 
-    /**
-     * 自定义 GlobalState 示例
-     * 继承自 GlobalState 的子类，然后调用 {@link WhiteDisplayerState#setCustomGlobalStateClass(Class)}
-     */
-    class MyGlobalState extends GlobalState {
-        public String getOne() {
-            return one;
+    private static String getUniqueUid() {
+        try {
+            return Build.SERIAL;
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-
-        public void setOne(String one) {
-            this.one = one;
-        }
-
-        String one;
+        return DemoAPI.DEFAULT_UID;
     }
 
     @Override
@@ -117,9 +103,6 @@ public class RoomActivity extends BaseActivity {
 
         mWhiteboardView = findViewById(R.id.white);
         mWhiteboardView.getSettings().setAllowUniversalAccessFromFileURLs(true);
-
-        // 使用阿里云的 HttpDns，避免 DNS 污染等问题
-        useHttpDnsService(false);
 
         // 使用 LocalFileWebViewClient 对 动态 ppt 拦截进行替换，先查看本地是否有，如果没有再发出网络请求
         LocalFileWebViewClient client = new LocalFileWebViewClient();
@@ -164,15 +147,6 @@ public class RoomActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    static class UserPayload {
-        public String nickName = "nickname";
-        public String cursorName = "cursorName";
-        public String userId = "unique uid";
-        // public String cursorTextColor = "red";
-        // public String avatar = "https://photo.16pic.com/00/31/19/16pic_3119624_b.jpg";
-        // public String cursorBackgroundColor = "rgb(128,128,128,1)";
     }
 
     //region room
@@ -316,16 +290,6 @@ public class RoomActivity extends BaseActivity {
             }
         });
     }
-    //endregion
-
-    private static String getUniqueUid() {
-        try {
-            return Build.SERIAL;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return DemoAPI.DEFAULT_UID;
-    }
 
     //region private
     private void alert(final String title, final String detail) {
@@ -343,15 +307,7 @@ public class RoomActivity extends BaseActivity {
             alertDialog.show();
         });
     }
-
-    private void useHttpDnsService(boolean use) {
-        if (use) {
-            /** 直接使用此 id 即可，sdk 已经在阿里云 HttpDns 后台做过配置 */
-            HttpDnsService httpDnsService = HttpDns.getService(getApplicationContext(), "188301");
-            httpDnsService.setPreResolveHosts(new ArrayList<>(Arrays.asList("expresscloudharestoragev2.herewhite.com", "cloudharev2.herewhite.com", "scdncloudharestoragev3.herewhite.com", "cloudcapiv4.herewhite.com")));
-            mWhiteboardView.setWebViewClient(new WhiteWebViewClient(httpDnsService));
-        }
-    }
+    //endregion
 
     private void addCustomEventListener() {
         mRoom.addMagixEventListener(EVENT_NAME, event -> {
@@ -376,8 +332,6 @@ public class RoomActivity extends BaseActivity {
         // }, 1000);
     }
 
-    //endregion
-
     //region menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -389,6 +343,8 @@ public class RoomActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         return true;
     }
+
+    //endregion
 
     private CameraBound customBound(double maxScale) {
         CameraBound bound = new CameraBound();
@@ -834,8 +790,6 @@ public class RoomActivity extends BaseActivity {
         mRoom.moveCamera(cameraConfig);
     }
 
-    //endregion
-
     //region log
     void logRoomInfo(String str) {
         Log.i(ROOM_INFO, Thread.currentThread().getStackTrace()[3].getMethodName() + " " + str);
@@ -845,6 +799,8 @@ public class RoomActivity extends BaseActivity {
         Log.i(ROOM_ACTION, Thread.currentThread().getStackTrace()[3].getMethodName() + " " + str);
     }
 
+    //endregion
+
     void logAction() {
         Log.i(ROOM_ACTION, Thread.currentThread().getStackTrace()[3].getMethodName());
     }
@@ -852,6 +808,31 @@ public class RoomActivity extends BaseActivity {
     void showToast(Object o) {
         Log.i("showToast", o.toString());
         Toast.makeText(this, o.toString(), Toast.LENGTH_SHORT).show();
+    }
+
+    static class UserPayload {
+        public String nickName = "nickname";
+        public String cursorName = "cursorName";
+        public String userId = "unique uid";
+        // public String cursorTextColor = "red";
+        // public String avatar = "https://photo.16pic.com/00/31/19/16pic_3119624_b.jpg";
+        // public String cursorBackgroundColor = "rgb(128,128,128,1)";
+    }
+
+    /**
+     * 自定义 GlobalState 示例
+     * 继承自 GlobalState 的子类，然后调用 {@link WhiteDisplayerState#setCustomGlobalStateClass(Class)}
+     */
+    class MyGlobalState extends GlobalState {
+        String one;
+
+        public String getOne() {
+            return one;
+        }
+
+        public void setOne(String one) {
+            this.one = one;
+        }
     }
     //endregion
 }

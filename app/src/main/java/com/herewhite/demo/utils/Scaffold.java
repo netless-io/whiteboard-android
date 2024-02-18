@@ -1,5 +1,9 @@
 package com.herewhite.demo.utils;
 
+import android.webkit.ValueCallback;
+
+import com.herewhite.sdk.WhiteboardView;
+
 public class Scaffold {
     /**
      * save and restore camera state
@@ -50,4 +54,14 @@ public class Scaffold {
      *         "document.head.appendChild(window.__hideTitleBar)";
      * mWhiteboardView.evaluateJavascript(hideTitleBar, null);
      */
+
+    public void fetchJsVariable(WhiteboardView whiteboardView, String variableName) {
+        String jsCode = "JSON.stringify(" + variableName + ");";
+        whiteboardView.evaluateJavascript(jsCode, new ValueCallback<String>() {
+            @Override
+            public void onReceiveValue(String value) {
+                // log the value
+            }
+        });
+    }
 }

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
@@ -35,6 +36,7 @@ abstract public class SampleBaseActivity extends BaseActivity {
 
     protected DemoAPI demoAPI = DemoAPI.get();
     protected Gson gson = new Gson();
+    protected TextView logView;
     protected WhiteboardView whiteboardView;
     protected WhiteSdk whiteSdk;
     protected Room room;
@@ -48,9 +50,16 @@ abstract public class SampleBaseActivity extends BaseActivity {
         setContentView(getContentView());
         Objects.requireNonNull(getSupportActionBar()).hide();
 
+        logView = findViewById(R.id.logDisplay);
         whiteboardView = findViewById(R.id.white);
         initView();
         setupRoom();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        whiteboardView.destroy();
     }
 
     private void setupRoom() {
@@ -192,5 +201,13 @@ abstract public class SampleBaseActivity extends BaseActivity {
 
     protected void logAction() {
         Log.i(ROOM_ACTION, Thread.currentThread().getStackTrace()[3].getMethodName());
+    }
+
+    protected void showLogDisplay(String message) {
+        if (logView == null) return;
+        runOnUiThread(() -> {
+            String text = message + "\n\n" + logView.getText().toString();
+            logView.setText(text);
+        });
     }
 }

@@ -138,3 +138,5 @@ local.properties
 .cache-main
 .scala_dependencies
 .worksheet
+
+**/string_white_sdk_config.xml

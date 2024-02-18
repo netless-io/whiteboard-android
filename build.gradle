@@ -33,10 +33,9 @@ buildscript {
 allprojects {
     repositories {
         google()
-        maven { url 'https://jitpack.io' }
-        maven { url 'https://maven.aliyun.com/nexus/content/repositories/releases/' }
         mavenCentral()
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
 }
 

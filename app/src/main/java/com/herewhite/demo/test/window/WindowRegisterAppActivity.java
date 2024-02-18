@@ -1,4 +1,3 @@
-
 package com.herewhite.demo.test.window;
 
 import android.os.Bundle;
@@ -98,23 +97,6 @@ public class WindowRegisterAppActivity extends AppCompatActivity {
         joinRoom(demoAPI.getRoomUUID(), demoAPI.getRoomToken());
     }
 
-    static class EmbedPageOptions extends WindowAppParam.Options {
-        private final String scenePath;
-
-        public EmbedPageOptions(String title, String scenePath) {
-            super(title);
-            this.scenePath = scenePath;
-        }
-    }
-
-    static class EmbedPageAttributes extends WindowAppParam.Attributes {
-        private final String src;
-
-        public EmbedPageAttributes(String src) {
-            this.src = src;
-        }
-    }
-
     private void registerMonaco() {
         // register local script
         String jsString = getAppJsFromAsserts("app/monaco.iife.js");
@@ -162,7 +144,6 @@ public class WindowRegisterAppActivity extends AppCompatActivity {
         );
         mWhiteSdk.registerApp(params, null);
     }
-
 
     @Override
     protected void onDestroy() {
@@ -231,7 +212,6 @@ public class WindowRegisterAppActivity extends AppCompatActivity {
             }
         });
     }
-    //endregion
 
     //region log
     void logRoomInfo(String str) {
@@ -241,6 +221,7 @@ public class WindowRegisterAppActivity extends AppCompatActivity {
     void logAction(String str) {
         Log.i(ROOM_ACTION, Thread.currentThread().getStackTrace()[3].getMethodName() + " " + str);
     }
+    //endregion
 
     void logAction() {
         Log.i(ROOM_ACTION, Thread.currentThread().getStackTrace()[3].getMethodName());
@@ -250,7 +231,6 @@ public class WindowRegisterAppActivity extends AppCompatActivity {
         Log.i("showToast", o.toString());
         Toast.makeText(this, o.toString(), Toast.LENGTH_SHORT).show();
     }
-    //endregion
 
     private String getAppJsFromAsserts(String path) {
         String result = null;
@@ -271,5 +251,23 @@ public class WindowRegisterAppActivity extends AppCompatActivity {
             }
         }
         return style.toString();
+    }
+    //endregion
+
+    static class EmbedPageOptions extends WindowAppParam.Options {
+        private final String scenePath;
+
+        public EmbedPageOptions(String title, String scenePath) {
+            super(title);
+            this.scenePath = scenePath;
+        }
+    }
+
+    static class EmbedPageAttributes extends WindowAppParam.Attributes {
+        private final String src;
+
+        public EmbedPageAttributes(String src) {
+            this.src = src;
+        }
     }
 }

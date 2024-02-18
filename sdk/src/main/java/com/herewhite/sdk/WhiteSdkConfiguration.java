@@ -36,6 +36,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private boolean disableDeviceInputs = false;
     private boolean enableIFramePlugin = false;
     private boolean enableRtcIntercept = false;
+    private boolean enableRtcAudioEffectIntercept = false;
     private boolean enableSyncedStore = false;
     private boolean disableNewPencilStroke = false;
     private LoggerOptions loggerOptions;
@@ -56,6 +57,12 @@ public class WhiteSdkConfiguration extends WhiteObject {
      * 多窗口支持
      */
     private Boolean useMultiViews = false;
+
+    /**
+     * 配置白板的 API 服务器域名列表，可以用于服务器代理。配置后，白板不再使用 sdk 自带配置。
+     * @example [api.example.com]
+     */
+    private List<String> apiHosts;
 
     /**
      * 初始化互动白板 SDK 配置。
@@ -161,6 +168,24 @@ public class WhiteSdkConfiguration extends WhiteObject {
         this.enableRtcIntercept = enableRtcIntercept;
     }
     /// @endcond
+
+    public boolean isEnableRtcAudioEffectIntercept() {
+        return enableRtcAudioEffectIntercept;
+    }
+
+    /**
+     * 设置是否启用 RTC SDK 的音效方法播放动态 PPT 中的音频。
+     *
+     * @since 2.16.75
+     * <p>
+     * 当同时使用 Agora RTC SDK 和互动白板 SDK, 且互动白板中展示的动态 PPT 中包含音频文件时，你可以调用 RTC SDK 的音效方法播放动态 PPT 中的音频，以保证音频正常播放。
+     * @note 初始化 `WhiteSdk` 时，如果你实现并传入 {@link AudioEffectBridge AudioEffectBridge} 类，SDK 会自动设置 `setEnableRtcAudioEffectIntercept(true)`。你无需主动调用该方法。
+     * @param enableRtcAudioEffectIntercept
+     */
+    public void setEnableRtcAudioEffectIntercept(boolean enableRtcAudioEffectIntercept) {
+        this.enableRtcAudioEffectIntercept = enableRtcAudioEffectIntercept;
+    }
+
 
     /**
      * 文档中隐藏
@@ -531,6 +556,20 @@ public class WhiteSdkConfiguration extends WhiteObject {
         this.enableSlideInterrupterAPI = enableSlideInterrupterAPI;
     }
 
+    public List<String> getApiHosts() {
+        return apiHosts;
+    }
+
+    /**
+     * 配置白板的 API 服务器域名列表
+     * 可以用于服务器代理。配置后，白板不再使用 sdk 自带配置。
+     *
+     * @param apiHosts 白板的 API 服务器域名列表 [api.example.com]。
+     */
+    public void setApiHosts(List<String> apiHosts) {
+        this.apiHosts = apiHosts;
+    }
+
     /**
      * 白板上绘画的渲染模式。
      *
@@ -633,6 +672,34 @@ public class WhiteSdkConfiguration extends WhiteObject {
         private boolean showRenderError = false;
         // 是否开启调试模式
         private boolean debug = false;
+        /**
+         * 是否开启全局点击功能 (默认开启)
+         *
+         * 用于控制是否可以通过点击 ppt 画面执行下一步功能。
+         * 建议移动端开启，移动端受限于屏幕尺寸，交互 UI 较小，如果开启此功能会比较方便执行下一步。
+         */
+        private boolean enableGlobalClick = true;
+
+        /** 设置最小 fps, 应用会尽量保证实际 fps 高于此值, 此值越小, cpu 开销越小。默认值: 25 */
+        private Integer minFPS = 25;
+
+        /** 设置最大 fps, 应用会保证实际 fps 低于此值, 此值越小, cpu 开销越小。默认值: 40 */
+        private Integer maxFPS = 40;
+
+        /**
+         * 设置渲染分辨倍率, 原始 ppt 有自己的像素尺寸，当在 2k 或者 4k 屏幕下，如果按原始 ppt 分辨率显示，画面会比较模糊。可以调整此值，使画面更清晰，同时性能开销也变高。
+         * 默认值: 1
+         */
+        private Double resolution;
+
+        /** 取值范围 0~4 */
+        private Integer maxResolutionLevel;
+
+        /** 切页动画背景色 */
+        private String bgColor;
+
+        /** 强制使用 2D 渲染 */
+        private Boolean forceCanvas = false;
 
         public boolean isShowRenderError() {
             return showRenderError;
@@ -648,6 +715,62 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
         public void setDebug(boolean debug) {
             this.debug = debug;
+        }
+
+        public boolean isEnableGlobalClick() {
+            return enableGlobalClick;
+        }
+
+        public void setEnableGlobalClick(boolean enableGlobalClick) {
+            this.enableGlobalClick = enableGlobalClick;
+        }
+
+        public Integer getMinFPS() {
+            return minFPS;
+        }
+
+        public void setMinFPS(Integer minFPS) {
+            this.minFPS = minFPS;
+        }
+
+        public Integer getMaxFPS() {
+            return maxFPS;
+        }
+
+        public void setMaxFPS(Integer maxFPS) {
+            this.maxFPS = maxFPS;
+        }
+
+        public Double getResolution() {
+            return resolution;
+        }
+
+        public void setResolution(Double resolution) {
+            this.resolution = resolution;
+        }
+
+        public Integer getMaxResolutionLevel() {
+            return maxResolutionLevel;
+        }
+
+        public void setMaxResolutionLevel(Integer maxResolutionLevel) {
+            this.maxResolutionLevel = maxResolutionLevel;
+        }
+
+        public String getBgColor() {
+            return bgColor;
+        }
+
+        public void setBgColor(String bgColor) {
+            this.bgColor = bgColor;
+        }
+
+        public Boolean getForceCanvas() {
+            return forceCanvas;
+        }
+
+        public void setForceCanvas(Boolean forceCanvas) {
+            this.forceCanvas = forceCanvas;
         }
     }
 }

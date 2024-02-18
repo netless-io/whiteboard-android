@@ -39,7 +39,7 @@ public class WindowAppParam {
     /**
      * 构建由新转换服务转换的 App 参数
      * @param taskUuid
-     * @param prefixUrl
+     * @param prefixUrl 以 http 或 https 开头的 url, 例如 https://convertcdn.netless.link/dynamicConvert. 请注意不以 / 结尾。
      * @param title
      * @return
      */
@@ -108,7 +108,7 @@ public class WindowAppParam {
         }
     }
 
-    private static class ProjectorOptions extends Options {
+    public static class ProjectorOptions extends Options {
         private final String scenePath;
 
         public ProjectorOptions(String scenePath, String title) {
@@ -117,7 +117,7 @@ public class WindowAppParam {
         }
     }
 
-    private static class ProjectorAttributes extends Attributes {
+    public static class ProjectorAttributes extends Attributes {
         @SerializedName("taskId")
         private final String taskUuid;
         @SerializedName("url")
