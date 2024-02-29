@@ -1,6 +1,9 @@
 package com.herewhite.sdk;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.os.Build;
+import android.webkit.WebView;
 
 import androidx.annotation.Nullable;
 
@@ -162,7 +165,24 @@ public class WhiteSdk {
         WhiteSdkConfiguration copyConfig = Utils.deepCopy(whiteSdkConfiguration, WhiteSdkConfiguration.class);
         copyConfig.setOnlyCallbackRemoteStateModify(false);
 
+        addWebViewTag(bridge, copyConfig);
+
         bridge.callHandler("sdk.newWhiteSdk", new Object[]{copyConfig});
+    }
+
+    private void addWebViewTag(JsBridgeInterface bridge, WhiteSdkConfiguration config) {
+        try {
+            if (config.isLog() && bridge instanceof WebView) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    PackageInfo info = WebView.getCurrentWebViewPackage();
+                    if (info != null) {
+                        config.addNativeTag("webviewPackage", info.packageName);
+                        config.addNativeTag("webviewVersion", info.versionName);
+                    }
+                }
+            }
+        } catch (Exception ignored) {
+        }
     }
 
     /**

@@ -318,6 +318,10 @@ public class WhiteSdkConfiguration extends WhiteObject {
         __nativeTags.put("platform", "android API " + Build.VERSION.SDK_INT);
     }
 
+    public void addNativeTag(String tag, String value) {
+        __nativeTags.put(tag, value);
+    }
+
     /**
      * 获取设置的日志选项。
      *
