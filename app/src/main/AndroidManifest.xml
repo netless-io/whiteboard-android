@@ -101,6 +101,11 @@
             android:name=".test.window.WindowAppsActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:screenOrientation="landscape" />
+
+        <activity
+            android:name=".test.window.WindowHVChangeActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/whiteParent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.herewhite.sdk.WhiteboardView
+            android:id="@+id/white"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="visible"
+            app:layout_constraintDimensionRatio="16:9"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/change"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/full_screen"
+            app:layout_constraintTop_toTopOf="@id/white"
+            app:layout_constraintEnd_toEndOf="@id/white" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
