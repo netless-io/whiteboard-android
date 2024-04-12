@@ -364,6 +364,8 @@ public class WindowTestActivity extends AppCompatActivity {
                 .setContainerSizeRatio(2f / 4)
                 .setChessboard(true)
                 .setDebug(true)
+                // .setOverwriteStyles(cursorUserHideStyle())
+                // .setOverwriteStyles(darkModeStyle())
                 .setCollectorStyles(styleMap);
         // optional
         roomParams.setWindowParams(windowParams);
@@ -448,6 +450,10 @@ public class WindowTestActivity extends AppCompatActivity {
         } catch (IOException ignored) {
         }
         return style;
+    }
+
+    private String cursorUserHideStyle() {
+        return ".netless-window-manager-cursor-name { display: none }";
     }
 
     String getStyleFromAsserts(String path) throws IOException {

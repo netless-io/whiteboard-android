@@ -8,6 +8,7 @@ import com.herewhite.sdk.domain.ConverterStatus;
 import com.herewhite.sdk.domain.Region;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -45,6 +46,7 @@ public class ProjectorQuery {
     private final OkHttpClient client = new OkHttpClient();
     private ConverterStatus status;
     private long startTime;
+
     public ProjectorQuery(Region region,
                           String taskUuid,
                           String taskToken,
@@ -166,6 +168,12 @@ public class ProjectorQuery {
         Abort,
     }
 
+    public static class Image {
+        public int width;
+        public int height;
+        public String url;
+    }
+
     public interface Callback {
         void onProgress(double progress, QueryResponse convertInfo);
 
@@ -259,6 +267,16 @@ public class ProjectorQuery {
         private double convertedPercentage;
         private String prefix;
 
+        private String type;
+
+        private Integer pageCount;
+
+        private HashMap<String, String> previews;
+
+        private String note;
+
+        private HashMap<String, Image> images;
+
         public String getUuid() {
             return uuid;
         }
@@ -305,6 +323,50 @@ public class ProjectorQuery {
 
         public void setPrefix(String prefix) {
             this.prefix = prefix;
+        }
+
+        public void setConvertedPercentage(double convertedPercentage) {
+            this.convertedPercentage = convertedPercentage;
+        }
+
+        public Integer getPageCount() {
+            return pageCount;
+        }
+
+        public void setPageCount(Integer pageCount) {
+            this.pageCount = pageCount;
+        }
+
+        public String getNote() {
+            return note;
+        }
+
+        public void setNote(String note) {
+            this.note = note;
+        }
+
+        public HashMap<String, String> getPreviews() {
+            return previews;
+        }
+
+        public void setPreviews(HashMap<String, String> previews) {
+            this.previews = previews;
+        }
+
+        public HashMap<String, Image> getImages() {
+            return images;
+        }
+
+        public void setImages(HashMap<String, Image> images) {
+            this.images = images;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
         }
     }
 }

@@ -1,6 +1,10 @@
 package com.herewhite.sdk;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.media.AudioManager;
+import android.os.Build;
+import android.webkit.WebView;
 
 import androidx.annotation.Nullable;
 
@@ -27,6 +31,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import wendu.dsbridge.OnReturnValue;
@@ -162,7 +167,45 @@ public class WhiteSdk {
         WhiteSdkConfiguration copyConfig = Utils.deepCopy(whiteSdkConfiguration, WhiteSdkConfiguration.class);
         copyConfig.setOnlyCallbackRemoteStateModify(false);
 
+        addWebViewTag(bridge, copyConfig);
+        addVolumeTag(context, copyConfig);
+
         bridge.callHandler("sdk.newWhiteSdk", new Object[]{copyConfig});
+    }
+
+    private void addWebViewTag(JsBridgeInterface bridge, WhiteSdkConfiguration config) {
+        try {
+            if (config.isLog() && bridge instanceof WebView) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    PackageInfo info = WebView.getCurrentWebViewPackage();
+                    if (info != null) {
+                        config.addNativeTag("webviewPackage", info.packageName);
+                        config.addNativeTag("webviewVersion", info.versionName);
+                    }
+                }
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
+    private void addVolumeTag(Context context, WhiteSdkConfiguration config) {
+        try {
+            AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+
+            HashMap<String, String> volumeMap = new HashMap<>();
+            volumeMap.put("m", getVolumePercent(audioManager, AudioManager.STREAM_MUSIC));
+            volumeMap.put("ss", getVolumePercent(audioManager, AudioManager.STREAM_SYSTEM));
+            volumeMap.put("vc", getVolumePercent(audioManager, AudioManager.STREAM_VOICE_CALL));
+
+            config.addNativeTag("streamVolume", Utils.toJson(volumeMap));
+        } catch (Exception ignored) {
+        }
+    }
+
+    private String getVolumePercent(AudioManager audioManager, int streamType) {
+        int volume = audioManager.getStreamVolume(streamType);
+        int maxVolume = audioManager.getStreamMaxVolume(streamType);
+        return Integer.toString(volume * 100 / maxVolume);
     }
 
     /**
