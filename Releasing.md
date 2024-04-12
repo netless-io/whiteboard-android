@@ -14,11 +14,14 @@ Cutting a Release
    ```
    sed -i "" -r "s/^(.*private final static String SDK_VERSION = )(.*)(;.*)/\1\"${RELEASE_VERSION}\"\3/" \
    sdk/src/main/java/com/herewhite/sdk/WhiteSdk.java
+   sed -i "" \
+   "s/\"com.github.netless-io:\([^\:]*\):[^\"]*\"/\"com.github.netless-io:\1:$RELEASE_VERSION\"/g" \
+   README.md README_zh_CN.md
    ```
 4. Tag the release and push to GitHub.
    ```
    RELEASE_VERSION=nl_$RELEASE_VERSION
-   git add sdk/src/main/assets carrot.yml sdk/src/main/java/com/herewhite/sdk/WhiteSdk.java CHANGELOG.md
+   git add sdk/src/main/assets carrot.yml sdk/src/main/java/com/herewhite/sdk/WhiteSdk.java CHANGELOG.md README.md README_zh_CN.md
    git commit -m "release $RELEASE_VERSION"
    git tag -a $RELEASE_VERSION -m "Version $RELEASE_VERSION"
    git push -v origin refs/heads/window-manager:refs/heads/window-manager

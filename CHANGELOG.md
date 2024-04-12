@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.17.0-alpha.14] - 2014-04-12
+- 更新 `ProjectorQuery`, 支持 Static 接口
 ## [2.17.0-alpha.13] - 2014-02-18
 - 更新 `@netless/window-manager` 至 1.0.0-canary.79
 - 更新 `@netless/app-slide` 至 0.3.0-canary.21
