@@ -271,7 +271,7 @@ public class ProjectorQuery {
 
         private Integer pageCount;
 
-        private HashMap<String, Image> previews;
+        private HashMap<String, String> previews;
 
         private String note;
 
@@ -345,11 +345,11 @@ public class ProjectorQuery {
             this.note = note;
         }
 
-        public HashMap<String, Image> getPreviews() {
+        public HashMap<String, String> getPreviews() {
             return previews;
         }
 
-        public void setPreviews(HashMap<String, Image> previews) {
+        public void setPreviews(HashMap<String, String> previews) {
             this.previews = previews;
         }
 
