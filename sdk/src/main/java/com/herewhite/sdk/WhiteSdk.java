@@ -101,7 +101,7 @@ public class WhiteSdk {
         sdkJsInterface.setUrlInterrupter(urlInterrupter);
     }
 
-    WhiteSdk(JsBridgeInterface bridge,
+    public WhiteSdk(JsBridgeInterface bridge,
              Context context,
              WhiteSdkConfiguration whiteSdkConfiguration,
              CommonCallback commonCallback,
