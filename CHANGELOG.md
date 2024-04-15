@@ -1,4 +1,8 @@
 # 版本更新记录
+## [2.16.84] - 2024-04-15
+- 修复了 `WhiteSdk(JsBridgeInterface, Context, WhiteSdkConfiguration, CommonCallback,
+  AudioMixerBridge)` 方法的可见性问题。如果您的程序使用了此方法且使用的是 SDK 版本 2.16.76
+  或之前的版本，请直接升级至 2.16.84 版本或更高版本。
 ## [2.16.83] - 2024-04-02
 - 更新 `white-web-sdk` 至 2.16.50
 ## [2.16.82] - 2024-04-01
