@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.herewhite.sdk.domain.ConnectionPrepareParam;
 import com.herewhite.sdk.domain.FontFace;
 import com.herewhite.sdk.domain.PlayerConfiguration;
 import com.herewhite.sdk.domain.PlayerTimeInfo;
@@ -625,6 +626,14 @@ public class WhiteSdk {
      */
     public void setSlideListener(SlideListener slideListener) {
         sdkJsInterface.setSlideListener(slideListener);
+    }
+
+    public static void prepareWhiteConnection(Context context, ConnectionPrepareParam param) {
+        WhiteboardView whiteboardView = new WhiteboardView(context);
+        whiteboardView.callHandler("sdk.prepareWhiteConnection", new Object[]{param}, (OnReturnValue<String>) value -> {
+            whiteboardView.removeAllViews();
+            whiteboardView.destroy();
+        });
     }
 
     public static class Builder {
