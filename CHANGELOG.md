@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.16.86] - 2024-05-29
+- 更新 `@netless/app-slide` 至 0.2.57
+- 新增 `SlideAppOptions.invisibleBehavior` 指定幻灯片不可见的行为策略
 ## [2.16.85] - 2024-05-13
 - 更新 `white-web-sdk` 至 2.16.51
 - 新增 `WhiteSDK.prepareWhiteConnection` 方法用于提前选择线路以加快首次连接速度
