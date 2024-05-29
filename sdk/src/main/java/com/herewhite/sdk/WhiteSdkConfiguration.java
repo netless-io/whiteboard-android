@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName;
 import com.herewhite.sdk.domain.DeviceType;
 import com.herewhite.sdk.domain.LoggerOptions;
 import com.herewhite.sdk.domain.Region;
+import com.herewhite.sdk.domain.SlideInvisibleBehavior;
 import com.herewhite.sdk.domain.WhiteObject;
 
 import org.json.JSONObject;
@@ -705,6 +706,14 @@ public class WhiteSdkConfiguration extends WhiteObject {
         /** 强制使用 2D 渲染 */
         private Boolean forceCanvas = false;
 
+        /**
+         * 指定隐藏幻灯片后的行为;
+         * 'frozen' 将破坏幻灯片并将其替换为快照
+         * 'pause' 只是暂停幻灯片
+         * 默认 'frozen'
+         */
+        private SlideInvisibleBehavior invisibleBehavior = SlideInvisibleBehavior.Frozen;
+
         public boolean isShowRenderError() {
             return showRenderError;
         }
@@ -775,6 +784,14 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
         public void setForceCanvas(Boolean forceCanvas) {
             this.forceCanvas = forceCanvas;
+        }
+
+        public SlideInvisibleBehavior getInvisibleBehavior() {
+            return invisibleBehavior;
+        }
+
+        public void setInvisibleBehavior(SlideInvisibleBehavior invisibleBehavior) {
+            this.invisibleBehavior = invisibleBehavior;
         }
     }
 }
