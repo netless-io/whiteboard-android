@@ -169,7 +169,7 @@ abstract public class SampleBaseActivity extends BaseActivity {
     }
 
     protected RoomParams generateRoomParams() {
-        RoomParams roomParams = new RoomParams(uuid, token, DemoAPI.DEFAULT_UID);
+        RoomParams roomParams = new RoomParams(uuid, token, DemoAPI.get().getUserId());
         roomParams.setDisableNewPencil(false);
         roomParams.setWritable(true);
         return roomParams;

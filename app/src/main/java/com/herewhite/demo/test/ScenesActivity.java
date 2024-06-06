@@ -129,7 +129,7 @@ public class ScenesActivity extends BaseActivity implements View.OnClickListener
         WhiteSdkConfiguration configuration = new WhiteSdkConfiguration(demoAPI.getAppId(), true);
         mWhiteSdk = new WhiteSdk(mWhiteboardView, this, configuration);
 
-        RoomParams roomParams = new RoomParams(uuid, token, DemoAPI.DEFAULT_UID);
+        RoomParams roomParams = new RoomParams(uuid, token, DemoAPI.get().getUserId());
         roomParams.setDisableNewPencil(false);
         roomParams.setWritable(true);
 

@@ -97,7 +97,7 @@ public class CameraMoveActivity extends BaseActivity {
         WhiteSdkConfiguration configuration = new WhiteSdkConfiguration(demoAPI.getAppId(), true);
         whiteSdk = new WhiteSdk(whiteboardView, this, configuration);
 
-        RoomParams roomParams = new RoomParams(demoAPI.getRoomUUID(), demoAPI.getRoomToken(), DemoAPI.DEFAULT_UID);
+        RoomParams roomParams = new RoomParams(demoAPI.getRoomUUID(), demoAPI.getRoomToken(), DemoAPI.get().getUserId());
         whiteSdk.joinRoom(roomParams, new EmptyRoomListener(), new Promise<Room>() {
             @Override
             public void then(Room room) {

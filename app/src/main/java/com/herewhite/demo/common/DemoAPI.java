@@ -1,6 +1,7 @@
 package com.herewhite.demo.common;
 
 import android.content.Context;
+import android.provider.Settings;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -27,7 +28,6 @@ import okhttp3.Response;
  */
 
 public class DemoAPI {
-    public static final String DEFAULT_UID = "5e62a5c0-8c15-4b00-a9fc-0e309e91da30";
     private static final String TAG = DemoAPI.class.getSimpleName();
     private static DemoAPI instance;
     private final OkHttpClient client = new OkHttpClient();
@@ -36,6 +36,8 @@ public class DemoAPI {
     private String roomUUID;
     private String roomToken;
 
+    private String userId;
+
     public synchronized static DemoAPI get() {
         if (instance == null) {
             instance = new DemoAPI();
@@ -43,13 +45,15 @@ public class DemoAPI {
 
         return instance;
     }
-    
+
     public void init(Context context) {
         appId = context.getString(R.string.sdk_app_id);
         sdkToken = context.getString(R.string.sdk_app_token);
 
         roomUUID = context.getString(R.string.room_uuid);
         roomToken = context.getString(R.string.room_token);
+
+        userId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
     public String getAppId() {
@@ -66,6 +70,10 @@ public class DemoAPI {
 
     public String getSdkToken() {
         return sdkToken;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public boolean hasDemoInfo() {

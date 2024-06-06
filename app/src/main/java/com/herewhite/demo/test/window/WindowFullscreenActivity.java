@@ -69,7 +69,7 @@ public class WindowFullscreenActivity extends SampleBaseActivity {
 
     @Override
     protected RoomParams generateRoomParams() {
-        RoomParams roomParams = new RoomParams(uuid, token, DemoAPI.DEFAULT_UID);
+        RoomParams roomParams = new RoomParams(uuid, token, DemoAPI.get().getUserId());
         WindowParams windowParams = new WindowParams()
                 // 设置显示比例，多端需要保证此参数一致
                 .setContainerSizeRatio(9f / 16)

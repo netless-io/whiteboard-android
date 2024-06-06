@@ -93,7 +93,7 @@ public class RoomActivity extends BaseActivity {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return DemoAPI.DEFAULT_UID;
+        return DemoAPI.get().getUserId();
     }
 
     @Override

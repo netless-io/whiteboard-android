@@ -117,7 +117,7 @@ public class WindowPageTestActivity extends BaseActivity {
                 logAction(object.toString());
             }
         });
-        RoomParams roomParams = new RoomParams(uuid, token, DemoAPI.DEFAULT_UID);
+        RoomParams roomParams = new RoomParams(uuid, token, DemoAPI.get().getUserId());
 
         HashMap<String, String> styleMap = new HashMap<>();
         styleMap.put("backgroundColor", "red");
