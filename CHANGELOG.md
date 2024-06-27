@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.16.87] - 2024-06-27
+- 更新 `@netless/app-slide` 至 0.2.58
 ## [2.16.86] - 2024-05-29
 - 更新 `@netless/app-slide` 至 0.2.57
 - 新增 `SlideAppOptions.invisibleBehavior` 指定幻灯片不可见的行为策略
