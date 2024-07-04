@@ -1,4 +1,9 @@
 # 版本更新记录
+## [2.16.89] - 2024-07-04
+- 新增 @netless/appliance-plugin，版本为 1.0.1。
+- 新增 WhiteSdkConfiguration.enableAppliancePlugin 配置项，用于启用 Appliance
+  插件。启用后，原基础教具将被替换。请确保同一房间的所有终端使用相同配置。
+- 新增 Appliance.LASER_PENCIL 教具，该教具仅在 enableAppliancePlugin 启用时可用。
 ## [2.16.88] - 2024-07-02
 - 更新 `@netless/app-slide` 至 0.2.59
 ## [2.16.87] - 2024-06-27
