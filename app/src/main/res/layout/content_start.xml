@@ -65,6 +65,14 @@
             android:layout_height="wrap_content"
             android:onClick="fullScreenTest"
             android:text="@string/fullScreenTest" />
+
+        <Button
+            android:id="@+id/button8"
+            style="@style/HomeTestButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="appliancePlugin"
+            android:text="@string/appliancePlugin" />
     </LinearLayout>
 
 </ScrollView>

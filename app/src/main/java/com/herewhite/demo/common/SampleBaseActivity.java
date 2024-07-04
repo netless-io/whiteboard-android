@@ -48,7 +48,9 @@ abstract public class SampleBaseActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getContentView());
-        Objects.requireNonNull(getSupportActionBar()).hide();
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
 
         logView = findViewById(R.id.logDisplay);
         whiteboardView = findViewById(R.id.white);

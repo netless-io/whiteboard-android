@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.herewhite.demo.common.DemoAPI;
+import com.herewhite.demo.test.window.WindowAppliancePluginActivity;
 import com.herewhite.demo.test.window.WindowAppsActivity;
 import com.herewhite.demo.test.window.WindowTestActivity;
 
@@ -124,6 +125,16 @@ public class StartActivity extends AppCompatActivity {
         }
 
         Intent intent = new Intent(this, WindowAppsActivity.class);
+        startActivity(intent);
+    }
+
+    public void appliancePlugin(View view) {
+        if (demoAPI.invalidToken()) {
+            tokenAlert();
+            return;
+        }
+
+        Intent intent = new Intent(this, WindowAppliancePluginActivity.class);
         startActivity(intent);
     }
 }

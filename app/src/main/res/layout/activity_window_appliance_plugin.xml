@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.herewhite.sdk.WhiteboardView
+        android:id="@+id/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/insertNewDynamic"
+                style="@style/TestButton"
+                android:text="newDynamic" />
+
+            <Button
+                android:id="@+id/insertImage"
+                style="@style/TestButton"
+                android:text="insertImage" />
+
+            <Button
+                android:id="@+id/undo"
+                style="@style/TestButton"
+                android:text="Undo" />
+
+            <Button
+                android:id="@+id/redo"
+                style="@style/TestButton"
+                android:text="Redo" />
+
+            <Button
+                android:id="@+id/clear"
+                style="@style/TestButton"
+                android:text="Clear" />
+
+            <Button
+                android:id="@+id/pluginPencil"
+                style="@style/TestButton"
+                android:text="pluginPencil" />
+
+            <Button
+                android:id="@+id/laserPen"
+                style="@style/TestButton"
+                android:text="LaserPen" />
+
+            <Button
+                android:id="@+id/text"
+                style="@style/TestButton"
+                android:text="Text" />
+
+            <Button
+                android:id="@+id/selector"
+                style="@style/TestButton"
+                android:text="Selector" />
+
+            <Button
+                android:id="@+id/eraser"
+                style="@style/TestButton"
+                android:text="Eraser" />
+
+            <Button
+                android:id="@+id/star"
+                style="@style/TestButton"
+                android:text="Star" />
+
+            <Button
+                android:id="@+id/clicker"
+                style="@style/TestButton"
+                android:text="Clicker" />
+
+            <Button
+                android:id="@+id/head"
+                style="@style/TestButton"
+                android:text="Head" />
+
+            <Button
+                android:id="@+id/resetCamera"
+                style="@style/TestButton"
+                android:text="resetCamera" />
+        </LinearLayout>
+    </HorizontalScrollView>
+</FrameLayout>
