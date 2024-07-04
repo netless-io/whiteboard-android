@@ -39,6 +39,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private boolean enableRtcIntercept = false;
     private boolean enableRtcAudioEffectIntercept = false;
     private boolean enableSyncedStore = false;
+    private boolean enableAppliancePlugin = false;
     private boolean disableNewPencilStroke = false;
     private LoggerOptions loggerOptions;
     private String appIdentifier;
@@ -573,6 +574,14 @@ public class WhiteSdkConfiguration extends WhiteObject {
      */
     public void setApiHosts(List<String> apiHosts) {
         this.apiHosts = apiHosts;
+    }
+
+    public boolean isEnableAppliancePlugin() {
+        return enableAppliancePlugin;
+    }
+
+    public void setEnableAppliancePlugin(boolean enableAppliancePlugin) {
+        this.enableAppliancePlugin = enableAppliancePlugin;
     }
 
     /**

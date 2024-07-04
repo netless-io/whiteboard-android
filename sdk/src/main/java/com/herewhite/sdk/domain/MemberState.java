@@ -44,6 +44,8 @@ public class MemberState extends WhiteObject {
      */
     private Integer pencilEraserSize;
 
+    private StrokeType strokeType;
+
     public MemberState() {
     }
 
@@ -219,5 +221,13 @@ public class MemberState extends WhiteObject {
      */
     public void setPencilEraserSize(Integer pencilEraserSize) {
         this.pencilEraserSize = pencilEraserSize;
+    }
+
+    public StrokeType getStrokeType() {
+        return strokeType;
+    }
+
+    public void setStrokeType(StrokeType strokeType) {
+        this.strokeType = strokeType;
     }
 }
