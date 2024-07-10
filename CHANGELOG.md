@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.16.90] - 2024-07-10
+- 更新 `@netless/app-slide` 至 0.2.60
 ## [2.16.89] - 2024-07-04
 - 新增 @netless/appliance-plugin，版本为 1.0.1。
 - 新增 WhiteSdkConfiguration.enableAppliancePlugin 配置项，用于启用 Appliance
