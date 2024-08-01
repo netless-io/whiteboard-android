@@ -1,7 +1,10 @@
 package com.herewhite.demo.test.window;
 
+import android.graphics.Bitmap;
 import android.view.View;
+import android.widget.ImageView;
 
+import com.herewhite.demo.R;
 import com.herewhite.demo.common.SampleBaseActivity;
 import com.herewhite.demo.databinding.ActivityWindowAppliancePluginBinding;
 import com.herewhite.sdk.WhiteSdkConfiguration;
@@ -9,6 +12,8 @@ import com.herewhite.sdk.domain.Appliance;
 import com.herewhite.sdk.domain.CameraConfig;
 import com.herewhite.sdk.domain.ImageInformationWithUrl;
 import com.herewhite.sdk.domain.MemberState;
+import com.herewhite.sdk.domain.Promise;
+import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.ShapeType;
 import com.herewhite.sdk.domain.StrokeType;
 import com.herewhite.sdk.domain.WindowAppParam;
@@ -109,6 +114,38 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
             config.setCenterY(0d);
             config.setScale(1d);
             room.moveCamera(config);
+        });
+
+        binding.snapshot.setOnClickListener( v -> {
+            room.getSceneSnapshotImage("/init", new Promise<Bitmap>() {
+                @Override
+                public void then(Bitmap bitmap) {
+                    ImageView viewById = findViewById(R.id.iv_bitmap);
+                    viewById.setImageBitmap(bitmap);
+                    logAction("get bitmap");
+                }
+
+                @Override
+                public void catchEx(SDKError t) {
+                    logAction("get bitmap error");
+                }
+            });
+        });
+
+        binding.scenePreview.setOnClickListener(v -> {
+            room.getScenePreviewImage("/init", new Promise<Bitmap>() {
+                @Override
+                public void then(Bitmap bitmap) {
+                    ImageView viewById = findViewById(R.id.iv_bitmap);
+                    viewById.setImageBitmap(bitmap);
+                    logAction("get bitmap");
+                }
+
+                @Override
+                public void catchEx(SDKError t) {
+                    logAction("get bitmap error");
+                }
+            });
         });
     }
 

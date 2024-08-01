@@ -53,6 +53,7 @@
     <string name="windowAppsTest">Apps</string>
     <string name="fullScreenTest">Fullscreen</string>
     <string name="appliancePlugin">AppliancePlugin</string>
+    <string name="noAppliancePlugin">NoAppliancePlugin</string>
 
     <!--ijkplayer-->
     <string name="N_A">N/A</string>

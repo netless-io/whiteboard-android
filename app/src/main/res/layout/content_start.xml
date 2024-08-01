@@ -73,6 +73,14 @@
             android:layout_height="wrap_content"
             android:onClick="appliancePlugin"
             android:text="@string/appliancePlugin" />
+
+        <Button
+            android:id="@+id/button9"
+            style="@style/HomeTestButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="noAppliancePlugin"
+            android:text="@string/noAppliancePlugin" />
     </LinearLayout>
 
 </ScrollView>

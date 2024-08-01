@@ -9,6 +9,13 @@
         android:layout_height="match_parent"
         android:visibility="visible" />
 
+    <ImageView
+        android:id="@+id/iv_bitmap"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:layout_gravity="end"
+        android:background="#CCCCCC" />
+
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,6 +26,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/snapshot"
+                style="@style/TestButton"
+                android:text="snapshot" />
+
+            <Button
+                android:id="@+id/scenePreview"
+                style="@style/TestButton"
+                android:text="scenePreview" />
 
             <Button
                 android:id="@+id/insertNewDynamic"
