@@ -2,6 +2,7 @@ package com.herewhite.sdk.window;
 
 import com.herewhite.sdk.ResultCaller;
 import com.herewhite.sdk.WhiteSdkConfiguration;
+import com.herewhite.sdk.domain.SlideErrorType;
 
 public interface SlideListener {
     /**
@@ -18,5 +19,20 @@ public interface SlideListener {
      * @param sourceUrl 原 URL 地址。
      * @param resultCaller 回调替换后的 url。
      */
-    void slideUrlInterrupter(String sourceUrl, ResultCaller<String> resultCaller);
+    default void slideUrlInterrupter(String sourceUrl, ResultCaller<String> resultCaller) {
+        resultCaller.call(sourceUrl);
+    }
+
+    /**
+     * Slide 加载错误回调。
+     *
+     * @since 2.16.93
+     *
+     * @param errorType 错误类型。
+     * @param errorMsg  错误信息。
+     * @param slideId   Slide ID。
+     * @param slideIndex Slide 索引。
+     */
+    default void onSlideError(SlideErrorType errorType, String errorMsg, String slideId, int slideIndex) {
+    }
 }

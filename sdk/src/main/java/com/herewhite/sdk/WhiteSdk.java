@@ -628,6 +628,25 @@ public class WhiteSdk {
         sdkJsInterface.setSlideListener(slideListener);
     }
 
+    /**
+     * 恢复 Slide
+     *
+     * @param slideId 使用错误消息里告知的 slideId
+     * @param slideIndex 指定要跳转到哪一页, 如果想要跳转到下一页可以使用错误消息里告知的报错页码 + 1
+     */
+    public void recoverSlide(String slideId, int slideIndex) {
+        bridge.evaluateJavascript("window.postMessage({'type': \"@slide/_recover_\",'recoverBy': \"renderOtherPage\",'slideId': \"" + slideId + "\", 'payload': { 'slideIndex': " + slideIndex + "}});");
+    }
+
+    /**
+     * 恢复 Slide
+     *
+     * @param slideId 使用错误消息里告知的 slideId
+     */
+    public void recoverSlide(String slideId) {
+        bridge.evaluateJavascript("window.postMessage({'type': \"@slide/_recover_\",'recoverBy': \"reloadCurrentPage\",'slideId': \"" + slideId + "\"});");
+    }
+
     public static void prepareWhiteConnection(Context context, ConnectionPrepareParam param) {
         WhiteboardView whiteboardView = new WhiteboardView(context);
         whiteboardView.callHandler("sdk.prepareWhiteConnection", new Object[]{param}, (OnReturnValue<String>) value -> {

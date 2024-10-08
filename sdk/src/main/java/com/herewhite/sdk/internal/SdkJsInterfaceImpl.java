@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 
 import com.herewhite.sdk.CommonCallback;
 import com.herewhite.sdk.domain.SDKError;
+import com.herewhite.sdk.domain.SlideErrorType;
 import com.herewhite.sdk.domain.UrlInterrupter;
 import com.herewhite.sdk.window.SlideListener;
 
@@ -98,6 +99,36 @@ public class SdkJsInterfaceImpl {
         if (postMessageCallback != null && jsonObject != null) {
             postMessageCallback.onMessage(jsonObject);
         }
+
+        if (slideListener != null && jsonObject != null) {
+            handleSlideEvent(jsonObject);
+        }
+    }
+
+    private void handleSlideEvent(JSONObject jsonObject) {
+        String type = jsonObject.optString("type");
+        if ("@slide/_error_".equals(type)) {
+            String errorType = jsonObject.optString("errorType");
+            String errorMsg = jsonObject.optString("errorMsg");
+            String slideId = jsonObject.optString("slideId");
+            int slideIndex = jsonObject.optInt("slideIndex");
+            if (slideListener != null) {
+                slideListener.onSlideError(convertToSlideErrorType(errorType), errorMsg, slideId, slideIndex);
+            }
+        }
+    }
+
+    private SlideErrorType convertToSlideErrorType(String errorType) {
+        if ("RESOURCE_ERROR".equals(errorType)) {
+            return SlideErrorType.RESOURCE_ERROR;
+        } else if ("RUNTIME_ERROR".equals(errorType)) {
+            return SlideErrorType.RUNTIME_ERROR;
+        } else if ("RUNTIME_WARN".equals(errorType)) {
+            return SlideErrorType.RUNTIME_WARN;
+        } else if ("CANVAS_CRASH".equals(errorType)) {
+            return SlideErrorType.CANVAS_CRASH;
+        }
+        return SlideErrorType.UNKNOWN;
     }
 
     @JavascriptInterface
