@@ -1,4 +1,8 @@
 # 版本更新记录
+## [2.16.93] - 2024-10-11
+- 新增 `SlideListener.onSlideError` 方法，用于监听 PPT 渲染错误。
+- 新增 `WhiteSdk.recoverSlide` 方法，用于恢复 PPT 渲染。
+- 更新 `@netless/appliance-plugin` 至 1.1.0
 ## [2.16.92] - 2024-09-05
 - 更新 `@netless/appliance-plugin` 至 1.0.4
 ## [2.16.91] - 2024-07-25
