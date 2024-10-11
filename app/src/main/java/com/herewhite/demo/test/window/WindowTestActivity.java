@@ -1,5 +1,7 @@
 package com.herewhite.demo.test.window;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,11 +30,13 @@ import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Scene;
+import com.herewhite.sdk.domain.SlideErrorType;
 import com.herewhite.sdk.domain.WhiteDisplayerState;
 import com.herewhite.sdk.domain.WindowAppParam;
 import com.herewhite.sdk.domain.WindowAppSyncAttrs;
 import com.herewhite.sdk.domain.WindowParams;
 import com.herewhite.sdk.domain.WindowPrefersColorScheme;
+import com.herewhite.sdk.window.SlideListener;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -333,18 +337,31 @@ public class WindowTestActivity extends AppCompatActivity {
 
         WhiteSdkConfiguration.SlideAppOptions slideAppOptions = new WhiteSdkConfiguration.SlideAppOptions();
         slideAppOptions.setDebug(false);
-        slideAppOptions.setShowRenderError(false);
-        slideAppOptions.setEnableGlobalClick(false);
-        slideAppOptions.setMinFPS(1);
-        slideAppOptions.setMaxFPS(2);
-        slideAppOptions.setResolution(0.5);
-        slideAppOptions.setMaxResolutionLevel(1);
+        slideAppOptions.setShowRenderError(true);
         configuration.setSlideAppOptions(slideAppOptions);
 
         mWhiteSdk = new WhiteSdk(mWhiteboardView, this, configuration);
-        mWhiteSdk.setSlideListener((sourceUrl, resultCaller) -> {
-            // ApiService.convertUrl(sourceUrl)
-            resultCaller.call(sourceUrl);
+        mWhiteSdk.setSlideListener(new SlideListener() {
+            @Override
+            public void onSlideError(SlideErrorType errorType, String errorMsg, String slideId, int slideIndex) {
+                switch (errorType) {
+                    case RESOURCE_ERROR:
+                    case RUNTIME_ERROR:
+                        // 跳转到下一页, 可以根据具体需求选择如何恢复, 例如弹窗确认后再做跳转动作
+                        runOnUiThread(() -> {
+                            checkAlert("Slide Error", "SlideIndex:" + slideIndex + " ErrorMsg:" + errorMsg, (dialog, which) -> {
+                                // mWhiteSdk.recoverSlide(slideId, slideIndex + 1);
+                            });
+                        });
+                        break;
+                    case CANVAS_CRASH:
+                        mWhiteSdk.recoverSlide(slideId);
+                        break;
+                    case RUNTIME_WARN:
+                        // 无需特殊处理, 可以记录日志
+                        break;
+                }
+            }
         });
 
         /* 设置自定义全局状态，在后续回调中 GlobalState 直接进行类型转换即可 */
@@ -360,10 +377,7 @@ public class WindowTestActivity extends AppCompatActivity {
         styleMap.put("position", "fixed");
 
         // String darkMode = darkModeStyle();
-        WindowParams windowParams = new WindowParams()
-                .setContainerSizeRatio(3f / 4)
-                .setChessboard(true)
-                .setDebug(true)
+        WindowParams windowParams = new WindowParams().setContainerSizeRatio(3f / 4).setChessboard(true).setDebug(true)
                 // .setOverwriteStyles(cursorUserHideStyle())
                 // .setOverwriteStyles(darkModeStyle())
                 .setCollectorStyles(styleMap);
@@ -441,6 +455,18 @@ public class WindowTestActivity extends AppCompatActivity {
         Log.i("showToast", o.toString());
         Toast.makeText(this, o.toString(), Toast.LENGTH_SHORT).show();
     }
+
+    void checkAlert(String title, String message, DialogInterface.OnClickListener onClickListener) {
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(message);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", (dialog, which) -> {
+            onClickListener.onClick(dialog, which);
+            alertDialog.dismiss();
+        });
+        alertDialog.show();
+    }
+
     //endregion
 
     private String darkModeStyle() {
