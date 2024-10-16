@@ -35,6 +35,11 @@ import java.util.Collections;
 import java.util.HashMap;
 
 public class WindowRegisterAppActivity extends AppCompatActivity {
+    private static final String KIND_MONACO = "Monaco";
+    private static final String KIND_EMBEDDED_PAGE = "EmbeddedPage";
+    private static final String KIND_COUNTDOWN = "Countdown";
+    private static final String KIND_QUILL = "Quill";
+
     private static final String ROOM_INFO = "RoomInfo";
     private static final String ROOM_ACTION = "RoomAction";
 
@@ -79,6 +84,44 @@ public class WindowRegisterAppActivity extends AppCompatActivity {
                     "EmbeddedPage",
                     new EmbedPageOptions("A Embed Page", "/embedPage"),
                     new EmbedPageAttributes("https://www.baidu.com")
+            );
+            mRoom.addApp(appParam, new Promise<String>() {
+                @Override
+                public void then(String appId) {
+
+                }
+
+                @Override
+                public void catchEx(SDKError t) {
+
+                }
+            });
+        });
+
+        findViewById(R.id.addCountdown).setOnClickListener(v -> {
+            WindowAppParam appParam = new WindowAppParam(
+                    "Countdown",
+                    new WindowAppParam.Options("title_countdown"),
+                    null
+            );
+            mRoom.addApp(appParam, new Promise<String>() {
+                @Override
+                public void then(String appId) {
+
+                }
+
+                @Override
+                public void catchEx(SDKError t) {
+
+                }
+            });
+        });
+
+        findViewById(R.id.addQuill).setOnClickListener(v -> {
+            WindowAppParam appParam = new WindowAppParam(
+                    "Quill",
+                    new WindowAppParam.Options("title_quill"),
+                    null
             );
             mRoom.addApp(appParam, new Promise<String>() {
                 @Override
@@ -145,6 +188,38 @@ public class WindowRegisterAppActivity extends AppCompatActivity {
         mWhiteSdk.registerApp(params, null);
     }
 
+private void registerCountdown() {
+    // remote file: https://cdn.jsdelivr.net/npm/@netless/app-countdown@0.0.2-alpha.1/dist/main.iife.js
+    // read from local file
+    String jsString = getAppJsFromAsserts("app/countdown.iife.js");
+    String kind = "Countdown";
+    String variable = "NetlessAppCountdown.default";
+
+    WindowRegisterAppParams params = new WindowRegisterAppParams(
+            jsString,
+            kind,
+            variable,
+            Collections.emptyMap()
+    );
+    mWhiteSdk.registerApp(params, null);
+}
+
+private void registerQuill() {
+    // remote file: https://cdn.jsdelivr.net/npm/@netless/app-quill@0.0.1-fb.2/dist/index.global.js
+    // read from local file
+    String jsString = getAppJsFromAsserts("app/quill.iife.js");
+    String kind = "Quill";
+    String variable = "NetlessAppQuill.default";
+
+    WindowRegisterAppParams params = new WindowRegisterAppParams(
+            jsString,
+            kind,
+            variable,
+            Collections.emptyMap()
+    );
+    mWhiteSdk.registerApp(params, null);
+}
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -185,6 +260,8 @@ public class WindowRegisterAppActivity extends AppCompatActivity {
 
         registerMonaco();
         registerEmbedPage();
+        registerCountdown();
+        registerQuill();
 
         mWhiteSdk.joinRoom(roomParams, new AbstractRoomCallbacks() {
 

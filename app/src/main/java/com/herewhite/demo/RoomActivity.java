@@ -226,6 +226,7 @@ public class RoomActivity extends BaseActivity {
         roomParams.setDisableNewPencil(false);
         roomParams.setWritable(true);
         roomParams.setUserPayload(new UserPayload());
+        roomParams.setUsingFloatBar(true);
 
         final Date joinDate = new Date();
         logRoomInfo("native join " + joinDate);
