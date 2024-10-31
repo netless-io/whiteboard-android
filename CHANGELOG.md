@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.16.94] - 2024-10-31
+- 更新 `@netless/appliance-plugin` 至 1.1.1, 修复只读加入房间绘制异常问题。
 ## [2.16.93] - 2024-10-11
 - 新增 `SlideListener.onSlideError` 方法，用于监听 PPT 渲染错误。
 - 新增 `WhiteSdk.recoverSlide` 方法，用于恢复 PPT 渲染。
