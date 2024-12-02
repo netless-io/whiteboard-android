@@ -53,9 +53,9 @@ dependencies {
     //noinspection GradleCompatible
     implementation 'com.google.android.material:material:1.1.0'
     // exoplayer
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.11.4'
-    implementation 'com.google.android.exoplayer:exoplayer-hls:2.11.4'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.11.4'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.13.3'
+    implementation 'com.google.android.exoplayer:exoplayer-hls:2.13.3'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.13.3'
 
     // Testing-only dependencies
     implementation 'androidx.test.espresso:espresso-idling-resource:3.2.0'
