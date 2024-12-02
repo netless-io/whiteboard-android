@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 
 import wendu.dsbridge.DWebView;
@@ -21,6 +22,7 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
 
     private boolean autoResize = true;
     private RefreshViewSizeStrategy delayStrategy;
+    private WhiteSdk whiteSdk;
 
     /**
      * 初始化白板界面。
@@ -88,7 +90,7 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
     public static void setEntryUrl(String entryUrl) {
         WhiteboardView.entryUrl = entryUrl;
     }
-    
+
     private void init() {
         if (isInEditMode()) return;
         getSettings().setMediaPlaybackRequiresUserGesture(false);
@@ -131,8 +133,15 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
                 return super.getDefaultVideoPoster();
             }
         }
-    }
 
+        @Override
+        public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+            if (whiteSdk != null) {
+                whiteSdk.handleConsoleMessage(consoleMessage);
+            }
+            return super.onConsoleMessage(consoleMessage);
+        }
+    }
 
     private class RefreshViewSizeStrategy {
         private final int delay;
@@ -150,5 +159,9 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
         public void onDetachedFromWindow() {
             removeCallbacks(refreshViewSize);
         }
+    }
+
+    void attachSdk(WhiteSdk whiteSdk) {
+        this.whiteSdk = whiteSdk;
     }
 }

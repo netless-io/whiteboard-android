@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.media.AudioManager;
 import android.os.Build;
+import android.webkit.ConsoleMessage;
 import android.webkit.WebView;
 
 import androidx.annotation.Nullable;
@@ -170,6 +171,10 @@ public class WhiteSdk {
 
         addWebViewTag(bridge, copyConfig);
         addVolumeTag(context, copyConfig);
+
+        if (bridge instanceof WhiteboardView) {
+            ((WhiteboardView) bridge).attachSdk(this);
+        }
 
         bridge.callHandler("sdk.newWhiteSdk", new Object[]{copyConfig});
     }
@@ -686,6 +691,22 @@ public class WhiteSdk {
 
         public WhiteSdk build() {
             return new WhiteSdk(bridge, context, whiteSdkConfiguration, commonCallback, audioMixerBridge, audioEffectBridge);
+        }
+    }
+
+    private static final String CORS_POLICY_ERROR = "has been blocked by CORS policy";
+
+    void reportNativeLog(String[] logs) {
+        bridge.callHandler("sdk.nativeLog", new Object[]{logs});
+    }
+
+    // reportNativeLog 会再次触发 handleConsoleMessage，导致死循环, 所以需要过滤掉
+    void handleConsoleMessage(ConsoleMessage consoleMessage) {
+        if (consoleMessage.messageLevel() == ConsoleMessage.MessageLevel.ERROR) {
+            if (consoleMessage.message().contains(CORS_POLICY_ERROR)) {
+                String sanitizedMessage = consoleMessage.message().replace(CORS_POLICY_ERROR, "").trim();
+                reportNativeLog(new String[]{"CORS policy error", sanitizedMessage});
+            }
         }
     }
 }
