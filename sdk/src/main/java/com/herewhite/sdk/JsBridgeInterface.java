@@ -1,6 +1,6 @@
 package com.herewhite.sdk;
 
-import wendu.dsbridge.OnReturnValue;
+import wendu.dsbridge.special.OnReturnValue;
 
 public interface JsBridgeInterface {
     void addJavascriptObject(Object object, String namespace);

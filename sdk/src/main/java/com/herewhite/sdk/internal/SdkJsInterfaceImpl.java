@@ -12,7 +12,7 @@ import com.herewhite.sdk.window.SlideListener;
 
 import org.json.JSONObject;
 
-import wendu.dsbridge.CompletionHandler;
+import wendu.dsbridge.special.CompletionHandler;
 
 public class SdkJsInterfaceImpl {
 

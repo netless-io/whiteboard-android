@@ -8,7 +8,7 @@ import com.herewhite.sdk.AudioMixerBridge;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import wendu.dsbridge.CompletionHandler;
+import wendu.dsbridge.special.CompletionHandler;
 
 public class RtcJsInterfaceImpl {
     private AudioMixerBridge mixerBridge;
