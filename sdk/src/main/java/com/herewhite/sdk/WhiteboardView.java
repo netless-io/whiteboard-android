@@ -7,8 +7,9 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.webkit.WebChromeClient;
 
-import wendu.dsbridge.DWebView;
-import wendu.dsbridge.OnReturnValue;
+import wendu.dsbridge.special.DWebView;
+import wendu.dsbridge.special.OnReturnValue;
+
 
 // white on 2018/8/10.
 

@@ -38,7 +38,7 @@ android {
 dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.squareup.okhttp3:okhttp:3.14.9'
-    api 'com.github.netless-io:DSBridge-Android:nl_v3.0.3'
+    api 'com.github.netless-io:DSBridge-Android:nl_dsb_v3.0.4'
     implementation 'com.github.agorabuilder:fpa:1.0.0'
 
     implementation "androidx.annotation:annotation:1.1.0"

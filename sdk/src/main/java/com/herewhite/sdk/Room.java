@@ -35,7 +35,7 @@ import org.json.JSONObject;
 
 import java.util.UUID;
 
-import wendu.dsbridge.OnReturnValue;
+import wendu.dsbridge.special.OnReturnValue;
 
 /**
  * `Room` 类，用于操作互动白板实时房间。

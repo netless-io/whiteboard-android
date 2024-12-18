@@ -10,7 +10,7 @@ import com.herewhite.sdk.domain.SDKError;
 import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import wendu.dsbridge.OnReturnValue;
+import wendu.dsbridge.special.OnReturnValue;
 
 public class SyncedStore {
     private final JsBridgeInterface bridge;

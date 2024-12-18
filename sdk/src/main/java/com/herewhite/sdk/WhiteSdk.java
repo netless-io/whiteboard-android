@@ -29,7 +29,7 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import wendu.dsbridge.OnReturnValue;
+import wendu.dsbridge.special.OnReturnValue;
 
 /**
  * `WhiteSdk` 类。
