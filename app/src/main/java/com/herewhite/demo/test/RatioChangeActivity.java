@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.webkit.WebView;
 import android.widget.Toast;
 
 import androidx.annotation.VisibleForTesting;
@@ -32,9 +33,6 @@ import com.herewhite.sdk.domain.WhiteDisplayerState;
 import org.json.JSONObject;
 
 import java.util.Date;
-
-import wendu.dsbridge.DWebView;
-
 
 public class RatioChangeActivity extends BaseActivity {
     static final String TAG = RatioChangeActivity.class.getSimpleName();
@@ -67,7 +65,7 @@ public class RatioChangeActivity extends BaseActivity {
         setContentView(R.layout.activity_ratio_change);
 
         mWhiteboardView = findViewById(R.id.white);
-        DWebView.setWebContentsDebuggingEnabled(true);
+        WebView.setWebContentsDebuggingEnabled(true);
         mWhiteboardView.getSettings().setAllowUniversalAccessFromFileURLs(true);
 
         getRoomToken(demoAPI.getRoomUUID());

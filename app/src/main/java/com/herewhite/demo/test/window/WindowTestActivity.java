@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -50,8 +51,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import wendu.dsbridge.DWebView;
-
 public class WindowTestActivity extends AppCompatActivity {
     private static final String ROOM_INFO = "RoomInfo";
     private static final String ROOM_ACTION = "RoomAction";
@@ -86,7 +85,7 @@ public class WindowTestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_window_test);
         getSupportActionBar().hide();
 
-        DWebView.setWebContentsDebuggingEnabled(true);
+        WebView.setWebContentsDebuggingEnabled(true);
 
         mWhiteboardView = findViewById(R.id.white);
         mWhiteboardView.getSettings().setAllowUniversalAccessFromFileURLs(true);

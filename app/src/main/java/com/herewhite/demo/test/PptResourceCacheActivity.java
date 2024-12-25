@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebView;
 import android.widget.Toast;
 
 import androidx.annotation.VisibleForTesting;
@@ -61,8 +62,6 @@ import org.json.JSONObject;
 import java.util.Date;
 import java.util.HashMap;
 
-import wendu.dsbridge.DWebView;
-
 public class PptResourceCacheActivity extends BaseActivity {
     static final String TAG = PptResourceCacheActivity.class.getSimpleName();
 
@@ -95,7 +94,7 @@ public class PptResourceCacheActivity extends BaseActivity {
         setContentView(R.layout.activity_room);
 
         mWhiteboardView = findViewById(R.id.white);
-        DWebView.setWebContentsDebuggingEnabled(true);
+        WebView.setWebContentsDebuggingEnabled(true);
         mWhiteboardView.getSettings().setAllowUniversalAccessFromFileURLs(true);
 
         // 使用 LocalFileWebViewClient 对 动态 ppt 拦截进行替换，先查看本地是否有，如果没有再发出网络请求
