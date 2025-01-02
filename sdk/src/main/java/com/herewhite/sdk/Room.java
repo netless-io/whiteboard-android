@@ -40,7 +40,7 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.UUID;
 
-import wendu.dsbridge.OnReturnValue;
+import wendu.dsbridge.special.OnReturnValue;
 
 /**
  * `Room` 类，用于操作互动白板实时房间。

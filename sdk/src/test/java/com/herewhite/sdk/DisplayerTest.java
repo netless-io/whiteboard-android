@@ -13,7 +13,7 @@ import org.mockito.Matchers;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import wendu.dsbridge.OnReturnValue;
+import wendu.dsbridge.special.OnReturnValue;
 
 import static org.mockito.AdditionalMatchers.aryEq;
 import static org.mockito.Matchers.any;

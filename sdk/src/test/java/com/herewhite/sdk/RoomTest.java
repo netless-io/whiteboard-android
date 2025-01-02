@@ -20,7 +20,7 @@ import com.herewhite.sdk.domain.ViewMode;
 
 import junit.framework.TestCase;
 
-import wendu.dsbridge.OnReturnValue;
+import wendu.dsbridge.special.OnReturnValue;
 
 public class RoomTest extends TestCase {
     Promise IGNORE_PROMISE = new Promise() {

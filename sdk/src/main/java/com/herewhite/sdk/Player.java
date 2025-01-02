@@ -17,7 +17,7 @@ import com.herewhite.sdk.internal.PlayerDelegate;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import wendu.dsbridge.OnReturnValue;
+import wendu.dsbridge.special.OnReturnValue;
 
 /**
  * `Player` 类，用于操作白板的回放。

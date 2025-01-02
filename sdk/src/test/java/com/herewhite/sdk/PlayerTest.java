@@ -11,7 +11,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import wendu.dsbridge.OnReturnValue;
+import wendu.dsbridge.special.OnReturnValue;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
