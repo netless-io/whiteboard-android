@@ -1,4 +1,8 @@
 # 版本更新记录
+## [2.16.98] - 2025-02-25
+- 新增 `MemberState.strokeOpacity`, 用于更改线框透明度，仅在 `WhiteSdkConfiguration.enableAppliancePlugin` 启用时有效。
+- 新增 `MemberState.fillOpacity`, 用于更改填充透明度，仅在 `WhiteSdkConfiguration.enableAppliancePlugin` 启用时有效。
+- 新增 `MemberState.fillColor`, 用于更改填充颜色，仅在 `WhiteSdkConfiguration.enableAppliancePlugin` 启用时有效。
 ## [2.16.97] - 2025-02-18
 - 更新 `@netless/appliance-plugin` 至 1.1.9, 修复配置 `RoomParams.floatBar` 不生效问题。
 ## [2.16.96] - 2025-01-02
