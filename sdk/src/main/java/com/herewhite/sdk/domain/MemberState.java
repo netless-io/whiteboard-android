@@ -46,6 +46,21 @@ public class MemberState extends WhiteObject {
 
     private StrokeType strokeType;
 
+    /**
+     * 线条透明度。
+     */
+    private Double strokeOpacity;
+
+    /**
+     * 图形填充透明度。
+     */
+    private Double fillOpacity;
+
+    /**
+     * 图形填充颜色，为 RGB 格式，例如，[0, 0, 255] 表示蓝色。
+     */
+    private int[] fillColor;
+
     public MemberState() {
     }
 
@@ -229,5 +244,53 @@ public class MemberState extends WhiteObject {
 
     public void setStrokeType(StrokeType strokeType) {
         this.strokeType = strokeType;
+    }
+
+    /**
+     * 获取线条透明度。
+     * @return
+     */
+    public Double getStrokeOpacity() {
+        return strokeOpacity;
+    }
+
+    /**
+     * 设置线条透明度。
+     * @param strokeOpacity
+     */
+    public void setStrokeOpacity(Double strokeOpacity) {
+        this.strokeOpacity = strokeOpacity;
+    }
+
+    /**
+     * 获取图形填充透明度。
+     * @return
+     */
+    public Double getFillOpacity() {
+        return fillOpacity;
+    }
+
+    /**
+     * 设置图形填充透明度。
+     * @param fillOpacity
+     */
+    public void setFillOpacity(Double fillOpacity) {
+        this.fillOpacity = fillOpacity;
+    }
+
+    /**
+     * 获取图形填充颜色。
+     * @return
+     */
+    public int[] getFillColor() {
+        return fillColor;
+    }
+
+    /**
+     * 设置图形填充颜色。
+     * @param fillColor, 为 RGB 格式，例如，[0, 0, 255] 表示蓝色。
+     */
+    public void setFillColor(int[] fillColor) {
+        this.fillColor = fillColor;
     }
 }
