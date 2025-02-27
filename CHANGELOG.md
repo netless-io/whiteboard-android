@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.16.99] - 2025-02-27
+- 更新 `@netless/appliance-plugin` 至 1.1.10, 修复加入房间时未添加白板到布局导致的绘制问题。
 ## [2.16.98] - 2025-02-25
 - 新增 `MemberState.strokeOpacity`, 用于更改线框透明度，仅在 `WhiteSdkConfiguration.enableAppliancePlugin` 启用时有效。
 - 新增 `MemberState.fillOpacity`, 用于更改填充透明度，仅在 `WhiteSdkConfiguration.enableAppliancePlugin` 启用时有效。
