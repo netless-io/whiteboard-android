@@ -33,7 +33,11 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import wendu.dsbridge.special.OnReturnValue;
@@ -294,6 +298,8 @@ public class WhiteSdk {
             }
         });
 
+        addNativeTags(roomParams);
+
         try {
             bridge.callHandler("sdk.joinRoom", new Object[]{roomParams}, (OnReturnValue<String>) roomString -> {
                 JsonObject jsonObject = gson.fromJson(roomString, JsonObject.class);
@@ -317,6 +323,15 @@ public class WhiteSdk {
         } catch (Exception e) {
             roomPromise.catchEx(new SDKError(e.getMessage()));
         }
+    }
+
+    private void addNativeTags(RoomParams roomParams) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+
+            roomParams.addNativeTag("traceId", UUID.randomUUID().toString());
+            roomParams.addNativeTag("time", sdf.format(new Date()));
+        } catch (Exception ignored) {}
     }
 
     /**
