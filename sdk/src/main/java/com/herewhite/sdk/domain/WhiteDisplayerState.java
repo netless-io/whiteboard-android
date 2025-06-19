@@ -19,6 +19,7 @@ public class WhiteDisplayerState extends WhiteObject {
     private SceneState sceneState;
     private String windowBoxState;
     private PageState pageState;
+    private AppState appState;
     private CameraState cameraState;
 
     /**
@@ -105,5 +106,14 @@ public class WhiteDisplayerState extends WhiteObject {
      */
     public PageState getPageState() {
         return pageState;
+    }
+
+    /**
+     * 获取多窗口下应用状态
+     *
+     * @return 应用状态
+     */
+    public AppState getAppState() {
+        return appState;
     }
 }
