@@ -1,4 +1,8 @@
 # 版本更新记录
+## [2.16.105] - 2025-07-08
+- `WindowAppParam.createSlideApp` 支持 customLinks 参数
+- `SlideListener` 新增 `slideOpenUrl` 回调，用于监听 PPT 点击链接事件
+- 更新 `@netless/app-slide` 至 0.2.78
 ## [2.16.104] - 2025-06-19
 - 更新 `@netless/window-manager` 至 1.0.5
   - 修复在最大化状态下，即使没有应用也会错误显示标题栏的问题
