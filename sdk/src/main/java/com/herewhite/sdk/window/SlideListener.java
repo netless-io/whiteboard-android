@@ -35,4 +35,8 @@ public interface SlideListener {
      */
     default void onSlideError(SlideErrorType errorType, String errorMsg, String slideId, int slideIndex) {
     }
+
+    default void slideOpenUrl(String url) {
+
+    }
 }

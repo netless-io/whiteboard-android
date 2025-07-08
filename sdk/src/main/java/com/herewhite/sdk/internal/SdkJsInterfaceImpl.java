@@ -72,6 +72,14 @@ public class SdkJsInterfaceImpl {
     }
 
     @JavascriptInterface
+    public void slideOpenUrl(Object args) {
+        String url = String.valueOf(args);
+        if (slideListener != null) {
+            slideListener.slideOpenUrl(url);
+        }
+    }
+
+    @JavascriptInterface
     public void throwError(Object args) {
         Logger.info("WhiteSDK throwError: " + args);
         if (commonCallback != null) {

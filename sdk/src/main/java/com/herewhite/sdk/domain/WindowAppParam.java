@@ -44,13 +44,17 @@ public class WindowAppParam {
      * @return
      */
     public static WindowAppParam createSlideApp(String taskUuid, String prefixUrl, String title) {
+        return createSlideApp(taskUuid, prefixUrl, title, null);
+    }
+
+    public static WindowAppParam createSlideApp(String taskUuid, String prefixUrl, String title, WhiteSlideCustomLink[] customLinks) {
         if (!prefixUrl.startsWith("http")) {
             throw new IllegalArgumentException("params error, check taskUuid and prefixUrl");
         }
         return new WindowAppParam(
                 KIND_SLIDE,
                 new ProjectorOptions(String.format("/%s/%s", taskUuid, UUID.randomUUID()), title),
-                new ProjectorAttributes(taskUuid, prefixUrl)
+                new ProjectorAttributes(taskUuid, prefixUrl, customLinks)
         );
     }
 
@@ -92,6 +96,7 @@ public class WindowAppParam {
             this.scenePath = scenePath;
             this.scenes = null;
         }
+
     }
 
     private static class PlayerOptions extends Options {
@@ -122,10 +127,17 @@ public class WindowAppParam {
         private final String taskUuid;
         @SerializedName("url")
         private final String prefixUrl;
+        @SerializedName("customLinks")
+        private final WhiteSlideCustomLink[] customLinks;
 
         public ProjectorAttributes(String taskUuid, String prefixUrl) {
+            this(taskUuid, prefixUrl, null);
+        }
+
+        public ProjectorAttributes(String taskUuid, String prefixUrl, WhiteSlideCustomLink[] customLinks) {
             this.taskUuid = taskUuid;
             this.prefixUrl = prefixUrl;
+            this.customLinks = customLinks;
         }
     }
 
