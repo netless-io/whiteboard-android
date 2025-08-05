@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.16.106] - 2025-08-05
+- 更新 `@netless/app-slide` 至 0.2.80, 修复连续两次切换窗口导致PPT冻结状态异常, 无法翻页问题
 ## [2.16.105] - 2025-07-08
 - `WindowAppParam.createSlideApp` 支持 customLinks 参数
 - `SlideListener` 新增 `slideOpenUrl` 回调，用于监听 PPT 点击链接事件
