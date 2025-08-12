@@ -185,7 +185,7 @@ public class WhiteSdk {
 
     private void addWebViewTag(JsBridgeInterface bridge, WhiteSdkConfiguration config) {
         try {
-            if (config.isLog() && bridge instanceof WebView) {
+            if (bridge instanceof WebView) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     PackageInfo info = WebView.getCurrentWebViewPackage();
                     if (info != null) {
