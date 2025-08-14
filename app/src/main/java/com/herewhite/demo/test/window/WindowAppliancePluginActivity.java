@@ -7,8 +7,10 @@ import android.widget.ImageView;
 import com.herewhite.demo.R;
 import com.herewhite.demo.common.SampleBaseActivity;
 import com.herewhite.demo.databinding.ActivityWindowAppliancePluginBinding;
+import com.herewhite.sdk.RoomParams;
 import com.herewhite.sdk.WhiteSdkConfiguration;
 import com.herewhite.sdk.domain.Appliance;
+import com.herewhite.sdk.domain.AppliancePluginOptions;
 import com.herewhite.sdk.domain.CameraConfig;
 import com.herewhite.sdk.domain.ImageInformationWithUrl;
 import com.herewhite.sdk.domain.MemberState;
@@ -17,6 +19,8 @@ import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.ShapeType;
 import com.herewhite.sdk.domain.StrokeType;
 import com.herewhite.sdk.domain.WindowAppParam;
+
+import java.util.Map;
 
 public class WindowAppliancePluginActivity extends SampleBaseActivity {
 
@@ -154,6 +158,43 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
         configuration.setUseMultiViews(true);
         configuration.setEnableAppliancePlugin(true);
         return configuration;
+    }
+
+    @Override
+    protected RoomParams generateRoomParams() {
+        RoomParams roomParams = super.generateRoomParams();
+        roomParams.setAppliancePluginOptions(getAppliancePluginOptions());
+        return roomParams;
+    }
+
+    private AppliancePluginOptions getAppliancePluginOptions() {
+        Map<String, Object> extrasOptions = Map.of(
+                // cursor 配置
+                "cursor", Map.of(
+                        "enable", false,
+                        "expirationTime", 500
+                ),
+                // syncOpt 配置
+                "syncOpt", Map.of(
+                        "interval", 100,
+                        "smoothSync", false
+                ),
+                // bezier 配置
+                "bezier", Map.of(
+                        "enable", false,
+                        "maxDrawCount", 200
+                ),
+                // textEditor 配置
+                "textEditor", Map.of(
+                        "showFloatBar", false,
+                        "canSelectorSwitch", false,
+                        "rightBoundBreak", true
+                )
+        );
+
+        AppliancePluginOptions appliancePluginOptions = new AppliancePluginOptions();
+        appliancePluginOptions.setExtras(extrasOptions);
+        return appliancePluginOptions;
     }
 
     @Override
