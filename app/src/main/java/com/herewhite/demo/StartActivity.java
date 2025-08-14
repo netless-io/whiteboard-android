@@ -148,4 +148,14 @@ public class StartActivity extends AppCompatActivity {
         Intent intent = new Intent(this, WindowNoAppliancePluginActivity.class);
         startActivity(intent);
     }
+
+    public void jumpToRtc(View view) {
+        try {
+            Class<?> clazz = Class.forName("com.herewhite.rtc.demo.MainRtcActivity");
+            Intent intent = new Intent(this, clazz);
+            startActivity(intent);
+        } catch (ClassNotFoundException e) {
+            tokenAlert("rtc demo", "请先在 build.gradle 中打开 rtc demo 的注释");
+        }
+    }
 }

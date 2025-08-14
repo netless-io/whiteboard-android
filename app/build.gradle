@@ -69,4 +69,8 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:${rootProject.espressoVersion}"
 
     implementation 'com.github.iwgang:countdownview:2.1.6'
+
+    if (project.findProject(":rtc") != null) {
+        implementation project(":rtc")
+    }
 }

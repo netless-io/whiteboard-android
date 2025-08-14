@@ -1,1 +1,13 @@
-include ':app', ':rtc', ':sdk'
+include ':app', ':sdk'
+
+def propsFile = new File(rootProject.projectDir, "local.properties")
+def props = new Properties()
+
+if (propsFile.exists()) {
+    props.load(new FileInputStream(propsFile))
+}
+
+def enableRtc = props.getProperty("app.enableRtc", "false").toBoolean()
+if (enableRtc) {
+    include ':rtc'
+}
