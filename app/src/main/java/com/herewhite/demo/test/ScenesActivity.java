@@ -101,8 +101,6 @@ public class ScenesActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void setupRoom() {
-        String uuid = getIntent().getStringExtra(StartActivity.EXTRA_ROOM_UUID);
-
         DemoAPI.Result result = new DemoAPI.Result() {
             @Override
             public void success(String uuid, String token) {
@@ -115,6 +113,7 @@ public class ScenesActivity extends BaseActivity implements View.OnClickListener
             }
         };
 
+        String uuid = demoAPI.getRoomUUID();
         if (uuid != null) {
             demoAPI.getRoomToken(uuid, result);
         } else {

@@ -73,7 +73,7 @@ public class PureReplayActivity extends AppCompatActivity implements PlayerEvent
     }
 
     protected void setupPlayer() {
-        final String uuid = getIntent().getStringExtra(StartActivity.EXTRA_ROOM_UUID);
+        final String uuid = demoAPI.getRoomUUID();
         DemoAPI.Result result = new DemoAPI.Result() {
             @Override
             public void success(String uuid, String roomToken) {

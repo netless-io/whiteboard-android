@@ -148,7 +148,7 @@ public class PlayActivity extends BaseActivity implements PlayerEventListener {
 
     //region override
     protected void setupPlayer() {
-        final String uuid = getIntent().getStringExtra(StartActivity.EXTRA_ROOM_UUID);
+        final String uuid = demoAPI.getRoomUUID();
 
         try {
             // WhiteExoPlayer demo

@@ -1,5 +1,6 @@
 package com.herewhite.demo;
 
+import android.app.AlertDialog;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,8 +25,18 @@ public abstract class BaseActivity extends AppCompatActivity {
         mIdlingResource.setIdleState(idling);
     }
 
-
-    public void showToast(String msg) {
+    protected void showToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    protected void showAlert(String title, String message) {
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(message);
+        alertDialog.setButton(
+                AlertDialog.BUTTON_NEUTRAL,
+                "OK",
+                (dialog, which) -> dialog.dismiss());
+        alertDialog.show();
     }
 }

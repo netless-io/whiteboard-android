@@ -107,7 +107,7 @@ public class PptResourceCacheActivity extends BaseActivity {
 
         // 测试支持
         testMarkIdling(false);
-        String uuid = getIntent().getStringExtra(StartActivity.EXTRA_ROOM_UUID);
+        String uuid = demoAPI.getRoomUUID();
         if (uuid == null) {
             createRoom();
         } else {

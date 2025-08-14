@@ -77,7 +77,7 @@ abstract public class SampleBaseActivity extends BaseActivity {
             }
         };
 
-        String uuid = getIntent().getStringExtra(StartActivity.EXTRA_ROOM_UUID);
+        String uuid = demoAPI.getRoomUUID();
         if (uuid != null) {
             demoAPI.getRoomToken(uuid, result);
         } else {

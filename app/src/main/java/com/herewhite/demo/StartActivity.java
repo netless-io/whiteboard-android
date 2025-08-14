@@ -1,161 +1,101 @@
 package com.herewhite.demo;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.annotation.NonNull;
 
 import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.demo.test.window.WindowAppliancePluginActivity;
-import com.herewhite.demo.test.window.WindowAppsActivity;
-import com.herewhite.demo.test.window.WindowNoAppliancePluginActivity;
 import com.herewhite.demo.test.window.WindowTestActivity;
 
-public class StartActivity extends AppCompatActivity {
-    public static final String EXTRA_ROOM_UUID = "com.herewhite.demo.UUID";
+public class StartActivity extends BaseActivity {
 
-    DemoAPI demoAPI = DemoAPI.get();
+    // 数据驱动的按钮配置
+    private static class DemoItem {
+        String title;
+        Class<?> targetClass;
+        Runnable specialAction;
+
+        DemoItem(String title, Class<?> targetClass) {
+            this.title = title;
+            this.targetClass = targetClass;
+        }
+
+        DemoItem(String title, Runnable specialAction) {
+            this.title = title;
+            this.specialAction = specialAction;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setupDemoItems();
     }
 
-    String getUuid() {
-        return "";
-    }
+    private void setupDemoItems() {
+        DemoItem[] items = {
+                new DemoItem(getString(R.string.join_room), RoomActivity.class),
+                // new DemoItem(getString(R.string.create), RoomActivity.class),
+                new DemoItem(getString(R.string.replay), PlayActivity.class),
+                new DemoItem(getString(R.string.replay_pure), PureReplayActivity.class),
+                new DemoItem(getString(R.string.window_room), WindowTestActivity.class),
+                // new DemoItem("Apps", WindowAppsActivity.class),
+                new DemoItem(getString(R.string.appliance_plugin), WindowAppliancePluginActivity.class),
+                // new DemoItem("NoAppliancePlugin", WindowNoAppliancePluginActivity.class),
+                // new DemoItem("混音", this::jumpToRtc)
+        };
 
-    void tokenAlert() {
-        tokenAlert("token", "请在 https://console.herewhite.com 中注册，并获取 sdk token，再进行使用");
-    }
+        LinearLayout container = findViewById(R.id.container);
+        for (DemoItem item : items) {
+            Button button = getButton(item);
+            button.setOnClickListener(v -> {
+                if (DemoAPI.get().invalidToken()) {
+                    showAlert("token", "请在 https://console.herewhite.com 中注册，并获取 sdk token，再进行使用");
+                    return;
+                }
 
-    void tokenAlert(String title, String message) {
-        AlertDialog alertDialog = new AlertDialog.Builder(StartActivity.this).create();
-        alertDialog.setTitle(title);
-        alertDialog.setMessage(message);
-        alertDialog.setButton(
-                AlertDialog.BUTTON_NEUTRAL,
-                "OK",
-                (dialog, which) -> dialog.dismiss());
-        alertDialog.show();
-    }
-
-    public void joinNewRoom(View view) {
-        if (demoAPI.invalidToken()) {
-            tokenAlert();
-            return;
-        }
-
-        Intent intent = new Intent(this, RoomActivity.class);
-        startActivity(intent);
-    }
-
-    public void joinRoom(View view) {
-        if (demoAPI.invalidToken()) {
-            tokenAlert();
-            return;
-        }
-
-        Intent intent = new Intent(this, RoomActivity.class);
-        String uuid = getUuid();
-        if (uuid.length() > 0) {
-            intent.putExtra(EXTRA_ROOM_UUID, uuid);
-        }
-        startActivity(intent);
-    }
-
-    public void replayRoom(View view) {
-        if (demoAPI.invalidToken()) {
-            tokenAlert();
-            return;
-        }
-
-        Intent intent = new Intent(this, PlayActivity.class);
-        String uuid = getUuid();
-        if (uuid.length() > 0) {
-            intent.putExtra(EXTRA_ROOM_UUID, uuid);
-            startActivity(intent);
-        } else if (demoAPI.getRoomUUID().length() > 0) {
-            intent.putExtra(EXTRA_ROOM_UUID, demoAPI.getRoomUUID());
-            startActivity(intent);
-        } else {
-            tokenAlert("uuid", "请填入回放用 uuid");
+                if (item.specialAction != null) {
+                    // 特殊处理，如jumpToRtc
+                    item.specialAction.run();
+                } else {
+                    // 普通的Class<?>方式启动
+                    Intent intent = new Intent(this, item.targetClass);
+                    startActivity(intent);
+                }
+            });
+            container.addView(button, getLayoutParams());
         }
     }
 
-    public void pureReplay(View view) {
-        if (demoAPI.invalidToken()) {
-            tokenAlert();
-            return;
-        }
-
-        Intent intent = new Intent(this, PureReplayActivity.class);
-
-        String uuid = getUuid();
-        if (uuid.length() > 0) {
-            intent.putExtra(EXTRA_ROOM_UUID, uuid);
-            startActivity(intent);
-        } else if (demoAPI.getRoomUUID().length() > 0) {
-            intent.putExtra(EXTRA_ROOM_UUID, demoAPI.getRoomUUID());
-            startActivity(intent);
-        } else {
-            tokenAlert("uuid", "请填入回放用 uuid");
-        }
+    private LinearLayout.LayoutParams getLayoutParams() {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(16, 16, 16, 16);
+        return params;
     }
 
-    public void windowTest(View view) {
-        if (demoAPI.invalidToken()) {
-            tokenAlert();
-            return;
-        }
-
-        Intent intent = new Intent(this, WindowTestActivity.class);
-        startActivity(intent);
+    private @NonNull Button getButton(DemoItem item) {
+        Button button = new Button(this);
+        button.setText(item.title);
+        button.setTextSize(16);
+        button.setAllCaps(false);
+        return button;
     }
 
-    public void windowAppsTest(View view) {
-        if (demoAPI.invalidToken()) {
-            tokenAlert();
-            return;
-        }
-
-        Intent intent = new Intent(this, WindowAppsActivity.class);
-        startActivity(intent);
-    }
-
-    public void appliancePlugin(View view) {
-        if (demoAPI.invalidToken()) {
-            tokenAlert();
-            return;
-        }
-
-        Intent intent = new Intent(this, WindowAppliancePluginActivity.class);
-        startActivity(intent);
-    }
-
-    public void noAppliancePlugin(View view) {
-        if (demoAPI.invalidToken()) {
-            tokenAlert();
-            return;
-        }
-
-        Intent intent = new Intent(this, WindowNoAppliancePluginActivity.class);
-        startActivity(intent);
-    }
-
-    public void jumpToRtc(View view) {
+    private void jumpToRtc() {
         try {
             Class<?> clazz = Class.forName("com.herewhite.rtc.demo.MainRtcActivity");
             Intent intent = new Intent(this, clazz);
             startActivity(intent);
         } catch (ClassNotFoundException e) {
-            tokenAlert("rtc demo", "请先在 build.gradle 中打开 rtc demo 的注释");
+            showAlert("rtc demo", "config local.properties app.enableRtc=false");
         }
     }
 }

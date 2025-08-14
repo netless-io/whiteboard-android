@@ -1,10 +1,14 @@
 <resources>
     <string name="app_name">whiteboard-demo</string>
-    <string name="title_activity_start">首页</string>
     <string name="uuid">uuid</string>
-    <string name="join">加入房间</string>
+    <string name="join_room">加入房间</string>
     <string name="replay">回放</string>
+    <string name="replay_pure">纯白板回放</string>
     <string name="create">创建房间</string>
+    <string name="window_room">多窗口房间</string>
+    <string name="appliance_plugin">AppliancePlugin</string>
+    <string name="noAppliancePlugin">NoAppliancePlugin</string>
+
     <string name="title_activity_play">PlayActivity</string>
     <string name="broadcast_command">进入主播模式</string>
     <string name="scalePptToFit_command">铺满 ppt</string>
@@ -52,8 +56,6 @@
     <string name="windowTest">多窗口</string>
     <string name="windowAppsTest">Apps</string>
     <string name="fullScreenTest">Fullscreen</string>
-    <string name="appliancePlugin">AppliancePlugin</string>
-    <string name="noAppliancePlugin">NoAppliancePlugin</string>
     <string name="jumpToRtc">混音</string>
 
     <!--ijkplayer-->

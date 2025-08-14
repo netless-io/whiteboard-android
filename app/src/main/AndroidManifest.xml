@@ -32,7 +32,6 @@
             android:label="@string/title_activity_play" />
         <activity
             android:name=".StartActivity"
-            android:label="@string/title_activity_start"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

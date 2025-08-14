@@ -124,8 +124,6 @@ public class RoomActivity extends BaseActivity {
     }
 
     private void setupRoom() {
-        String uuid = getIntent().getStringExtra(StartActivity.EXTRA_ROOM_UUID);
-
         DemoAPI.Result result = new DemoAPI.Result() {
             @Override
             public void success(String uuid, String token) {
@@ -138,6 +136,7 @@ public class RoomActivity extends BaseActivity {
             }
         };
 
+        String uuid = demoAPI.getRoomUUID();
         if (uuid != null) {
             demoAPI.getRoomToken(uuid, result);
         } else {
