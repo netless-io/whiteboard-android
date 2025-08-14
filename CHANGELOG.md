@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.16.107] - 2025-08-14
+- 更新 `@netless/appliance-plugin` 至 1.1.19
+- 新增 `RoomParams.appliancePluginOptions` 参数，支持 appliancePlugin 参数配置。
 ## [2.16.106] - 2025-08-05
 - 更新 `@netless/app-slide` 至 0.2.80, 修复连续两次切换窗口导致PPT冻结状态异常, 无法翻页问题
 ## [2.16.105] - 2025-07-08
