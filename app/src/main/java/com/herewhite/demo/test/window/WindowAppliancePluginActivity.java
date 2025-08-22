@@ -120,7 +120,7 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
             room.moveCamera(config);
         });
 
-        binding.snapshot.setOnClickListener( v -> {
+        binding.snapshot.setOnClickListener(v -> {
             room.getSceneSnapshotImage("/init", new Promise<Bitmap>() {
                 @Override
                 public void then(Bitmap bitmap) {
