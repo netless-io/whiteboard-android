@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.16.108] - 2025-08-22
+- 更新 `@netless/appliance-plugin` 至 1.1.21 
 ## [2.16.107] - 2025-08-14
 - 更新 `@netless/appliance-plugin` 至 1.1.19
 - 新增 `RoomParams.appliancePluginOptions` 参数，支持 appliancePlugin 参数配置。
