@@ -39,6 +39,7 @@ public class WindowRegisterAppActivity extends AppCompatActivity {
     private static final String KIND_EMBEDDED_PAGE = "EmbeddedPage";
     private static final String KIND_COUNTDOWN = "Countdown";
     private static final String KIND_QUILL = "Quill";
+    private static final String KIND_GEOGEBRA = "GeoGebra";
 
     private static final String ROOM_INFO = "RoomInfo";
     private static final String ROOM_ACTION = "RoomAction";
@@ -136,6 +137,25 @@ public class WindowRegisterAppActivity extends AppCompatActivity {
             });
         });
 
+        findViewById(R.id.addGeoGebra).setOnClickListener(v -> {
+            WindowAppParam appParam = new WindowAppParam(
+                    "GeoGebra",
+                    new WindowAppParam.Options("GeoGebra"),
+                    null
+            );
+            mRoom.addApp(appParam, new Promise<String>() {
+                @Override
+                public void then(String appId) {
+
+                }
+
+                @Override
+                public void catchEx(SDKError t) {
+
+                }
+            });
+        });
+
 
         joinRoom(demoAPI.getRoomUUID(), demoAPI.getRoomToken());
     }
@@ -188,37 +208,51 @@ public class WindowRegisterAppActivity extends AppCompatActivity {
         mWhiteSdk.registerApp(params, null);
     }
 
-private void registerCountdown() {
-    // remote file: https://cdn.jsdelivr.net/npm/@netless/app-countdown@0.0.2-alpha.1/dist/main.iife.js
-    // read from local file
-    String jsString = getAppJsFromAsserts("app/countdown.iife.js");
-    String kind = "Countdown";
-    String variable = "NetlessAppCountdown.default";
+    private void registerCountdown() {
+        // remote file: https://cdn.jsdelivr.net/npm/@netless/app-countdown@0.0.2-alpha.1/dist/main.iife.js
+        // read from local file
+        String jsString = getAppJsFromAsserts("app/countdown.iife.js");
+        String kind = "Countdown";
+        String variable = "NetlessAppCountdown.default";
 
-    WindowRegisterAppParams params = new WindowRegisterAppParams(
-            jsString,
-            kind,
-            variable,
-            Collections.emptyMap()
-    );
-    mWhiteSdk.registerApp(params, null);
-}
+        WindowRegisterAppParams params = new WindowRegisterAppParams(
+                jsString,
+                kind,
+                variable,
+                Collections.emptyMap()
+        );
+        mWhiteSdk.registerApp(params, null);
+    }
 
-private void registerQuill() {
-    // remote file: https://cdn.jsdelivr.net/npm/@netless/app-quill@0.0.1-fb.2/dist/index.global.js
-    // read from local file
-    String jsString = getAppJsFromAsserts("app/quill.iife.js");
-    String kind = "Quill";
-    String variable = "NetlessAppQuill.default";
+    private void registerQuill() {
+        // remote file: https://cdn.jsdelivr.net/npm/@netless/app-quill@0.0.1-fb.2/dist/index.global.js
+        // read from local file
+        String jsString = getAppJsFromAsserts("app/quill.iife.js");
+        String kind = "Quill";
+        String variable = "NetlessAppQuill.default";
 
-    WindowRegisterAppParams params = new WindowRegisterAppParams(
-            jsString,
-            kind,
-            variable,
-            Collections.emptyMap()
-    );
-    mWhiteSdk.registerApp(params, null);
-}
+        WindowRegisterAppParams params = new WindowRegisterAppParams(
+                jsString,
+                kind,
+                variable,
+                Collections.emptyMap()
+        );
+        mWhiteSdk.registerApp(params, null);
+    }
+
+    private void registerGeoGebra() {
+        String jsString = getAppJsFromAsserts("app/geogebra.iife.js");
+        String kind = "GeoGebra";
+        String variable = "NetlessAppGeoGebra.default";
+
+        WindowRegisterAppParams params = new WindowRegisterAppParams(
+                jsString,
+                kind,
+                variable,
+                Collections.emptyMap()
+        );
+        mWhiteSdk.registerApp(params, null);
+    }
 
     @Override
     protected void onDestroy() {
@@ -262,6 +296,7 @@ private void registerQuill() {
         registerEmbedPage();
         registerCountdown();
         registerQuill();
+        registerGeoGebra();
 
         mWhiteSdk.joinRoom(roomParams, new AbstractRoomCallbacks() {
 

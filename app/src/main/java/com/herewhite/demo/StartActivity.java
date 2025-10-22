@@ -48,6 +48,7 @@ public class StartActivity extends BaseActivity {
                 new DemoItem(getString(R.string.appliance_plugin), WindowAppliancePluginActivity.class),
                 // new DemoItem("NoAppliancePlugin", WindowNoAppliancePluginActivity.class),
                 // new DemoItem("混音", this::jumpToRtc)
+                // new DemoItem(getString(R.string.register_app), WindowRegisterAppActivity.class),
         };
 
         LinearLayout container = findViewById(R.id.container);

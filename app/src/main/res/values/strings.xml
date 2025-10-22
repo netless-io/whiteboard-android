@@ -8,6 +8,7 @@
     <string name="window_room">多窗口房间</string>
     <string name="appliance_plugin">AppliancePlugin</string>
     <string name="noAppliancePlugin">NoAppliancePlugin</string>
+    <string name="register_app">RegisterApp</string>
 
     <string name="title_activity_play">PlayActivity</string>
     <string name="broadcast_command">进入主播模式</string>
