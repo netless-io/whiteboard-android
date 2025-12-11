@@ -102,6 +102,16 @@
                     android:textAllCaps="false" />
             </LinearLayout>
         </ScrollView>
+
+        <TextView
+            android:id="@+id/rtc_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top"
+            android:layout_marginTop="20dp"
+            android:textColor="#7FCCCCCC"
+            android:textSize="16dp" />
+
     </FrameLayout>
 
     <LinearLayout
@@ -109,7 +119,7 @@
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        tools:context=".MainRtcActivity">
+        tools:context=".MainRtcActivity4x">
 
         <FrameLayout
             android:id="@+id/remote_video_view_container"

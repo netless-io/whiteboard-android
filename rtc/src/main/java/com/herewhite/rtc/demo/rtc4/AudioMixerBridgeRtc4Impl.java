@@ -1,29 +1,30 @@
-package com.herewhite.rtc.demo;
+package com.herewhite.rtc.demo.rtc4;
+
+import static io.agora.rtc2.Constants.AUDIO_MIXING_STATE_FAILED;
 
 import android.util.Log;
 
 import com.herewhite.sdk.AudioMixerBridge;
 
-import io.agora.rtc.RtcEngine;
+import io.agora.rtc2.RtcEngine;
 
 /**
  * 用户需要自己实现 rtc 混音逻辑
  */
-public class AgoraAudioMixerBridge implements AudioMixerBridge {
-    public static final String TAG = AgoraAudioMixerBridge.class.getSimpleName();
-    public static final int AUDIO_MIXING_STATE_FAILED = 714;
+public class AudioMixerBridgeRtc4Impl implements AudioMixerBridge {
+    public static final String TAG = AudioMixerBridgeRtc4Impl.class.getSimpleName();
 
     private RtcEngine rtcEngine;
     private ResultCallback resultCallback;
 
-    public AgoraAudioMixerBridge(RtcEngine rtcEngine, ResultCallback resultCallback) {
+    public AudioMixerBridgeRtc4Impl(RtcEngine rtcEngine, ResultCallback resultCallback) {
         this.rtcEngine = rtcEngine;
         this.resultCallback = resultCallback;
     }
 
     @Override
     public void startAudioMixing(String filepath, boolean loopback, boolean replace, int cycle) {
-        int code = rtcEngine.startAudioMixing(filepath, loopback, replace, cycle);
+        int code = rtcEngine.startAudioMixing(filepath, loopback, cycle, 0);
         Log.d(TAG, "rtcMix startAudioMixing " + filepath + " " + code);
         if (code != 0) {
             onMediaStateChanged(AUDIO_MIXING_STATE_FAILED, code);

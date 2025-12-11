@@ -47,7 +47,7 @@ public class StartActivity extends BaseActivity {
                 // new DemoItem("Apps", WindowAppsActivity.class),
                 new DemoItem(getString(R.string.appliance_plugin), WindowAppliancePluginActivity.class),
                 // new DemoItem("NoAppliancePlugin", WindowNoAppliancePluginActivity.class),
-                // new DemoItem("混音", this::jumpToRtc)
+                new DemoItem("混音", this::jumpToRtc)
                 // new DemoItem(getString(R.string.register_app), WindowRegisterAppActivity.class),
         };
 

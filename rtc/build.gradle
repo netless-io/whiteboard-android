@@ -1,5 +1,16 @@
 apply plugin: 'com.android.library'
 
+def localProps = new Properties()
+def localFile = rootProject.file('local.properties')
+
+if (localFile.exists()) {
+    localFile.withInputStream { stream -> localProps.load(stream) }
+} else {
+    println "Warning: local.properties not found"
+}
+// 从 local.properties 读取 RTC SDK 版本配置: "3" 使用 3.7.x 版本, "4" 使用 4.x 版本
+def rtcVersion = localProps.getProperty('app.rtcVersion', '4')
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
@@ -10,6 +21,9 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // 将 RTC 版本配置传递给 Java 代码
+        buildConfigField "String", "RTC_VERSION", "\"${rtcVersion}\""
     }
 
     viewBinding {
@@ -26,6 +40,21 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    // 根据版本配置排除不需要的源文件
+    sourceSets {
+        main {
+            java {
+                if (rtcVersion == "3") {
+                    // 使用 3.x 版本时，排除 rtc4 目录下的所有文件
+                    exclude '**/rtc4/**'
+                } else {
+                    // 使用 4.x 版本时，排除 rtc3 目录下的所有文件
+                    exclude '**/rtc3/**'
+                }
+            }
+        }
+    }
 }
 
 dependencies {
@@ -34,7 +63,13 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
-    implementation "io.agora.rtc:full-rtc-basic:3.7.1"
+    // 根据版本配置引入对应的 RTC SDK
+    def rtcSdk3 = "io.agora.rtc:full-rtc-basic:3.7.1"
+    def rtcSdk4 = "io.agora.rtc:full-sdk:4.3.2"
+    compileOnly rtcSdk3
+    compileOnly rtcSdk4
+    implementation(rtcVersion == "3" ? rtcSdk3 : rtcSdk4)
+
     implementation 'androidx.appcompat:appcompat:1.2.0'
 
     // test

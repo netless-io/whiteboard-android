@@ -27,6 +27,7 @@ import com.herewhite.sdk.WhiteSdkConfiguration;
 import com.herewhite.sdk.WhiteboardView;
 import com.herewhite.sdk.domain.GlobalState;
 import com.herewhite.sdk.domain.Promise;
+import com.herewhite.sdk.domain.Region;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.SDKError;
@@ -98,18 +99,56 @@ public class WindowTestActivity extends AppCompatActivity {
 
         // Slide 音量测试
         findViewById(R.id.updateSlideVolume).setOnClickListener(new View.OnClickListener() {
-            final List<Float> volumes = new ArrayList<Float>() {
-                {
-                    add(1.0f);
-                    add(0f);
-                    add(0.5f);
+            private long totalTrueTime = 0;
+            private int trueCount = 0;
+
+            private long totalFalseTime = 0;
+            private int falseCount = 0;
+
+            private void logAverageTimes() {
+                if (trueCount > 0) {
+                    long avgTrue = totalTrueTime / trueCount;
+                    Log.e("AverageTime", "setWritable(true) avg time = " + avgTrue + "ms" + " trueCount =" + trueCount);
                 }
-            };
-            int index = 0;
+                if (falseCount > 0) {
+                    long avgFalse = totalFalseTime / falseCount;
+                    Log.e("AverageTime", "setWritable(false) avg time = " + avgFalse + "ms" + " falseCount =" + falseCount);
+                }
+            }
+
+            private boolean writableValue = true;  // 初始为 true
 
             @Override
             public void onClick(View v) {
-                mWhiteSdk.updateSlideVolume(volumes.get(index++ % volumes.size()));
+                writableValue = !writableValue;
+
+                long startTime = System.currentTimeMillis();
+                boolean value = writableValue;
+
+                mRoom.setWritable(value, new Promise<Boolean>() {
+                    @Override
+                    public void then(Boolean aBoolean) {
+                        long cost = System.currentTimeMillis() - startTime;
+
+                        if (aBoolean) {
+                            totalTrueTime += cost;
+                            trueCount++;
+                            // logAction("setWritable(true) count = " + trueCount + "cost = " + cost + "ms");
+                        } else {
+                            totalFalseTime += cost;
+                            falseCount++;
+                            // logAction("setWritable(false) count = " + falseCount + "cost = " + cost + "ms");
+                        }
+
+                        // 输出平均时间
+                        logAverageTimes();
+                    }
+
+                    @Override
+                    public void catchEx(SDKError t) {
+                        logAction("setWritable failed: " + t.getMessage());
+                    }
+                });
             }
         });
 
@@ -382,6 +421,7 @@ public class WindowTestActivity extends AppCompatActivity {
                 .setCollectorStyles(styleMap);
         // optional
         roomParams.setWindowParams(windowParams);
+        roomParams.setRegion(Region.sg);
 
         mWhiteSdk.joinRoom(roomParams, new RoomListener() {
 
