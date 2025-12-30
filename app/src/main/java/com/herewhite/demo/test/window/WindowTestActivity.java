@@ -38,6 +38,7 @@ import com.herewhite.sdk.domain.WindowAppParam;
 import com.herewhite.sdk.domain.WindowAppSyncAttrs;
 import com.herewhite.sdk.domain.WindowParams;
 import com.herewhite.sdk.domain.WindowPrefersColorScheme;
+import com.herewhite.sdk.domain.WindowRegisterAppParams;
 import com.herewhite.sdk.window.SlideListener;
 
 import java.io.BufferedReader;
@@ -47,6 +48,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -421,7 +423,9 @@ public class WindowTestActivity extends AppCompatActivity {
                 .setCollectorStyles(styleMap);
         // optional
         roomParams.setWindowParams(windowParams);
-        roomParams.setRegion(Region.sg);
+        roomParams.setRegion(Region.cn);
+
+        registerAppPlyr();
 
         mWhiteSdk.joinRoom(roomParams, new RoomListener() {
 
@@ -522,6 +526,41 @@ public class WindowTestActivity extends AppCompatActivity {
     }
 
     String getStyleFromAsserts(String path) throws IOException {
+        StringBuilder style = new StringBuilder();
+        InputStream is = getAssets().open(path);
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+            String str;
+            while ((str = br.readLine()) != null) {
+                style.append(str);
+            }
+        }
+        return style.toString();
+    }
+
+    private void registerAppPlyr() {
+        String jsString = getAppJsFromAsserts("app/appPlyr-v0.2.6.iife.js");
+        String kind = "Plyr";
+        String variable = "NetlessAppPlyr.default";
+
+        WindowRegisterAppParams params = new WindowRegisterAppParams(
+                jsString,
+                kind,
+                variable,
+                Collections.emptyMap()
+        );
+        mWhiteSdk.registerApp(params, null);
+    }
+
+    private String getAppJsFromAsserts(String path) {
+        String result = null;
+        try {
+            result = getStringFromAsserts(path);
+        } catch (IOException ignored) {
+        }
+        return result;
+    }
+
+    String getStringFromAsserts(String path) throws IOException {
         StringBuilder style = new StringBuilder();
         InputStream is = getAssets().open(path);
         try (BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {

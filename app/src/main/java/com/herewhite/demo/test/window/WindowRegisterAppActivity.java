@@ -156,7 +156,6 @@ public class WindowRegisterAppActivity extends AppCompatActivity {
             });
         });
 
-
         joinRoom(demoAPI.getRoomUUID(), demoAPI.getRoomToken());
     }
 
@@ -254,6 +253,20 @@ public class WindowRegisterAppActivity extends AppCompatActivity {
         mWhiteSdk.registerApp(params, null);
     }
 
+    private void registerAppPlyr() {
+        String jsString = getAppJsFromAsserts("app/appPlyr-v0.2.6.iife.js");
+        String kind = "Plyr";
+        String variable = "NetlessAppPlyr.default";
+
+        WindowRegisterAppParams params = new WindowRegisterAppParams(
+                jsString,
+                kind,
+                variable,
+                Collections.emptyMap()
+        );
+        mWhiteSdk.registerApp(params, null);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -297,6 +310,7 @@ public class WindowRegisterAppActivity extends AppCompatActivity {
         registerCountdown();
         registerQuill();
         registerGeoGebra();
+        registerAppPlyr();
 
         mWhiteSdk.joinRoom(roomParams, new AbstractRoomCallbacks() {
 
