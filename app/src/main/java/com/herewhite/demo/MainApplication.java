@@ -13,5 +13,6 @@ public class MainApplication extends Application {
         DemoAPI.get().init(getApplicationContext());
         WhiteboardView.setWebContentsDebuggingEnabled(true);
         // WhiteSdk.prepareWhiteConnection(this, new ConnectionPrepareParam("123/12312", Region.cn));
+        // WhiteboardView.enableAssetsHttps();
     }
 }
