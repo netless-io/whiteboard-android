@@ -7,6 +7,12 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
+import android.webkit.WebViewClient;
+
+import androidx.webkit.WebViewAssetLoader;
+
+import com.herewhite.sdk.domain.AssetsHttpsOptions;
+import com.herewhite.sdk.internal.WhiteWebViewClient;
 
 import wendu.dsbridge.special.DWebView;
 import wendu.dsbridge.special.OnReturnValue;
@@ -18,11 +24,14 @@ import wendu.dsbridge.special.OnReturnValue;
  * `WhiteboardView` 类，用于配置白板界面。
  */
 public class WhiteboardView extends DWebView implements JsBridgeInterface {
-    private static String entryUrl = "file:///android_asset/whiteboard/index.html";
+    private static String sEntryUrl = "file:///android_asset/whiteboard/index.html";
+    private static AssetsHttpsOptions sAssetsHttpsOptions;
 
     private boolean autoResize = true;
     private RefreshViewSizeStrategy delayStrategy;
     private WhiteSdk whiteSdk;
+    private WhiteWebViewClient whiteWebViewClient;
+    private String entryUrl = sEntryUrl;
 
     /**
      * 初始化白板界面。
@@ -88,17 +97,59 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
     /// @endcond
 
     public static void setEntryUrl(String entryUrl) {
-        WhiteboardView.entryUrl = entryUrl;
+        WhiteboardView.sEntryUrl = entryUrl;
+    }
+
+    /**
+     * WhiteboardView 默认使用 file 方式加载内置白板资源，这是最稳定的运行模式。
+     * 对于需要突破 file 协议限制的特殊场景，可通过本方法显式启用
+     * 基于 WebViewAssetLoader 的 HTTPS 资源加载方案。
+     *
+     * 注意：
+     * 1. 该配置为进程级全局配置，必须在创建任何 WhiteboardView 实例之前调用；
+     * 2. 启用后将不再支持切换回默认的 file 加载模式。
+     */
+    public static void enableAssetsHttps() {
+        sAssetsHttpsOptions = new AssetsHttpsOptions();
     }
 
     private void init() {
         if (isInEditMode()) return;
         getSettings().setMediaPlaybackRequiresUserGesture(false);
         getSettings().setTextZoom(100);
-        loadUrl(entryUrl);
         setWebChromeClient(new FixWebChromeClient());
+        initWebViewClients();
+        resolveAssetsOptions();
+
+        loadUrl(entryUrl);
+
         // 100ms，减少用户体验问题，防止动画过程中频繁调用问题
         delayStrategy = new RefreshViewSizeStrategy(100);
+    }
+
+    private void resolveAssetsOptions() {
+        if (sAssetsHttpsOptions == null) {
+            entryUrl = sEntryUrl;
+            return;
+        }
+
+        AssetsHttpsOptions options = sAssetsHttpsOptions;
+        entryUrl = options.buildEntryUrl();
+        WebViewAssetLoader assetLoader = new WebViewAssetLoader.Builder()
+                .setDomain(options.getDomain())
+                .addPathHandler(options.getAssetsPath(), new WebViewAssetLoader.AssetsPathHandler(getContext().getApplicationContext()))
+                .build();
+        whiteWebViewClient.setAssetLoader(assetLoader);
+    }
+
+    private void initWebViewClients() {
+        whiteWebViewClient = new WhiteWebViewClient();
+        super.setWebViewClient(whiteWebViewClient);
+    }
+
+    @Override
+    public void setWebViewClient(WebViewClient client) {
+        whiteWebViewClient.setDelegate(client);
     }
 
     @Override
