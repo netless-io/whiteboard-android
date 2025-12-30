@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.16.113] - 2025-12-30
+- 更新 `@netless/app-slide` 至 0.2.93
 ## [2.16.112] - 2025-12-22
 - 新增 `AudioEffectImplement.setEffectSoundId`, 更新音效混音播放状态。
 - 新增 `AudioEffectImplement.setEffectDurationUpdate`, 更新音效混音文件的总时长。
