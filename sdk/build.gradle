@@ -1,6 +1,7 @@
-apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
-group = 'com.github.netless-io'
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+}
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -70,4 +71,17 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 artifacts {
     archives sourcesJar
     archives javadocJar
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                groupId = 'com.github.netless-io'
+                artifactId = 'whiteboard-android'
+            }
+        }
+    }
 }
