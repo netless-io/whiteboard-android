@@ -25,13 +25,14 @@ import wendu.dsbridge.special.OnReturnValue;
  */
 public class WhiteboardView extends DWebView implements JsBridgeInterface {
     private static String sEntryUrl = "file:///android_asset/whiteboard/index.html";
-    private static AssetsHttpsOptions sAssetsHttpsOptions;
 
     private boolean autoResize = true;
     private RefreshViewSizeStrategy delayStrategy;
     private WhiteSdk whiteSdk;
     private WhiteWebViewClient whiteWebViewClient;
     private String entryUrl = sEntryUrl;
+    private WhiteboardViewOptions options = new WhiteboardViewOptions();
+
 
     /**
      * 初始化白板界面。
@@ -39,7 +40,20 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
      * @param context 安卓活动 (Android Activity) 的上下文。
      */
     public WhiteboardView(Context context) {
+        this(context, (WhiteboardViewOptions) null);
+    }
+
+    /**
+     * 初始化白板界面。
+     *
+     * @param context 安卓活动 (Android Activity) 的上下文。
+     * @param options 白板界面配置选项。
+     */
+    public WhiteboardView(Context context, WhiteboardViewOptions options) {
         super(getFixedContext(context));
+        if (options != null) {
+            this.options = options;
+        }
         init();
     }
 
@@ -100,19 +114,6 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
         WhiteboardView.sEntryUrl = entryUrl;
     }
 
-    /**
-     * WhiteboardView 默认使用 file 方式加载内置白板资源，这是最稳定的运行模式。
-     * 对于需要突破 file 协议限制的特殊场景，可通过本方法显式启用
-     * 基于 WebViewAssetLoader 的 HTTPS 资源加载方案。
-     *
-     * 注意：
-     * 1. 该配置为进程级全局配置，必须在创建任何 WhiteboardView 实例之前调用；
-     * 2. 启用后将不再支持切换回默认的 file 加载模式。
-     */
-    public static void enableAssetsHttps() {
-        sAssetsHttpsOptions = new AssetsHttpsOptions();
-    }
-
     private void init() {
         if (isInEditMode()) return;
         getSettings().setMediaPlaybackRequiresUserGesture(false);
@@ -128,16 +129,21 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
     }
 
     private void resolveAssetsOptions() {
-        if (sAssetsHttpsOptions == null) {
+        if (!options.isEnableAssetsHttps()) {
             entryUrl = sEntryUrl;
             return;
         }
 
-        AssetsHttpsOptions options = sAssetsHttpsOptions;
-        entryUrl = options.buildEntryUrl();
+        AssetsHttpsOptions assetsHttpsOptions = options.getAssetsHttpsOptions();
+        if (assetsHttpsOptions == null) {
+            entryUrl = sEntryUrl;
+            return;
+        }
+
+        entryUrl = assetsHttpsOptions.buildEntryUrl();
         WebViewAssetLoader assetLoader = new WebViewAssetLoader.Builder()
-                .setDomain(options.getDomain())
-                .addPathHandler(options.getAssetsPath(), new WebViewAssetLoader.AssetsPathHandler(getContext().getApplicationContext()))
+                .setDomain(assetsHttpsOptions.getDomain())
+                .addPathHandler(assetsHttpsOptions.getAssetsPath(), new WebViewAssetLoader.AssetsPathHandler(getContext().getApplicationContext()))
                 .build();
         whiteWebViewClient.setAssetLoader(assetLoader);
     }
