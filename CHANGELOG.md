@@ -1,4 +1,6 @@
 # 版本更新记录
+## [2.16.114] - 2026-01-08
+- 新增 `WhiteboardViewOptions.enableAssetsHttps`, 支持资源请求使用 https 协议。
 ## [2.16.113] - 2025-12-30
 - 更新 `@netless/app-slide` 至 0.2.93
 ## [2.16.112] - 2025-12-22
