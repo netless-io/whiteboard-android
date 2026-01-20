@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.16.115] - 2026-01-20
+- 更新 `@netless/app-slide` 至 0.2.95，修复公式类元素渲染异常问题。
+- 更新 `@netless/window-manager` 至 1.0.12，修复 closeApp 无法正确等待窗口关闭完成事件的问题。
 ## [2.16.114] - 2026-01-08
 - 新增 `WhiteboardViewOptions.enableAssetsHttps`, 支持资源请求使用 https 协议。
 ## [2.16.113] - 2025-12-30
