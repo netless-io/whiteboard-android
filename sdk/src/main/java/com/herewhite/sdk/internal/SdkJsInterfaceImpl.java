@@ -34,6 +34,11 @@ public class SdkJsInterfaceImpl {
         this.commonCallback = commonCallbacks;
     }
 
+    @Nullable
+    public CommonCallback getCommonCallback() {
+        return commonCallback;
+    }
+
     public void setPostMessageCallback(PostMessageCallback postMessageCallback) {
         this.postMessageCallback = postMessageCallback;
     }

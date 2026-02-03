@@ -26,6 +26,7 @@ import com.herewhite.sdk.internal.RtcJsInterfaceImpl;
 import com.herewhite.sdk.internal.SdkJsInterfaceImpl;
 import com.herewhite.sdk.internal.StoreDelegate;
 import com.herewhite.sdk.internal.StoreJsInterfaceImpl;
+import com.herewhite.sdk.internal.WebViewJsHealthCheck;
 import com.herewhite.sdk.window.SlideListener;
 
 import org.json.JSONObject;
@@ -299,6 +300,8 @@ public class WhiteSdk {
         });
 
         addNativeTags(roomParams);
+        
+        checkJsBridgeHealth();
 
         try {
             bridge.callHandler("sdk.joinRoom", new Object[]{roomParams}, (OnReturnValue<String>) roomString -> {
@@ -332,6 +335,10 @@ public class WhiteSdk {
             roomParams.addNativeTag("traceId", UUID.randomUUID().toString());
             roomParams.addNativeTag("time", sdf.format(new Date()));
         } catch (Exception ignored) {}
+    }
+
+    private void checkJsBridgeHealth() {
+        WebViewJsHealthCheck.checkOnce(bridge, sdkJsInterface.getCommonCallback());
     }
 
     /**
