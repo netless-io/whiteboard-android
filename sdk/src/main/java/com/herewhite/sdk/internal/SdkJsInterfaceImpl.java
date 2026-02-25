@@ -2,9 +2,11 @@ package com.herewhite.sdk.internal;
 
 import android.webkit.JavascriptInterface;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.herewhite.sdk.CommonCallback;
+import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.SlideErrorType;
 import com.herewhite.sdk.domain.UrlInterrupter;
@@ -16,6 +18,8 @@ import wendu.dsbridge.special.CompletionHandler;
 
 public class SdkJsInterfaceImpl {
 
+    @NonNull
+    private WhiteSdk whiteSdk;
     @Nullable
     private CommonCallback commonCallback;
     @Nullable
@@ -26,8 +30,9 @@ public class SdkJsInterfaceImpl {
     @Nullable
     private PostMessageCallback postMessageCallback;
 
-    public SdkJsInterfaceImpl(CommonCallback commonCallback) {
+    public SdkJsInterfaceImpl(@Nullable CommonCallback commonCallback, @NonNull WhiteSdk whiteSdk) {
         this.commonCallback = commonCallback;
+        this.whiteSdk = whiteSdk;
     }
 
     public void setCommonCallbacks(@Nullable CommonCallback commonCallbacks) {
@@ -39,7 +44,7 @@ public class SdkJsInterfaceImpl {
         return commonCallback;
     }
 
-    public void setPostMessageCallback(PostMessageCallback postMessageCallback) {
+    public void setPostMessageCallback(@Nullable PostMessageCallback postMessageCallback) {
         this.postMessageCallback = postMessageCallback;
     }
 
@@ -105,17 +110,22 @@ public class SdkJsInterfaceImpl {
     public void postMessage(Object args) {
         Logger.info("WhiteSDK postMessage: " + args);
         JSONObject jsonObject = convertToJsonOrNull(args);
-        if (commonCallback != null && jsonObject != null) {
+        if (jsonObject == null) {
+            return;
+        }
+        if (commonCallback != null) {
             commonCallback.onMessage(jsonObject);
         }
 
-        if (postMessageCallback != null && jsonObject != null) {
+        if (postMessageCallback != null) {
             postMessageCallback.onMessage(jsonObject);
         }
 
-        if (slideListener != null && jsonObject != null) {
+        if (slideListener != null) {
             handleSlideEvent(jsonObject);
         }
+
+        handleSpecialNativeLog(jsonObject);
     }
 
     private void handleSlideEvent(JSONObject jsonObject) {
@@ -128,6 +138,14 @@ public class SdkJsInterfaceImpl {
             if (slideListener != null) {
                 slideListener.onSlideError(convertToSlideErrorType(errorType), errorMsg, slideId, slideIndex);
             }
+        }
+    }
+
+    private void handleSpecialNativeLog(JSONObject jsonObject) {
+        String name = jsonObject.optString("name");
+        if ("imageLoadError".equals(name)) {
+            String src = jsonObject.optString("src", "");
+            whiteSdk.reportNativeLog(new String[]{name, src});
         }
     }
 

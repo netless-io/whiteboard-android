@@ -137,7 +137,7 @@ public class WhiteSdk {
         densityDpi = Utils.getDensityDpi(context);
         roomJsInterface = new RoomJsInterfaceImpl();
         playerJsInterface = new PlayerJsInterfaceImpl();
-        sdkJsInterface = new SdkJsInterfaceImpl(commonCallback);
+        sdkJsInterface = new SdkJsInterfaceImpl(commonCallback, this);
         storeJsInterface = new StoreJsInterfaceImpl();
         onlyCallbackRemoteStateModify = whiteSdkConfiguration.isOnlyCallbackRemoteStateModify();
 
@@ -718,7 +718,7 @@ public class WhiteSdk {
 
     private static final String CORS_POLICY_ERROR = "has been blocked by CORS policy";
 
-    void reportNativeLog(String[] logs) {
+    public void reportNativeLog(String[] logs) {
         bridge.callHandler("sdk.nativeLog", new Object[]{logs});
     }
 
