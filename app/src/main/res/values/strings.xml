@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">whiteboard-demo</string>
     <string name="uuid">uuid</string>
-    <string name="join_room">加入房间</string>
-    <string name="replay">回放</string>
+    <string name="basic_room">基础房间</string>
+    <string name="replay">协同回放</string>
     <string name="replay_pure">纯白板回放</string>
     <string name="create">创建房间</string>
     <string name="window_room">多窗口房间</string>

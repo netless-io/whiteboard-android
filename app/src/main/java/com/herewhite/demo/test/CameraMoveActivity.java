@@ -42,7 +42,7 @@ public class CameraMoveActivity extends BaseActivity {
         setContentView(R.layout.activity_camera_move);
         getSupportActionBar().hide();
 
-        whiteboardView = findViewById(R.id.white);
+        whiteboardView = findViewById(R.id.whiteboardView);
         WhiteboardView.setWebContentsDebuggingEnabled(true);
 
         joinRoom();

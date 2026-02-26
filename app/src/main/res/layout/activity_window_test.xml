@@ -27,6 +27,12 @@
             android:orientation="vertical">
 
             <Button
+                android:id="@+id/setWritableCostTest"
+                style="@style/TestButton"
+                android:visibility="gone"
+                android:text="setWritableCostTest" />
+
+            <Button
                 android:id="@+id/getSlideVolume"
                 style="@style/TestButton"
                 android:text="getSlideVolume" />

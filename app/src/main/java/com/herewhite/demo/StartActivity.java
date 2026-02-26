@@ -8,12 +8,9 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 
 import com.herewhite.demo.common.DemoAPI;
-import com.herewhite.demo.test.window.WindowAppliancePluginActivity;
 import com.herewhite.demo.test.window.WindowTestActivity;
 
 public class StartActivity extends BaseActivity {
-
-    // 数据驱动的按钮配置
     private static class DemoItem {
         String title;
         Class<?> targetClass;
@@ -39,15 +36,14 @@ public class StartActivity extends BaseActivity {
 
     private void setupDemoItems() {
         DemoItem[] items = {
-                new DemoItem(getString(R.string.join_room), RoomActivity.class),
-                // new DemoItem(getString(R.string.create), RoomActivity.class),
+                new DemoItem(getString(R.string.basic_room), RoomActivity.class),
+                new DemoItem(getString(R.string.window_room), WindowTestActivity.class),
                 new DemoItem(getString(R.string.replay), PlayActivity.class),
                 new DemoItem(getString(R.string.replay_pure), PureReplayActivity.class),
-                new DemoItem(getString(R.string.window_room), WindowTestActivity.class),
                 // new DemoItem("Apps", WindowAppsActivity.class),
-                new DemoItem(getString(R.string.appliance_plugin), WindowAppliancePluginActivity.class),
+                // new DemoItem(getString(R.string.appliance_plugin), WindowAppliancePluginActivity.class),
                 // new DemoItem("NoAppliancePlugin", WindowNoAppliancePluginActivity.class),
-                new DemoItem("混音", this::jumpToRtc)
+                // new DemoItem("混音", this::jumpToRtc)
                 // new DemoItem(getString(R.string.register_app), WindowRegisterAppActivity.class),
         };
 
@@ -61,10 +57,9 @@ public class StartActivity extends BaseActivity {
                 }
 
                 if (item.specialAction != null) {
-                    // 特殊处理，如jumpToRtc
+                    // 特殊处理，如 jumpToRtc
                     item.specialAction.run();
                 } else {
-                    // 普通的Class<?>方式启动
                     Intent intent = new Intent(this, item.targetClass);
                     startActivity(intent);
                 }

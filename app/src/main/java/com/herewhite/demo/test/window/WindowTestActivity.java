@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -88,8 +87,6 @@ public class WindowTestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_window_test);
         getSupportActionBar().hide();
 
-        WebView.setWebContentsDebuggingEnabled(true);
-
         mWhiteboardView = findViewById(R.id.white);
         mWhiteboardView.getSettings().setAllowUniversalAccessFromFileURLs(true);
         // 使用 LocalFileWebViewClient 对 动态 ppt 拦截进行替换，先查看本地是否有，如果没有再发出网络请求
@@ -99,8 +96,7 @@ public class WindowTestActivity extends AppCompatActivity {
 
         mWhiteboardParent = findViewById(R.id.whiteParent);
 
-        // Slide 音量测试
-        findViewById(R.id.updateSlideVolume).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.setWritableCostTest).setOnClickListener(new View.OnClickListener() {
             private long totalTrueTime = 0;
             private int trueCount = 0;
 
@@ -135,14 +131,10 @@ public class WindowTestActivity extends AppCompatActivity {
                         if (aBoolean) {
                             totalTrueTime += cost;
                             trueCount++;
-                            // logAction("setWritable(true) count = " + trueCount + "cost = " + cost + "ms");
                         } else {
                             totalFalseTime += cost;
                             falseCount++;
-                            // logAction("setWritable(false) count = " + falseCount + "cost = " + cost + "ms");
                         }
-
-                        // 输出平均时间
                         logAverageTimes();
                     }
 
@@ -151,6 +143,13 @@ public class WindowTestActivity extends AppCompatActivity {
                         logAction("setWritable failed: " + t.getMessage());
                     }
                 });
+            }
+        });
+
+        findViewById(R.id.updateSlideVolume).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mWhiteSdk.updateSlideVolume(0.5f);
             }
         });
 
@@ -168,10 +167,8 @@ public class WindowTestActivity extends AppCompatActivity {
 
                     }
                 });
-
             }
         });
-
 
         // 窗口比例
         findViewById(R.id.radio).setOnClickListener(new View.OnClickListener() {
@@ -374,6 +371,7 @@ public class WindowTestActivity extends AppCompatActivity {
         // configuration.setEnableSyncedStore(true);
         configuration.setUseMultiViews(true);
         configuration.setEnableSlideInterrupterAPI(true);
+        configuration.setEnableImgErrorCallback(true);
 
         WhiteSdkConfiguration.SlideAppOptions slideAppOptions = new WhiteSdkConfiguration.SlideAppOptions();
         slideAppOptions.setDebug(false);
