@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.View;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebViewClient;
@@ -87,6 +88,9 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
         if (autoResize) {
             delayStrategy.refreshViewSize();
         }
+        if (w != ow || h != oh) {
+            reportNativeLog("on_size_changed", w + "x" + h, ow + "x" + oh);
+        }
     }
 
     /// @cond test
@@ -97,6 +101,11 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
     }
     /// @endcond
 
+    @Override
+    protected void onVisibilityChanged(View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+        reportNativeLog("on_visibility_changed", visibilityToString(visibility));
+    }
 
     /// @cond test
 
@@ -108,6 +117,7 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
     public void setAutoResize(boolean autoResize) {
         this.autoResize = autoResize;
     }
+
     /// @endcond
 
     public static void setEntryUrl(String entryUrl) {
@@ -215,6 +225,25 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
 
         public void onDetachedFromWindow() {
             removeCallbacks(refreshViewSize);
+        }
+    }
+
+    private void reportNativeLog(String... logs) {
+        if (whiteSdk != null) {
+            whiteSdk.reportNativeLog(logs);
+        }
+    }
+
+    private String visibilityToString(int visibility) {
+        switch (visibility) {
+            case View.VISIBLE:
+                return "visible";
+            case View.INVISIBLE:
+                return "invisible";
+            case View.GONE:
+                return "gone";
+            default:
+                return "unknown";
         }
     }
 
