@@ -18,6 +18,7 @@ import com.herewhite.demo.R;
 import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.demo.utils.FileUtils;
 import com.herewhite.demo.utils.MapBuilder;
+import com.herewhite.sdk.ResultCaller;
 import com.herewhite.sdk.Room;
 import com.herewhite.sdk.RoomListener;
 import com.herewhite.sdk.RoomParams;
@@ -376,21 +377,38 @@ public class WindowTestActivity extends AppCompatActivity {
         WhiteSdkConfiguration.SlideAppOptions slideAppOptions = new WhiteSdkConfiguration.SlideAppOptions();
         slideAppOptions.setDebug(false);
         slideAppOptions.setShowRenderError(true);
+        slideAppOptions.setResourceMaxRetries(2);
         configuration.setSlideAppOptions(slideAppOptions);
 
         mWhiteSdk = new WhiteSdk(mWhiteboardView, this, configuration);
         mWhiteSdk.setSlideListener(new SlideListener() {
+            @Override
+            public void slideUrlInterrupter(String sourceUrl, ResultCaller<String> resultCaller) {
+                // String brokenUrl = sourceUrl + "_broken_for_test";
+                // resultCaller.call(brokenUrl);
+            }
+
+            @Override
+            public void onSlideResourceMaxRetries(String url, String message) {
+                // 处理 Slide 资源加载重试次数耗尽的情况，例如提示用户检查网络或更换资源 URL
+                // runOnUiThread(() -> {
+                //     checkAlert("Slide Resource Max Retries",
+                //             "URL: " + url + "\nMessage: " + message,
+                //             (dialog, which) -> {});
+                // });
+            }
+
             @Override
             public void onSlideError(SlideErrorType errorType, String errorMsg, String slideId, int slideIndex) {
                 switch (errorType) {
                     case RESOURCE_ERROR:
                     case RUNTIME_ERROR:
                         // 跳转到下一页, 可以根据具体需求选择如何恢复, 例如弹窗确认后再做跳转动作
-                        runOnUiThread(() -> {
-                            checkAlert("Slide Error", "SlideIndex:" + slideIndex + " ErrorMsg:" + errorMsg, (dialog, which) -> {
-                                // mWhiteSdk.recoverSlide(slideId, slideIndex + 1);
-                            });
-                        });
+                        // runOnUiThread(() -> {
+                        //     checkAlert("Slide Error", "SlideIndex:" + slideIndex + " ErrorMsg:" + errorMsg, (dialog, which) -> {
+                        //         // mWhiteSdk.recoverSlide(slideId, slideIndex + 1);
+                        //     });
+                        // });
                         break;
                     case CANVAS_CRASH:
                         mWhiteSdk.recoverSlide(slideId);
