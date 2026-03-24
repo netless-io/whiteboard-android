@@ -1,4 +1,9 @@
 # 版本更新记录
+## [2.16.118] - 2026-03-24
+- 更新 `@netless/app-slide` 至 0.2.98。
+- 新增 `SlideAppOptions.resourceMaxRetries` 参数，用于控制 PPT 资源加载最大重试次数，默认值为 3。
+- `SlideListener` 新增 `onSlideResourceMaxRetries` 回调，用于监听 PPT 资源加载失败达到最大重试次数时的事件，回调参数包含资源
+  URL 和错误信息。
 ## [2.16.117] - 2026-03-11
 - 更新 `@netless/app-slide` 至 0.2.97。
   - 修复连续点击下一步会一直重复进行下一部动画问题
