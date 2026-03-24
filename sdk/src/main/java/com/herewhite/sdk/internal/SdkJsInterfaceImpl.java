@@ -90,6 +90,18 @@ public class SdkJsInterfaceImpl {
     }
 
     @JavascriptInterface
+    public void slideResourceMaxRetries(Object args) {
+        if (slideListener != null) {
+            JSONObject jsonObject = convertToJsonOrNull(args);
+            if (jsonObject != null) {
+                String url = jsonObject.optString("url");
+                String message = jsonObject.optString("message");
+                slideListener.onSlideResourceMaxRetries(url, message);
+            }
+        }
+    }
+
+    @JavascriptInterface
     public void throwError(Object args) {
         Logger.info("WhiteSDK throwError: " + args);
         if (commonCallback != null) {

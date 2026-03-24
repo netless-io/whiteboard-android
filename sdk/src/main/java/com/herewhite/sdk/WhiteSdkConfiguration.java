@@ -723,6 +723,9 @@ public class WhiteSdkConfiguration extends WhiteObject {
          */
         private SlideInvisibleBehavior invisibleBehavior = SlideInvisibleBehavior.Frozen;
 
+        /** 最大重试次数, 默认为 3 */
+        private Integer resourceMaxRetries;
+
         public boolean isShowRenderError() {
             return showRenderError;
         }
@@ -801,6 +804,14 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
         public void setInvisibleBehavior(SlideInvisibleBehavior invisibleBehavior) {
             this.invisibleBehavior = invisibleBehavior;
+        }
+
+        public Integer getResourceMaxRetries() {
+            return resourceMaxRetries;
+        }
+
+        public void setResourceMaxRetries(Integer resourceMaxRetries) {
+            this.resourceMaxRetries = resourceMaxRetries;
         }
     }
 }

@@ -39,4 +39,15 @@ public interface SlideListener {
     default void slideOpenUrl(String url) {
 
     }
+
+    /**
+     * Slide 资源加载重试次数耗尽回调。
+     *
+     * <p>当 Slide 资源加载失败并且重试次数耗尽时，SDK 会触发该回调。
+     *
+     * @param url      加载失败的资源 URL。
+     * @param message  错误信息。
+     */
+    default void onSlideResourceMaxRetries(String url, String message) {
+    }
 }
