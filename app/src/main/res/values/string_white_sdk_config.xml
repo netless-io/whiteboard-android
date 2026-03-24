@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- [NotEmpty] 配置 sdk app 参数-->
-    <string name="sdk_app_id">""</string>
+    <string name="sdk_app_id">"123/132"</string>
     <!-- [Optional] 优先使用配置的 Room 参数-->
     <string name="sdk_app_token">""</string>
     <!-- 配置有效 Room 参数 -->
-    <string name="room_uuid">""</string>
-    <string name="room_token">""</string>
+    <string name="room_uuid">"f9eb5d10272911f192fccf1d9eb1a9a1"</string>
+    <string name="room_token">"NETLESSROOM_YWs9eTBJOWsxeC1IVVo4VGh0NyZub25jZT0xNzc0MzE5NjY2OTUxMDAmcm9sZT0wJnNpZz1hOGMzNjBhOTVkM2RjN2FjYjA1M2Y2Y2FlMjlmYmFhMDg2MGE1NmQ1ZjFkYzBhNzczYWU2M2RmZTExY2ZmMDRiJnV1aWQ9ZjllYjVkMTAyNzI5MTFmMTkyZmNjZjFkOWViMWE5YTE"</string>
 </resources>
