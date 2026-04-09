@@ -383,12 +383,6 @@ public class WindowTestActivity extends AppCompatActivity {
         mWhiteSdk = new WhiteSdk(mWhiteboardView, this, configuration);
         mWhiteSdk.setSlideListener(new SlideListener() {
             @Override
-            public void slideUrlInterrupter(String sourceUrl, ResultCaller<String> resultCaller) {
-                // String brokenUrl = sourceUrl + "_broken_for_test";
-                // resultCaller.call(brokenUrl);
-            }
-
-            @Override
             public void onSlideResourceMaxRetries(String url, String message) {
                 // 处理 Slide 资源加载重试次数耗尽的情况，例如提示用户检查网络或更换资源 URL
                 // runOnUiThread(() -> {
