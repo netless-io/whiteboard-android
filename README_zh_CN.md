@@ -57,5 +57,9 @@ dependencies {
 # Application classes that will be serialized/deserialized over Gson
 ```
 
+### WindowManager 使用文档
+
+- [WindowManager 使用文档](./docs/multi_window_usage.md)
+
 ### Releases
 最新版本请查看 [版本历史](https://developer.netless.link/android-zh/home/android-changelog)

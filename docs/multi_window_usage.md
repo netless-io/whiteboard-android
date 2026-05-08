@@ -1,323 +1,315 @@
 # 多窗口使用文档
 
-## 概述
+## 简介
 
-White SDK Android 支持多窗口功能，允许在同一房间中同时显示和管理多个应用程序窗口，如幻灯片、媒体播放器、文档查看器等。
+`whiteboard-android` 在多窗口模式下内置了 `window-manager` 能力。Android 接入层不需要直接调用 Web 端的 `WindowManager.mount()`，而是通过 `WhiteSdkConfiguration`、`RoomParams` 和 `Room` 提供的 API 使用对应能力。
 
-## 基本配置
+这份文档面向 Android Native 接入方，重点说明：
 
-### 1. 启用多窗口功能
+- 如何启用多窗口能力
+- 如何配置 `WindowParams`
+- 如何插入、关闭、聚焦和查询窗口
+- 如何调整窗口样式和恢复窗口状态
+- 如何控制当前聚焦的文档窗口
 
-在初始化 WhiteSdkConfiguration 时，必须设置 `setUseMultiViews(true)` 来启用多窗口功能：
+## 接入前提
+
+使用多窗口相关 API 前，需要先在 SDK 配置中开启：
 
 ```java
-WhiteSdkConfiguration configuration = new WhiteSdkConfiguration(demoAPI.getAppId(), true);
-configuration.setUseMultiViews(true);  // 启用多窗口功能
+WhiteSdkConfiguration configuration = new WhiteSdkConfiguration(appIdentifier, true);
+configuration.setUseMultiViews(true);
 ```
 
-### 2. 创建 WhiteSdk 实例
+如果没有开启 `setUseMultiViews(true)`，窗口相关接口不会按多窗口语义工作。
+
+## 初始化配置
+
+### 实时房间
 
 ```java
-mWhiteSdk = new WhiteSdk(mWhiteboardView, this, configuration);
+WhiteSdkConfiguration configuration = new WhiteSdkConfiguration(appIdentifier, true);
+configuration.setUseMultiViews(true);
+
+WhiteSdk whiteSdk = new WhiteSdk(whiteBoardView, context, configuration);
+
+RoomParams roomParams = new RoomParams(roomUuid, roomToken, userId);
+
+WindowParams windowParams = new WindowParams()
+        .setContainerSizeRatio(9f / 16f)
+        .setChessboard(true)
+        .setFullscreen(false)
+        .setDebug(false);
+windowParams.setPrefersColorScheme(WindowPrefersColorScheme.Light);
+
+roomParams.setWindowParams(windowParams);
+
+whiteSdk.joinRoom(roomParams, new RoomCallbacks() {
+}, new Promise<Room>() {
+    @Override
+    public void then(Room room) {
+        mRoom = room;
+    }
+
+    @Override
+    public void catchEx(SDKError error) {
+    }
+});
 ```
 
-## 窗口管理
+### `WindowParams` 常用字段
 
-### 1. 使用新的动态PPT（推荐）
+`WindowParams` 是多窗口模式下的本地显示参数，只影响当前客户端。
+
+- `containerSizeRatio`：多窗口区域的高宽比，建议多端保持一致。
+- `chessboard`：多窗口区域之外是否显示棋盘背景。
+- `prefersColorScheme`：窗口主题，可选 `Dark`、`Light`、`Auto`。
+- `fullscreen`：是否默认以最大化窗口方式展示。
+- `collectorStyles`：最小化图标区域样式，字段为驼峰形式 CSS。
+- `overwriteStyles`：覆盖默认窗口样式。
+- `debug`：是否输出多窗口调试日志。
+- `polling`：是否轮询更新本地视角。
+
+## 核心窗口操作
+
+### 插入窗口
+
+`WindowAppParam` 是 Android 侧对 `window-manager addApp` 的封装。常见内置窗口包括动态 PPT、静态文档和媒体播放器。
+
+#### 插入动态 PPT
+
+如果你拿到的是动态转换任务结果，推荐直接使用 `taskUuid + prefixUrl` 的方式：
 
 ```java
-// 使用任务UUID和前缀URL创建幻灯片应用
+String taskUuid = "47f359400ab144498687xxxxxxxxxxxx";
 String prefixUrl = "https://convertcdn.netless.link/dynamicConvert";
-String taskUuid = "47f359400ab1444986872db1723bb793";
-WindowAppParam param = WindowAppParam.createSlideApp(taskUuid, prefixUrl, "Projector App");
-mRoom.addApp(param, insertPromise);
-```
 
-### 2. 添加动态幻灯片窗口
-
-使用 `WindowAppParam.createSlideApp()` 方法创建动态幻灯片应用：
-
-```java
-// 由转换后信息序列化的幻灯片数据
-String ppts = "[{\"name\":\"1\",\"ppt\":{\"src\":\"pptx://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/1.slide\",\"width\":1280,\"height\":720,\"previewURL\":\"https://convertcdn.netless.link/dynamicConvert/369ac28037d011ec99f08bddeae74404/preview/1.png\"}}]";
-
-// 解析幻灯片场景数据
-Scene[] scenes = gson.fromJson(ppts, Scene[].class);
-
-// 创建幻灯片应用参数
-WindowAppParam param = WindowAppParam.createSlideApp("/dynamic003", scenes, "dynamic");
-
-// 添加应用到房间
-mRoom.addApp(param, insertPromise);
-```
-
-### 3. 添加媒体播放器窗口
-
-```java
-// 创建媒体播放器应用
-WindowAppParam appParam = WindowAppParam.createMediaPlayerApp("https://example.com/video.mp4", "player");
-mRoom.addApp(appParam, insertPromise);
-```
-
-### 4. 添加静态文档窗口
-
-```java
-// 创建静态文档查看器
-WindowAppParam param = WindowAppParam.createDocsViewerApp("/static", scenes, "static");
-mRoom.addApp(param, insertPromise);
-```
-
-## 窗口操作
-
-### 1. 关闭窗口
-
-```java
-mRoom.closeApp("appId", new Promise<Boolean>() {
+WindowAppParam appParam = WindowAppParam.createSlideApp(taskUuid, prefixUrl, "Projector App");
+mRoom.addApp(appParam, new Promise<String>() {
     @Override
-    public void then(Boolean aBoolean) {
-        // 窗口关闭成功
+    public void then(String appId) {
     }
 
     @Override
-    public void catchEx(SDKError t) {
-        // 窗口关闭失败
+    public void catchEx(SDKError error) {
     }
 });
 ```
 
-### 2. 聚焦窗口
+如果你已经有场景数据，也可以使用 `scenePath + scenes` 的方式：
 
 ```java
-mRoom.focusApp("appId");
-```
-
-### 3. 查询所有窗口
-
-```java
-mRoom.queryAllApps(new Promise<Map<String, WindowAppSyncAttrs>>() {
+WindowAppParam appParam = WindowAppParam.createSlideApp("/dynamic", scenes, "Dynamic Slide");
+mRoom.addApp(appParam, new Promise<String>() {
     @Override
-    public void then(Map<String, WindowAppSyncAttrs> apps) {
-
+    public void then(String appId) {
     }
 
     @Override
-    public void catchEx(SDKError t) {
-        // 查询失败
+    public void catchEx(SDKError error) {
     }
 });
 ```
 
-### 4. 查询单个窗口
+#### 插入静态文档
+
+```java
+WindowAppParam appParam = WindowAppParam.createDocsViewerApp("/docs-viewer", scenes, "Static Docs");
+mRoom.addApp(appParam, new Promise<String>() {
+    @Override
+    public void then(String appId) {
+    }
+
+    @Override
+    public void catchEx(SDKError error) {
+    }
+});
+```
+
+#### 插入媒体播放器
+
+```java
+WindowAppParam appParam = WindowAppParam.createMediaPlayerApp(
+        "https://example.com/video.mp4",
+        "Media Player"
+);
+mRoom.addApp(appParam, new Promise<String>() {
+    @Override
+    public void then(String appId) {
+    }
+
+    @Override
+    public void catchEx(SDKError error) {
+    }
+});
+```
+
+### 关闭窗口
+
+```java
+mRoom.closeApp(appId, new Promise<Boolean>() {
+    @Override
+    public void then(Boolean value) {
+    }
+
+    @Override
+    public void catchEx(SDKError error) {
+    }
+});
+```
+
+### 聚焦窗口
+
+```java
+mRoom.focusApp(appId);
+```
+
+### 查询单个窗口
 
 ```java
 mRoom.queryApp(appId, new Promise<WindowAppSyncAttrs>() {
     @Override
     public void then(WindowAppSyncAttrs attrs) {
-        // 获取单个应用信息
     }
 
     @Override
-    public void catchEx(SDKError t) {
-        // 查询失败
+    public void catchEx(SDKError error) {
     }
 });
 ```
 
-## 窗口配置
-
-### 1. 设置窗口比例
+### 查询所有窗口
 
 ```java
-// 循环切换不同的窗口比例
-List<Float> ratios = Arrays.asList(1.0f, 16f/9, 9f/16);
-mRoom.setContainerSizeRatio(ratios.get(index++ % ratios.size()));
+mRoom.queryAllApps(new Promise<Map<String, WindowAppSyncAttrs>>() {
+    @Override
+    public void then(Map<String, WindowAppSyncAttrs> apps) {
+    }
+
+    @Override
+    public void catchEx(SDKError error) {
+    }
+});
 ```
 
-### 2. 设置窗口主题
+## 窗口样式与状态
+
+### 调整多窗口显示比例
 
 ```java
-// 切换窗口主题（暗色/亮色/自动）
-List<WindowPrefersColorScheme> colorSchemes = Arrays.asList(
-    WindowPrefersColorScheme.Dark,
-    WindowPrefersColorScheme.Light,
-    WindowPrefersColorScheme.Auto
-);
-mRoom.setPrefersColorScheme(colorSchemes.get(index++ % colorSchemes.size()));
+mRoom.setContainerSizeRatio(3f / 4f);
 ```
 
-### 3. 禁用窗口操作
+### 切换窗口主题
 
 ```java
-// 禁用窗口操作
+mRoom.setPrefersColorScheme(WindowPrefersColorScheme.Dark);
+```
+
+### 禁止窗口操作
+
+```java
 mRoom.disableWindowOperation(true);
 ```
 
-## 窗口状态管理
-
-### 1. 保存窗口状态
+### 读取当前 WindowManager attributes
 
 ```java
 mRoom.getWindowManagerAttributes(new Promise<String>() {
     @Override
-    public void then(String s) {
-        // 保存窗口状态到文件
-        File file = new File(getCacheDir(), "window_attributes.json");
-        try {
-            FileUtils.writeStringToFile(file, s);
-            // 跳转到窗口恢复页面
-            gotoWindowRestore();
-        } catch (IOException e) {
-            showToast("保存失败");
-        }
+    public void then(String attributes) {
     }
 
     @Override
-    public void catchEx(SDKError t) {
-        // 获取状态失败
+    public void catchEx(SDKError error) {
     }
 });
 ```
 
-### 2. 监听窗口状态变化
+Android 侧 `attributes` 的类型是 `String`，内容本质上是一段 JSON 字符串。
+
+### 恢复当前 WindowManager attributes
 
 ```java
-mWhiteSdk.joinRoom(roomParams, new RoomListener() {
+mRoom.setWindowManagerAttributes(attributesJson);
+```
+
+更推荐的做法是直接保存 `getWindowManagerAttributes()` 返回的原始 JSON，再在需要时整体写回，而不是手动拼装内部字段。
+
+## 文档窗口控制
+
+`dispatchDocsEvent` 用于操作当前聚焦的文档窗口。调用前请确保文档窗口已经创建并完成加载。
+
+### 上一页 / 下一页
+
+```java
+mRoom.dispatchDocsEvent(WindowDocsEvent.PrevPage, new Promise<Boolean>() {
     @Override
-    public void onRoomStateChanged(RoomState roomState) {
-        if (roomState.getWindowBoxState() != null) {
-            // 处理窗口状态变化
-            Log.i("WindowBoxState", roomState.getWindowBoxState().toString());
-        }
+    public void then(Boolean success) {
     }
-    
-    // 其他回调方法...
+
+    @Override
+    public void catchEx(SDKError error) {
+    }
 });
-```
 
-## 幻灯片自定义链接
-
-### 1. 设置自定义链接
-
-```java
-// 创建自定义链接
-WhiteSlideCustomLink[] customLinks = new WhiteSlideCustomLink[]{
-    new WhiteSlideCustomLink(1, "slide-9", "https://www.example.com?t=1"),
-    new WhiteSlideCustomLink(1, "slide-2", "https://www.example.com?t=2"),
-};
-
-// 创建带自定义链接的幻灯片应用
-WindowAppParam param = WindowAppParam.createSlideApp(taskUuid, prefixUrl, "Projector App", customLinks);
-mRoom.addApp(param, insertPromise);
-```
-
-### 2. 监听链接点击事件
-
-```java
-mWhiteSdk.setSlideListener(new SlideListener() {
+mRoom.dispatchDocsEvent(WindowDocsEvent.NextPage, new Promise<Boolean>() {
     @Override
-    public void slideOpenUrl(String url) {
-        runOnUiThread(() -> showToast("打开链接: " + url));
+    public void then(Boolean success) {
     }
-    
+
     @Override
-    public void onSlideError(SlideErrorType errorType, String errorMsg, String slideId, int slideIndex) {
-        // 处理幻灯片错误
-        switch (errorType) {
-            case RESOURCE_ERROR:
-            case RUNTIME_ERROR:
-                // 资源错误或运行时错误
-                break;
-            case CANVAS_CRASH:
-                // 画布崩溃，尝试恢复
-                mWhiteSdk.recoverSlide(slideId);
-                break;
-            case RUNTIME_WARN:
-                // 运行时警告
-                break;
-        }
+    public void catchEx(SDKError error) {
     }
 });
 ```
 
-## 音量控制
-
-### 1. 设置幻灯片音量
+### 上一步 / 下一步
 
 ```java
-// 循环切换不同的音量设置
-List<Float> volumes = Arrays.asList(1.0f, 0f, 0.5f);
-mWhiteSdk.updateSlideVolume(volumes.get(index++ % volumes.size()));
-```
-
-### 2. 获取当前音量
-
-```java
-mWhiteSdk.getSlideVolume(new Promise<Double>() {
+mRoom.dispatchDocsEvent(WindowDocsEvent.PrevStep, new Promise<Boolean>() {
     @Override
-    public void then(Double volume) {
-        showToast("当前音量: " + volume);
+    public void then(Boolean success) {
     }
 
     @Override
-    public void catchEx(SDKError t) {
-        // 获取音量失败
+    public void catchEx(SDKError error) {
+    }
+});
+
+mRoom.dispatchDocsEvent(WindowDocsEvent.NextStep, new Promise<Boolean>() {
+    @Override
+    public void then(Boolean success) {
+    }
+
+    @Override
+    public void catchEx(SDKError error) {
     }
 });
 ```
 
-## 完整示例
+### 跳转到指定页
 
 ```java
-// 1. 配置SDK
-WhiteSdkConfiguration configuration = new WhiteSdkConfiguration(appId, true);
-configuration.setUseMultiViews(true);
-configuration.setEnableSlideInterrupterAPI(true);
-
-// 2. 创建SDK实例
-mWhiteSdk = new WhiteSdk(mWhiteboardView, this, configuration);
-
-// 3. 设置幻灯片监听器
-mWhiteSdk.setSlideListener(new SlideListener() {
+mRoom.dispatchDocsEvent(WindowDocsEvent.JumpToPage(3), new Promise<Boolean>() {
     @Override
-    public void slideOpenUrl(String url) {
-        runOnUiThread(() -> showToast("打开链接: " + url));
+    public void then(Boolean success) {
     }
-    
+
     @Override
-    public void onSlideError(SlideErrorType errorType, String errorMsg, String slideId, int slideIndex) {
-        // 处理错误
+    public void catchEx(SDKError error) {
     }
 });
-
-// 4. 加入房间
-RoomParams roomParams = new RoomParams(uuid, token, userId);
-WindowParams windowParams = new WindowParams()
-    .setContainerSizeRatio(3f/4)
-    .setChessboard(true)
-    .setDebug(true);
-roomParams.setWindowParams(windowParams);
-
-mWhiteSdk.joinRoom(roomParams, roomListener, roomPromise);
-
-// 5. 添加应用窗口
-String prefixUrl = "https://convertcdn.netless.link/dynamicConvert";
-String taskUuid = "47f359400ab1444986872db1723bb793";
-WindowAppParam param = WindowAppParam.createSlideApp(taskUuid, prefixUrl, "Projector App");
-mRoom.addApp(param, insertPromise);
 ```
 
 ## 注意事项
 
-1. **必须启用多窗口功能**：`configuration.setUseMultiViews(true)` 是使用多窗口功能的前提
-2. **应用ID管理**：使用 `insertPromise` 来跟踪成功添加的应用ID，便于后续操作
-3. **错误处理**：为所有异步操作提供错误处理回调
-4. **内存管理**：在 Activity 销毁时正确清理资源
-5. **线程安全**：UI 操作必须在主线程执行
-
-## 相关类和接口
-
-- `WhiteSdkConfiguration`: SDK配置类
-- `WindowAppParam`: 窗口应用参数类
+1. `WhiteSdkConfiguration.setUseMultiViews(true)` 是所有窗口能力的前置条件。
+2. `WindowParams` 只影响当前客户端的本地显示，不会直接同步到远端。
+3. `containerSizeRatio` 建议多端统一配置，否则同房间展示区域可能不一致。
+4. `setWindowManagerAttributes(String)` 接收的是 JSON 字符串，推荐只写回通过 `getWindowManagerAttributes()` 得到的快照。
+5. 文档事件会作用在当前聚焦的文档窗口上，调用前要确保该窗口已经完成加载。
+6. `disableWindowOperation(true)` 是本地交互限制，不等价于修改房间整体读写状态。
 - `WindowParams`: 窗口参数类
 - `RoomListener`: 房间监听器接口
 - `Promise`: 异步操作结果处理接口
