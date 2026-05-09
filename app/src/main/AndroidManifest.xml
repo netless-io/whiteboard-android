@@ -31,6 +31,10 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_play" />
         <activity
+            android:name=".QaActivity"
+            android:label="@string/qa_debug_examples"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".StartActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -79,6 +83,11 @@
         <activity
             android:name=".test.CameraMoveImageActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize" />
+
+        <activity
+            android:name=".test.CameraBoundScenesActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:screenOrientation="landscape" />
 
         <activity
             android:name=".test.PptOldActivity"

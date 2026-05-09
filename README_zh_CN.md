@@ -18,6 +18,28 @@ App。
    * room_token: 必填
    * sdk_app_token: 可选，用于本地创建房间。请妥善保管 sdk_app_token
 
+### SDK 测试快捷配置
+
+如果希望在 Android Studio 中对 `sdk/src/androidTest` 下的测试右键直接运行，可以先执行：
+
+```bash
+bash ./scripts/sync-sdk-test-config.sh
+```
+
+这会把示例配置同步到：
+
+- `sdk/src/androidTest/java/com/herewhite/sdk/local/SdkTestDefaults.java`
+
+仓库里默认提交的是空值版本；脚本会把它覆盖成本地可运行的值。
+
+为了防止误提交本地凭据，建议再执行一次：
+
+```bash
+bash ./scripts/install-git-hooks.sh
+```
+
+安装后，提交前会自动检查 `SdkTestDefaults.java` 是否仍然是空值。
+
 
 ## 项目集成
 

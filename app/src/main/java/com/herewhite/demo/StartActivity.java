@@ -8,7 +8,6 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 
 import com.herewhite.demo.common.DemoAPI;
-import com.herewhite.demo.test.HTErrorActivity;
 import com.herewhite.demo.test.window.WindowTestActivity;
 
 public class StartActivity extends BaseActivity {
@@ -41,12 +40,7 @@ public class StartActivity extends BaseActivity {
                 new DemoItem(getString(R.string.window_room), WindowTestActivity.class),
                 new DemoItem(getString(R.string.replay), PlayActivity.class),
                 new DemoItem(getString(R.string.replay_pure), PureReplayActivity.class),
-                // new DemoItem("HTError", HTErrorActivity.class),
-                // new DemoItem("Apps", WindowAppsActivity.class),
-                // new DemoItem(getString(R.string.appliance_plugin), WindowAppliancePluginActivity.class),
-                // new DemoItem("NoAppliancePlugin", WindowNoAppliancePluginActivity.class),
-                // new DemoItem("混音", this::jumpToRtc)
-                // new DemoItem(getString(R.string.register_app), WindowRegisterAppActivity.class),
+                new DemoItem(getString(R.string.qa_debug_examples), QaActivity.class),
         };
 
         LinearLayout container = findViewById(R.id.container);
