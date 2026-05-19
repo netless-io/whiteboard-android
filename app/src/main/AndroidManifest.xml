@@ -131,6 +131,12 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar.FullScreen" />
+
+        <activity
+            android:name=".test.window.MaoCustomWindowActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme.NoActionBar.FullScreen" />
     </application>
 
 </manifest>

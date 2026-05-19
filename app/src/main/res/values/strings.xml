@@ -6,6 +6,7 @@
     <string name="replay_pure">纯白板回放</string>
     <string name="create">创建房间</string>
     <string name="window_room">多窗口房间</string>
+    <string name="mao_custom_window">Mao 自定义多窗口</string>
     <string name="appliance_plugin">AppliancePlugin</string>
     <string name="noAppliancePlugin">NoAppliancePlugin</string>
     <string name="register_app">RegisterApp</string>

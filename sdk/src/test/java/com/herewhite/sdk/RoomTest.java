@@ -8,6 +8,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import com.herewhite.sdk.domain.AkkoEvent;
+import com.herewhite.sdk.domain.Appliance;
 import com.herewhite.sdk.domain.GlobalState;
 import com.herewhite.sdk.domain.ImageInformation;
 import com.herewhite.sdk.domain.ImageInformationWithUrl;
@@ -80,8 +81,32 @@ public class RoomTest extends TestCase {
 
     public void testSetMemberState() {
         MemberState state = new MemberState();
+        state.setCurrentApplianceName(Appliance.TEXT);
+        state.setStrokeColor(new int[]{12, 34, 56});
+        state.setStrokeWidth(6d);
+
         mRoom.setMemberState(state);
         verify(mockJsBridgeInterface).callHandler("room.setMemberState", new Object[]{state});
+    }
+
+    public void testSetWindowBoxState() {
+        mRoom.setWindowBoxState("normal");
+        verify(mockJsBridgeInterface).callHandler("room.setWindowBoxState", new Object[]{"normal"});
+
+        mRoom.setWindowBoxState("maximized");
+        verify(mockJsBridgeInterface).callHandler("room.setWindowBoxState", new Object[]{"maximized"});
+
+        mRoom.setWindowBoxState("minimized");
+        verify(mockJsBridgeInterface).callHandler("room.setWindowBoxState", new Object[]{"minimized"});
+    }
+
+    public void testSetWindowBoxStateRejectsInvalidState() {
+        try {
+            mRoom.setWindowBoxState("fullscreen");
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            assertEquals("state must be normal, minimized, or maximized", e.getMessage());
+        }
     }
 
     public void testCopy() {
@@ -199,6 +224,14 @@ public class RoomTest extends TestCase {
     public void testGetRoomState() {
         mRoom.getRoomState(IGNORE_PROMISE);
         verify(mockJsBridgeInterface).callHandler(eq("room.state.getRoomState"), (OnReturnValue<Object>) any());
+    }
+
+    public void testQuerySlidePageState() {
+        mRoom.querySlidePageState(IGNORE_PROMISE);
+        verify(mockJsBridgeInterface).callHandler(eq("room.querySlidePageState"), aryEq(new Object[]{null}), (OnReturnValue<Object>) any());
+
+        mRoom.querySlidePageState("Slide-app-id", IGNORE_PROMISE);
+        verify(mockJsBridgeInterface).callHandler(eq("room.querySlidePageState"), aryEq(new Object[]{"Slide-app-id"}), (OnReturnValue<Object>) any());
     }
 
     public void testSetScenePath() {

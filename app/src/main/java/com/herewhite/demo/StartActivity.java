@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 
 import com.herewhite.demo.common.DemoAPI;
+import com.herewhite.demo.test.window.MaoCustomWindowActivity;
 import com.herewhite.demo.test.window.WindowTestActivity;
 
 public class StartActivity extends BaseActivity {
@@ -38,6 +39,7 @@ public class StartActivity extends BaseActivity {
         DemoItem[] items = {
                 new DemoItem(getString(R.string.basic_room), RoomActivity.class),
                 new DemoItem(getString(R.string.window_room), WindowTestActivity.class),
+                new DemoItem(getString(R.string.mao_custom_window), MaoCustomWindowActivity.class),
                 new DemoItem(getString(R.string.replay), PlayActivity.class),
                 new DemoItem(getString(R.string.replay_pure), PureReplayActivity.class),
                 new DemoItem(getString(R.string.qa_debug_examples), QaActivity.class),

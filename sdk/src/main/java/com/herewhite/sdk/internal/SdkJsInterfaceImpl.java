@@ -102,6 +102,19 @@ public class SdkJsInterfaceImpl {
     }
 
     @JavascriptInterface
+    public void slidePageStateChanged(Object args) {
+        if (slideListener != null) {
+            JSONObject jsonObject = convertToJsonOrNull(args);
+            if (jsonObject != null) {
+                String appId = jsonObject.optString("appId");
+                int page = jsonObject.optInt("page");
+                int pageCount = jsonObject.optInt("pageCount");
+                slideListener.onSlidePageStateChanged(appId, page, pageCount);
+            }
+        }
+    }
+
+    @JavascriptInterface
     public void throwError(Object args) {
         Logger.info("WhiteSDK throwError: " + args);
         if (commonCallback != null) {

@@ -26,6 +26,7 @@ import com.herewhite.sdk.domain.RoomState;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.SceneState;
+import com.herewhite.sdk.domain.SlidePageState;
 import com.herewhite.sdk.domain.ViewMode;
 import com.herewhite.sdk.domain.WindowAppSyncAttrs;
 import com.herewhite.sdk.domain.WindowAppParam;
@@ -1299,6 +1300,22 @@ public class Room extends Displayer {
     }
 
     /**
+     * 设置多窗口整体展示状态。
+     *
+     * <p>该方法与 window-manager 的 setBoxState 语义一致，是同步 void 调用。
+     * 状态变更结果通过 {@link RoomListener#onRoomStateChanged(RoomState)} 中的
+     * {@link RoomState#getWindowBoxState()} 回调。
+     *
+     * @param state 窗口状态：normal、minimized、maximized。
+     */
+    public void setWindowBoxState(String state) {
+        if (!"normal".equals(state) && !"minimized".equals(state) && !"maximized".equals(state)) {
+            throw new IllegalArgumentException("state must be normal, minimized, or maximized");
+        }
+        bridge.callHandler("room.setWindowBoxState", new Object[]{state});
+    }
+
+    /**
      * 获取设置得远端白板画面同步延时。
      *
      * @return 延时时长，单位为秒。
@@ -1456,6 +1473,35 @@ public class Room extends Displayer {
         bridge.callHandler("room.dispatchDocsEvent", new Object[]{event, options}, (OnReturnValue<Boolean>) value -> {
             if (promise != null) {
                 promise.then(value);
+            }
+        });
+    }
+
+    /**
+     * 查询当前聚焦 SlideApp 的页面状态。
+     *
+     * @param promise 查询结果，页码从 1 开始。
+     */
+    public void querySlidePageState(Promise<SlidePageState> promise) {
+        querySlidePageState(null, promise);
+    }
+
+    /**
+     * 查询指定 SlideApp 的页面状态。
+     *
+     * @param appId SlideApp ID。传 null 时查询当前聚焦 App。
+     * @param promise 查询结果，页码从 1 开始。
+     */
+    public void querySlidePageState(String appId, Promise<SlidePageState> promise) {
+        if (promise == null) {
+            throw new IllegalArgumentException("promise is null");
+        }
+        bridge.callHandler("room.querySlidePageState", new Object[]{appId}, (String value) -> {
+            SDKError sdkError = SDKError.promiseError(value);
+            if (sdkError != null) {
+                promise.catchEx(sdkError);
+            } else {
+                promise.then(gson.fromJson(value, SlidePageState.class));
             }
         });
     }

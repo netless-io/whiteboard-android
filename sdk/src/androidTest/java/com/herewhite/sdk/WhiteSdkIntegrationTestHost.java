@@ -7,6 +7,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.SDKError;
+import com.herewhite.sdk.domain.WindowParams;
 
 import org.junit.After;
 
@@ -49,6 +50,14 @@ abstract class WhiteSdkIntegrationTestHost {
     }
 
     protected Room joinRoom(RoomListener roomListener) throws Throwable {
+        return joinRoom(roomListener, false);
+    }
+
+    protected Room joinRoom(RoomListener roomListener, boolean useMultiViews) throws Throwable {
+        return joinRoom(roomListener, useMultiViews, null);
+    }
+
+    protected Room joinRoom(RoomListener roomListener, boolean useMultiViews, Runnable beforeJoin) throws Throwable {
         TestCredentialProvider.RoomCredentials credentials = TestCredentialProvider.requireRoomCredentials();
         AtomicReference<Room> roomRef = new AtomicReference<>();
         AtomicReference<SDKError> errorRef = new AtomicReference<>();
@@ -59,7 +68,11 @@ abstract class WhiteSdkIntegrationTestHost {
             whiteboardView.getSettings().setAllowUniversalAccessFromFileURLs(true);
             WhiteSdkConfiguration configuration = new WhiteSdkConfiguration(credentials.appIdentifier, true);
             configuration.setUserCursor(true);
+            configuration.setUseMultiViews(useMultiViews);
             sdk = new WhiteSdk(whiteboardView, ApplicationProvider.getApplicationContext(), configuration);
+            if (beforeJoin != null) {
+                beforeJoin.run();
+            }
 
             RoomParams roomParams = new RoomParams(
                     credentials.roomUuid,
@@ -68,6 +81,11 @@ abstract class WhiteSdkIntegrationTestHost {
             );
             roomParams.setDisableNewPencil(false);
             roomParams.setWritable(true);
+            if (useMultiViews) {
+                roomParams.setWindowParams(new WindowParams()
+                        .setContainerSizeRatio(9f / 16f)
+                        .setFullscreen(false));
+            }
 
             sdk.joinRoom(roomParams, roomListener, new Promise<Room>() {
                 @Override
