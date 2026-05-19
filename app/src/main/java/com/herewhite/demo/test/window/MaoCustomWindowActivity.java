@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 
 import com.herewhite.demo.BaseActivity;
 import com.herewhite.demo.R;
+import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.sdk.AbstractRoomCallbacks;
 import com.herewhite.sdk.Room;
 import com.herewhite.sdk.RoomCallbacks;
@@ -50,8 +51,6 @@ import okhttp3.Response;
 
 public class MaoCustomWindowActivity extends BaseActivity {
     private static final String APP_ID = "123/123";
-    private static final String ROOM_ID = "86c2dd20532c11f1a57421cb6882912c";
-    private static final String ROOM_TOKEN = "NETLESSROOM_YWs9eTBJOWsxeC1IVVo4VGh0NyZub25jZT0xNzc5MTU4NjEzNDI1MDAmcm9sZT0wJnNpZz1iZGUwN2RiMjgxYzY5Mzg4MDc5NmE1ZDZjYWIyZTgyNmQ1Y2NmNWNhYTZiMjVlNzc3Nzk5ZGM1MTUwZTY2ZjUzJnV1aWQ9ODZjMmRkMjA1MzJjMTFmMWE1NzQyMWNiNjg4MjkxMmM";
     private static final String SLIDE_PREFIX = "https://white-cover.oss-cn-hangzhou.aliyuncs.com/flat/dynamicConvert";
     private static final String SLIDE_TASK_ID = "46e8ff5db5714fec818f5594a6c55083";
     private static final int FALLBACK_PAGE_COUNT = 12;
@@ -94,7 +93,7 @@ public class MaoCustomWindowActivity extends BaseActivity {
 
         setupControls();
         renderPreviewBar(pageCount);
-        joinFixedRoom();
+        setupRoom();
     }
 
     @Override
@@ -123,7 +122,30 @@ public class MaoCustomWindowActivity extends BaseActivity {
         findViewById(R.id.nextPage).setOnClickListener(v -> dispatch(WindowDocsEvent.NextPage));
     }
 
-    private void joinFixedRoom() {
+    private void setupRoom() {
+        DemoAPI demoAPI = DemoAPI.get();
+        DemoAPI.Result result = new DemoAPI.Result() {
+            @Override
+            public void success(String uuid, String token) {
+                joinRoom(uuid, token);
+            }
+
+            @Override
+            public void fail(String message) {
+                log("create room failed: " + message);
+                showAlert("创建房间失败", message);
+            }
+        };
+
+        String uuid = demoAPI.getRoomUUID();
+        if (uuid != null && uuid.length() > 0) {
+            demoAPI.getRoomToken(uuid, result);
+        } else {
+            demoAPI.getNewRoom(result);
+        }
+    }
+
+    private void joinRoom(String uuid, String token) {
         WhiteSdkConfiguration configuration = new WhiteSdkConfiguration(APP_ID, true);
         configuration.setRegion(Region.cn);
         configuration.setUseMultiViews(true);
@@ -136,7 +158,7 @@ public class MaoCustomWindowActivity extends BaseActivity {
             }
         });
 
-        RoomParams params = new RoomParams(ROOM_ID, ROOM_TOKEN, deviceUserId());
+        RoomParams params = new RoomParams(uuid, token, deviceUserId());
         params.setRegion(Region.cn);
         params.setWritable(true);
         params.setWindowParams(new WindowParams()
@@ -147,7 +169,7 @@ public class MaoCustomWindowActivity extends BaseActivity {
             @Override
             public void then(Room joinedRoom) {
                 room = joinedRoom;
-                log("joined fixed room");
+                log("joined room: " + uuid);
                 addSlideApp();
             }
 

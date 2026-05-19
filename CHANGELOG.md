@@ -1,4 +1,9 @@
 # 版本更新记录
+## [2.16.121] - 2026-05-19
+- `Room` 新增 `setWindowBoxState` 方法，用于设置窗口盒子状态。
+- `Room` 新增 `querySlidePageState` 方法，用于查询 Slide App 当前页码状态。
+- `SlideListener` 新增 `onSlidePageStateChanged` 回调，用于监听 Slide App 页码状态变化。
+- 新增 `SlidePageState`，用于描述 Slide App 当前页码和总页数。
 ## [2.16.120] - 2026-04-13
 - 更新 `@netless/window-manager` 至 1.0.13。
 - 更新 `white-web-sdk` 至 2.16.54。
