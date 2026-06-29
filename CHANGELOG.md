@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.16.122] - 2026-06-29
+- 更新 `@netless/appliance-plugin` 至 1.1.37。
+
 ## [2.16.121] - 2026-05-19
 - `Room` 新增 `setWindowBoxState` 方法，用于设置窗口盒子状态。
 - `Room` 新增 `querySlidePageState` 方法，用于查询 Slide App 当前页码状态。
