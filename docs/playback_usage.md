@@ -70,6 +70,7 @@ WindowParams windowParams = new WindowParams();
 windowParams.setContainerSizeRatio(9f / 16);   // 设置窗口比例
 windowParams.setChessboard(false);             // 是否显示棋盘背景
 windowParams.setDebug(false);                  // 是否显示调试信息
+windowParams.setUseBoxesStatus(false);         // 是否使用每个窗口独立的状态管理，需与实时房间保持一致
 
 // 应用窗口参数到回放配置
 playerConfiguration.setWindowParams(windowParams);
@@ -85,6 +86,7 @@ whiteSdk.createPlayer(playerConfiguration, playerListener, playerPromise);
 ```java
 WindowParams windowParams = new WindowParams();
 windowParams.setContainerSizeRatio(9f / 16);
+windowParams.setUseBoxesStatus(false);
 // 设置自定义样式
 HashMap<String, String> collectorStyles = new HashMap<>();
 collectorStyles.put("backgroundColor", "#f0f0f0");
@@ -389,6 +391,7 @@ configuration.setUseMultiViews(true);
 // 2. 设置正确的窗口比例
 WindowParams windowParams = new WindowParams();
 windowParams.setContainerSizeRatio(16f / 9);
+windowParams.setUseBoxesStatus(false);
 playerConfiguration.setWindowParams(windowParams);
 ```
 

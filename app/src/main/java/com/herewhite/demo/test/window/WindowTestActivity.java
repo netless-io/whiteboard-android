@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import com.herewhite.demo.R;
 import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.demo.utils.FileUtils;
 import com.herewhite.demo.utils.MapBuilder;
+import com.herewhite.sdk.CommonCallback;
 import com.herewhite.sdk.ResultCaller;
 import com.herewhite.sdk.Room;
 import com.herewhite.sdk.RoomListener;
@@ -26,6 +28,9 @@ import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
 import com.herewhite.sdk.WhiteboardView;
 import com.herewhite.sdk.domain.GlobalState;
+import com.herewhite.sdk.domain.LocalLogOptions;
+import com.herewhite.sdk.domain.LoggerOptions;
+import com.herewhite.sdk.domain.PresentationAppOptions;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.Region;
 import com.herewhite.sdk.domain.RoomPhase;
@@ -36,10 +41,13 @@ import com.herewhite.sdk.domain.SlideErrorType;
 import com.herewhite.sdk.domain.WhiteDisplayerState;
 import com.herewhite.sdk.domain.WindowAppParam;
 import com.herewhite.sdk.domain.WindowAppSyncAttrs;
+import com.herewhite.sdk.domain.WindowDocsEvent;
 import com.herewhite.sdk.domain.WindowParams;
 import com.herewhite.sdk.domain.WindowPrefersColorScheme;
 import com.herewhite.sdk.domain.WindowRegisterAppParams;
 import com.herewhite.sdk.window.SlideListener;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -53,11 +61,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.UUID;
 
 public class WindowTestActivity extends AppCompatActivity {
     private static final String ROOM_INFO = "RoomInfo";
     private static final String ROOM_ACTION = "RoomAction";
     private static final String CUSTOM_UI = "custom_ui";
+    private static final String COURSEWARE_PREFIX_URL = "https://convertcdn.netless.link/dynamicConvert";
+    private static final String COURSEWARE_TASK_UUID = "47f359400ab1444986872db1723bb793";
+    private static final String PRESENTATION_SCENES_JSON = "[{\"name\":\"1\",\"ppt\":{\"height\":1010.0,\"src\":\"https://convertcdn.netless.link/staticConvert/0764816000c411ecbfbbb9230f6dd80f/1.png\",\"width\":714.0}},{\"name\":\"2\",\"ppt\":{\"height\":1010.0,\"src\":\"https://convertcdn.netless.link/staticConvert/0764816000c411ecbfbbb9230f6dd80f/2.png\",\"width\":714.0}},{\"name\":\"3\",\"ppt\":{\"height\":1010.0,\"src\":\"https://convertcdn.netless.link/staticConvert/0764816000c411ecbfbbb9230f6dd80f/3.png\",\"width\":714.0}},{\"name\":\"4\",\"ppt\":{\"height\":1010.0,\"src\":\"https://convertcdn.netless.link/staticConvert/0764816000c411ecbfbbb9230f6dd80f/4.png\",\"width\":714.0}}]";
 
     final Gson gson = new Gson();
     final DemoAPI demoAPI = DemoAPI.get();
@@ -70,6 +82,7 @@ public class WindowTestActivity extends AppCompatActivity {
     Stack<String> appIds = new Stack<>();
     Map<String, WindowAppSyncAttrs> apps = new HashMap<>();
     long lastUpdate = 0;
+    private boolean usePresentationCourseware = false;
     private Promise<String> insertPromise = new Promise<String>() {
         @Override
         public void then(String appId) {
@@ -233,11 +246,33 @@ public class WindowTestActivity extends AppCompatActivity {
 
         // 插入新的动态PPT
         findViewById(R.id.insertNewDynamic).setOnClickListener(v -> {
-            // prefixUrl
-            String prefixUrl = "https://convertcdn.netless.link/dynamicConvert";
-            String taskUuid = "47f359400ab1444986872db1723bb793";
-            WindowAppParam param = WindowAppParam.createSlideApp(taskUuid, prefixUrl, "Projector App");
+            if (usePresentationCourseware) {
+                insertPresentationCourseware();
+                return;
+            }
+
+            WindowAppParam param = WindowAppParam.createSlideApp(COURSEWARE_TASK_UUID, COURSEWARE_PREFIX_URL, "Projector App");
             mRoom.addApp(param, insertPromise);
+        });
+
+        Switch presentationSwitch = findViewById(R.id.presentationSwitch);
+        presentationSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            usePresentationCourseware = isChecked;
+            if (isChecked) {
+                insertPresentationCourseware();
+            }
+        });
+
+        findViewById(R.id.scalePage).setOnClickListener(v -> {
+            dispatchScalePage(2.0);
+        });
+
+        findViewById(R.id.prevPage).setOnClickListener(v -> {
+            dispatchPageEventAndResetScale(WindowDocsEvent.PrevPage);
+        });
+
+        findViewById(R.id.nextPage).setOnClickListener(v -> {
+            dispatchPageEventAndResetScale(WindowDocsEvent.NextPage);
         });
 
         findViewById(R.id.closeApp).setOnClickListener(v -> {
@@ -334,6 +369,8 @@ public class WindowTestActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.uploadLocalLogs).setOnClickListener(v -> uploadLocalLogs());
+
         joinRoom(demoAPI.getRoomUUID(), demoAPI.getRoomToken());
     }
 
@@ -352,6 +389,101 @@ public class WindowTestActivity extends AppCompatActivity {
         mWhiteboardParent.setLayoutParams(layoutParams);
     }
 
+    private void insertPresentationCourseware() {
+        if (mRoom == null) {
+            showToast("room not ready");
+            return;
+        }
+
+        Scene[] scenes = gson.fromJson(PRESENTATION_SCENES_JSON, Scene[].class);
+        WindowAppParam param = WindowAppParam.createPresentationApp(
+                String.format("/presentation/%s", UUID.randomUUID()),
+                scenes,
+                "Presentation App"
+        );
+        mRoom.addApp(param, insertPromise);
+        logAction("insert presentation scenes: " + scenes.length);
+    }
+
+    private void dispatchPageEventAndResetScale(WindowDocsEvent event) {
+        if (mRoom == null) {
+            showToast("room not ready");
+            return;
+        }
+
+        mRoom.dispatchDocsEvent(event, new Promise<Boolean>() {
+            @Override
+            public void then(Boolean result) {
+                logAction(event.getEvent() + " result: " + result);
+                if (Boolean.TRUE.equals(result)) {
+                    resetScalePageAfterPageChange(event);
+                }
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+                logAction(event.getEvent() + " failed: " + t.getMessage());
+                showToast(event.getEvent() + " failed: " + t.getMessage());
+            }
+        });
+    }
+
+    private void resetScalePageAfterPageChange(WindowDocsEvent pageEvent) {
+        mRoom.dispatchDocsEvent(WindowDocsEvent.ScalePage(1.0), new Promise<Boolean>() {
+            @Override
+            public void then(Boolean result) {
+                logAction(pageEvent.getEvent() + " reset scalePage 1.0 result: " + result);
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+                logAction(pageEvent.getEvent() + " reset scalePage failed: " + t.getMessage());
+            }
+        });
+    }
+
+    private void dispatchScalePage(double scale) {
+        if (mRoom == null) {
+            showToast("room not ready");
+            return;
+        }
+
+        mRoom.dispatchDocsEvent(WindowDocsEvent.ScalePage(scale), new Promise<Boolean>() {
+            @Override
+            public void then(Boolean result) {
+                logAction("scalePage " + scale + " result: " + result);
+                showToast("scalePage " + scale);
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+                logAction("scalePage failed: " + t.getMessage());
+                showToast("scalePage failed: " + t.getMessage());
+            }
+        });
+    }
+
+    private void uploadLocalLogs() {
+        if (mWhiteSdk == null) {
+            showToast("sdk not ready");
+            return;
+        }
+
+        mWhiteSdk.uploadLocalLogs(new Promise<JSONObject>() {
+            @Override
+            public void then(JSONObject result) {
+                logRoomInfo("uploadLocalLogs: " + result);
+                showToast("uploadLocalLogs: " + result.optString("status"));
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+                logRoomInfo("uploadLocalLogs failed: " + t.getMessage());
+                showToast("uploadLocalLogs failed: " + t.getMessage());
+            }
+        });
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -363,7 +495,8 @@ public class WindowTestActivity extends AppCompatActivity {
     }
 
     private void joinRoom(String uuid, String token) {
-        logRoomInfo("room uuid: " + uuid + "\nroom token: " + token);
+        String userId = DemoAPI.get().getUserId();
+        logRoomInfo("room uuid: " + uuid + "\nroom token: " + token + "\nuser id: " + userId);
         WhiteSdkConfiguration configuration = new WhiteSdkConfiguration(demoAPI.getAppId(), true);
         /*显示用户头像*/
         configuration.setUserCursor(true);
@@ -376,11 +509,32 @@ public class WindowTestActivity extends AppCompatActivity {
 
         WhiteSdkConfiguration.SlideAppOptions slideAppOptions = new WhiteSdkConfiguration.SlideAppOptions();
         slideAppOptions.setDebug(false);
+        slideAppOptions.setEnableScale(true);
         slideAppOptions.setShowRenderError(true);
         slideAppOptions.setResourceMaxRetries(2);
         configuration.setSlideAppOptions(slideAppOptions);
 
+        LoggerOptions loggerOptions = new LoggerOptions();
+        loggerOptions.setLocalLog(new LocalLogOptions().setEnabled(true).setEnabledUpload(true));
+        configuration.setLoggerOptions(loggerOptions);
+
+        PresentationAppOptions presentationAppOptions = new PresentationAppOptions()
+                .setMaxCameraScale(4.0)
+                .setUseScrollbar(true);
+        configuration.setPresentationAppOptions(presentationAppOptions);
+
         mWhiteSdk = new WhiteSdk(mWhiteboardView, this, configuration);
+        mWhiteSdk.setCommonCallbacks(new CommonCallback() {
+            @Override
+            public void onLocalLogStateChange(JSONObject state) {
+                logRoomInfo("localLogStateChange: " + state);
+            }
+
+            @Override
+            public void sdkSetupFail(SDKError error) {
+                logRoomInfo("sdkSetupFail: " + error.getMessage());
+            }
+        });
         mWhiteSdk.setSlideListener(new SlideListener() {
             @Override
             public void onSlideResourceMaxRetries(String url, String message) {
@@ -418,7 +572,7 @@ public class WindowTestActivity extends AppCompatActivity {
         WhiteDisplayerState.setCustomGlobalStateClass(GlobalState.class);
 
         // 如需支持用户头像，请在设置 WhiteSdkConfiguration 后，再调用 setUserPayload 方法，传入符合用户信息
-        RoomParams roomParams = new RoomParams(uuid, token, DemoAPI.get().getUserId());
+        RoomParams roomParams = new RoomParams(uuid, token, userId);
 
         HashMap<String, String> styleMap = new HashMap<>();
         styleMap.put("backgroundColor", "red");
@@ -428,6 +582,7 @@ public class WindowTestActivity extends AppCompatActivity {
 
         // String darkMode = darkModeStyle();
         WindowParams windowParams = new WindowParams().setContainerSizeRatio(3f / 4).setChessboard(true).setDebug(true)
+                .setUseBoxesStatus(true)
                 // .setOverwriteStyles(cursorUserHideStyle())
                 // .setOverwriteStyles(darkModeStyle())
                 .setCollectorStyles(styleMap);
@@ -480,6 +635,17 @@ public class WindowTestActivity extends AppCompatActivity {
             @Override
             public void then(Room room) {
                 mRoom = room;
+                mWhiteSdk.getLocalLogState(new Promise<JSONObject>() {
+                    @Override
+                    public void then(JSONObject state) {
+                        logRoomInfo("localLogState: " + state);
+                    }
+
+                    @Override
+                    public void catchEx(SDKError t) {
+                        logRoomInfo("getLocalLogState failed: " + t.getMessage());
+                    }
+                });
             }
 
             @Override

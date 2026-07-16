@@ -132,6 +132,15 @@ public class SdkJsInterfaceImpl {
     }
 
     @JavascriptInterface
+    public void localLogStateChange(Object args) {
+        Logger.info("WhiteSDK localLogStateChange: " + args);
+        JSONObject jsonObject = convertToJsonOrNull(args);
+        if (commonCallback != null && jsonObject != null) {
+            commonCallback.onLocalLogStateChange(jsonObject);
+        }
+    }
+
+    @JavascriptInterface
     public void postMessage(Object args) {
         Logger.info("WhiteSDK postMessage: " + args);
         JSONObject jsonObject = convertToJsonOrNull(args);

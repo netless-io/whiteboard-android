@@ -485,6 +485,75 @@ public class WhiteSdk {
     }
 
     /**
+     * 获取 WebView 内本地日志状态。
+     *
+     * @param promise 成功返回状态信息，失败返回错误信息。
+     */
+    public void getLocalLogState(final Promise<JSONObject> promise) {
+        callSdkJsonMethod("sdk.getLocalLogState", promise);
+    }
+
+    /**
+     * 收集 WebView 内本地日志。该接口主要用于诊断。
+     *
+     * @param promise 成功返回收集结果，失败返回错误信息。
+     */
+    public void collectLocalLogs(final Promise<JSONObject> promise) {
+        callSdkJsonMethod("sdk.collectLocalLogs", promise);
+    }
+
+    /**
+     * 将 WebView 内本地日志刷新到持久化存储。
+     *
+     * @param promise 成功返回刷新结果，失败返回错误信息。
+     */
+    public void flushLocalLogs(final Promise<JSONObject> promise) {
+        callSdkJsonMethod("sdk.flushLocalLogs", promise);
+    }
+
+    /**
+     * 触发 WebView 内本地日志上传。
+     *
+     * @param promise 成功返回上传结果，失败返回错误信息。
+     */
+    public void uploadLocalLogs(final Promise<JSONObject> promise) {
+        callSdkJsonMethod("sdk.uploadLocalLogs", promise);
+    }
+
+    private void callSdkJsonMethod(String method, final Promise<JSONObject> promise) {
+        bridge.callHandler(method, new Object[]{}, (OnReturnValue<Object>) retValue -> {
+            if (promise == null) {
+                return;
+            }
+            JSONObject jsonObject = convertReturnValueToJsonObject(retValue);
+            if (jsonObject == null) {
+                promise.catchEx(new SDKError("Invalid response from " + method));
+                return;
+            }
+            SDKError sdkError = SDKError.promiseError(jsonObject.toString());
+            if (sdkError != null) {
+                promise.catchEx(sdkError);
+            } else {
+                promise.then(jsonObject);
+            }
+        });
+    }
+
+    private JSONObject convertReturnValueToJsonObject(Object retValue) {
+        if (retValue instanceof JSONObject) {
+            return (JSONObject) retValue;
+        }
+        if (retValue == null) {
+            return new JSONObject();
+        }
+        try {
+            return new JSONObject(String.valueOf(retValue));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
      * 设置文字白板工具在本地白板中使用的字体。
      *
      * @since 2.11.2

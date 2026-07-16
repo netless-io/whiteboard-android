@@ -6,6 +6,7 @@ import android.os.Build.VERSION;
 import com.google.gson.annotations.SerializedName;
 import com.herewhite.sdk.domain.DeviceType;
 import com.herewhite.sdk.domain.LoggerOptions;
+import com.herewhite.sdk.domain.PresentationAppOptions;
 import com.herewhite.sdk.domain.Region;
 import com.herewhite.sdk.domain.SlideInvisibleBehavior;
 import com.herewhite.sdk.domain.WhiteObject;
@@ -53,6 +54,8 @@ public class WhiteSdkConfiguration extends WhiteObject {
      * SlideApp 的配置项
      */
     private SlideAppOptions slideAppOptions = new SlideAppOptions();
+    /** Window Manager 内置 Presentation 的本地配置。 */
+    private PresentationAppOptions presentationAppOptions;
     private HashMap<String, String> fonts;
     private boolean enableImgErrorCallback;
     /**
@@ -544,6 +547,14 @@ public class WhiteSdkConfiguration extends WhiteObject {
         this.slideAppOptions = slideAppOptions;
     }
 
+    public PresentationAppOptions getPresentationAppOptions() {
+        return presentationAppOptions;
+    }
+
+    public void setPresentationAppOptions(PresentationAppOptions presentationAppOptions) {
+        this.presentationAppOptions = presentationAppOptions;
+    }
+
     public boolean isEnableSlideInterrupterAPI() {
         return enableSlideInterrupterAPI;
     }
@@ -726,6 +737,9 @@ public class WhiteSdkConfiguration extends WhiteObject {
         /** 最大重试次数, 默认为 3 */
         private Integer resourceMaxRetries;
 
+        /** 是否允许缩放 Slide 内容，默认为 false。 */
+        private boolean enableScale = false;
+
         public boolean isShowRenderError() {
             return showRenderError;
         }
@@ -812,6 +826,14 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
         public void setResourceMaxRetries(Integer resourceMaxRetries) {
             this.resourceMaxRetries = resourceMaxRetries;
+        }
+
+        public boolean isEnableScale() {
+            return enableScale;
+        }
+
+        public void setEnableScale(boolean enableScale) {
+            this.enableScale = enableScale;
         }
     }
 }

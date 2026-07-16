@@ -1,4 +1,7 @@
 # 版本更新记录
+## Unreleased
+- `WindowParams` 新增 `useBoxesStatus` 参数，用于开启每个窗口独立的状态管理，实时房间与回放房间共用该配置。
+
 ## [2.16.122] - 2026-06-29
 - 更新 `@netless/appliance-plugin` 至 1.1.37。
 

@@ -9,6 +9,7 @@ public class WindowAppParam {
     public static final String KIND_MEDIAPLAYER = "MediaPlayer";
     // for kind of new ppt
     public static final String KIND_SLIDE = "Slide";
+    public static final String KIND_PRESENTATION = "Presentation";
 
     private String kind;
     private Options options;
@@ -34,6 +35,11 @@ public class WindowAppParam {
     public static WindowAppParam createSlideApp(String scenePath, Scene[] scenes, String title) {
         SlideOptions options = new SlideOptions(scenePath, scenes, title);
         return new WindowAppParam(KIND_SLIDE, options, null);
+    }
+
+    public static WindowAppParam createPresentationApp(String scenePath, Scene[] scenes, String title) {
+        PresentationOptions options = new PresentationOptions(scenePath, scenes, title);
+        return new WindowAppParam(KIND_PRESENTATION, options, null);
     }
 
     /**
@@ -97,6 +103,17 @@ public class WindowAppParam {
             this.scenes = null;
         }
 
+    }
+
+    private static class PresentationOptions extends Options {
+        private final String scenePath;
+        private final Scene[] scenes;
+
+        public PresentationOptions(String scenePath, Scene[] scenes, String title) {
+            super(title);
+            this.scenePath = scenePath;
+            this.scenes = scenes;
+        }
     }
 
     private static class PlayerOptions extends Options {

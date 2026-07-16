@@ -12,6 +12,7 @@ public class LoggerOptions extends WhiteObject {
     private Level reportLevelMask;
     private ReportMode reportDebugLogMode;
     private ReportMode reportQualityMode;
+    private LocalLogOptions localLog;
 
     /**
      * 获取是否关闭日志上报。
@@ -122,6 +123,25 @@ public class LoggerOptions extends WhiteObject {
     public void setReportQualityMode(ReportMode reportQualityMode) {
         this.reportQualityMode = reportQualityMode;
     }
+
+    /**
+     * 获取 WebView 内本地日志配置。
+     *
+     * @return 本地日志配置，详见 {@link LocalLogOptions LocalLogOptions}。
+     */
+    public LocalLogOptions getLocalLog() {
+        return localLog;
+    }
+
+    /**
+     * 设置 WebView 内本地日志配置。
+     *
+     * @param localLog 本地日志配置，详见 {@link LocalLogOptions LocalLogOptions}。
+     */
+    public void setLocalLog(LocalLogOptions localLog) {
+        this.localLog = localLog;
+    }
+
     /**
      * 日志等级。
      *

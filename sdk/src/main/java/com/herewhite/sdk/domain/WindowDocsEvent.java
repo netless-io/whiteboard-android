@@ -23,8 +23,9 @@ public class WindowDocsEvent {
      * prevStep：上一步。
      * nextStep：下一步。
      * jumpToPage：跳转至页码。
+     * scalePage：缩放当前课件页，scale 取值范围为 1 到 4，可传入小数。
      *
-     * @param options 事件参数。仅当 event 为 "jumpToPage" 时需要传入，用于指定期望跳转的页码。
+     * @param options 事件参数。event 为 "jumpToPage" 时传入 page；event 为 "scalePage" 时传入 scale。
      */
     public WindowDocsEvent(String event, Options options) {
         this.event = event;
@@ -35,6 +36,12 @@ public class WindowDocsEvent {
         Options options = new Options();
         options.page = page;
         return new WindowDocsEvent("jumpToPage", options);
+    }
+
+    public static WindowDocsEvent ScalePage(Double scale) {
+        Options options = new Options();
+        options.scale = scale;
+        return new WindowDocsEvent("scalePage", options);
     }
 
     public String getEvent() {
@@ -55,6 +62,7 @@ public class WindowDocsEvent {
 
     public static class Options extends WhiteObject {
         private Integer page;
+        private Double scale;
 
         public Options() {}
 
@@ -64,6 +72,14 @@ public class WindowDocsEvent {
 
         public void setPage(Integer page) {
             this.page = page;
+        }
+
+        public Double getScale() {
+            return scale;
+        }
+
+        public void setScale(Double scale) {
+            this.scale = scale;
         }
     }
 }

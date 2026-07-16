@@ -72,6 +72,27 @@
                 style="@style/TestButton"
                 android:text="newDynamic" />
 
+            <Switch
+                android:id="@+id/presentationSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="presentation" />
+
+            <Button
+                android:id="@+id/scalePage"
+                style="@style/TestButton"
+                android:text="scalePage 2x" />
+
+            <Button
+                android:id="@+id/prevPage"
+                style="@style/TestButton"
+                android:text="prevPage" />
+
+            <Button
+                android:id="@+id/nextPage"
+                style="@style/TestButton"
+                android:text="nextPage" />
+
             <Button
                 android:id="@+id/closeApp"
                 style="@style/TestButton"
@@ -106,6 +127,11 @@
                 android:id="@+id/saveAttributes"
                 style="@style/TestButton"
                 android:text="saveAttributes" />
+
+            <Button
+                android:id="@+id/uploadLocalLogs"
+                style="@style/TestButton"
+                android:text="uploadLogs" />
         </LinearLayout>
     </ScrollView>
 </FrameLayout>

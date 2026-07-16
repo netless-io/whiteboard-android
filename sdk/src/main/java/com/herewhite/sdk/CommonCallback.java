@@ -97,4 +97,13 @@ public interface CommonCallback {
     default void onLogger(JSONObject object) {
 
     }
+
+    /**
+     * WebView 内本地日志状态变化回调。
+     *
+     * @param state 本地日志运行状态。
+     */
+    default void onLocalLogStateChange(JSONObject state) {
+
+    }
 }

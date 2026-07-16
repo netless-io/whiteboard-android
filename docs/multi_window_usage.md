@@ -39,6 +39,7 @@ WindowParams windowParams = new WindowParams()
         .setContainerSizeRatio(9f / 16f)
         .setChessboard(true)
         .setFullscreen(false)
+        .setUseBoxesStatus(false)
         .setDebug(false);
 windowParams.setPrefersColorScheme(WindowPrefersColorScheme.Light);
 
@@ -69,6 +70,7 @@ whiteSdk.joinRoom(roomParams, new RoomCallbacks() {
 - `overwriteStyles`：覆盖默认窗口样式。
 - `debug`：是否输出多窗口调试日志。
 - `polling`：是否轮询更新本地视角。
+- `useBoxesStatus`：是否使用每个窗口独立的状态管理。开启后窗口最大化、最小化状态会按窗口分别同步；同一房间内多端建议保持一致。回放带窗口房间时也需要在 `PlayerConfiguration.windowParams` 中设置同样的值。
 
 ## 核心窗口操作
 

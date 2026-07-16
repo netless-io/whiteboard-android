@@ -36,6 +36,11 @@ public class WindowParams extends WhiteObject {
 
     private Boolean polling;
 
+    /**
+     * 是否使用每个窗口独立的 boxesStatus 状态管理。该参数需要在加入房间或创建回放前设置。
+     */
+    private Boolean useBoxesStatus;
+
     public Float getContainerSizeRatio() {
         return containerSizeRatio;
     }
@@ -104,6 +109,15 @@ public class WindowParams extends WhiteObject {
 
     public WindowParams setPolling(Boolean polling) {
         this.polling = polling;
+        return this;
+    }
+
+    public Boolean getUseBoxesStatus() {
+        return useBoxesStatus;
+    }
+
+    public WindowParams setUseBoxesStatus(Boolean useBoxesStatus) {
+        this.useBoxesStatus = useBoxesStatus;
         return this;
     }
 }
