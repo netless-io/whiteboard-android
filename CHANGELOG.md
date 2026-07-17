@@ -1,5 +1,9 @@
 # 版本更新记录
-## Unreleased
+## [2.16.123] - 2026-07-17
+- 同步 `Whiteboard-bridge` 至 `22e7584`，内置 `white-web-sdk@2.16.56`、`@netless/window-manager@1.0.17`。
+- 新增 `LoggerOptions.localLog.enabled/enabledUpload` 配置，以及 `WhiteSdk` 本地日志状态、收集、刷新、上传接口。
+- 新增 Presentation 内置课件配置与 `WindowAppParam.createPresentationApp`。
+- 新增 `WindowDocsEvent.ScalePage` 和 `SlideAppOptions.enableScale`，用于统一缩放课件页。
 - `WindowParams` 新增 `useBoxesStatus` 参数，用于开启每个窗口独立的状态管理，实时房间与回放房间共用该配置。
 
 ## [2.16.122] - 2026-06-29
