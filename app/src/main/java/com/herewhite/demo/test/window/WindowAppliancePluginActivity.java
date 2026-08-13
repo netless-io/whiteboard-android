@@ -171,8 +171,25 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
         Map<String, Object> extrasOptions = Map.of(
                 // cursor 配置
                 "cursor", Map.of(
-                        "enable", false,
-                        "expirationTime", 500
+                        "enable", true,
+                        "expirationTime", 500,
+                        "syncedLabel", Map.of(
+                                "enableShowName", true
+                        ),
+                        "appearance", Map.of(
+                                "pencil", Map.of(
+                                        "synced", Map.of(
+                                                "enableShowName", false
+                                        )
+                                ),
+                                "clicker", Map.of(
+                                        "synced", Map.of(
+                                                "images", Map.of(
+                                                        "standardResolution", "https://api.iconify.design/mdi:video-wireless-outline.svg?color=%237f7f7f"
+                                                )
+                                        )
+                                )
+                        )
                 ),
                 // syncOpt 配置
                 "syncOpt", Map.of(

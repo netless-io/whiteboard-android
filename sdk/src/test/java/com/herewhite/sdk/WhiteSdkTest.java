@@ -7,6 +7,12 @@ import static org.junit.Assert.*;
 public class WhiteSdkTest {
 
     @Test
+    public void volumeTagCollectionDoesNotBlockMainThread() {
+        assertFalse(WhiteSdk.shouldCollectVolumeTag(true));
+        assertTrue(WhiteSdk.shouldCollectVolumeTag(false));
+    }
+
+    @Test
     public void setCommonCallbacks() {
     }
 

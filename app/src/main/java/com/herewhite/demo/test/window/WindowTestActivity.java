@@ -19,6 +19,7 @@ import com.herewhite.demo.R;
 import com.herewhite.demo.common.DemoAPI;
 import com.herewhite.demo.utils.FileUtils;
 import com.herewhite.demo.utils.MapBuilder;
+import com.herewhite.demo.utils.RuntimeWebViewProbe;
 import com.herewhite.sdk.CommonCallback;
 import com.herewhite.sdk.ResultCaller;
 import com.herewhite.sdk.Room;
@@ -504,6 +505,7 @@ public class WindowTestActivity extends AppCompatActivity {
         configuration.setFonts(new MapBuilder<String, String>().put("宋体", "https://your-cdn.com/Songti.ttf").build());
         // configuration.setEnableSyncedStore(true);
         configuration.setUseMultiViews(true);
+        configuration.setEnableAppliancePlugin(true);
         configuration.setEnableSlideInterrupterAPI(true);
         configuration.setEnableImgErrorCallback(true);
 
@@ -524,6 +526,7 @@ public class WindowTestActivity extends AppCompatActivity {
         configuration.setPresentationAppOptions(presentationAppOptions);
 
         mWhiteSdk = new WhiteSdk(mWhiteboardView, this, configuration);
+        RuntimeWebViewProbe.show(this, mWhiteboardView);
         mWhiteSdk.setCommonCallbacks(new CommonCallback() {
             @Override
             public void onLocalLogStateChange(JSONObject state) {

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.media.AudioManager;
 import android.os.Build;
+import android.os.Looper;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebView;
 
@@ -200,8 +201,15 @@ public class WhiteSdk {
     }
 
     private void addVolumeTag(Context context, WhiteSdkConfiguration config) {
+        // AudioManager uses synchronous Binder calls. A stalled audio service must not block SDK setup.
+        if (!shouldCollectVolumeTag(Looper.myLooper() == Looper.getMainLooper())) {
+            return;
+        }
         try {
             AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            if (audioManager == null) {
+                return;
+            }
 
             HashMap<String, String> volumeMap = new HashMap<>();
             volumeMap.put("m", getVolumePercent(audioManager, AudioManager.STREAM_MUSIC));
@@ -213,9 +221,16 @@ public class WhiteSdk {
         }
     }
 
+    static boolean shouldCollectVolumeTag(boolean mainThread) {
+        return !mainThread;
+    }
+
     private String getVolumePercent(AudioManager audioManager, int streamType) {
         int volume = audioManager.getStreamVolume(streamType);
         int maxVolume = audioManager.getStreamMaxVolume(streamType);
+        if (maxVolume <= 0) {
+            return "0";
+        }
         return Integer.toString(volume * 100 / maxVolume);
     }
 
