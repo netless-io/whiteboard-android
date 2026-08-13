@@ -1,4 +1,8 @@
 # 版本更新记录
+## [2.16.124] - 2026-08-14
+- 更新 `Whiteboard-bridge` 至 `aa1dfd7`，在 Bridge 内置 appliance-plugin Worker 渲染模式与 Canvas Context 兼容黑名单。
+- 修复 Android WebView 89 及以下版本的 appliance-plugin Worker 渲染兼容问题；集成宿主无需再单独配置黑名单。
+
 ## [2.16.123] - 2026-07-17
 - 同步 `Whiteboard-bridge` 至 `22e7584`，内置 `white-web-sdk@2.16.56`、`@netless/window-manager@1.0.17`。
 - 新增 `LoggerOptions.localLog.enabled/enabledUpload` 配置，以及 `WhiteSdk` 本地日志状态、收集、刷新、上传接口。
