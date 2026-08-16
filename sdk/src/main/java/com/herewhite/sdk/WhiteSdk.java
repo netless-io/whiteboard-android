@@ -14,9 +14,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.herewhite.sdk.domain.ConnectionPrepareParam;
 import com.herewhite.sdk.domain.FontFace;
+import com.herewhite.sdk.domain.HasBackgroundImageParams;
 import com.herewhite.sdk.domain.PlayerConfiguration;
 import com.herewhite.sdk.domain.PlayerTimeInfo;
 import com.herewhite.sdk.domain.Promise;
+import com.herewhite.sdk.domain.ReloadBackgroundImageParams;
+import com.herewhite.sdk.domain.ReloadBackgroundImageResult;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
 import com.herewhite.sdk.domain.WindowRegisterAppParams;
@@ -533,6 +536,48 @@ public class WhiteSdk {
      */
     public void uploadLocalLogs(final Promise<JSONObject> promise) {
         callSdkJsonMethod("sdk.uploadLocalLogs", promise);
+    }
+
+    /** 重新加载当前聚焦场景中此前加载失败的背景图片。 */
+    public void reloadBackgroundImage(
+            ReloadBackgroundImageParams params,
+            final Promise<ReloadBackgroundImageResult> promise) {
+        bridge.callHandler("sdk.reloadBackgroundImage", new Object[]{params},
+                (OnReturnValue<Object>) retValue -> {
+                    JSONObject jsonObject = convertReturnValueToJsonObject(retValue);
+                    if (jsonObject == null) {
+                        promise.catchEx(new SDKError("Invalid reloadBackgroundImage response"));
+                        return;
+                    }
+                    SDKError sdkError = SDKError.promiseError(jsonObject.toString());
+                    if (sdkError != null) {
+                        promise.catchEx(sdkError);
+                    } else {
+                        promise.then(new ReloadBackgroundImageResult(jsonObject));
+                    }
+                });
+    }
+
+    /** 查询指定白板、场景和 URL 是否已有任一来源的背景图。 */
+    public void hasBackgroundImage(
+            HasBackgroundImageParams params,
+            final Promise<Boolean> promise) {
+        bridge.callHandler("sdk.hasBackgroundImage", new Object[]{params},
+                (OnReturnValue<Object>) retValue -> {
+                    if (retValue instanceof Boolean) {
+                        promise.then((Boolean) retValue);
+                        return;
+                    }
+                    JSONObject jsonObject = convertReturnValueToJsonObject(retValue);
+                    SDKError sdkError = jsonObject == null
+                            ? null
+                            : SDKError.promiseError(jsonObject.toString());
+                    if (sdkError != null) {
+                        promise.catchEx(sdkError);
+                    } else {
+                        promise.catchEx(new SDKError("Invalid hasBackgroundImage response"));
+                    }
+                });
     }
 
     private void callSdkJsonMethod(String method, final Promise<JSONObject> promise) {

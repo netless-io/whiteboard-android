@@ -1,6 +1,7 @@
 package com.herewhite.sdk;
 
 import com.herewhite.sdk.domain.SDKError;
+import com.herewhite.sdk.domain.BackgroundImageLoadEvent;
 
 import org.json.JSONObject;
 
@@ -71,6 +72,10 @@ public interface CommonCallback {
      * @param object JSON 格式的消息。只有当消息为 JSON 格式时，本地用户才能收到。
      */
     default void onMessage(JSONObject object) {
+
+    }
+
+    default void onBackgroundImageLoad(BackgroundImageLoadEvent event) {
 
     }
 

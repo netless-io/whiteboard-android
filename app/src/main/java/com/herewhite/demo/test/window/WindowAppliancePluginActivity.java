@@ -7,14 +7,19 @@ import android.widget.ImageView;
 import com.herewhite.demo.R;
 import com.herewhite.demo.common.SampleBaseActivity;
 import com.herewhite.demo.databinding.ActivityWindowAppliancePluginBinding;
+import com.herewhite.sdk.CommonCallback;
 import com.herewhite.sdk.RoomParams;
 import com.herewhite.sdk.WhiteSdkConfiguration;
 import com.herewhite.sdk.domain.Appliance;
 import com.herewhite.sdk.domain.AppliancePluginOptions;
+import com.herewhite.sdk.domain.BackgroundImageLoadEvent;
+import com.herewhite.sdk.domain.BackgroundImageLoadOptions;
 import com.herewhite.sdk.domain.CameraConfig;
 import com.herewhite.sdk.domain.ImageInformationWithUrl;
 import com.herewhite.sdk.domain.MemberState;
 import com.herewhite.sdk.domain.Promise;
+import com.herewhite.sdk.domain.ReloadBackgroundImageParams;
+import com.herewhite.sdk.domain.ReloadBackgroundImageResult;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.ShapeType;
 import com.herewhite.sdk.domain.StrokeType;
@@ -126,6 +131,7 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
                 public void then(Bitmap bitmap) {
                     ImageView viewById = findViewById(R.id.iv_bitmap);
                     viewById.setImageBitmap(bitmap);
+                    viewById.setVisibility(View.VISIBLE);
                     logAction("get bitmap");
                 }
 
@@ -142,6 +148,7 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
                 public void then(Bitmap bitmap) {
                     ImageView viewById = findViewById(R.id.iv_bitmap);
                     viewById.setImageBitmap(bitmap);
+                    viewById.setVisibility(View.VISIBLE);
                     logAction("get bitmap");
                 }
 
@@ -157,6 +164,9 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
         WhiteSdkConfiguration configuration = new WhiteSdkConfiguration(demoAPI.getAppId(), true);
         configuration.setUseMultiViews(true);
         configuration.setEnableAppliancePlugin(true);
+        BackgroundImageLoadOptions loadOptions = new BackgroundImageLoadOptions();
+        loadOptions.setMaxRetries(1);
+        configuration.setBackgroundImageLoadOptions(loadOptions);
         return configuration;
     }
 
@@ -169,6 +179,7 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
 
     private AppliancePluginOptions getAppliancePluginOptions() {
         Map<String, Object> extrasOptions = Map.of(
+                "useWorker", "mainThread",
                 // cursor 配置
                 "cursor", Map.of(
                         "enable", true,
@@ -191,11 +202,6 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
                                 )
                         )
                 ),
-                // syncOpt 配置
-                "syncOpt", Map.of(
-                        "interval", 100,
-                        "smoothSync", false
-                ),
                 // bezier 配置
                 "bezier", Map.of(
                         "enable", false,
@@ -217,5 +223,32 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
     @Override
     protected void onJoinRoomSuccess() {
         room.disableSerialization(false);
+        whiteSdk.setCommonCallbacks(new CommonCallback() {
+            @Override
+            public void onBackgroundImageLoad(BackgroundImageLoadEvent event) {
+                logAction("backgroundImageLoad: " + gson.toJson(event));
+                if (!"failed".equals(event.state)) {
+                    return;
+                }
+                // mainView 可直接比较；appId 对应的路径由 reload API 在插件内原子校验。
+                if ("mainView".equals(event.viewId)
+                        && !event.scenePath.equals(room.getSceneState().getScenePath())) {
+                    return;
+                }
+                ReloadBackgroundImageParams params =
+                        new ReloadBackgroundImageParams(event.source, event.viewId, event.scenePath);
+                whiteSdk.reloadBackgroundImage(params, new Promise<ReloadBackgroundImageResult>() {
+                    @Override
+                    public void then(ReloadBackgroundImageResult result) {
+                        logAction("reloadBackgroundImage: " + gson.toJson(result));
+                    }
+
+                    @Override
+                    public void catchEx(SDKError error) {
+                        logAction("reloadBackgroundImage failed: " + error.getMessage());
+                    }
+                });
+            }
+        });
     }
 }

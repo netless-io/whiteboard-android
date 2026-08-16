@@ -22,6 +22,7 @@ import java.util.List;
  * @note 成功初始化 `WhiteSdk` 后，无法再调用 `WhiteSdkConfiguration` 类中的任何方法修改 `WhiteSdk` 的配置。
  */
 public class WhiteSdkConfiguration extends WhiteObject {
+    private com.herewhite.sdk.domain.BackgroundImageLoadOptions backgroundImageLoadOptions;
 
     private Region region;
     // native 永远只接收 touch 事件
@@ -521,6 +522,15 @@ public class WhiteSdkConfiguration extends WhiteObject {
      */
     public void setEnableImgErrorCallback(boolean enableImgErrorCallback) {
         this.enableImgErrorCallback = enableImgErrorCallback;
+    }
+
+    public com.herewhite.sdk.domain.BackgroundImageLoadOptions getBackgroundImageLoadOptions() {
+        return backgroundImageLoadOptions;
+    }
+
+    public void setBackgroundImageLoadOptions(
+            com.herewhite.sdk.domain.BackgroundImageLoadOptions options) {
+        backgroundImageLoadOptions = options;
     }
 
     public boolean isEnableSyncedStore() {

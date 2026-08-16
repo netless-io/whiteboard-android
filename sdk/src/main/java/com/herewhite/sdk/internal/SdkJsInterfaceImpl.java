@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.herewhite.sdk.CommonCallback;
+import com.herewhite.sdk.domain.BackgroundImageLoadEvent;
 import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.SlideErrorType;
@@ -148,6 +149,13 @@ public class SdkJsInterfaceImpl {
             return;
         }
         if (commonCallback != null) {
+            if ("backgroundImageLoad".equals(jsonObject.optString("name"))) {
+                try {
+                    commonCallback.onBackgroundImageLoad(new BackgroundImageLoadEvent(jsonObject));
+                } catch (RuntimeException exception) {
+                    Logger.error("WhiteSDK onBackgroundImageLoad callback failed", exception);
+                }
+            }
             commonCallback.onMessage(jsonObject);
         }
 
