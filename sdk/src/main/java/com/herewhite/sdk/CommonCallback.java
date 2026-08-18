@@ -2,6 +2,7 @@ package com.herewhite.sdk;
 
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.BackgroundImageLoadEvent;
+import com.herewhite.sdk.domain.ApplianceInitLoadingChangeEvent;
 
 import org.json.JSONObject;
 
@@ -76,6 +77,14 @@ public interface CommonCallback {
     }
 
     default void onBackgroundImageLoad(BackgroundImageLoadEvent event) {
+
+    }
+
+    /**
+     * Appliance plugin initialization progress. The terminal ready event has
+     * {@code loading == false}, {@code phase == "ready"}, and {@code status == "success"}.
+     */
+    default void onApplianceInitLoadingChange(ApplianceInitLoadingChangeEvent event) {
 
     }
 

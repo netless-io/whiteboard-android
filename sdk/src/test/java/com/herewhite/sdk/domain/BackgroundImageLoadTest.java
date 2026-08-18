@@ -75,6 +75,21 @@ public class BackgroundImageLoadTest {
     }
 
     @Test
+    public void parsesApplianceInitLoadingChangeEvent() throws Exception {
+        JSONObject json = new JSONObject()
+                .put("name", "applianceInitLoadingChange")
+                .put("loading", false)
+                .put("phase", "ready")
+                .put("status", "success");
+
+        ApplianceInitLoadingChangeEvent event = new ApplianceInitLoadingChangeEvent(json);
+        assertEquals("applianceInitLoadingChange", event.name);
+        assertEquals(false, event.loading);
+        assertEquals("ready", event.phase);
+        assertEquals("success", event.status);
+    }
+
+    @Test
     public void queryParamsKeepViewSceneUrlAndSources() {
         HasBackgroundImageParams params = new HasBackgroundImageParams(
                 "mainView",
