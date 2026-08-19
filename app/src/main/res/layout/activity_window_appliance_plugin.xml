@@ -85,11 +85,6 @@
                 android:text="pluginPencil" />
 
             <Button
-                android:id="@+id/laserPen"
-                style="@style/TestButton"
-                android:text="LaserPen" />
-
-            <Button
                 android:id="@+id/text"
                 style="@style/TestButton"
                 android:text="Text" />

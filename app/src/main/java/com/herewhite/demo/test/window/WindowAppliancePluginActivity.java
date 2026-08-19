@@ -82,13 +82,6 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
             room.setMemberState(state);
         });
 
-        binding.laserPen.setOnClickListener(v -> {
-            MemberState state = new MemberState();
-            state.setCurrentApplianceName(Appliance.LASER_PENCIL);
-            state.setStrokeType(StrokeType.Normal);
-            room.setMemberState(state);
-        });
-
         binding.eraser.setOnClickListener(v -> {
             MemberState state = new MemberState();
             state.setCurrentApplianceName(Appliance.ERASER);

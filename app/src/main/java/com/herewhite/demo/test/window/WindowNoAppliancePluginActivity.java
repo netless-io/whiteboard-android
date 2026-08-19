@@ -15,7 +15,6 @@ import com.herewhite.sdk.domain.MemberState;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.ShapeType;
-import com.herewhite.sdk.domain.StrokeType;
 import com.herewhite.sdk.domain.WindowAppParam;
 
 public class WindowNoAppliancePluginActivity extends SampleBaseActivity {
@@ -62,13 +61,6 @@ public class WindowNoAppliancePluginActivity extends SampleBaseActivity {
         binding.selector.setOnClickListener(v -> {
             MemberState state = new MemberState();
             state.setCurrentApplianceName(Appliance.SELECTOR);
-            room.setMemberState(state);
-        });
-
-        binding.laserPen.setOnClickListener(v -> {
-            MemberState state = new MemberState();
-            state.setCurrentApplianceName(Appliance.LASER_PENCIL);
-            state.setStrokeType(StrokeType.Normal);
             room.setMemberState(state);
         });
 
