@@ -140,3 +140,6 @@ local.properties
 .worksheet
 
 **/string_white_sdk_config.xml
+.DS_Store
+jacoco.exec
+*.exec
