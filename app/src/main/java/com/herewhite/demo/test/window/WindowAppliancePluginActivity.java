@@ -26,6 +26,7 @@ import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.ShapeType;
 import com.herewhite.sdk.domain.StrokeType;
 import com.herewhite.sdk.domain.WindowAppParam;
+import com.herewhite.sdk.domain.WindowParams;
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -169,6 +170,7 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
         slideAppOptions.setMinFPS(5);
         slideAppOptions.setMaxFPS(15);
         slideAppOptions.setEnableGlobalClick(false);
+        slideAppOptions.setEnableScale(true);
         LoggerOptions loggerOptions = new LoggerOptions();
         loggerOptions.setLocalLog(new LocalLogOptions().setEnabled(true).setEnabledUpload(true));
         configuration.setLoggerOptions(loggerOptions);
@@ -180,6 +182,8 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
         RoomParams roomParams = super.generateRoomParams();
         roomParams.setWritable(false);
         roomParams.setAppliancePluginOptions(getAppliancePluginOptions());
+        roomParams.setWindowParams(new WindowParams()
+                .setOverwriteStyles(".netless-app-slide-wb-view {clip-path: none !important;}"));
         return roomParams;
     }
 
