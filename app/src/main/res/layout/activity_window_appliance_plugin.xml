@@ -14,9 +14,26 @@
         android:layout_width="300dp"
         android:layout_height="200dp"
         android:layout_gravity="end"
-        android:background="#CCCCCC" />
+        android:background="#CCCCCC"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/toggleWritable"
+        style="@style/TestButton"
+        android:layout_gravity="top|start"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="获取可写" />
+    <Button
+        android:id="@+id/exitRoom"
+        style="@style/TestButton"
+        android:layout_gravity="top|end"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"
+        android:text="退出房间" />
 
     <HorizontalScrollView
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"

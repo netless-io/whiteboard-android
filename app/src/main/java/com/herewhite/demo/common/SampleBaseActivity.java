@@ -28,6 +28,8 @@ import java.util.Date;
 import java.util.Objects;
 
 abstract public class SampleBaseActivity extends BaseActivity {
+    public static final String EXTRA_ROOM_UUID = "roomUuid";
+    public static final String EXTRA_ROOM_TOKEN = "roomToken";
     private static final String ROOM_INFO = "RoomInfo";
     private static final String ROOM_ACTION = "RoomAction";
 
@@ -76,6 +78,14 @@ abstract public class SampleBaseActivity extends BaseActivity {
                 alert("创建房间失败", message);
             }
         };
+
+        String intentUuid = getIntent().getStringExtra(EXTRA_ROOM_UUID);
+        String intentToken = getIntent().getStringExtra(EXTRA_ROOM_TOKEN);
+        if (intentUuid != null && !intentUuid.isEmpty()
+                && intentToken != null && !intentToken.isEmpty()) {
+            joinRoom(intentUuid, intentToken);
+            return;
+        }
 
         String uuid = demoAPI.getRoomUUID();
         if (uuid != null) {

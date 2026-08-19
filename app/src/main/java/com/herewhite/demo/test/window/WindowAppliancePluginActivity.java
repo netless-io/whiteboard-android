@@ -16,6 +16,8 @@ import com.herewhite.sdk.domain.BackgroundImageLoadEvent;
 import com.herewhite.sdk.domain.BackgroundImageLoadOptions;
 import com.herewhite.sdk.domain.CameraConfig;
 import com.herewhite.sdk.domain.ImageInformationWithUrl;
+import com.herewhite.sdk.domain.LoggerOptions;
+import com.herewhite.sdk.domain.LocalLogOptions;
 import com.herewhite.sdk.domain.MemberState;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.ReloadBackgroundImageParams;
@@ -24,6 +26,7 @@ import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.ShapeType;
 import com.herewhite.sdk.domain.StrokeType;
 import com.herewhite.sdk.domain.WindowAppParam;
+import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -165,14 +168,24 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
         configuration.setUseMultiViews(true);
         configuration.setEnableAppliancePlugin(true);
         BackgroundImageLoadOptions loadOptions = new BackgroundImageLoadOptions();
-        loadOptions.setMaxRetries(1);
+        loadOptions.setMaxRetries(3);
         configuration.setBackgroundImageLoadOptions(loadOptions);
+        WhiteSdkConfiguration.SlideAppOptions slideAppOptions = configuration.getSlideAppOptions();
+        slideAppOptions.setResolution(1d);
+        slideAppOptions.setMaxResolutionLevel(2);
+        slideAppOptions.setMinFPS(5);
+        slideAppOptions.setMaxFPS(15);
+        slideAppOptions.setEnableGlobalClick(false);
+        LoggerOptions loggerOptions = new LoggerOptions();
+        loggerOptions.setLocalLog(new LocalLogOptions().setEnabled(true).setEnabledUpload(true));
+        configuration.setLoggerOptions(loggerOptions);
         return configuration;
     }
 
     @Override
     protected RoomParams generateRoomParams() {
         RoomParams roomParams = super.generateRoomParams();
+        roomParams.setWritable(false);
         roomParams.setAppliancePluginOptions(getAppliancePluginOptions());
         return roomParams;
     }
@@ -180,6 +193,8 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
     private AppliancePluginOptions getAppliancePluginOptions() {
         Map<String, Object> extrasOptions = Map.of(
                 "useWorker", "mainThread",
+                "useSimple", true,
+                "useBackgroundThread", true,
                 // cursor 配置
                 "cursor", Map.of(
                         "enable", true,
@@ -223,7 +238,48 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
     @Override
     protected void onJoinRoomSuccess() {
         room.disableSerialization(false);
+        updateWritableUi();
+        binding.exitRoom.setOnClickListener(v -> room.disconnect(new Promise<Object>() {
+            @Override
+            public void then(Object result) {
+                runOnUiThread(() -> {
+                    logAction("disconnect: " + result);
+                    finish();
+                });
+            }
+
+            @Override
+            public void catchEx(SDKError t) {
+                runOnUiThread(() -> {
+                    logAction("disconnect failed: " + t.getMessage());
+                    finish();
+                });
+            }
+        }));
+
+        binding.toggleWritable.setOnClickListener(v -> {
+            boolean next = !Boolean.TRUE.equals(room.getWritable());
+            room.setWritable(next, new Promise<Boolean>() {
+                @Override
+                public void then(Boolean result) {
+                    runOnUiThread(() -> {
+                        logAction("setWritable: " + result);
+                        updateWritableUi();
+                    });
+                }
+
+                @Override
+                public void catchEx(SDKError t) {
+                    runOnUiThread(() -> logAction("setWritable failed: " + t.getMessage()));
+                }
+            });
+        });
         whiteSdk.setCommonCallbacks(new CommonCallback() {
+            @Override
+            public void onLocalLogStateChange(JSONObject state) {
+                logAction("localLogStateChange: " + state);
+            }
+
             @Override
             public void onBackgroundImageLoad(BackgroundImageLoadEvent event) {
                 logAction("backgroundImageLoad: " + gson.toJson(event));
@@ -250,5 +306,11 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
                 });
             }
         });
+    }
+
+    private void updateWritableUi() {
+        boolean writable = Boolean.TRUE.equals(room.getWritable());
+        binding.toolbar.setVisibility(writable ? View.VISIBLE : View.GONE);
+        binding.toggleWritable.setText(writable ? "移除可写" : "获取可写");
     }
 }

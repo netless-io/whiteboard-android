@@ -7,26 +7,13 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 
-import com.herewhite.demo.common.DemoAPI;
-import com.herewhite.demo.test.window.MaoCustomWindowActivity;
-import com.herewhite.demo.test.window.WindowTestActivity;
+import com.herewhite.demo.common.SampleBaseActivity;
+import com.herewhite.demo.test.window.WindowAppliancePluginActivity;
 
 public class StartActivity extends BaseActivity {
-    private static class DemoItem {
-        String title;
-        Class<?> targetClass;
-        Runnable specialAction;
 
-        DemoItem(String title, Class<?> targetClass) {
-            this.title = title;
-            this.targetClass = targetClass;
-        }
-
-        DemoItem(String title, Runnable specialAction) {
-            this.title = title;
-            this.specialAction = specialAction;
-        }
-    }
+    private static final String ROOM_UUID = "cd1221809b8111f1aaeead87383431cf";
+    private static final String ROOM_TOKEN = "NETLESSROOM_YWs9VWtNUk92M1JIN2I2Z284dCZleHBpcmVBdD0xNzg3MTk4MTIyMTI2Jm5vbmNlPWNkMzdhYWUwLTliODEtMTFmMS1iYzM4LWQ3Yjg5YzgwZTNlMSZyb2xlPTEmc2lnPTExNTk0NTVmMTVkYjE5MmY0NDgyMmVmYTlkNDQxNjBmODM3ZTVhNGQwYzRkNzlhNjc4MTFlNzAxZjUwODhhNmMmdXVpZD1jZDEyMjE4MDliODExMWYxYWFlZWFkODczODM0MzFjZg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,34 +23,16 @@ public class StartActivity extends BaseActivity {
     }
 
     private void setupDemoItems() {
-        DemoItem[] items = {
-                new DemoItem(getString(R.string.basic_room), RoomActivity.class),
-                new DemoItem(getString(R.string.window_room), WindowTestActivity.class),
-                new DemoItem(getString(R.string.mao_custom_window), MaoCustomWindowActivity.class),
-                new DemoItem(getString(R.string.replay), PlayActivity.class),
-                new DemoItem(getString(R.string.replay_pure), PureReplayActivity.class),
-                new DemoItem(getString(R.string.qa_debug_examples), QaActivity.class),
-        };
-
         LinearLayout container = findViewById(R.id.container);
-        for (DemoItem item : items) {
-            Button button = getButton(item);
-            button.setOnClickListener(v -> {
-                if (DemoAPI.get().invalidToken()) {
-                    showAlert("token", "请在 https://console.herewhite.com 中注册，并获取 sdk token，再进行使用");
-                    return;
-                }
 
-                if (item.specialAction != null) {
-                    // 特殊处理，如 jumpToRtc
-                    item.specialAction.run();
-                } else {
-                    Intent intent = new Intent(this, item.targetClass);
-                    startActivity(intent);
-                }
-            });
-            container.addView(button, getLayoutParams());
-        }
+        Button button = getButton(getString(R.string.appliance_plugin));
+        button.setOnClickListener(v -> {
+            Intent intent = new Intent(this, WindowAppliancePluginActivity.class);
+            intent.putExtra(SampleBaseActivity.EXTRA_ROOM_UUID, ROOM_UUID);
+            intent.putExtra(SampleBaseActivity.EXTRA_ROOM_TOKEN, ROOM_TOKEN);
+            startActivity(intent);
+        });
+        container.addView(button, getLayoutParams());
     }
 
     private LinearLayout.LayoutParams getLayoutParams() {
@@ -75,21 +44,11 @@ public class StartActivity extends BaseActivity {
         return params;
     }
 
-    private @NonNull Button getButton(DemoItem item) {
+    private @NonNull Button getButton(String title) {
         Button button = new Button(this);
-        button.setText(item.title);
+        button.setText(title);
         button.setTextSize(16);
         button.setAllCaps(false);
         return button;
-    }
-
-    private void jumpToRtc() {
-        try {
-            Class<?> clazz = Class.forName("com.herewhite.rtc.demo.MainRtcActivity");
-            Intent intent = new Intent(this, clazz);
-            startActivity(intent);
-        } catch (ClassNotFoundException e) {
-            showAlert("rtc demo", "config local.properties app.enableRtc=false");
-        }
     }
 }
