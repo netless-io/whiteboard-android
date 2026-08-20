@@ -1,8 +1,4 @@
 # 版本更新记录
-## [2.16.126] - 2026-08-20
-- 新增 `RoomParams.undoCacheScenesCount` 配置，用于设置撤销/重做场景缓存数量。
-- Android 示例房间统一配置 `undoCacheScenesCount = 32`。
-
 ## [2.16.125] - 2026-08-15
 - 同步 `Whiteboard-bridge` 至 `42c7f0d`，内置 `@netless/appliance-plugin@1.1.40`。
 - Appliance Plugin 的默认 Worker 渲染模式与 Canvas context 兼容性策略下沉至插件内部，Bridge 继续透传宿主 `appliancePluginOptions`。

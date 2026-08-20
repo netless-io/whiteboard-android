@@ -576,7 +576,6 @@ public class WindowTestActivity extends AppCompatActivity {
 
         // 如需支持用户头像，请在设置 WhiteSdkConfiguration 后，再调用 setUserPayload 方法，传入符合用户信息
         RoomParams roomParams = new RoomParams(uuid, token, userId);
-        roomParams.setUndoCacheScenesCount(32);
 
         HashMap<String, String> styleMap = new HashMap<>();
         styleMap.put("backgroundColor", "red");

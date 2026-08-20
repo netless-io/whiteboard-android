@@ -39,10 +39,6 @@ public class RoomParams extends WhiteObject {
     private boolean disableNewPencil = true;
     private Object userPayload;
     /**
-     * 撤销/重做场景缓存数量。不设置时使用 Web SDK 默认值。
-     */
-    private Integer undoCacheScenesCount;
-    /**
      * 多窗口属性
      */
     private WindowParams windowParams;
@@ -433,24 +429,6 @@ public class RoomParams extends WhiteObject {
      */
     public void setRoomToken(String roomToken) {
         this.roomToken = roomToken;
-    }
-
-    /**
-     * 获取撤销/重做场景缓存数量。
-     *
-     * @return 场景缓存数量；未设置时返回 {@code null}。
-     */
-    public Integer getUndoCacheScenesCount() {
-        return undoCacheScenesCount;
-    }
-
-    /**
-     * 设置撤销/重做最多保留的场景缓存数量。
-     *
-     * @param undoCacheScenesCount 场景缓存数量。
-     */
-    public void setUndoCacheScenesCount(Integer undoCacheScenesCount) {
-        this.undoCacheScenesCount = undoCacheScenesCount;
     }
 
     public WindowParams getWindowParams() {
