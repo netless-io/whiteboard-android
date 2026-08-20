@@ -24,14 +24,6 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:text="获取可写" />
-    <Button
-        android:id="@+id/exitRoom"
-        style="@style/TestButton"
-        android:layout_gravity="top|end"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="10dp"
-        android:text="退出房间" />
-
     <HorizontalScrollView
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -120,4 +112,37 @@
                 android:text="resetCamera" />
         </LinearLayout>
     </HorizontalScrollView>
+
+    <LinearLayout
+        android:id="@+id/roomConnectionLoading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99000000"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:indeterminate="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="正在连接白板..."
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/exitRoom"
+        style="@style/TestButton"
+        android:layout_gravity="top|end"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"
+        android:text="退出房间" />
 </FrameLayout>

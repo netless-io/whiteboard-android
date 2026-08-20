@@ -9,6 +9,7 @@ import com.herewhite.sdk.domain.LoggerOptions;
 import com.herewhite.sdk.domain.PresentationAppOptions;
 import com.herewhite.sdk.domain.Region;
 import com.herewhite.sdk.domain.SlideInvisibleBehavior;
+import com.herewhite.sdk.domain.SlideSyncEventQueuePolicy;
 import com.herewhite.sdk.domain.WhiteObject;
 
 import org.json.JSONObject;
@@ -715,19 +716,19 @@ public class WhiteSdkConfiguration extends WhiteObject {
          */
         private boolean enableGlobalClick = true;
 
-        /** 设置最小 fps, 应用会尽量保证实际 fps 高于此值, 此值越小, cpu 开销越小。默认值: 25 */
-        private Integer minFPS = 25;
+        /** 设置最小 fps, 应用会尽量保证实际 fps 高于此值, 此值越小, cpu 开销越小。未设置时由内嵌 Bridge 根据 WebView UA 决定。 */
+        private Integer minFPS;
 
-        /** 设置最大 fps, 应用会保证实际 fps 低于此值, 此值越小, cpu 开销越小。默认值: 40 */
-        private Integer maxFPS = 40;
+        /** 设置最大 fps, 应用会保证实际 fps 低于此值, 此值越小, cpu 开销越小。未设置时由内嵌 Bridge 根据 WebView UA 决定。 */
+        private Integer maxFPS;
 
         /**
          * 设置渲染分辨倍率, 原始 ppt 有自己的像素尺寸，当在 2k 或者 4k 屏幕下，如果按原始 ppt 分辨率显示，画面会比较模糊。可以调整此值，使画面更清晰，同时性能开销也变高。
-         * 默认值: 1
+         * 未设置时由内嵌 Bridge 根据 WebView UA 决定。
          */
         private Double resolution;
 
-        /** 取值范围 0~4 */
+        /** 取值范围 0~4。未设置时由内嵌 Bridge 根据 WebView UA 决定。 */
         private Integer maxResolutionLevel;
 
         /** 切页动画背景色 */
@@ -749,6 +750,12 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
         /** 是否允许缩放 Slide 内容，默认为 false。 */
         private boolean enableScale = false;
+
+        /**
+         * Slide 同步事件队列策略。Fifo 按顺序处理全部事件；LatestPendingRender 允许交互模式跳过积压的中间页面渲染。
+         * 未设置时由 Slide 使用 Fifo。
+         */
+        private SlideSyncEventQueuePolicy syncEventQueuePolicy;
 
         public boolean isShowRenderError() {
             return showRenderError;
@@ -844,6 +851,14 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
         public void setEnableScale(boolean enableScale) {
             this.enableScale = enableScale;
+        }
+
+        public SlideSyncEventQueuePolicy getSyncEventQueuePolicy() {
+            return syncEventQueuePolicy;
+        }
+
+        public void setSyncEventQueuePolicy(SlideSyncEventQueuePolicy syncEventQueuePolicy) {
+            this.syncEventQueuePolicy = syncEventQueuePolicy;
         }
     }
 }

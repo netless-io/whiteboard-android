@@ -1,0 +1,7 @@
+MM package.json
+ M src/bridge/SDK.ts
+MM yarn.lock
+?? scripts/test-slide-performance-defaults.js
+?? src/bridge/AppliancePluginDefaults.ts
+?? src/bridge/SlidePerformanceDefaults.ts
+?? test/SlidePerformanceDefaults.test.ts

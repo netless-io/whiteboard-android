@@ -18,6 +18,7 @@ import com.herewhite.sdk.domain.CameraConfig;
 import com.herewhite.sdk.domain.ImageInformationWithUrl;
 import com.herewhite.sdk.domain.LoggerOptions;
 import com.herewhite.sdk.domain.LocalLogOptions;
+import com.herewhite.sdk.domain.SlideSyncEventQueuePolicy;
 import com.herewhite.sdk.domain.MemberState;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.ReloadBackgroundImageParams;
@@ -43,6 +44,8 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
 
     @Override
     protected void initView() {
+        binding.exitRoom.setOnClickListener(v -> leaveRoomAndFinish());
+
         binding.insertNewDynamic.setOnClickListener(v -> {
             String prefixUrl = "https://conversion-demo-cn.oss-cn-hangzhou.aliyuncs.com/demo/dynamicConvert";
             String taskUuid = "3e3a2b8845194f998e6e05adab70e1a1";
@@ -165,12 +168,9 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
         loadOptions.setMaxRetries(3);
         configuration.setBackgroundImageLoadOptions(loadOptions);
         WhiteSdkConfiguration.SlideAppOptions slideAppOptions = configuration.getSlideAppOptions();
-        slideAppOptions.setResolution(1d);
-        slideAppOptions.setMaxResolutionLevel(2);
-        slideAppOptions.setMinFPS(5);
-        slideAppOptions.setMaxFPS(15);
         slideAppOptions.setEnableGlobalClick(false);
         slideAppOptions.setEnableScale(true);
+        slideAppOptions.setSyncEventQueuePolicy(SlideSyncEventQueuePolicy.LatestPendingRender);
         LoggerOptions loggerOptions = new LoggerOptions();
         loggerOptions.setLocalLog(new LocalLogOptions().setEnabled(true).setEnabledUpload(true));
         configuration.setLoggerOptions(loggerOptions);
@@ -189,7 +189,6 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
 
     private AppliancePluginOptions getAppliancePluginOptions() {
         Map<String, Object> extrasOptions = Map.of(
-                "useWorker", "mainThread",
                 "useSimple", true,
                 "useBackgroundThread", true,
                 // cursor 配置
@@ -236,23 +235,6 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
     protected void onJoinRoomSuccess() {
         room.disableSerialization(false);
         updateWritableUi();
-        binding.exitRoom.setOnClickListener(v -> room.disconnect(new Promise<Object>() {
-            @Override
-            public void then(Object result) {
-                runOnUiThread(() -> {
-                    logAction("disconnect: " + result);
-                    finish();
-                });
-            }
-
-            @Override
-            public void catchEx(SDKError t) {
-                runOnUiThread(() -> {
-                    logAction("disconnect failed: " + t.getMessage());
-                    finish();
-                });
-            }
-        }));
 
         binding.toggleWritable.setOnClickListener(v -> {
             boolean next = !Boolean.TRUE.equals(room.getWritable());
