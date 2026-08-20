@@ -330,6 +330,7 @@ abstract public class SampleBaseActivity extends BaseActivity {
         RoomParams roomParams = new RoomParams(uuid, token, DemoAPI.get().getUserId());
         roomParams.setDisableNewPencil(false);
         roomParams.setWritable(true);
+        roomParams.setUndoCacheScenesCount(32);
         return roomParams;
     }
 
