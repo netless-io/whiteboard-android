@@ -13,7 +13,7 @@ import com.herewhite.demo.test.window.WindowAppliancePluginActivity;
 public class StartActivity extends BaseActivity {
 
     private static final String ROOM_UUID = "cd1221809b8111f1aaeead87383431cf";
-    private static final String ROOM_TOKEN = "NETLESSROOM_YWs9VWtNUk92M1JIN2I2Z284dCZleHBpcmVBdD0xNzg3Mjg2MzQwNTkzJm5vbmNlPTMzODU3NjEwLTljNGYtMTFmMS1iYzM4LWQ3Yjg5YzgwZTNlMSZyb2xlPTEmc2lnPTgzM2Y3NzhjNWIwNDFkZGUzOGE5NmM2NGM0NDgxZjM1NDUyZmQzZWUxNmY5MDQ2ZjU3MWYxZmE5NGMzYTg1ZTEmdXVpZD1jZDEyMjE4MDliODExMWYxYWFlZWFkODczODM0MzFjZg";
+    private static final String ROOM_TOKEN = "NETLESSROOM_YWs9VWtNUk92M1JIN2I2Z284dCZleHBpcmVBdD0xNzg3Mzc4Mzk0OTY3Jm5vbmNlPTg4MzQzNjcwLTlkMjUtMTFmMS1iYzM4LWQ3Yjg5YzgwZTNlMSZyb2xlPTEmc2lnPWZkYjI5MjRkNmMwYTkxMmMzZWQ5YmU5OGZmMTZlNjA3ZDQyYjgxMzljNzA4NTVjMzVkOGM5NzlmOGJjMmY0NTUmdXVpZD1jZDEyMjE4MDliODExMWYxYWFlZWFkODczODM0MzFjZg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
