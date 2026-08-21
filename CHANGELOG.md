@@ -1,4 +1,8 @@
 # 版本更新记录
+## [2.16.127] - 2026-08-21
+- 同步 `Whiteboard-bridge` 至 `a4ab46c`，内置 `white-web-sdk@2.16.58`、`@netless/app-slide@0.2.100`、`@netless/appliance-plugin@1.1.42`。
+- 对齐三端新增背景图恢复、Slide 性能默认值、Appliance Plugin 选项和房间生命周期接口。
+
 ## [2.16.125] - 2026-08-15
 - 同步 `Whiteboard-bridge` 至 `42c7f0d`，内置 `@netless/appliance-plugin@1.1.40`。
 - Appliance Plugin 的默认 Worker 渲染模式与 Canvas context 兼容性策略下沉至插件内部，Bridge 继续透传宿主 `appliancePluginOptions`。
