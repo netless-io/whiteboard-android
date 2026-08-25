@@ -23,6 +23,7 @@ import com.herewhite.sdk.domain.ReloadBackgroundImageResult;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.UrlInterrupter;
 import com.herewhite.sdk.domain.WindowRegisterAppParams;
+import com.herewhite.sdk.internal.Logger;
 import com.herewhite.sdk.internal.PlayerJsInterfaceImpl;
 import com.herewhite.sdk.internal.PostMessageCallback;
 import com.herewhite.sdk.internal.RoomJsInterfaceImpl;
@@ -326,6 +327,7 @@ public class WhiteSdk {
                 JsonObject jsonObject = gson.fromJson(roomString, JsonObject.class);
                 SDKError promiseError = SDKError.promiseError(jsonObject);
                 if (promiseError != null) {
+                    Logger.error("WhiteSDK joinRoom bridge error: " + promiseError, null);
                     roomPromise.catchEx(promiseError);
                 } else {
                     JsonObject jsonState = jsonObject.getAsJsonObject("state");
