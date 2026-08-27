@@ -1,4 +1,7 @@
 # 版本更新记录
+## [2.16.129] - 2026-08-27
+- 同步 `Whiteboard-bridge` 至 `f1dd751`，内置 `white-web-sdk@2.16.58`、`@netless/app-slide@0.2.103`、`@netless/appliance-plugin@1.1.42`。
+
 ## [2.16.128] - 2026-08-27
 - 同步 `Whiteboard-bridge` 至 `8fc75f9`，内置 `white-web-sdk@2.16.58`、`@netless/app-slide@0.2.102`、`@netless/appliance-plugin@1.1.42`。
 - 修复并完善 Slide 页码状态回调链路，保留上一版本的 joinRoom 错误日志修复。
