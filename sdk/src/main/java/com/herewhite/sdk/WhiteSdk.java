@@ -33,6 +33,7 @@ import com.herewhite.sdk.internal.StoreDelegate;
 import com.herewhite.sdk.internal.StoreJsInterfaceImpl;
 import com.herewhite.sdk.internal.WebViewJsHealthCheck;
 import com.herewhite.sdk.window.SlideListener;
+import com.herewhite.sdk.window.UnifiedPageStateListener;
 
 import org.json.JSONObject;
 
@@ -784,6 +785,11 @@ public class WhiteSdk {
      */
     public void setSlideListener(SlideListener slideListener) {
         sdkJsInterface.setSlideListener(slideListener);
+    }
+
+    /** Sets the unified page and scale state observation callback. */
+    public void setUnifiedPageStateListener(@Nullable UnifiedPageStateListener listener) {
+        sdkJsInterface.setUnifiedPageStateListener(listener);
     }
 
     /**

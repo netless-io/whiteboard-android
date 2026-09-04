@@ -27,6 +27,7 @@ import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
 import com.herewhite.sdk.WhiteboardView;
 import com.herewhite.sdk.domain.AppState;
+import com.herewhite.sdk.domain.DispatchDocsEventResult;
 import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.Region;
 import com.herewhite.sdk.domain.RoomPhase;
@@ -429,10 +430,13 @@ public class MaoCustomWindowActivity extends BaseActivity {
 
     private void dispatch(WindowDocsEvent event) {
         if (room == null) return;
-        room.dispatchDocsEvent(event, new Promise<Boolean>() {
+        room.dispatchDocsEvent(event, new Promise<DispatchDocsEventResult>() {
             @Override
-            public void then(Boolean success) {
-                log("dispatch " + event.getEvent() + ": " + success);
+            public void then(DispatchDocsEventResult result) {
+                String detail = result.isAccepted()
+                        ? "accepted"
+                        : "rejected (" + result.getReason() + ": " + result.getMessage() + ")";
+                log("dispatch " + event.getEvent() + ": " + detail);
             }
 
             @Override

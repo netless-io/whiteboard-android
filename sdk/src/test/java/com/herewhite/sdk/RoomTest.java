@@ -17,7 +17,10 @@ import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.RoomPhase;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Scene;
+import com.herewhite.sdk.domain.UnifiedPageState;
 import com.herewhite.sdk.domain.ViewMode;
+import com.herewhite.sdk.domain.WindowDocsEvent;
+import com.herewhite.sdk.domain.WindowPageStateOptions;
 
 import junit.framework.TestCase;
 
@@ -232,6 +235,25 @@ public class RoomTest extends TestCase {
 
         mRoom.querySlidePageState("Slide-app-id", IGNORE_PROMISE);
         verify(mockJsBridgeInterface).callHandler(eq("room.querySlidePageState"), aryEq(new Object[]{"Slide-app-id"}), (OnReturnValue<Object>) any());
+    }
+
+    public void testDocsEventUsesUnifiedBridgeContract() {
+        WindowDocsEvent docsEvent = WindowDocsEvent.JumpToPage(2).withTarget("mainView");
+        mRoom.dispatchDocsEvent(docsEvent, IGNORE_PROMISE);
+        verify(mockJsBridgeInterface).callHandler(
+                eq("room.dispatchDocsEvent"),
+                aryEq(new Object[]{"jumpToPage", docsEvent.getOptions()}),
+                (OnReturnValue<String>) any());
+    }
+
+    public void testGetPageStateUsesTargetOnlyOptions() {
+        WindowPageStateOptions options = new WindowPageStateOptions().withTarget("Presentation-1");
+        Promise<UnifiedPageState> promise = mock(Promise.class);
+        mRoom.getPageState(options, promise);
+        verify(mockJsBridgeInterface).callHandler(
+                eq("room.getPageState"),
+                aryEq(new Object[]{options}),
+                (OnReturnValue<String>) any());
     }
 
     public void testSetScenePath() {

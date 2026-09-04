@@ -11,14 +11,19 @@ import com.herewhite.sdk.domain.ApplianceInitLoadingChangeEvent;
 import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.SlideErrorType;
+import com.herewhite.sdk.domain.UnifiedPageStateChange;
 import com.herewhite.sdk.domain.UrlInterrupter;
 import com.herewhite.sdk.window.SlideListener;
+import com.herewhite.sdk.window.UnifiedPageStateListener;
+import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
 import wendu.dsbridge.special.CompletionHandler;
 
 public class SdkJsInterfaceImpl {
+
+    private static final Gson gson = new Gson();
 
     @NonNull
     private WhiteSdk whiteSdk;
@@ -28,6 +33,8 @@ public class SdkJsInterfaceImpl {
     private UrlInterrupter urlInterrupter;
     @Nullable
     private SlideListener slideListener;
+    @Nullable
+    private UnifiedPageStateListener unifiedPageStateListener;
 
     @Nullable
     private PostMessageCallback postMessageCallback;
@@ -61,6 +68,10 @@ public class SdkJsInterfaceImpl {
 
     public void setSlideListener(SlideListener slideListener) {
         this.slideListener = slideListener;
+    }
+
+    public void setUnifiedPageStateListener(@Nullable UnifiedPageStateListener listener) {
+        this.unifiedPageStateListener = listener;
     }
 
     @JavascriptInterface
@@ -113,6 +124,15 @@ public class SdkJsInterfaceImpl {
                 int pageCount = jsonObject.optInt("pageCount");
                 slideListener.onSlidePageStateChanged(appId, page, pageCount);
             }
+        }
+    }
+
+    @JavascriptInterface
+    public void unifiedPageStateChange(Object args) {
+        JSONObject jsonObject = convertToJsonOrNull(args);
+        if (jsonObject != null && unifiedPageStateListener != null) {
+            unifiedPageStateListener.onUnifiedPageStateChange(
+                    gson.fromJson(jsonObject.toString(), UnifiedPageStateChange.class));
         }
     }
 

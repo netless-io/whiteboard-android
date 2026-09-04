@@ -14,4 +14,17 @@ public class WindowParamsTest {
 
         assertEquals(true, json.getBoolean("useBoxesStatus"));
     }
+
+    @Test
+    public void serializesOriginSizeAndPageScaleRange() throws Exception {
+        WindowParams params = new WindowParams()
+                .setOriginSize(new WindowOriginSize(1280, 900))
+                .setPageScaleRange(new PageScaleRange().setMinScale(0.5).setMaxScale(4.0));
+
+        JSONObject json = params.toJSON();
+        assertEquals(1280.0, json.getJSONObject("originSize").getDouble("width"), 0.0);
+        assertEquals(900.0, json.getJSONObject("originSize").getDouble("height"), 0.0);
+        assertEquals(0.5, json.getJSONObject("pageScaleRange").getDouble("minScale"), 0.0);
+        assertEquals(4.0, json.getJSONObject("pageScaleRange").getDouble("maxScale"), 0.0);
+    }
 }

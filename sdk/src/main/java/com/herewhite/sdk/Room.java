@@ -11,6 +11,7 @@ import com.herewhite.sdk.domain.AkkoEvent;
 import com.herewhite.sdk.domain.Appliance;
 import com.herewhite.sdk.domain.BroadcastState;
 import com.herewhite.sdk.domain.CameraConfig;
+import com.herewhite.sdk.domain.DispatchDocsEventResult;
 import com.herewhite.sdk.domain.EventEntry;
 import com.herewhite.sdk.domain.EventListener;
 import com.herewhite.sdk.domain.FrequencyEventListener;
@@ -27,10 +28,12 @@ import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.SceneState;
 import com.herewhite.sdk.domain.SlidePageState;
+import com.herewhite.sdk.domain.UnifiedPageState;
 import com.herewhite.sdk.domain.ViewMode;
 import com.herewhite.sdk.domain.WindowAppSyncAttrs;
 import com.herewhite.sdk.domain.WindowAppParam;
 import com.herewhite.sdk.domain.WindowDocsEvent;
+import com.herewhite.sdk.domain.WindowPageStateOptions;
 import com.herewhite.sdk.domain.WindowPrefersColorScheme;
 import com.herewhite.sdk.internal.Logger;
 import com.herewhite.sdk.internal.RoomDelegate;
@@ -1467,14 +1470,32 @@ public class Room extends Displayer {
      * @param docsEvent
      * @param promise
      */
-    public void dispatchDocsEvent(WindowDocsEvent docsEvent, Promise<Boolean> promise) {
+    public void dispatchDocsEvent(WindowDocsEvent docsEvent, Promise<DispatchDocsEventResult> promise) {
+        if (docsEvent == null) throw new IllegalArgumentException("docsEvent is null");
         String event = docsEvent.getEvent();
         WindowDocsEvent.Options options = docsEvent.getOptions();
-        bridge.callHandler("room.dispatchDocsEvent", new Object[]{event, options}, (OnReturnValue<Boolean>) value -> {
-            if (promise != null) {
-                promise.then(value);
+        bridge.callHandler("room.dispatchDocsEvent", new Object[]{event, options}, (OnReturnValue<String>) value -> {
+            if (promise == null) return;
+            try {
+                promise.then(gson.fromJson(value, DispatchDocsEventResult.class));
+            } catch (RuntimeException error) {
+                promise.catchEx(new SDKError("Invalid dispatchDocsEvent response: " + error.getMessage()));
             }
         });
+    }
+
+    /** Gets the current observable unified page state. */
+    public void getPageState(WindowPageStateOptions options, Promise<UnifiedPageState> promise) {
+        if (promise == null) throw new IllegalArgumentException("promise is null");
+        bridge.callHandler("room.getPageState", new Object[]{options == null ? new WindowPageStateOptions() : options}, (String value) -> {
+            SDKError sdkError = SDKError.promiseError(value);
+            if (sdkError != null) promise.catchEx(sdkError);
+            else promise.then(gson.fromJson(value, UnifiedPageState.class));
+        });
+    }
+
+    public void getPageState(Promise<UnifiedPageState> promise) {
+        getPageState(null, promise);
     }
 
     /**

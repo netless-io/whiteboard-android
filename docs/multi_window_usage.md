@@ -40,6 +40,8 @@ WindowParams windowParams = new WindowParams()
         .setChessboard(true)
         .setFullscreen(false)
         .setUseBoxesStatus(false)
+        .setOriginSize(new WindowOriginSize(1280, 900))
+        .setPageScaleRange(new PageScaleRange().setMinScale(0.5).setMaxScale(4.0))
         .setDebug(false);
 windowParams.setPrefersColorScheme(WindowPrefersColorScheme.Light);
 
@@ -60,7 +62,7 @@ whiteSdk.joinRoom(roomParams, new RoomCallbacks() {
 
 ### `WindowParams` 常用字段
 
-`WindowParams` 是多窗口模式下的本地显示参数，只影响当前客户端。
+`WindowParams` 主要是多窗口模式下的本地显示参数；`originSize` 是例外，可写端首次设置或改值时会重置并同步 MainView camera-size contract。
 
 - `containerSizeRatio`：多窗口区域的高宽比，建议多端保持一致。
 - `chessboard`：多窗口区域之外是否显示棋盘背景。
@@ -71,6 +73,8 @@ whiteSdk.joinRoom(roomParams, new RoomCallbacks() {
 - `debug`：是否输出多窗口调试日志。
 - `polling`：是否轮询更新本地视角。
 - `useBoxesStatus`：是否使用每个窗口独立的状态管理。开启后窗口最大化、最小化状态会按窗口分别同步；同一房间内多端建议保持一致。回放带窗口房间时也需要在 `PlayerConfiguration.windowParams` 中设置同样的值。
+- `originSize`：MainView 的归一化参考尺寸。可写端首次设置或传入不同尺寸时，WindowManager 会重置并同步 MainView 的 origin/active camera-size contract；不会隐式改写 Slide/Presentation App 参数。
+- `pageScaleRange`：`scalePage` 的可选相对倍率范围。`minScale`、`maxScale` 均可省略；未配置时不施加业务范围限制。
 
 ## 核心窗口操作
 
@@ -240,14 +244,15 @@ mRoom.setWindowManagerAttributes(attributesJson);
 
 ## 文档窗口控制
 
-`dispatchDocsEvent` 用于操作当前聚焦的文档窗口。调用前请确保文档窗口已经创建并完成加载。
+`dispatchDocsEvent` 统一控制 MainView、DocsViewer、Slide 和 Presentation。`target` 可传 `"mainView"` 或具体 appId；省略时使用当前聚焦 App，没有聚焦 App 时回退 MainView。返回对象只表示命令是否被接受，实际状态以 `UnifiedPageStateListener` 为准。
 
 ### 上一页 / 下一页
 
 ```java
-mRoom.dispatchDocsEvent(WindowDocsEvent.PrevPage, new Promise<Boolean>() {
+mRoom.dispatchDocsEvent(WindowDocsEvent.PrevPage, new Promise<DispatchDocsEventResult>() {
     @Override
-    public void then(Boolean success) {
+    public void then(DispatchDocsEventResult result) {
+        Log.d("page", "prev accepted=" + result.isAccepted());
     }
 
     @Override
@@ -255,9 +260,11 @@ mRoom.dispatchDocsEvent(WindowDocsEvent.PrevPage, new Promise<Boolean>() {
     }
 });
 
-mRoom.dispatchDocsEvent(WindowDocsEvent.NextPage, new Promise<Boolean>() {
+mRoom.dispatchDocsEvent(WindowDocsEvent.NextPage.withTarget("mainView"),
+        new Promise<DispatchDocsEventResult>() {
     @Override
-    public void then(Boolean success) {
+    public void then(DispatchDocsEventResult result) {
+        Log.d("page", "next accepted=" + result.isAccepted());
     }
 
     @Override
@@ -269,9 +276,9 @@ mRoom.dispatchDocsEvent(WindowDocsEvent.NextPage, new Promise<Boolean>() {
 ### 上一步 / 下一步
 
 ```java
-mRoom.dispatchDocsEvent(WindowDocsEvent.PrevStep, new Promise<Boolean>() {
+mRoom.dispatchDocsEvent(WindowDocsEvent.PrevStep, new Promise<DispatchDocsEventResult>() {
     @Override
-    public void then(Boolean success) {
+    public void then(DispatchDocsEventResult result) {
     }
 
     @Override
@@ -279,9 +286,9 @@ mRoom.dispatchDocsEvent(WindowDocsEvent.PrevStep, new Promise<Boolean>() {
     }
 });
 
-mRoom.dispatchDocsEvent(WindowDocsEvent.NextStep, new Promise<Boolean>() {
+mRoom.dispatchDocsEvent(WindowDocsEvent.NextStep, new Promise<DispatchDocsEventResult>() {
     @Override
-    public void then(Boolean success) {
+    public void then(DispatchDocsEventResult result) {
     }
 
     @Override
@@ -293,9 +300,10 @@ mRoom.dispatchDocsEvent(WindowDocsEvent.NextStep, new Promise<Boolean>() {
 ### 跳转到指定页
 
 ```java
-mRoom.dispatchDocsEvent(WindowDocsEvent.JumpToPage(3), new Promise<Boolean>() {
+mRoom.dispatchDocsEvent(WindowDocsEvent.JumpToPage(3).withTarget(appId),
+        new Promise<DispatchDocsEventResult>() {
     @Override
-    public void then(Boolean success) {
+    public void then(DispatchDocsEventResult result) {
     }
 
     @Override
@@ -304,13 +312,58 @@ mRoom.dispatchDocsEvent(WindowDocsEvent.JumpToPage(3), new Promise<Boolean>() {
 });
 ```
 
+`page` 为 1-based。`prevStep/nextStep` 在 Slide 中表示动画步骤，在 DocsViewer 中沿用翻页 alias；Presentation 和 MainView 返回 `eventNotSupported`。
+
+### 缩放页面
+
+```java
+mRoom.dispatchDocsEvent(WindowDocsEvent.ScalePage(1.5).withTarget("mainView"),
+        new Promise<DispatchDocsEventResult>() {
+    @Override
+    public void then(DispatchDocsEventResult result) {
+        if (!result.isAccepted()) {
+            Log.w("page", result.getReason() + ": " + result.getMessage());
+        }
+    }
+
+    @Override
+    public void catchEx(SDKError error) {
+    }
+});
+```
+
+`scale` 是相对于适配尺寸的倍率，`1` 表示适配尺寸，不是底层 `view.camera.scale`。DocsViewer 不支持缩放，固定返回 `eventNotSupported` 和原因 `DocsViewer does not support scalePage`。
+
+### 查询与监听状态
+
+```java
+mRoom.getPageState(new WindowPageStateOptions().withTarget(appId),
+        new Promise<UnifiedPageState>() {
+    @Override
+    public void then(UnifiedPageState state) {
+        Log.d("page", state.getPage() + "/" + state.getPageCount());
+    }
+
+    @Override
+    public void catchEx(SDKError error) {
+    }
+});
+
+whiteSdk.setUnifiedPageStateListener(new UnifiedPageStateListener() {
+    @Override
+    public void onUnifiedPageStateChange(UnifiedPageStateChange state) {
+        Log.d("page", state.getTarget() + ": " + state.getStatus());
+    }
+});
+```
+
 ## 注意事项
 
 1. `WhiteSdkConfiguration.setUseMultiViews(true)` 是所有窗口能力的前置条件。
-2. `WindowParams` 只影响当前客户端的本地显示，不会直接同步到远端。
+2. `WindowParams` 主要影响当前客户端的本地显示；实时房间可写端的 `originSize` 会按约定重置并同步 MainView camera-size contract。
 3. `containerSizeRatio` 建议多端统一配置，否则同房间展示区域可能不一致。
 4. `setWindowManagerAttributes(String)` 接收的是 JSON 字符串，推荐只写回通过 `getWindowManagerAttributes()` 得到的快照。
-5. 文档事件会作用在当前聚焦的文档窗口上，调用前要确保该窗口已经完成加载。
+5. `dispatchDocsEvent` 可通过 `target` 控制 MainView 或指定文档 App；省略时才跟随焦点，调用前要确保目标 App 已完成加载。
 6. `disableWindowOperation(true)` 是本地交互限制，不等价于修改房间整体读写状态。
 - `WindowParams`: 窗口参数类
 - `RoomListener`: 房间监听器接口

@@ -41,6 +41,12 @@ public class WindowParams extends WhiteObject {
      */
     private Boolean useBoxesStatus;
 
+    /** MainView reference size. Slide/Presentation receive originSize through addApp attributes. */
+    private WindowOriginSize originSize;
+
+    /** Optional relative scale bounds for dispatchDocsEvent scalePage. */
+    private PageScaleRange pageScaleRange;
+
     public Float getContainerSizeRatio() {
         return containerSizeRatio;
     }
@@ -118,6 +124,20 @@ public class WindowParams extends WhiteObject {
 
     public WindowParams setUseBoxesStatus(Boolean useBoxesStatus) {
         this.useBoxesStatus = useBoxesStatus;
+        return this;
+    }
+
+    public WindowOriginSize getOriginSize() { return originSize; }
+
+    public WindowParams setOriginSize(WindowOriginSize originSize) {
+        this.originSize = originSize;
+        return this;
+    }
+
+    public PageScaleRange getPageScaleRange() { return pageScaleRange; }
+
+    public WindowParams setPageScaleRange(PageScaleRange pageScaleRange) {
+        this.pageScaleRange = pageScaleRange;
         return this;
     }
 }

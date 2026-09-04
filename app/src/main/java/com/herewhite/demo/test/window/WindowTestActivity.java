@@ -29,6 +29,7 @@ import com.herewhite.sdk.WhiteSdk;
 import com.herewhite.sdk.WhiteSdkConfiguration;
 import com.herewhite.sdk.WhiteboardView;
 import com.herewhite.sdk.domain.GlobalState;
+import com.herewhite.sdk.domain.DispatchDocsEventResult;
 import com.herewhite.sdk.domain.LocalLogOptions;
 import com.herewhite.sdk.domain.LoggerOptions;
 import com.herewhite.sdk.domain.PresentationAppOptions;
@@ -269,11 +270,11 @@ public class WindowTestActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.prevPage).setOnClickListener(v -> {
-            dispatchPageEventAndResetScale(WindowDocsEvent.PrevPage);
+            dispatchDocsEventAndResetScale(WindowDocsEvent.PrevPage);
         });
 
         findViewById(R.id.nextPage).setOnClickListener(v -> {
-            dispatchPageEventAndResetScale(WindowDocsEvent.NextPage);
+            dispatchDocsEventAndResetScale(WindowDocsEvent.NextPage);
         });
 
         findViewById(R.id.closeApp).setOnClickListener(v -> {
@@ -406,17 +407,17 @@ public class WindowTestActivity extends AppCompatActivity {
         logAction("insert presentation scenes: " + scenes.length);
     }
 
-    private void dispatchPageEventAndResetScale(WindowDocsEvent event) {
+    private void dispatchDocsEventAndResetScale(WindowDocsEvent event) {
         if (mRoom == null) {
             showToast("room not ready");
             return;
         }
 
-        mRoom.dispatchDocsEvent(event, new Promise<Boolean>() {
+        mRoom.dispatchDocsEvent(event, new Promise<DispatchDocsEventResult>() {
             @Override
-            public void then(Boolean result) {
-                logAction(event.getEvent() + " result: " + result);
-                if (Boolean.TRUE.equals(result)) {
+            public void then(DispatchDocsEventResult result) {
+                logAction(event.getEvent() + " result: " + formatDocsEventResult(result));
+                if (result.isAccepted()) {
                     resetScalePageAfterPageChange(event);
                 }
             }
@@ -430,10 +431,10 @@ public class WindowTestActivity extends AppCompatActivity {
     }
 
     private void resetScalePageAfterPageChange(WindowDocsEvent pageEvent) {
-        mRoom.dispatchDocsEvent(WindowDocsEvent.ScalePage(1.0), new Promise<Boolean>() {
+        mRoom.dispatchDocsEvent(WindowDocsEvent.ScalePage(1.0), new Promise<DispatchDocsEventResult>() {
             @Override
-            public void then(Boolean result) {
-                logAction(pageEvent.getEvent() + " reset scalePage 1.0 result: " + result);
+            public void then(DispatchDocsEventResult result) {
+                logAction(pageEvent.getEvent() + " reset scalePage 1.0 result: " + formatDocsEventResult(result));
             }
 
             @Override
@@ -449,10 +450,10 @@ public class WindowTestActivity extends AppCompatActivity {
             return;
         }
 
-        mRoom.dispatchDocsEvent(WindowDocsEvent.ScalePage(scale), new Promise<Boolean>() {
+        mRoom.dispatchDocsEvent(WindowDocsEvent.ScalePage(scale), new Promise<DispatchDocsEventResult>() {
             @Override
-            public void then(Boolean result) {
-                logAction("scalePage " + scale + " result: " + result);
+            public void then(DispatchDocsEventResult result) {
+                logAction("scalePage " + scale + " result: " + formatDocsEventResult(result));
                 showToast("scalePage " + scale);
             }
 
@@ -462,6 +463,11 @@ public class WindowTestActivity extends AppCompatActivity {
                 showToast("scalePage failed: " + t.getMessage());
             }
         });
+    }
+
+    private String formatDocsEventResult(DispatchDocsEventResult result) {
+        if (result.isAccepted()) return "accepted";
+        return "rejected (" + result.getReason() + ": " + result.getMessage() + ")";
     }
 
     private void uploadLocalLogs() {
