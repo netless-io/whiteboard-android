@@ -21,6 +21,7 @@ import com.herewhite.sdk.domain.UnifiedPageState;
 import com.herewhite.sdk.domain.ViewMode;
 import com.herewhite.sdk.domain.WindowDocsEvent;
 import com.herewhite.sdk.domain.WindowPageStateOptions;
+import com.herewhite.sdk.domain.WindowAppParam;
 
 import junit.framework.TestCase;
 
@@ -253,6 +254,21 @@ public class RoomTest extends TestCase {
         verify(mockJsBridgeInterface).callHandler(
                 eq("room.getPageState"),
                 aryEq(new Object[]{options}),
+                (OnReturnValue<String>) any());
+    }
+
+    public void testFitOriginSizeAndCameraUsesBridgeContract() {
+        mRoom.fitOriginSizeAndCamera();
+        verify(mockJsBridgeInterface).callHandler("room.fitOriginSizeAndCamera", new Object[]{});
+    }
+
+    public void testAddAppAndWaitForSetupUsesBridgeContract() {
+        WindowAppParam appParam = WindowAppParam.createSlideApp(
+                "/slide", new com.herewhite.sdk.domain.Scene[]{new com.herewhite.sdk.domain.Scene("1")}, "Slide");
+        mRoom.addAppAndWaitForSetup(appParam, IGNORE_PROMISE);
+        verify(mockJsBridgeInterface).callHandler(
+                eq("room.addAppAndWaitForSetup"),
+                aryEq(new Object[]{appParam.getKind(), appParam.getOptions(), appParam.getResolvedAttributes()}),
                 (OnReturnValue<String>) any());
     }
 

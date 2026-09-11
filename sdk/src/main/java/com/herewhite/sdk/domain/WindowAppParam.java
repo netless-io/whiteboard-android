@@ -14,6 +14,7 @@ public class WindowAppParam {
     private String kind;
     private Options options;
     private Attributes attributes;
+    private WindowOriginSize originSize;
 
     public WindowAppParam(String kind, Options options, Attributes attributes) {
         this.kind = kind;
@@ -73,6 +74,23 @@ public class WindowAppParam {
     }
 
     public Attributes getAttributes() {
+        return attributes;
+    }
+
+    /** Slide / Presentation reference size, serialized as attributes.originSize. */
+    public WindowAppParam setOriginSize(WindowOriginSize originSize) {
+        this.originSize = originSize;
+        return this;
+    }
+
+    public WindowOriginSize getOriginSize() {
+        return originSize;
+    }
+
+    public Attributes getResolvedAttributes() {
+        if (originSize == null) return attributes;
+        if (attributes == null) attributes = new Attributes();
+        attributes.setOriginSize(originSize);
         return attributes;
     }
 
@@ -168,6 +186,12 @@ public class WindowAppParam {
     }
 
     public static class Attributes extends WhiteObject {
+        private WindowOriginSize originSize;
 
+        public WindowOriginSize getOriginSize() { return originSize; }
+        public Attributes setOriginSize(WindowOriginSize originSize) {
+            this.originSize = originSize;
+            return this;
+        }
     }
 }

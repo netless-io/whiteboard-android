@@ -91,7 +91,9 @@ String taskUuid = "47f359400ab144498687xxxxxxxxxxxx";
 String prefixUrl = "https://convertcdn.netless.link/dynamicConvert";
 
 WindowAppParam appParam = WindowAppParam.createSlideApp(taskUuid, prefixUrl, "Projector App");
-mRoom.addApp(appParam, new Promise<String>() {
+appParam.setOriginSize(new WindowOriginSize(1280, 900));
+
+mRoom.addAppAndWaitForSetup(appParam, new Promise<String>() {
     @Override
     public void then(String appId) {
     }
@@ -100,6 +102,16 @@ mRoom.addApp(appParam, new Promise<String>() {
     public void catchEx(SDKError error) {
     }
 });
+```
+
+`addApp` 保留原有兼容语义，在窗口创建后即完成；`addAppAndWaitForSetup` 会等待 Web App 的 `setup()` 完成，失败时进入 `catchEx` 并清理未完成初始化的窗口。Slide / Presentation 的 `originSize` 必须通过 `WindowAppParam.setOriginSize` 配置，`WindowParams.originSize` 只作用于 MainView。
+
+### 恢复 MainView 的参考尺寸与相机
+
+配置 `WindowParams.originSize` 后，可调用：
+
+```java
+mRoom.fitOriginSizeAndCamera();
 ```
 
 如果你已经有场景数据，也可以使用 `scenePath + scenes` 的方式：

@@ -1370,7 +1370,7 @@ public class Room extends Displayer {
     public void addApp(WindowAppParam appParam, Promise<String> promise) {
         String kind = appParam.getKind();
         WindowAppParam.Options options = appParam.getOptions();
-        WindowAppParam.Attributes attributes = appParam.getAttributes();
+        WindowAppParam.Attributes attributes = appParam.getResolvedAttributes();
         bridge.callHandler("room.addApp", new Object[]{kind, options, attributes}, new OnReturnValue<String>() {
             @Override
             public void onValue(String value) {
@@ -1379,6 +1379,24 @@ public class Room extends Displayer {
                 }
             }
         });
+    }
+
+    /** Adds an app and resolves only after its Web setup has completed. */
+    public void addAppAndWaitForSetup(WindowAppParam appParam, Promise<String> promise) {
+        if (appParam == null) throw new IllegalArgumentException("appParam is null");
+        if (promise == null) throw new IllegalArgumentException("promise is null");
+        bridge.callHandler("room.addAppAndWaitForSetup", new Object[]{
+                appParam.getKind(), appParam.getOptions(), appParam.getResolvedAttributes()
+        }, (OnReturnValue<String>) value -> {
+            SDKError sdkError = value != null && value.startsWith("{") ? SDKError.promiseError(value) : null;
+            if (sdkError != null) promise.catchEx(sdkError);
+            else promise.then(value);
+        });
+    }
+
+    /** Restores the MainView originSize and origin camera when originSize mode is enabled. */
+    public void fitOriginSizeAndCamera() {
+        bridge.callHandler("room.fitOriginSizeAndCamera", new Object[]{});
     }
 
     // 关闭窗口
