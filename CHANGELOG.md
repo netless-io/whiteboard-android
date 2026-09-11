@@ -2,7 +2,7 @@
 ## [Unreleased]
 - 升级内嵌 Bridge 运行时依赖至 `@netless/window-manager@1.0.21`、`@netless/app-slide@0.2.104`。
 - `WindowAppParam` 新增强类型 `originSize`，序列化为 `attributes.originSize`。
-- `Room` 新增 `addAppAndWaitForSetup` 与 `fitOriginSizeAndCamera`。
+- `Room.addApp` 现在会等待 Web App setup 完成，失败时进入 `Promise.catchEx` 并清理半初始化窗口；新增 `fitOriginSizeAndCamera`。
 
 ## [2.16.129] - 2026-08-27
 - 同步 `Whiteboard-bridge` 至 `f1dd751`，内置 `white-web-sdk@2.16.58`、`@netless/app-slide@0.2.103`、`@netless/appliance-plugin@1.1.42`。

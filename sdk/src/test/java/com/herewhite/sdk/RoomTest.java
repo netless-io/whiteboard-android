@@ -7,6 +7,8 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import org.mockito.ArgumentCaptor;
+
 import com.herewhite.sdk.domain.AkkoEvent;
 import com.herewhite.sdk.domain.Appliance;
 import com.herewhite.sdk.domain.GlobalState;
@@ -262,14 +264,30 @@ public class RoomTest extends TestCase {
         verify(mockJsBridgeInterface).callHandler("room.fitOriginSizeAndCamera", new Object[]{});
     }
 
-    public void testAddAppAndWaitForSetupUsesBridgeContract() {
+    public void testAddAppWaitsForSetupAndUsesBridgeContract() {
         WindowAppParam appParam = WindowAppParam.createSlideApp(
                 "/slide", new com.herewhite.sdk.domain.Scene[]{new com.herewhite.sdk.domain.Scene("1")}, "Slide");
-        mRoom.addAppAndWaitForSetup(appParam, IGNORE_PROMISE);
+        mRoom.addApp(appParam, IGNORE_PROMISE);
         verify(mockJsBridgeInterface).callHandler(
-                eq("room.addAppAndWaitForSetup"),
+                eq("room.addApp"),
                 aryEq(new Object[]{appParam.getKind(), appParam.getOptions(), appParam.getResolvedAttributes()}),
                 (OnReturnValue<String>) any());
+    }
+
+    public void testAddAppReportsSetupFailureThroughPromise() {
+        WindowAppParam appParam = WindowAppParam.createSlideApp(
+                "/slide", new com.herewhite.sdk.domain.Scene[]{new com.herewhite.sdk.domain.Scene("1")}, "Slide");
+        Promise<String> promise = mock(Promise.class);
+        ArgumentCaptor<OnReturnValue> callback = ArgumentCaptor.forClass(OnReturnValue.class);
+
+        mRoom.addApp(appParam, promise);
+        verify(mockJsBridgeInterface).callHandler(
+                eq("room.addApp"),
+                aryEq(new Object[]{appParam.getKind(), appParam.getOptions(), appParam.getResolvedAttributes()}),
+                callback.capture());
+        callback.getValue().onValue("{\"__error\":{\"message\":\"boom\",\"jsStack\":\"stack\"}}");
+
+        verify(promise).catchEx(any(SDKError.class));
     }
 
     public void testSetScenePath() {

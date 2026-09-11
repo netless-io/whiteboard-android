@@ -93,7 +93,7 @@ String prefixUrl = "https://convertcdn.netless.link/dynamicConvert";
 WindowAppParam appParam = WindowAppParam.createSlideApp(taskUuid, prefixUrl, "Projector App");
 appParam.setOriginSize(new WindowOriginSize(1280, 900));
 
-mRoom.addAppAndWaitForSetup(appParam, new Promise<String>() {
+mRoom.addApp(appParam, new Promise<String>() {
     @Override
     public void then(String appId) {
     }
@@ -104,7 +104,7 @@ mRoom.addAppAndWaitForSetup(appParam, new Promise<String>() {
 });
 ```
 
-`addApp` 保留原有兼容语义，在窗口创建后即完成；`addAppAndWaitForSetup` 会等待 Web App 的 `setup()` 完成，失败时进入 `catchEx` 并清理未完成初始化的窗口。Slide / Presentation 的 `originSize` 必须通过 `WindowAppParam.setOriginSize` 配置，`WindowParams.originSize` 只作用于 MainView。
+`addApp` 会等待 Web App 的 `setup()` 完成，失败时进入 `catchEx` 并清理未完成初始化的窗口；公开方法名和调用签名保持兼容。Slide / Presentation 的 `originSize` 必须通过 `WindowAppParam.setOriginSize` 配置，`WindowParams.originSize` 只作用于 MainView。
 
 ### 恢复 MainView 的参考尺寸与相机
 
