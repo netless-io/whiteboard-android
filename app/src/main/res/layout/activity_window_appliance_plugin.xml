@@ -49,7 +49,37 @@
             <Button
                 android:id="@+id/insertNewDynamic"
                 style="@style/TestButton"
-                android:text="newDynamic" />
+                android:text="Slide" />
+
+            <Button
+                android:id="@+id/insertPresentation"
+                style="@style/TestButton"
+                android:text="Presentation" />
+
+            <Button
+                android:id="@+id/scalePage"
+                style="@style/TestButton"
+                android:text="scalePage 2x" />
+
+            <Button
+                android:id="@+id/prevPage"
+                style="@style/TestButton"
+                android:text="prevPage" />
+
+            <Button
+                android:id="@+id/nextPage"
+                style="@style/TestButton"
+                android:text="nextPage" />
+
+            <Button
+                android:id="@+id/prevStep"
+                style="@style/TestButton"
+                android:text="prevStep" />
+
+            <Button
+                android:id="@+id/nextStep"
+                style="@style/TestButton"
+                android:text="nextStep" />
 
             <Button
                 android:id="@+id/insertImage"

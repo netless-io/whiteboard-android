@@ -15,25 +15,36 @@ import com.herewhite.sdk.domain.AppliancePluginOptions;
 import com.herewhite.sdk.domain.BackgroundImageLoadEvent;
 import com.herewhite.sdk.domain.BackgroundImageLoadOptions;
 import com.herewhite.sdk.domain.CameraConfig;
+import com.herewhite.sdk.domain.DispatchDocsEventResult;
 import com.herewhite.sdk.domain.ImageInformationWithUrl;
 import com.herewhite.sdk.domain.LoggerOptions;
 import com.herewhite.sdk.domain.LocalLogOptions;
 import com.herewhite.sdk.domain.SlideSyncEventQueuePolicy;
 import com.herewhite.sdk.domain.MemberState;
 import com.herewhite.sdk.domain.Promise;
+import com.herewhite.sdk.domain.PptPage;
 import com.herewhite.sdk.domain.ReloadBackgroundImageParams;
 import com.herewhite.sdk.domain.ReloadBackgroundImageResult;
 import com.herewhite.sdk.domain.SDKError;
+import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.ShapeType;
 import com.herewhite.sdk.domain.StrokeType;
 import com.herewhite.sdk.domain.WindowAppParam;
+import com.herewhite.sdk.domain.WindowDocsEvent;
+import com.herewhite.sdk.domain.WindowOriginSize;
+import com.herewhite.sdk.domain.UnifiedPageState;
+import com.herewhite.sdk.domain.UnifiedPageStateChange;
 import com.herewhite.sdk.domain.WindowParams;
+import com.herewhite.sdk.window.UnifiedPageStateListener;
 import org.json.JSONObject;
 
 import java.util.Map;
 
 public class WindowAppliancePluginActivity extends SampleBaseActivity {
 
+    private static final String E2E_LOG_PREFIX = "[UnifiedPageE2E] ";
+    private static final double ORIGIN_WIDTH = 1280d;
+    private static final double ORIGIN_HEIGHT = 720d;
     private ActivityWindowAppliancePluginBinding binding;
 
     @Override
@@ -49,9 +60,35 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
         binding.insertNewDynamic.setOnClickListener(v -> {
             String prefixUrl = "https://conversion-demo-cn.oss-cn-hangzhou.aliyuncs.com/demo/dynamicConvert";
             String taskUuid = "3e3a2b8845194f998e6e05adab70e1a1";
-            WindowAppParam param = WindowAppParam.createSlideApp(taskUuid, prefixUrl, "Projector App");
-            room.addApp(param, null);
+            WindowAppParam param = WindowAppParam.createSlideApp(taskUuid, prefixUrl, "Slide 1280x720")
+                    .setOriginSize(originSize());
+            addAppForE2E(param);
         });
+
+        binding.insertPresentation.setOnClickListener(v -> {
+            Scene[] scenes = new Scene[]{
+                    new Scene("1", new PptPage(
+                            "https://convertcdn.netless.link/staticConvert/18140800fe8a11eb8cb787b1c376634e/1.png",
+                            714d,
+                            1010d)),
+                    new Scene("2", new PptPage(
+                            "https://convertcdn.netless.link/staticConvert/18140800fe8a11eb8cb787b1c376634e/2.png",
+                            714d,
+                            1010d))
+            };
+            WindowAppParam param = WindowAppParam.createPresentationApp(
+                    "/presentation-e2e",
+                    scenes,
+                    "Presentation 1280x720"
+            ).setOriginSize(originSize());
+            addAppForE2E(param);
+        });
+
+        binding.scalePage.setOnClickListener(v -> dispatchFocusedDocsEvent(WindowDocsEvent.ScalePage(2d)));
+        binding.prevPage.setOnClickListener(v -> dispatchFocusedDocsEvent(WindowDocsEvent.PrevPage));
+        binding.nextPage.setOnClickListener(v -> dispatchFocusedDocsEvent(WindowDocsEvent.NextPage));
+        binding.prevStep.setOnClickListener(v -> dispatchFocusedDocsEvent(WindowDocsEvent.PrevStep));
+        binding.nextStep.setOnClickListener(v -> dispatchFocusedDocsEvent(WindowDocsEvent.NextStep));
 
         binding.insertImage.setOnClickListener(v -> {
             room.insertImage(new ImageInformationWithUrl(0d,
@@ -183,7 +220,14 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
         roomParams.setWritable(false);
         roomParams.setAppliancePluginOptions(getAppliancePluginOptions());
         roomParams.setWindowParams(new WindowParams()
-                .setOverwriteStyles(".netless-app-slide-wb-view {clip-path: none !important;}"));
+                .setOriginSize(originSize())
+                .setOverwriteStyles(
+                        ".netless-app-slide-wb-view {clip-path: none !important;}" +
+                                ".telebox-box.telebox-blur.telebox-maximized " +
+                                ".netless-app-presentation-content {" +
+                                "  display: none !important;" +
+                                "}"
+                ));
         return roomParams;
     }
 
@@ -235,6 +279,14 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
     protected void onJoinRoomSuccess() {
         room.disableSerialization(false);
         updateWritableUi();
+        logE2E("room ready originSize=1280x720 target=focused");
+
+        whiteSdk.setUnifiedPageStateListener(new UnifiedPageStateListener() {
+            @Override
+            public void onUnifiedPageStateChange(UnifiedPageStateChange state) {
+                logE2E("stateChange=" + gson.toJson(state));
+            }
+        });
 
         binding.toggleWritable.setOnClickListener(v -> {
             boolean next = !Boolean.TRUE.equals(room.getWritable());
@@ -291,5 +343,70 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
         boolean writable = Boolean.TRUE.equals(room.getWritable());
         binding.toolbar.setVisibility(writable ? View.VISIBLE : View.GONE);
         binding.toggleWritable.setText(writable ? "移除可写" : "获取可写");
+    }
+
+    private WindowOriginSize originSize() {
+        return new WindowOriginSize(ORIGIN_WIDTH, ORIGIN_HEIGHT);
+    }
+
+    private void addAppForE2E(WindowAppParam param) {
+        if (room == null) {
+            logE2E("addApp ignored: room not ready");
+            return;
+        }
+        logE2E("addApp request kind=" + param.getKind() + " originSize=1280x720");
+        room.addApp(param, new Promise<String>() {
+            @Override
+            public void then(String appId) {
+                logE2E("addApp success kind=" + param.getKind() + " appId=" + appId);
+                queryFocusedPageState("addApp:" + param.getKind());
+            }
+
+            @Override
+            public void catchEx(SDKError error) {
+                logE2E("addApp failed kind=" + param.getKind() + " error=" + error);
+            }
+        });
+    }
+
+    private void dispatchFocusedDocsEvent(WindowDocsEvent event) {
+        if (room == null) {
+            logE2E(event.getEvent() + " ignored: room not ready");
+            return;
+        }
+        logE2E("dispatch request event=" + event.getEvent() + " target=focused options="
+                + gson.toJson(event.getOptions()));
+        room.dispatchDocsEvent(event, new Promise<DispatchDocsEventResult>() {
+            @Override
+            public void then(DispatchDocsEventResult result) {
+                logE2E("dispatch result event=" + event.getEvent() + " payload=" + gson.toJson(result));
+                queryFocusedPageState(event.getEvent());
+            }
+
+            @Override
+            public void catchEx(SDKError error) {
+                logE2E("dispatch failed event=" + event.getEvent() + " error=" + error);
+                queryFocusedPageState(event.getEvent() + ":failed");
+            }
+        });
+    }
+
+    private void queryFocusedPageState(String source) {
+        room.getPageState(new Promise<UnifiedPageState>() {
+            @Override
+            public void then(UnifiedPageState state) {
+                logE2E("getPageState source=" + source + " target=focused payload=" + gson.toJson(state));
+            }
+
+            @Override
+            public void catchEx(SDKError error) {
+                logE2E("getPageState failed source=" + source + " error=" + error);
+            }
+        });
+    }
+
+    private void logE2E(String message) {
+        logAction(E2E_LOG_PREFIX + message);
+        showLogDisplay(E2E_LOG_PREFIX + message);
     }
 }
