@@ -8,6 +8,7 @@
     <string name="window_room">多窗口房间</string>
     <string name="mao_custom_window">Mao 自定义多窗口</string>
     <string name="appliance_plugin">AppliancePlugin</string>
+    <string name="appliance_plugin_image_bitmap">AppliancePlugin（ImageBitmap）</string>
     <string name="noAppliancePlugin">NoAppliancePlugin</string>
     <string name="register_app">RegisterApp</string>
     <string name="qa_debug_examples">QA / Debug 示例</string>

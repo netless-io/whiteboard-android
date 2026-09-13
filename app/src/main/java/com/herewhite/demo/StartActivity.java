@@ -12,9 +12,6 @@ import com.herewhite.demo.test.window.WindowAppliancePluginActivity;
 
 public class StartActivity extends BaseActivity {
 
-    private static final String ROOM_UUID = "";
-    private static final String ROOM_TOKEN = "";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,11 +25,21 @@ public class StartActivity extends BaseActivity {
         Button button = getButton(getString(R.string.appliance_plugin));
         button.setOnClickListener(v -> {
             Intent intent = new Intent(this, WindowAppliancePluginActivity.class);
-            intent.putExtra(SampleBaseActivity.EXTRA_ROOM_UUID, ROOM_UUID);
-            intent.putExtra(SampleBaseActivity.EXTRA_ROOM_TOKEN, ROOM_TOKEN);
+            intent.putExtra(SampleBaseActivity.EXTRA_ROOM_UUID, getString(R.string.room_uuid));
+            intent.putExtra(SampleBaseActivity.EXTRA_ROOM_TOKEN, getString(R.string.room_token));
             startActivity(intent);
         });
         container.addView(button, getLayoutParams());
+
+        Button imageBitmapButton = getButton(getString(R.string.appliance_plugin_image_bitmap));
+        imageBitmapButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, WindowAppliancePluginActivity.class);
+            intent.putExtra(SampleBaseActivity.EXTRA_ROOM_UUID, getString(R.string.room_uuid));
+            intent.putExtra(SampleBaseActivity.EXTRA_ROOM_TOKEN, getString(R.string.room_token));
+            intent.putExtra(SampleBaseActivity.EXTRA_ALLOW_IMAGE_BITMAP_FALLBACK, true);
+            startActivity(intent);
+        });
+        container.addView(imageBitmapButton, getLayoutParams());
     }
 
     private LinearLayout.LayoutParams getLayoutParams() {

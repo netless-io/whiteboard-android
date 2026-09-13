@@ -31,6 +31,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 abstract public class SampleBaseActivity extends BaseActivity {
     public static final String EXTRA_ROOM_UUID = "roomUuid";
     public static final String EXTRA_ROOM_TOKEN = "roomToken";
+    public static final String EXTRA_ALLOW_IMAGE_BITMAP_FALLBACK =
+            "allowImageBitmapFallback";
     private static final String ROOM_INFO = "RoomInfo";
     private static final String ROOM_ACTION = "RoomAction";
     private static final long ROOM_DISCONNECT_TIMEOUT_MS = 3_000L;

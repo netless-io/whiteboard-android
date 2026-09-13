@@ -235,6 +235,8 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
         Map<String, Object> extrasOptions = Map.of(
                 "useSimple", true,
                 "useBackgroundThread", true,
+                "allowImageBitmapFallback", getIntent().getBooleanExtra(
+                        SampleBaseActivity.EXTRA_ALLOW_IMAGE_BITMAP_FALLBACK, false),
                 // cursor 配置
                 "cursor", Map.of(
                         "enable", true,
