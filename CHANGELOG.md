@@ -7,6 +7,9 @@
 - `Room.addApp` 等待 Web App setup 完成，失败时进入 `Promise.catchEx` 并清理半初始化窗口；新增 `fitOriginSizeAndCamera`。
 
 ## [Unreleased]
+- `WindowParams` 新增 `forceMaximized`、`lazySetupInMaximizedMode` 与 `maxCachedAppsInMaximizedMode`，支持强制最大化下的 App runtime 延迟初始化和本地 LRU 缓存。
+- Appliance Plugin Demo 对齐 WindowManager example：`useBoxesStatus=false`、`forceMaximized=true`、`lazySetupInMaximizedMode=true`、缓存上限为 `3`。
+- 内嵌 Bridge 升级至 `@netless/window-manager@1.0.23-beta.1` 与 `@netless/app-slide@0.2.105-beta.2`。
 
 ## [2.16.129] - 2026-08-27
 - 同步 `Whiteboard-bridge` 至 `f1dd751`，内置 `white-web-sdk@2.16.58`、`@netless/app-slide@0.2.103`、`@netless/appliance-plugin@1.1.42`。

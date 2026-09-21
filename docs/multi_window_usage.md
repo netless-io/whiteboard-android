@@ -40,6 +40,9 @@ WindowParams windowParams = new WindowParams()
         .setChessboard(true)
         .setFullscreen(false)
         .setUseBoxesStatus(false)
+        .setForceMaximized(true)
+        .setLazySetupInMaximizedMode(true)
+        .setMaxCachedAppsInMaximizedMode(3)
         .setOriginSize(new WindowOriginSize(1280, 900))
         .setPageScaleRange(new PageScaleRange().setMinScale(0.5).setMaxScale(4.0))
         .setDebug(false);
@@ -73,8 +76,13 @@ whiteSdk.joinRoom(roomParams, new RoomCallbacks() {
 - `debug`：是否输出多窗口调试日志。
 - `polling`：是否轮询更新本地视角。
 - `useBoxesStatus`：是否使用每个窗口独立的状态管理。开启后窗口最大化、最小化状态会按窗口分别同步；同一房间内多端建议保持一致。回放带窗口房间时也需要在 `PlayerConfiguration.windowParams` 中设置同样的值。
+- `forceMaximized`：是否把房间窗口状态强制为最大化并禁止切回 normal。该配置仅在 `useBoxesStatus=false` 时生效。
+- `lazySetupInMaximizedMode`：是否仅初始化当前聚焦 App 的 runtime。该配置是客户端本地策略，仅在 `forceMaximized` 已生效时启用，否则回退到 eager setup。
+- `maxCachedAppsInMaximizedMode`：lazy 模式下本地保留的 App runtime 数量上限；示例使用 `3`，未设置时由 WindowManager 使用默认值。不可 teardown 或 teardown 失败的 runtime 可能导致软超限。
 - `originSize`：MainView 的归一化参考尺寸。可写端首次设置或传入不同尺寸时，WindowManager 会重置并同步 MainView 的 origin/active camera-size contract；不会隐式改写 Slide/Presentation App 参数。
 - `pageScaleRange`：`scalePage` 的可选相对倍率范围。`minScale`、`maxScale` 均可省略；未配置时不施加业务范围限制。
+
+实时房间通过 `RoomParams.setWindowParams` 传入以上参数；回放通过 `PlayerConfiguration.setWindowParams` 传入。lazy 与缓存参数不会写入房间 attributes，因此每个客户端都需要显式配置。
 
 ## 核心窗口操作
 

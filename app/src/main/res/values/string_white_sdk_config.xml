@@ -5,6 +5,6 @@
     <!-- [Optional] 优先使用配置的 Room 参数-->
     <string name="sdk_app_token">""</string>
     <!-- 配置有效 Room 参数 -->
-    <string name="room_uuid">99aaea20af2211f1a987f591971aa56e</string>
-    <string name="room_token">NETLESSROOM_YWs9VWtNUk92M1JIN2I2Z284dCZleHBpcmVBdD0xNzg5MzU2MjU2OTEwJm5vbmNlPTk5Y2EwYWUwLWFmMjItMTFmMS1iYzM4LWQ3Yjg5YzgwZTNlMSZyb2xlPTEmc2lnPTYwOWE0NzgzMDE2NGVhMWY2ZWRkODI0NmU0MjY2OWY5ZmQ2NTgwNWFiOGYwZTllOTI0MWVmMDUwYmY4MjNhNTYmdXVpZD05OWFhZWEyMGFmMjIxMWYxYTk4N2Y1OTE5NzFhYTU2ZQ</string>
+    <string name="room_uuid">906bae90b58511f1a79e5562c620825c</string>
+    <string name="room_token">NETLESSROOM_YWs9VWtNUk92M1JIN2I2Z284dCZleHBpcmVBdD0xNzkwMDU4NDY4NTE2Jm5vbmNlPTkwODVjNjQwLWI1ODUtMTFmMS1iYzM4LWQ3Yjg5YzgwZTNlMSZyb2xlPTEmc2lnPTljODU4MzNlZjQyNzZlMTZlNjQ3MjY2YTdmZmNjN2FjZDQzNWQyNjg5NzQ2MDM3Yjc5NjViMGMyMTRiYTEzNjUmdXVpZD05MDZiYWU5MGI1ODUxMWYxYTc5ZTU1NjJjNjIwODI1Yw</string>
 </resources>

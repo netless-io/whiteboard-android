@@ -4,6 +4,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class WindowParamsTest {
     @Test
@@ -13,6 +14,31 @@ public class WindowParamsTest {
         JSONObject json = params.toJSON();
 
         assertEquals(true, json.getBoolean("useBoxesStatus"));
+    }
+
+    @Test
+    public void serializesForceMaximizedLazySetupAndCacheLimit() throws Exception {
+        WindowParams params = new WindowParams()
+                .setUseBoxesStatus(false)
+                .setForceMaximized(true)
+                .setLazySetupInMaximizedMode(true)
+                .setMaxCachedAppsInMaximizedMode(3);
+
+        JSONObject json = params.toJSON();
+
+        assertEquals(false, json.getBoolean("useBoxesStatus"));
+        assertEquals(true, json.getBoolean("forceMaximized"));
+        assertEquals(true, json.getBoolean("lazySetupInMaximizedMode"));
+        assertEquals(3, json.getInt("maxCachedAppsInMaximizedMode"));
+    }
+
+    @Test
+    public void omitsUnsetLazySetupOptions() throws Exception {
+        JSONObject json = new WindowParams().toJSON();
+
+        assertFalse(json.has("forceMaximized"));
+        assertFalse(json.has("lazySetupInMaximizedMode"));
+        assertFalse(json.has("maxCachedAppsInMaximizedMode"));
     }
 
     @Test
