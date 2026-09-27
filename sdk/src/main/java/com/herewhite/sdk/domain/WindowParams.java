@@ -44,21 +44,21 @@ public class WindowParams extends WhiteObject {
     /**
      * 房间级强制最大化策略。可写端传 true 时会写入 attributes.forceMaximized 并把房间同步为最大化；
      * 所有支持该协议的客户端随后禁止进入 normal。
-     * 需要 @netless/window-manager >= 1.0.23-beta.1。
+     * 需要 @netless/window-manager >= 1.0.23。
      */
     private Boolean forceMaximized;
 
     /**
      * 最大化模式下仅初始化当前顶层 App runtime 的本地开关（不写入房间 attributes）。
      * 仅当房间已有 attributes.forceMaximized=true 且状态为 maximized/minimized 时生效，否则自动降级为 eager setup。
-     * 需要 @netless/window-manager >= 1.0.23-beta.1。
+     * 需要 @netless/window-manager >= 1.0.23。
      */
     private Boolean lazySetupInMaximizedMode;
 
     /**
      * lazy setup 模式下本地保留的 App runtime 最大数量，默认值由 WindowManager 决定。
      * 仅在 forceMaximized=true 且 lazySetupInMaximizedMode=true 时生效。
-     * 需要 @netless/window-manager >= 1.0.23-beta.1。
+     * 需要 @netless/window-manager >= 1.0.23。
      */
     private Integer maxCachedAppsInMaximizedMode;
 

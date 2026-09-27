@@ -1,15 +1,16 @@
 # 版本更新记录
+## [2.16.131] - 2026-09-28
+- 内嵌正式版 Bridge：`@netless/window-manager@1.0.23`、`@netless/app-slide@0.2.106`、`@netless/appliance-plugin@1.1.44`。
+- 新增强制最大化、lazy setup 和本地 App 缓存配置；Slide 新增 `navigationButtonMode`。
+- `focusApp` 新增可等待的布尔结果，按共享 focus、Box 焦点及 zIndex 的最终提交状态判断；setup 失败或超时仅记录日志。
+- 更新多窗口 Demo 配置与测试，并同步 Bridge 构建资源 `27527d0`。
+
 ## [2.16.130] - 2026-09-14
 - 同步正式版 `Whiteboard-bridge`，内置 `@netless/appliance-plugin@1.1.43`，包含 ImageBitmap simple Worker service render barrier 修复。
 - 保持 MainThread、OffscreenTransfer 和非 simple Worker 渲染流程不变。
 - 升级内嵌 Bridge 运行时依赖至 `@netless/window-manager@1.0.21`、`@netless/app-slide@0.2.104`。
 - `WindowAppParam` 新增强类型 `originSize`，序列化为 `attributes.originSize`。
 - `Room.addApp` 等待 Web App setup 完成，失败时进入 `Promise.catchEx` 并清理半初始化窗口；新增 `fitOriginSizeAndCamera`。
-
-## [Unreleased]
-- `WindowParams` 新增 `forceMaximized`、`lazySetupInMaximizedMode` 与 `maxCachedAppsInMaximizedMode`，支持强制最大化下的 App runtime 延迟初始化和本地 LRU 缓存。
-- Appliance Plugin Demo 对齐 WindowManager example：`useBoxesStatus=false`、`forceMaximized=true`、`lazySetupInMaximizedMode=true`、缓存上限为 `3`。
-- 内嵌 Bridge 升级至 `@netless/window-manager@1.0.23-beta.1` 与 `@netless/app-slide@0.2.105-beta.2`。
 
 ## [2.16.129] - 2026-08-27
 - 同步 `Whiteboard-bridge` 至 `f1dd751`，内置 `white-web-sdk@2.16.58`、`@netless/app-slide@0.2.103`、`@netless/appliance-plugin@1.1.42`。
