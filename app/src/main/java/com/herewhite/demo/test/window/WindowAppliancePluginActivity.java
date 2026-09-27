@@ -219,15 +219,22 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
         RoomParams roomParams = super.generateRoomParams();
         roomParams.setWritable(false);
         roomParams.setAppliancePluginOptions(getAppliancePluginOptions());
-        roomParams.setWindowParams(new WindowParams()
-                .setOriginSize(originSize())
+        WindowParams windowParams = new WindowParams()
+                .setChessboard(false)
+                .setFullscreen(true)
+                .setUseBoxesStatus(false)
+                .setForceMaximized(true)
+                .setLazySetupInMaximizedMode(true)
+                .setMaxCachedAppsInMaximizedMode(3)
                 .setOverwriteStyles(
-                        ".netless-app-slide-wb-view {clip-path: none !important;}" +
-                                ".telebox-box.telebox-blur.telebox-maximized " +
-                                ".netless-app-presentation-content {" +
-                                "  display: none !important;" +
-                                "}"
-                ));
+                        ".telebox-collector{display:none !important;}" +
+                                ".vjs-p .player-controller{display:none !important;}" +
+                                ".netless-app-slide-wb-view {clip-path: none !important;}" +
+                                ".telebox-box.telebox-blur.telebox-maximized {display: none !important;}" +
+                                ".netless-app-slide-content [data-resizable-scroll=\"true\"] ~ .scroll-bar { display: none !important;}" +
+                                ".netless-app-slide-content [data-resizable-scroll=\"true\"] { width: 100% !important; height: 100% !important;}"
+                );
+        roomParams.setWindowParams(windowParams);
         return roomParams;
     }
 

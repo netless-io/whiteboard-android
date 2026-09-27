@@ -264,6 +264,27 @@ public class RoomTest extends TestCase {
         verify(mockJsBridgeInterface).callHandler("room.fitOriginSizeAndCamera", new Object[]{});
     }
 
+    public void testFocusAppKeepsFireAndForgetBridgeContract() {
+        mRoom.focusApp("slide-1");
+        verify(mockJsBridgeInterface).callHandler("room.focusApp", new Object[]{"slide-1"});
+    }
+
+    public void testFocusAppCompletionForwardsCommittedResult() {
+        Promise<Boolean> promise = mock(Promise.class);
+        ArgumentCaptor<OnReturnValue> callback = ArgumentCaptor.forClass(OnReturnValue.class);
+
+        mRoom.focusApp("slide-1", promise);
+        verify(mockJsBridgeInterface).callHandler(
+                eq("room.focusApp"),
+                aryEq(new Object[]{"slide-1"}),
+                callback.capture());
+
+        callback.getValue().onValue(true);
+        callback.getValue().onValue(false);
+        verify(promise).then(true);
+        verify(promise).then(false);
+    }
+
     public void testAddAppWaitsForSetupAndUsesBridgeContract() {
         WindowAppParam appParam = WindowAppParam.createSlideApp(
                 "/slide", new com.herewhite.sdk.domain.Scene[]{new com.herewhite.sdk.domain.Scene("1")}, "Slide");
@@ -274,7 +295,7 @@ public class RoomTest extends TestCase {
                 (OnReturnValue<String>) any());
     }
 
-    public void testAddAppReportsSetupFailureThroughPromise() {
+    public void testAddAppReportsBridgeErrorThroughPromise() {
         WindowAppParam appParam = WindowAppParam.createSlideApp(
                 "/slide", new com.herewhite.sdk.domain.Scene[]{new com.herewhite.sdk.domain.Scene("1")}, "Slide");
         Promise<String> promise = mock(Promise.class);
