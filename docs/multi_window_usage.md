@@ -188,6 +188,20 @@ mRoom.closeApp(appId, new Promise<Boolean>() {
 
 ```java
 mRoom.focusApp(appId);
+
+// 如果切换焦点后需要立即翻页，应等待 focus 提交，再调用不带 appId 的分页接口。
+mRoom.focusApp(appId, new Promise<Boolean>() {
+    @Override
+    public void then(Boolean committed) {
+        if (Boolean.TRUE.equals(committed)) {
+            mRoom.dispatchDocsEvent(WindowDocsEvent.NextPage, null);
+        }
+    }
+
+    @Override
+    public void catchEx(SDKError error) {
+    }
+});
 ```
 
 ### 查询单个窗口

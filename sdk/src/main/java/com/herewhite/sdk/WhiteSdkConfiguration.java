@@ -9,6 +9,7 @@ import com.herewhite.sdk.domain.LoggerOptions;
 import com.herewhite.sdk.domain.PresentationAppOptions;
 import com.herewhite.sdk.domain.Region;
 import com.herewhite.sdk.domain.SlideInvisibleBehavior;
+import com.herewhite.sdk.domain.SlideNavigationButtonMode;
 import com.herewhite.sdk.domain.SlideSyncEventQueuePolicy;
 import com.herewhite.sdk.domain.WhiteObject;
 
@@ -757,6 +758,9 @@ public class WhiteSdkConfiguration extends WhiteObject {
          */
         private SlideSyncEventQueuePolicy syncEventQueuePolicy;
 
+        /** 底部前后导航按钮的行为。未设置时按页切换（Page）。 */
+        private SlideNavigationButtonMode navigationButtonMode;
+
         public boolean isShowRenderError() {
             return showRenderError;
         }
@@ -859,6 +863,18 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
         public void setSyncEventQueuePolicy(SlideSyncEventQueuePolicy syncEventQueuePolicy) {
             this.syncEventQueuePolicy = syncEventQueuePolicy;
+        }
+
+        public SlideNavigationButtonMode getNavigationButtonMode() {
+            return navigationButtonMode;
+        }
+
+        /**
+         * 设置底部前后导航按钮按页（Page）或按动画步骤（Step）切换。
+         * 不改变页码输入、预览列表及其他翻页入口的行为。传 null 使用 app-slide 默认值 Page。
+         */
+        public void setNavigationButtonMode(SlideNavigationButtonMode navigationButtonMode) {
+            this.navigationButtonMode = navigationButtonMode;
         }
     }
 }

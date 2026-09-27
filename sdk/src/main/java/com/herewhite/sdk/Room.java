@@ -1403,6 +1403,24 @@ public class Room extends Displayer {
     }
 
     /**
+     * 设置多窗口下焦点窗口，并在焦点真正提交后返回结果。
+     * Lazy 模式会等待目标 App setup 和 focus 提交；非 Lazy 模式保持原同步切换行为并立即返回 true。
+     *
+     * @param appId 添加 App 时返回的 id
+     * @param promise 房间 focus 与本地 Box 焦点、zIndex 已提交时返回 true；请求被取代或状态未提交时返回 false。setup 失败或超时仅记录日志，不决定返回值
+     */
+    public void focusApp(String appId, @Nullable final Promise<Boolean> promise) {
+        bridge.callHandler("room.focusApp", new Object[]{appId}, new OnReturnValue<Boolean>() {
+            @Override
+            public void onValue(Boolean committed) {
+                if (promise != null) {
+                    promise.then(Boolean.TRUE.equals(committed));
+                }
+            }
+        });
+    }
+
+    /**
      * 查询窗口信息
      * @param appId
      * @param promise
