@@ -225,7 +225,7 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
                 .setUseBoxesStatus(false)
                 .setForceMaximized(true)
                 .setLazySetupInMaximizedMode(true)
-                .setMaxCachedAppsInMaximizedMode(3)
+                .setMaxCachedAppsInMaximizedMode(5)
                 .setOverwriteStyles(
                         ".telebox-collector{display:none !important;}" +
                                 ".vjs-p .player-controller{display:none !important;}" +

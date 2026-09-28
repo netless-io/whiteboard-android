@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 
 import com.herewhite.demo.common.SampleBaseActivity;
 import com.herewhite.demo.test.window.WindowAppliancePluginActivity;
+import com.herewhite.demo.test.window.WindowNoAppliancePluginActivity;
 
 public class StartActivity extends BaseActivity {
 
@@ -30,6 +31,15 @@ public class StartActivity extends BaseActivity {
             startActivity(intent);
         });
         container.addView(button, getLayoutParams());
+
+        Button noApplianceButton = getButton(getString(R.string.noAppliancePlugin));
+        noApplianceButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, WindowNoAppliancePluginActivity.class);
+            intent.putExtra(SampleBaseActivity.EXTRA_ROOM_UUID, getString(R.string.room_uuid));
+            intent.putExtra(SampleBaseActivity.EXTRA_ROOM_TOKEN, getString(R.string.room_token));
+            startActivity(intent);
+        });
+        container.addView(noApplianceButton, getLayoutParams());
 
         Button imageBitmapButton = getButton(getString(R.string.appliance_plugin_image_bitmap));
         imageBitmapButton.setOnClickListener(v -> {
