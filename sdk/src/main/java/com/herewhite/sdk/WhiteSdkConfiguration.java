@@ -16,6 +16,9 @@ import com.herewhite.sdk.domain.WhiteObject;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -24,6 +27,26 @@ import java.util.List;
  * @note 成功初始化 `WhiteSdk` 后，无法再调用 `WhiteSdkConfiguration` 类中的任何方法修改 `WhiteSdk` 的配置。
  */
 public class WhiteSdkConfiguration extends WhiteObject {
+
+    // Internal Bridge provenance; preserved by Gson when WhiteSdk copies the configuration.
+    @SerializedName("__nativeConfigDefaults")
+    private ArrayList<String> __nativeConfigDefaults = new ArrayList<>(Arrays.asList(
+        "useMultiViews", "userCursor", "disableDeviceInputs", "enableAppliancePlugin"
+    ));
+
+    @SerializedName("dynamicConfig")
+    private Map<String, String> dynamicConfig;
+
+    /** Region -> public OSS latest.json URL for this platform; no credentials required.
+     * Unmapped regions or failed downloads keep local parameters. Download timeout is 5 seconds.
+     */
+    public void setDynamicConfig(Map<String, String> dynamicConfig) {
+        this.dynamicConfig = dynamicConfig == null ? null : new HashMap<>(dynamicConfig);
+    }
+
+    public Map<String, String> getDynamicConfig() {
+        return dynamicConfig == null ? null : new HashMap<>(dynamicConfig);
+    }
     private com.herewhite.sdk.domain.BackgroundImageLoadOptions backgroundImageLoadOptions;
 
     private Region region;
@@ -213,6 +236,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
      */
     public void setDisableDeviceInputs(boolean disableDeviceInputs) {
         this.disableDeviceInputs = disableDeviceInputs;
+        __nativeConfigDefaults.remove("disableDeviceInputs");
     }
 
     public boolean isDisableNewPencilStroke() {
@@ -424,6 +448,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
      */
     public void setUserCursor(boolean userCursor) {
         this.userCursor = userCursor;
+        __nativeConfigDefaults.remove("userCursor");
     }
 
     /**
@@ -549,6 +574,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
     public void setUseMultiViews(Boolean useMultiViews) {
         this.useMultiViews = useMultiViews;
+        __nativeConfigDefaults.remove("useMultiViews");
     }
 
     public SlideAppOptions getSlideAppOptions() {
@@ -605,6 +631,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
     public void setEnableAppliancePlugin(boolean enableAppliancePlugin) {
         this.enableAppliancePlugin = enableAppliancePlugin;
+        __nativeConfigDefaults.remove("enableAppliancePlugin");
     }
 
     /**

@@ -6,6 +6,7 @@ import android.widget.ImageView;
 
 import com.herewhite.demo.R;
 import com.herewhite.demo.common.SampleBaseActivity;
+import com.herewhite.demo.common.DynamicConfigDemoConfig;
 import com.herewhite.demo.databinding.ActivityWindowAppliancePluginBinding;
 import com.herewhite.sdk.CommonCallback;
 import com.herewhite.sdk.RoomParams;
@@ -25,6 +26,7 @@ import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.PptPage;
 import com.herewhite.sdk.domain.ReloadBackgroundImageParams;
 import com.herewhite.sdk.domain.ReloadBackgroundImageResult;
+import com.herewhite.sdk.domain.Region;
 import com.herewhite.sdk.domain.SDKError;
 import com.herewhite.sdk.domain.Scene;
 import com.herewhite.sdk.domain.ShapeType;
@@ -38,6 +40,8 @@ import com.herewhite.sdk.domain.WindowParams;
 import com.herewhite.sdk.window.UnifiedPageStateListener;
 import org.json.JSONObject;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class WindowAppliancePluginActivity extends SampleBaseActivity {
@@ -199,6 +203,8 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
 
     protected WhiteSdkConfiguration generateSdkConfig() {
         WhiteSdkConfiguration configuration = new WhiteSdkConfiguration(demoAPI.getAppId(), true);
+        configuration.setRegion(Region.cn);
+        configuration.setDynamicConfig(DynamicConfigDemoConfig.getRegionUrls());
         configuration.setUseMultiViews(true);
         configuration.setEnableAppliancePlugin(true);
         BackgroundImageLoadOptions loadOptions = new BackgroundImageLoadOptions();
@@ -217,6 +223,7 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
     @Override
     protected RoomParams generateRoomParams() {
         RoomParams roomParams = super.generateRoomParams();
+        roomParams.setRegion(Region.cn);
         roomParams.setWritable(false);
         roomParams.setAppliancePluginOptions(getAppliancePluginOptions());
         WindowParams windowParams = new WindowParams()
@@ -239,27 +246,27 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
     }
 
     private AppliancePluginOptions getAppliancePluginOptions() {
-        Map<String, Object> extrasOptions = Map.of(
+        Map<String, Object> extrasOptions = configMap(
                 "useSimple", true,
                 "useBackgroundThread", true,
                 "allowImageBitmapFallback", getIntent().getBooleanExtra(
                         SampleBaseActivity.EXTRA_ALLOW_IMAGE_BITMAP_FALLBACK, false),
                 // cursor 配置
-                "cursor", Map.of(
+                "cursor", configMap(
                         "enable", true,
                         "expirationTime", 500,
-                        "syncedLabel", Map.of(
+                        "syncedLabel", configMap(
                                 "enableShowName", true
                         ),
-                        "appearance", Map.of(
-                                "pencil", Map.of(
-                                        "synced", Map.of(
+                        "appearance", configMap(
+                                "pencil", configMap(
+                                        "synced", configMap(
                                                 "enableShowName", false
                                         )
                                 ),
-                                "clicker", Map.of(
-                                        "synced", Map.of(
-                                                "images", Map.of(
+                                "clicker", configMap(
+                                        "synced", configMap(
+                                                "images", configMap(
                                                         "standardResolution", "https://api.iconify.design/mdi:video-wireless-outline.svg?color=%237f7f7f"
                                                 )
                                         )
@@ -267,12 +274,12 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
                         )
                 ),
                 // bezier 配置
-                "bezier", Map.of(
+                "bezier", configMap(
                         "enable", false,
                         "maxDrawCount", 200
                 ),
                 // textEditor 配置
-                "textEditor", Map.of(
+                "textEditor", configMap(
                         "showFloatBar", false,
                         "canSelectorSwitch", false,
                         "rightBoundBreak", true
@@ -282,6 +289,18 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
         AppliancePluginOptions appliancePluginOptions = new AppliancePluginOptions();
         appliancePluginOptions.setExtras(extrasOptions);
         return appliancePluginOptions;
+    }
+
+    // Map.of requires a newer Android runtime; keep these Demo maps available on API 21+.
+    private static Map<String, Object> configMap(Object... entries) {
+        if (entries.length % 2 != 0) {
+            throw new IllegalArgumentException("Configuration entries must be key/value pairs");
+        }
+        Map<String, Object> map = new LinkedHashMap<>();
+        for (int i = 0; i < entries.length; i += 2) {
+            map.put((String) entries[i], entries[i + 1]);
+        }
+        return Collections.unmodifiableMap(map);
     }
 
     @Override
