@@ -1,0 +1,6 @@
+# Match the Java 8 JitPack baseline used by the 2.16.131 release.
+jdk:
+  - openjdk8
+install:
+  - java -version
+  - java -version 2>&1 | grep -q 'version "1\.8\.' && ./gradlew --no-daemon :sdk:publishToMavenLocal -Pgroup=$GROUP -Pversion=$VERSION

@@ -19,6 +19,8 @@ buildscript {
     }
     repositories {
         google()
+        // Google-hosted Maven Central mirror avoids shared CI egress rate limits.
+        maven { url 'https://maven-central.storage-download.googleapis.com/maven2/' }
         mavenCentral()
     }
     dependencies {
@@ -32,6 +34,8 @@ buildscript {
 allprojects {
     repositories {
         google()
+        // Use the same Central mirror for library dependencies and build tooling.
+        maven { url 'https://maven-central.storage-download.googleapis.com/maven2/' }
         mavenCentral()
         jcenter()
         maven { url 'https://jitpack.io' }
