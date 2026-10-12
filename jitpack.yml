@@ -1,0 +1,6 @@
+# Gradle 6.5 / AGP 4.1 require a JVM older than JitPack's latest image default.
+before_install:
+  - sdk install java 11.0.32+1.1-tem
+  - sdk use java 11.0.32+1.1-tem
+install:
+  - ./gradlew --no-daemon :sdk:publishToMavenLocal -Pgroup=$GROUP -Pversion=$VERSION
