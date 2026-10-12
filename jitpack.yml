@@ -1,6 +1,6 @@
-# Keep Gradle 6.5 / AGP 4.1 builds on the project's Java 11 baseline.
+# Match the Java 8 JitPack baseline used by the 2.16.131 release.
 jdk:
-  - openjdk11
+  - openjdk8
 install:
   - java -version
-  - java -version 2>&1 | grep -q 'version "11\.' && ./gradlew --no-daemon :sdk:publishToMavenLocal -Pgroup=$GROUP -Pversion=$VERSION
+  - java -version 2>&1 | grep -q 'version "1\.8\.' && ./gradlew --no-daemon :sdk:publishToMavenLocal -Pgroup=$GROUP -Pversion=$VERSION
