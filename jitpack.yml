@@ -3,5 +3,4 @@ jdk:
   - openjdk11
 install:
   - java -version
-  - java -version 2>&1 | grep -q 'version "11\.'
-  - ./gradlew --no-daemon :sdk:publishToMavenLocal -Pgroup=$GROUP -Pversion=$VERSION
+  - java -version 2>&1 | grep -q 'version "11\.' && ./gradlew --no-daemon :sdk:publishToMavenLocal -Pgroup=$GROUP -Pversion=$VERSION
