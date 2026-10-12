@@ -1,4 +1,11 @@
 # 版本更新记录
+## [2.16.132] - 2026-10-12
+
+- 新增按入房 region 读取对应平台 OSS 动态配置，下载超时 5 秒，缺省或读取失败时沿用本地参数。
+- 保留参数来源：宿主显式配置 > OSS 动态配置 > Native/Bridge 内置值 > Web SDK 默认值。
+- 更新内嵌 Bridge 至 921f313：white-web-sdk 2.16.59、window-manager 1.0.25、appliance-plugin 1.1.45、app-slide 0.2.107。
+- 添加 Native JSON 序列化及显式默认值回归测试。
+
 ## [2.16.131] - 2026-09-28
 - 内嵌正式版 Bridge：`@netless/window-manager@1.0.23`、`@netless/app-slide@0.2.106`、`@netless/appliance-plugin@1.1.44`。
 - 新增强制最大化、lazy setup 和本地 App 缓存配置；Slide 新增 `navigationButtonMode`。
