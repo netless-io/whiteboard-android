@@ -1,5 +1,6 @@
 package com.herewhite.sdk;
 
+import com.google.gson.annotations.SerializedName;
 import com.herewhite.sdk.domain.AppliancePluginOptions;
 import com.herewhite.sdk.domain.CameraBound;
 import com.herewhite.sdk.domain.MemberInformation;
@@ -9,6 +10,9 @@ import com.herewhite.sdk.domain.WhiteObject;
 import com.herewhite.sdk.domain.WindowParams;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 
@@ -20,6 +24,12 @@ import java.util.concurrent.TimeUnit;
  * @note `RoomParams` 类中所有的方法都必须在 `joinRoom` 前调用；成功加入房间后，调用该类中的任何方法都不会生效。
  */
 public class RoomParams extends WhiteObject {
+
+    // Internal Bridge provenance; preserved by Gson when WhiteSdk copies the configuration.
+    @SerializedName("__nativeConfigDefaults")
+    private ArrayList<String> __nativeConfigDefaults = new ArrayList<>(Arrays.asList(
+        "isWritable", "disableEraseImage", "disableDeviceInputs", "disableOperations", "disableCameraTransform", "disableBezier", "disableNewPencil", "disableTextOperations", "nativeWebSocket", "floatBar", "disableInitialStateCallback"
+    ));
 
     private String uuid;
     private String roomToken;
@@ -160,6 +170,7 @@ public class RoomParams extends WhiteObject {
      */
     public void setWritable(boolean writable) {
         isWritable = writable;
+        __nativeConfigDefaults.remove("isWritable");
     }
 
     /**
@@ -184,6 +195,7 @@ public class RoomParams extends WhiteObject {
      */
     public void setDisableEraseImage(boolean disableEraseImage) {
         this.disableEraseImage = disableEraseImage;
+        __nativeConfigDefaults.remove("disableEraseImage");
     }
 
     /**
@@ -218,6 +230,7 @@ public class RoomParams extends WhiteObject {
      */
     public void setDisableDeviceInputs(boolean disableDeviceInputs) {
         this.disableDeviceInputs = disableDeviceInputs;
+        __nativeConfigDefaults.remove("disableDeviceInputs");
     }
 
     /**
@@ -246,8 +259,11 @@ public class RoomParams extends WhiteObject {
      */
     public void setDisableOperations(boolean disableOperations) {
         this.disableCameraTransform = disableOperations;
+        __nativeConfigDefaults.remove("disableCameraTransform");
         this.disableDeviceInputs = disableOperations;
+        __nativeConfigDefaults.remove("disableDeviceInputs");
         this.disableOperations = disableOperations;
+        __nativeConfigDefaults.remove("disableOperations");
     }
 
     /**
@@ -273,6 +289,7 @@ public class RoomParams extends WhiteObject {
      */
     public void setDisableBezier(boolean disableBezier) {
         this.disableBezier = disableBezier;
+        __nativeConfigDefaults.remove("disableBezier");
     }
 
     /**
@@ -295,6 +312,7 @@ public class RoomParams extends WhiteObject {
      */
     public void setDisableCameraTransform(boolean disableCameraTransform) {
         this.disableCameraTransform = disableCameraTransform;
+        __nativeConfigDefaults.remove("disableCameraTransform");
     }
 
     /**
@@ -325,6 +343,7 @@ public class RoomParams extends WhiteObject {
      */
     public void setDisableNewPencil(boolean disableNewPencil) {
         this.disableNewPencil = disableNewPencil;
+        __nativeConfigDefaults.remove("disableNewPencil");
     }
 
     /**
@@ -467,6 +486,7 @@ public class RoomParams extends WhiteObject {
 
     public void setDisableTextOperations(boolean disableTextOperations) {
         this.disableTextOperations = disableTextOperations;
+        __nativeConfigDefaults.remove("disableTextOperations");
     }
 
     public boolean isUseNativeWebSocket() {
@@ -490,6 +510,7 @@ public class RoomParams extends WhiteObject {
 
     public void setUsingFloatBar(boolean floatBar) {
         this.floatBar = floatBar;
+        __nativeConfigDefaults.remove("floatBar");
     }
 
     /**
@@ -535,6 +556,7 @@ public class RoomParams extends WhiteObject {
      */
     public void setDisableInitialStateCallback(boolean disableInitialStateCallback) {
         this.disableInitialStateCallback = disableInitialStateCallback;
+        __nativeConfigDefaults.remove("disableInitialStateCallback");
     }
 
     void addNativeTag(String key, String value) {
