@@ -59,12 +59,14 @@ public class WhiteSdk {
     private static AudioMixerBridge sAudioMixerBridge;
     private static AudioEffectBridge sAudioEffectBridge;
     private final JsBridgeInterface bridge;
+    private final LifecycleHost lifecycle;
     private final RoomJsInterfaceImpl roomJsInterface;
     private final PlayerJsInterfaceImpl playerJsInterface;
     private final SdkJsInterfaceImpl sdkJsInterface;
     private final StoreJsInterfaceImpl storeJsInterface;
     private final int densityDpi;
     private final boolean onlyCallbackRemoteStateModify;
+    private final WhiteSdkConfiguration initializationConfig;
     private RtcJsInterfaceImpl rtcJsInterface;
     @Nullable
     private AudioMixerImplement audioMixerImplement;
@@ -140,11 +142,13 @@ public class WhiteSdk {
                     @Nullable AudioMixerBridge audioMixerBridge,
                     @Nullable AudioEffectBridge audioEffectBridge) {
         this.bridge = bridge;
+        lifecycle = bridge instanceof WhiteboardView ? ((WhiteboardView) bridge).lifecycle : new LifecycleHost(bridge);
+        lifecycle.claim();
         densityDpi = Utils.getDensityDpi(context);
-        roomJsInterface = new RoomJsInterfaceImpl();
-        playerJsInterface = new PlayerJsInterfaceImpl();
-        sdkJsInterface = new SdkJsInterfaceImpl(commonCallback, this);
-        storeJsInterface = new StoreJsInterfaceImpl();
+        roomJsInterface = new RoomJsInterfaceImpl(lifecycle);
+        playerJsInterface = new PlayerJsInterfaceImpl(lifecycle);
+        sdkJsInterface = new SdkJsInterfaceImpl(commonCallback, this, lifecycle);
+        storeJsInterface = new StoreJsInterfaceImpl(lifecycle);
         onlyCallbackRemoteStateModify = whiteSdkConfiguration.isOnlyCallbackRemoteStateModify();
 
         if (audioMixerBridge == null) {
@@ -167,13 +171,10 @@ public class WhiteSdk {
 
         if (audioMixerBridge != null || audioEffectBridge != null) {
             rtcJsInterface = new RtcJsInterfaceImpl(audioMixerBridge, audioEffectBridge);
-            bridge.addJavascriptObject(rtcJsInterface, "rtc");
+
         }
 
-        bridge.addJavascriptObject(this.sdkJsInterface, "sdk");
-        bridge.addJavascriptObject(this.roomJsInterface, "room");
-        bridge.addJavascriptObject(this.playerJsInterface, "player");
-        bridge.addJavascriptObject(this.storeJsInterface, "store");
+
 
         // JavaScript 必须将所有 state 变化回调提供给 native。
         // 该属性的实现在 native 代码中体现。
@@ -182,12 +183,18 @@ public class WhiteSdk {
 
         addWebViewTag(bridge, copyConfig);
         addVolumeTag(context, copyConfig);
+        initializationConfig = copyConfig;
 
-        if (bridge instanceof WhiteboardView) {
-            ((WhiteboardView) bridge).attachSdk(this);
-        }
+        lifecycle.configure(new Object[]{copyConfig}, this::bindCallbacks);
+    }
 
-        bridge.callHandler("sdk.newWhiteSdk", new Object[]{copyConfig});
+    private void bindCallbacks() {
+        bridge.addJavascriptObject(sdkJsInterface, "sdk");
+        bridge.addJavascriptObject(roomJsInterface, "room");
+        bridge.addJavascriptObject(playerJsInterface, "player");
+        bridge.addJavascriptObject(storeJsInterface, "store");
+        if (rtcJsInterface != null) bridge.addJavascriptObject(rtcJsInterface, "rtc");
+        if (bridge instanceof WhiteboardView) ((WhiteboardView) bridge).attachSdk(this);
     }
 
     private void addWebViewTag(JsBridgeInterface bridge, WhiteSdkConfiguration config) {
@@ -309,7 +316,19 @@ public class WhiteSdk {
      * - 如果方法调用失败，则返回错误信息。
      */
     public void joinRoom(final RoomParams roomParams, final RoomListener roomListener, final Promise<Room> roomPromise) {
-        Room room = new Room(roomParams.getUuid(), bridge, densityDpi, onlyCallbackRemoteStateModify);
+        if (roomParams == null || roomParams.getUuid() == null || roomParams.getUuid().isEmpty() || roomParams.getRoomToken() == null || roomParams.getRoomToken().isEmpty() || gson.toJsonTree(roomParams).getAsJsonObject().get("uid") == null || gson.toJsonTree(roomParams).getAsJsonObject().get("uid").getAsString().isEmpty()) {
+            roomPromise.catchEx(new SDKError("InvalidJoinParameters")); return;
+        }
+        final RoomParams parameters = Utils.deepCopy(roomParams, RoomParams.class);
+        String identity = gson.toJson(new Object[]{gson.toJsonTree(initializationConfig).getAsJsonObject().get("appIdentifier"), parameters.getUuid(), gson.toJsonTree(parameters).getAsJsonObject().get("uid")});
+        lifecycle.replace(identity, new Object[]{initializationConfig}, gson.toJsonTree(parameters).getAsJsonObject().get("timeout").getAsLong(), this::bindCallbacks,
+                generation -> joinRoomAfterReplacement(parameters, roomListener, roomPromise, generation), roomPromise::catchEx);
+    }
+
+    private void joinRoomAfterReplacement(final RoomParams roomParams, final RoomListener roomListener, final Promise<Room> roomPromise, final long generation) {
+        if (!lifecycle.continueJoin(generation, roomPromise::catchEx)) return;
+        JsBridgeInterface scopedBridge = lifecycle.bridge(generation);
+        Room room = new Room(roomParams.getUuid(), scopedBridge, densityDpi, onlyCallbackRemoteStateModify);
         room.setRoomListener(roomListener);
         roomJsInterface.setRoom(room.getRoomDelegate());
         storeJsInterface.setStore(new StoreDelegate() {
@@ -324,9 +343,10 @@ public class WhiteSdk {
         checkJsBridgeHealth();
 
         try {
-            bridge.callHandler("sdk.joinRoom", new Object[]{roomParams}, (OnReturnValue<String>) roomString -> {
+            scopedBridge.callHandler("sdk.joinRoom", new Object[]{roomParams}, (OnReturnValue<String>) roomString -> {
                 JsonObject jsonObject = gson.fromJson(roomString, JsonObject.class);
                 SDKError promiseError = SDKError.promiseError(jsonObject);
+                if (!lifecycle.finish(generation, promiseError == null)) return;
                 if (promiseError != null) {
                     Logger.error("WhiteSDK joinRoom bridge error: " + promiseError, null);
                     roomPromise.catchEx(promiseError);
@@ -345,9 +365,16 @@ public class WhiteSdk {
         } catch (AssertionError a) {
             throw a;
         } catch (Exception e) {
-            roomPromise.catchEx(new SDKError(e.getMessage()));
+            if (lifecycle.finish(generation, false)) roomPromise.catchEx(new SDKError(e.getMessage()));
         }
     }
+
+    /**
+     * Wait for this host's pending/active Room or Player to leave.
+     * A later join closes the old Room before creating a new one. An uncertain/failed leave keeps the host blocked;
+     * releaseRoom only releases callbacks and does not replace this operation.
+     */
+    public void leaveRoom(Promise<Object> promise) { lifecycle.leave(promise); }
 
     private void addNativeTags(RoomParams roomParams) {
         try {
@@ -384,7 +411,15 @@ public class WhiteSdk {
      *  - 如果方法调用失败，将返回错误信息。
      */
     public void createPlayer(final PlayerConfiguration playerConfiguration, final PlayerListener listener, final Promise<Player> playerPromise) {
-        Player player = new Player(playerConfiguration.getRoom(), bridge, densityDpi);
+        if (playerConfiguration == null || playerConfiguration.getRoom() == null || playerConfiguration.getRoom().isEmpty() || playerConfiguration.getRoomToken() == null || playerConfiguration.getRoomToken().isEmpty()) {
+            playerPromise.catchEx(new SDKError("InvalidReplayParameters")); return;
+        }
+        final PlayerConfiguration parameters = Utils.deepCopy(playerConfiguration, PlayerConfiguration.class);
+        final long generation = lifecycle.admit(playerPromise::catchEx);
+        if (generation < 0) { playerPromise.catchEx(new SDKError(lifecycle.rejection())); return; }
+        bindCallbacks();
+        JsBridgeInterface scopedBridge = lifecycle.bridge(generation);
+        Player player = new Player(parameters.getRoom(), scopedBridge, densityDpi);
         if (listener != null) {
             player.addPlayerListener(listener);
         }
@@ -396,12 +431,10 @@ public class WhiteSdk {
             }
         });
 
-        try {
-            bridge.callHandler("sdk.replayRoom", new Object[]{
-                    playerConfiguration
-            }, (OnReturnValue<String>) playString -> {
+        OnReturnValue<String> replayResult = playString -> {
                 JsonObject jsonObject = gson.fromJson(playString, JsonObject.class);
                 SDKError promiseError = SDKError.promiseError(jsonObject);
+                if (!lifecycle.finish(generation, promiseError == null)) return;
                 if (promiseError != null) {
                     playerPromise.catchEx(promiseError);
                 } else {
@@ -411,11 +444,25 @@ public class WhiteSdk {
                     player.setPlayerTimeInfo(playerTimeInfo);
                     playerPromise.then(player);
                 }
+        };
+        try {
+            scopedBridge.callHandler("sdk.newWhiteSdk", new Object[]{initializationConfig}, (OnReturnValue<String>) setup -> {
+                if (!lifecycle.current(generation)) return;
+                try {
+                    SDKError setupError = setup == null || "null".equals(setup) ? new SDKError("InvalidSetupResult") : SDKError.promiseError(setup);
+                    if (setupError != null) {
+                        if (lifecycle.finish(generation, false)) playerPromise.catchEx(setupError);
+                        return;
+                    }
+                    scopedBridge.callHandler("sdk.replayRoom", new Object[]{parameters}, replayResult);
+                } catch (Exception e) {
+                    if (lifecycle.finish(generation, false)) playerPromise.catchEx(new SDKError(e.getMessage()));
+                }
             });
         } catch (AssertionError a) {
             throw a;
         } catch (Exception e) {
-            playerPromise.catchEx(new SDKError(e.getMessage()));
+            if (lifecycle.finish(generation, false)) playerPromise.catchEx(new SDKError(e.getMessage()));
         }
     }
 

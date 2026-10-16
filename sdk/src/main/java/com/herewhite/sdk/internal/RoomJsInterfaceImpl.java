@@ -1,4 +1,5 @@
 package com.herewhite.sdk.internal;
+import com.herewhite.sdk.LifecycleHost;
 
 import android.webkit.JavascriptInterface;
 
@@ -13,96 +14,133 @@ import com.herewhite.sdk.domain.RoomPhase;
 // Created by buhe on 2018/8/12.
 
 public class RoomJsInterfaceImpl {
+    private LifecycleHost lifecycle;
     private final static Gson gson = new Gson();
     @Nullable
-    private RoomDelegate room;
+    private volatile RoomDelegate room;
 
-    public RoomJsInterfaceImpl() {
-    }
+    public RoomJsInterfaceImpl() {}
+    public RoomJsInterfaceImpl(LifecycleHost lifecycle) { this.lifecycle = lifecycle; }
 
     public void setRoom(RoomDelegate room) {
         this.room = room;
     }
 
     @JavascriptInterface
-    public void fireCanUndoStepsUpdate(Object args) {
-        if (room != null) {
-            room.fireCanUndoStepsUpdate(Long.valueOf(String.valueOf(args)));
+    public void fireCanUndoStepsUpdate(Object input) {
+        final RoomDelegate destination = room;
+        Object scopedArgs = input;
+        if (lifecycle != null) { scopedArgs = lifecycle.unwrap(input, true); if (scopedArgs == LifecycleHost.REJECTED) { return; } }
+        final Object args = scopedArgs;
+        if (destination != null) {
+            destination.fireCanUndoStepsUpdate(Long.valueOf(String.valueOf(args)));
         }
     }
 
     @JavascriptInterface
-    public void fireCanRedoStepsUpdate(Object args) {
-        if (room != null) {
-            room.onCanRedoStepsUpdate(Long.valueOf(String.valueOf(args)));
+    public void fireCanRedoStepsUpdate(Object input) {
+        final RoomDelegate destination = room;
+        Object scopedArgs = input;
+        if (lifecycle != null) { scopedArgs = lifecycle.unwrap(input, true); if (scopedArgs == LifecycleHost.REJECTED) { return; } }
+        final Object args = scopedArgs;
+        if (destination != null) {
+            destination.onCanRedoStepsUpdate(Long.valueOf(String.valueOf(args)));
         }
     }
 
     @JavascriptInterface
-    public void fireMagixEvent(Object args) {
-        if (room != null) {
+    public void fireMagixEvent(Object input) {
+        final RoomDelegate destination = room;
+        Object scopedArgs = input;
+        if (lifecycle != null) { scopedArgs = lifecycle.unwrap(input, true); if (scopedArgs == LifecycleHost.REJECTED) { return; } }
+        final Object args = scopedArgs;
+        if (destination != null) {
             new JsCallWrapper(() -> {
                 EventEntry eventEntry = gson.fromJson(String.valueOf(args), EventEntry.class);
-                room.fireMagixEvent(eventEntry);
+                destination.fireMagixEvent(eventEntry);
             }, "An exception occurred while sending the event"
             ).run();
         }
     }
 
     @JavascriptInterface
-    public void fireHighFrequencyEvent(Object args) {
-        if (room != null) {
+    public void fireHighFrequencyEvent(Object input) {
+        final RoomDelegate destination = room;
+        Object scopedArgs = input;
+        if (lifecycle != null) { scopedArgs = lifecycle.unwrap(input, true); if (scopedArgs == LifecycleHost.REJECTED) { return; } }
+        final Object args = scopedArgs;
+        if (destination != null) {
             new JsCallWrapper(() -> {
                 EventEntry[] events = gson.fromJson(String.valueOf(args), EventEntry[].class);
-                room.fireHighFrequencyEvent(events);
+                destination.fireHighFrequencyEvent(events);
             }, "An exception occurred while sending the event"
             ).run();
         }
     }
 
     @JavascriptInterface
-    public void firePhaseChanged(Object args) {
-        if (room != null) {
+    public void firePhaseChanged(Object input) {
+        final RoomDelegate destination = room;
+        Object scopedArgs = input;
+        if (lifecycle != null) { scopedArgs = lifecycle.unwrap(input, true); if (scopedArgs == LifecycleHost.REJECTED) { return; } }
+        final Object args = scopedArgs;
+        if (destination != null) {
             new JsCallWrapper(() ->
-                    room.firePhaseChanged(RoomPhase.valueOf(String.valueOf(args))),
+                    destination.firePhaseChanged(RoomPhase.valueOf(String.valueOf(args))),
                     "An exception occurred while invoke onPhaseChanged method"
             ).run();
         }
     }
 
     @JavascriptInterface
-    public void fireKickedWithReason(Object args) {
-        if (room != null) {
+    public void fireKickedWithReason(Object input) {
+        final RoomDelegate destination = room;
+        Object scopedArgs = input;
+        if (lifecycle != null) { scopedArgs = lifecycle.unwrap(input, true); if (scopedArgs == LifecycleHost.REJECTED) { return; } }
+        final Object args = scopedArgs;
+        if (destination != null) {
             new JsCallWrapper(() ->
-                    room.fireKickedWithReason(String.valueOf(args)),
+                    destination.fireKickedWithReason(String.valueOf(args)),
                     "An exception occurred while invoke onKickedWithReason method"
             ).run();
         }
     }
 
     @JavascriptInterface
-    public void fireDisconnectWithError(Object args) {
-        if (room != null) {
+    public void fireDisconnectWithError(Object input) {
+        final RoomDelegate destination = room;
+        Object scopedArgs = input;
+        if (lifecycle != null) { scopedArgs = lifecycle.unwrap(input, true); if (scopedArgs == LifecycleHost.REJECTED) { return; } }
+        final Object args = scopedArgs;
+        if (destination != null) {
             new JsCallWrapper(() ->
-                    room.fireDisconnectWithError(new Exception(String.valueOf(args))),
+                    destination.fireDisconnectWithError(new Exception(String.valueOf(args))),
                     "An exception occurred while invoke onDisconnectWithError method"
             ).run();
         }
     }
 
     @JavascriptInterface
-    public void fireRoomStateChanged(Object args) {
-        if (room != null) {
-            room.fireRoomStateChanged(String.valueOf(args));
+    public void fireRoomStateChanged(Object input) {
+        final RoomDelegate destination = room;
+        Object scopedArgs = input;
+        if (lifecycle != null) { scopedArgs = lifecycle.unwrap(input, true); if (scopedArgs == LifecycleHost.REJECTED) { return; } }
+        final Object args = scopedArgs;
+        if (destination != null) {
+            destination.fireRoomStateChanged(String.valueOf(args));
         }
     }
 
     @JavascriptInterface
-    public void fireCatchErrorWhenAppendFrame(Object args) {
-        if (room != null) {
+    public void fireCatchErrorWhenAppendFrame(Object input) {
+        final RoomDelegate destination = room;
+        Object scopedArgs = input;
+        if (lifecycle != null) { scopedArgs = lifecycle.unwrap(input, true); if (scopedArgs == LifecycleHost.REJECTED) { return; } }
+        final Object args = scopedArgs;
+        if (destination != null) {
             new JsCallWrapper(() -> {
                 FrameError frameError = gson.fromJson(String.valueOf(args), FrameError.class);
-                room.fireCatchErrorWhenAppendFrame(frameError.getUserId(), new Exception(frameError.getError()));
+                destination.fireCatchErrorWhenAppendFrame(frameError.getUserId(), new Exception(frameError.getError()));
             }, "An exception occurred while invoke onCatchErrorWhenAppendFrame method"
             ).run();
         }

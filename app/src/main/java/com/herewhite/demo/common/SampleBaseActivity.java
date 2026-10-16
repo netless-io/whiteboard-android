@@ -141,7 +141,7 @@ abstract public class SampleBaseActivity extends BaseActivity {
         if (destroyed || !connectionGuard.onJoinStarted()) {
             return;
         }
-        logRoomInfo("room uuid: " + uuid + "\nroom token: " + token);
+        logRoomInfo("room uuid: " + uuid + "\nroom token: <redacted>");
 
         this.uuid = uuid;
         this.token = token;
@@ -241,23 +241,9 @@ abstract public class SampleBaseActivity extends BaseActivity {
         AtomicBoolean completed = new AtomicBoolean();
         Runnable continueJoin = () -> completeRoomRecreation(teardownGeneration, completed);
 
-        if (oldRoom == null || oldRoom.getRoomPhase() == RoomPhase.disconnected) {
-            continueJoin.run();
-            return;
-        }
-
-        roomHandler.postDelayed(continueJoin, ROOM_DISCONNECT_TIMEOUT_MS);
-        oldRoom.disconnect(new Promise<Object>() {
-            @Override
-            public void then(Object result) {
-                runOnUiThread(continueJoin);
-            }
-
-            @Override
-            public void catchEx(SDKError error) {
-                logRoomInfo("disconnect before reconnect failed: " + error.getMessage());
-                runOnUiThread(continueJoin);
-            }
+        whiteSdk.leaveRoom(new Promise<Object>() {
+            @Override public void then(Object result) { runOnUiThread(continueJoin); }
+            @Override public void catchEx(SDKError error) { logRoomInfo("leave unconfirmed; rejoin blocked: " + error.getMessage()); }
         });
     }
 

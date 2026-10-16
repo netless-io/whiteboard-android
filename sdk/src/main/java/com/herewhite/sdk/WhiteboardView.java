@@ -30,6 +30,7 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
     private boolean autoResize = true;
     private RefreshViewSizeStrategy delayStrategy;
     private WhiteSdk whiteSdk;
+    final LifecycleHost lifecycle = new LifecycleHost(this);
     private WhiteWebViewClient whiteWebViewClient;
     private String entryUrl = sEntryUrl;
     private WhiteboardViewOptions options = new WhiteboardViewOptions();
@@ -158,6 +159,16 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
         whiteWebViewClient.setAssetLoader(assetLoader);
     }
 
+    @Override
+    public void destroy() { lifecycle.invalidate(); super.destroy(); }
+
+    public void invalidateLifecycle() { lifecycle.invalidate(); }
+    public void lifecyclePageStarted() { lifecycle.pageStarted(); }
+    public void lifecyclePageFinished() { lifecycle.pageFinished(); }
+
+    @Override
+    public void reload() { lifecycle.prepareReload(); super.reload(); }
+
     private void initWebViewClients() {
         whiteWebViewClient = new WhiteWebViewClient();
         super.setWebViewClient(whiteWebViewClient);
@@ -170,6 +181,10 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
 
     @Override
     public <T> void callHandler(String method, Object[] args, OnReturnValue<T> handler) {
+        boolean scoped = args != null && args.length > 0 && args[0] instanceof org.json.JSONObject && ((org.json.JSONObject)args[0]).has("__whiteScope");
+        if (!scoped && !method.equals("sdk.getLifecycle") && !method.startsWith("_dsb.")) {
+            lifecycle.callCurrent(method, args, handler); return;
+        }
         super.callHandler(method, Utils.toBridgeMaps(args), handler);
     }
 

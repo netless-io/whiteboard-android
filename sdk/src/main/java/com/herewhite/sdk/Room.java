@@ -290,6 +290,8 @@ public class Room extends Displayer {
                     return;
                 }
                 try {
+                    SDKError error = SDKError.promiseError(String.valueOf(o));
+                    if (error != null) { promise.catchEx(error); return; }
                     promise.then(gson.fromJson(String.valueOf(o), GlobalState.class));
                 } catch (AssertionError a) {
                     throw a;

@@ -38,55 +38,29 @@ public class RoomConnectionGuardTest {
     }
 
     @Test
-    public void terminalPhasesScheduleOnlyOneRoomRecreation() {
+    public void terminalPhasesDoNotScheduleUnconfirmedRejoin() {
         guard.onJoinStarted();
         guard.onRoomPhaseChanged(RoomPhase.disconnecting);
         guard.onRoomPhaseChanged(RoomPhase.disconnected);
-
-        assertEquals(Arrays.asList(1_000L), listener.reconnectDelays);
-        assertTrue(guard.onReconnectTimerFired());
+        assertTrue(listener.loadingVisible);
+        assertTrue(listener.reconnectDelays.isEmpty());
         assertFalse(guard.onReconnectTimerFired());
     }
 
     @Test
-    public void repeatedJoinFailuresRetryForeverWithCappedBackoff() {
-        long[] expectedDelays = {1_000L, 2_000L, 4_000L, 8_000L, 10_000L, 10_000L};
-
-        for (long expectedDelay : expectedDelays) {
-            guard.onJoinStarted();
-            guard.onJoinFailed();
-            assertEquals(expectedDelay,
-                    (long) listener.reconnectDelays.get(listener.reconnectDelays.size() - 1));
-            assertTrue(guard.onReconnectTimerFired());
-        }
+    public void failedJoinDoesNotRetryAnOwnedHost() {
+        guard.onJoinStarted(); guard.onJoinFailed();
+        assertTrue(listener.reconnectDelays.isEmpty());
+        assertFalse(guard.onReconnectTimerFired());
     }
 
     @Test
-    public void connectedResetsBackoffAndCancelsPendingRecreation() {
-        guard.onJoinStarted();
-        guard.onJoinFailed();
-        assertTrue(guard.onReconnectTimerFired());
-        guard.onJoinStarted();
-        guard.onJoinFailed();
-
-        guard.onRoomPhaseChanged(RoomPhase.connected);
+    public void activeLeaveBlocksFutureJoin() {
+        guard.onJoinStarted(); guard.leaveRoom();
         guard.onRoomPhaseChanged(RoomPhase.disconnected);
-
-        assertEquals(Arrays.asList(1_000L, 2_000L, 1_000L), listener.reconnectDelays);
-    }
-
-    @Test
-    public void activeLeaveCancelsRetryAndBlocksFutureJoin() {
-        guard.onJoinStarted();
-        guard.onRoomPhaseChanged(RoomPhase.disconnected);
-
-        guard.leaveRoom();
-        guard.onRoomPhaseChanged(RoomPhase.disconnected);
-
         assertFalse(listener.loadingVisible);
-        assertFalse(guard.onReconnectTimerFired());
         assertFalse(guard.onJoinStarted());
-        assertEquals(1, listener.reconnectDelays.size());
+        assertTrue(listener.reconnectDelays.isEmpty());
     }
 
     private static final class RecordingListener implements RoomConnectionGuard.Listener {

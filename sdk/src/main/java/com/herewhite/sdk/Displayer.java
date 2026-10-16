@@ -86,7 +86,10 @@ public class Displayer {
     }
 
     protected void post(Runnable runnable) {
-        getHandler().post(runnable);
+        getHandler().post(() -> {
+            if (!(bridge instanceof LifecycleHost.ScopedBridge)) { runnable.run(); return; }
+            if (((LifecycleHost.ScopedBridge) bridge).valid()) runnable.run();
+        });
     }
 
     /**

@@ -92,6 +92,7 @@ public final class WhiteWebViewClient extends WebViewClient {
 
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
+        if (view instanceof com.herewhite.sdk.WhiteboardView) ((com.herewhite.sdk.WhiteboardView) view).lifecyclePageStarted();
         WebViewClient client = delegate;
         if (client != null) {
             client.onPageStarted(view, url, favicon);
@@ -102,6 +103,7 @@ public final class WhiteWebViewClient extends WebViewClient {
 
     @Override
     public void onPageFinished(WebView view, String url) {
+        if (view instanceof com.herewhite.sdk.WhiteboardView) ((com.herewhite.sdk.WhiteboardView) view).lifecyclePageFinished();
         WebViewClient client = delegate;
         if (client != null) {
             client.onPageFinished(view, url);
@@ -235,6 +237,7 @@ public final class WhiteWebViewClient extends WebViewClient {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public boolean onRenderProcessGone(WebView view, RenderProcessGoneDetail detail) {
+        if (view instanceof com.herewhite.sdk.WhiteboardView) ((com.herewhite.sdk.WhiteboardView) view).invalidateLifecycle();
         WebViewClient client = delegate;
         if (client != null) {
             return client.onRenderProcessGone(view, detail);

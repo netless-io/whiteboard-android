@@ -1,4 +1,5 @@
 package com.herewhite.sdk.internal;
+import com.herewhite.sdk.LifecycleHost;
 
 import android.webkit.JavascriptInterface;
 
@@ -22,6 +23,7 @@ import org.json.JSONObject;
 import wendu.dsbridge.special.CompletionHandler;
 
 public class SdkJsInterfaceImpl {
+    private LifecycleHost lifecycle;
 
     private static final Gson gson = new Gson();
 
@@ -40,6 +42,11 @@ public class SdkJsInterfaceImpl {
     private PostMessageCallback postMessageCallback;
 
     public SdkJsInterfaceImpl(@Nullable CommonCallback commonCallback, @NonNull WhiteSdk whiteSdk) {
+        this(commonCallback, whiteSdk, null);
+    }
+
+    public SdkJsInterfaceImpl(@Nullable CommonCallback commonCallback, @NonNull WhiteSdk whiteSdk, LifecycleHost lifecycle) {
+        this.lifecycle = lifecycle;
         this.commonCallback = commonCallback;
         this.whiteSdk = whiteSdk;
     }
@@ -75,7 +82,13 @@ public class SdkJsInterfaceImpl {
     }
 
     @JavascriptInterface
-    public String urlInterrupter(Object args) {
+    public void lifecycleState(Object args) { if (lifecycle != null) lifecycle.stateEvent(args); }
+
+    @JavascriptInterface
+    public String urlInterrupter(Object input) {
+        Object scopedArgs = input;
+        if (lifecycle != null) { scopedArgs = lifecycle.unwrap(input, true); if (scopedArgs == LifecycleHost.REJECTED) { return null; } }
+        final Object args = scopedArgs;
         if (commonCallback != null) {
             return commonCallback.urlInterrupter(String.valueOf(args));
         } else if (urlInterrupter == null) {
@@ -85,7 +98,10 @@ public class SdkJsInterfaceImpl {
     }
 
     @JavascriptInterface
-    public void slideUrlInterrupter(Object args, CompletionHandler<String> handler) {
+    public void slideUrlInterrupter(Object input, CompletionHandler<String> handler) {
+        Object scopedArgs = input;
+        if (lifecycle != null) { scopedArgs = lifecycle.unwrap(input, true); if (scopedArgs == LifecycleHost.REJECTED) { handler.complete(""); return; } }
+        final Object args = scopedArgs;
         String url = String.valueOf(args);
         if (slideListener != null) {
             slideListener.slideUrlInterrupter(url, handler::complete);
@@ -95,7 +111,10 @@ public class SdkJsInterfaceImpl {
     }
 
     @JavascriptInterface
-    public void slideOpenUrl(Object args) {
+    public void slideOpenUrl(Object input) {
+        Object scopedArgs = input;
+        if (lifecycle != null) { scopedArgs = lifecycle.unwrap(input, true); if (scopedArgs == LifecycleHost.REJECTED) { return; } }
+        final Object args = scopedArgs;
         String url = String.valueOf(args);
         if (slideListener != null) {
             slideListener.slideOpenUrl(url);
@@ -103,7 +122,10 @@ public class SdkJsInterfaceImpl {
     }
 
     @JavascriptInterface
-    public void slideResourceMaxRetries(Object args) {
+    public void slideResourceMaxRetries(Object input) {
+        Object scopedArgs = input;
+        if (lifecycle != null) { scopedArgs = lifecycle.unwrap(input, true); if (scopedArgs == LifecycleHost.REJECTED) { return; } }
+        final Object args = scopedArgs;
         if (slideListener != null) {
             JSONObject jsonObject = convertToJsonOrNull(args);
             if (jsonObject != null) {
@@ -115,7 +137,10 @@ public class SdkJsInterfaceImpl {
     }
 
     @JavascriptInterface
-    public void slidePageStateChanged(Object args) {
+    public void slidePageStateChanged(Object input) {
+        Object scopedArgs = input;
+        if (lifecycle != null) { scopedArgs = lifecycle.unwrap(input, true); if (scopedArgs == LifecycleHost.REJECTED) { return; } }
+        final Object args = scopedArgs;
         if (slideListener != null) {
             JSONObject jsonObject = convertToJsonOrNull(args);
             if (jsonObject != null) {
@@ -128,7 +153,10 @@ public class SdkJsInterfaceImpl {
     }
 
     @JavascriptInterface
-    public void unifiedPageStateChange(Object args) {
+    public void unifiedPageStateChange(Object input) {
+        Object scopedArgs = input;
+        if (lifecycle != null) { scopedArgs = lifecycle.unwrap(input, true); if (scopedArgs == LifecycleHost.REJECTED) { return; } }
+        final Object args = scopedArgs;
         JSONObject jsonObject = convertToJsonOrNull(args);
         if (jsonObject != null && unifiedPageStateListener != null) {
             unifiedPageStateListener.onUnifiedPageStateChange(
@@ -137,7 +165,10 @@ public class SdkJsInterfaceImpl {
     }
 
     @JavascriptInterface
-    public void throwError(Object args) {
+    public void throwError(Object input) {
+        Object scopedArgs = input;
+        if (lifecycle != null) { scopedArgs = lifecycle.unwrap(input, true); if (scopedArgs == LifecycleHost.REJECTED) { return; } }
+        final Object args = scopedArgs;
         Logger.info("WhiteSDK throwError: " + args);
         if (commonCallback != null) {
             commonCallback.throwError(args);
@@ -145,7 +176,10 @@ public class SdkJsInterfaceImpl {
     }
 
     @JavascriptInterface
-    public void logger(Object args) {
+    public void logger(Object input) {
+        Object scopedArgs = input;
+        if (lifecycle != null) { scopedArgs = lifecycle.unwrap(input, true); if (scopedArgs == LifecycleHost.REJECTED) { return; } }
+        final Object args = scopedArgs;
         Logger.info("WhiteSDK logger: " + args);
         JSONObject jsonObject = convertToJsonOrNull(args);
         if (commonCallback != null && jsonObject != null) {
@@ -154,7 +188,10 @@ public class SdkJsInterfaceImpl {
     }
 
     @JavascriptInterface
-    public void localLogStateChange(Object args) {
+    public void localLogStateChange(Object input) {
+        Object scopedArgs = input;
+        if (lifecycle != null) { scopedArgs = lifecycle.unwrap(input, true); if (scopedArgs == LifecycleHost.REJECTED) { return; } }
+        final Object args = scopedArgs;
         Logger.info("WhiteSDK localLogStateChange: " + args);
         JSONObject jsonObject = convertToJsonOrNull(args);
         if (commonCallback != null && jsonObject != null) {
@@ -163,7 +200,10 @@ public class SdkJsInterfaceImpl {
     }
 
     @JavascriptInterface
-    public void postMessage(Object args) {
+    public void postMessage(Object input) {
+        Object scopedArgs = input;
+        if (lifecycle != null) { scopedArgs = lifecycle.unwrap(input, true); if (scopedArgs == LifecycleHost.REJECTED) { return; } }
+        final Object args = scopedArgs;
         Logger.info("WhiteSDK postMessage: " + args);
         JSONObject jsonObject = convertToJsonOrNull(args);
         if (jsonObject == null) {
@@ -234,21 +274,30 @@ public class SdkJsInterfaceImpl {
     }
 
     @JavascriptInterface
-    public void onPPTMediaPlay(Object args) {
+    public void onPPTMediaPlay(Object input) {
+        Object scopedArgs = input;
+        if (lifecycle != null) { scopedArgs = lifecycle.unwrap(input, true); if (scopedArgs == LifecycleHost.REJECTED) { return; } }
+        final Object args = scopedArgs;
         if (commonCallback != null) {
             commonCallback.onPPTMediaPlay();
         }
     }
 
     @JavascriptInterface
-    public void onPPTMediaPause(Object args) {
+    public void onPPTMediaPause(Object input) {
+        Object scopedArgs = input;
+        if (lifecycle != null) { scopedArgs = lifecycle.unwrap(input, true); if (scopedArgs == LifecycleHost.REJECTED) { return; } }
+        final Object args = scopedArgs;
         if (commonCallback != null) {
             commonCallback.onPPTMediaPause();
         }
     }
 
     @JavascriptInterface
-    public void setupFail(Object args) {
+    public void setupFail(Object input) {
+        Object scopedArgs = input;
+        if (lifecycle != null) { scopedArgs = lifecycle.unwrap(input, true); if (scopedArgs == LifecycleHost.REJECTED) { return; } }
+        final Object args = scopedArgs;
         JSONObject jsonObject = convertToJsonOrNull(args);
         if (commonCallback != null && jsonObject != null) {
             SDKError sdkError = SDKError.parseError(jsonObject);

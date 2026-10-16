@@ -29,6 +29,7 @@ final class RoomConnectionGuard {
         if (stopped) {
             return false;
         }
+        if (joinInProgress) return false;
         joinInProgress = true;
         reconnectScheduled = false;
         setLoadingVisible(true);
@@ -42,7 +43,7 @@ final class RoomConnectionGuard {
     void onJoinFailed() {
         joinInProgress = false;
         setLoadingVisible(true);
-        scheduleReconnect();
+        // An unknown failed/terminal join still owns the host; no automatic rejoin.
     }
 
     void onRoomPhaseChanged(RoomPhase phase) {
@@ -64,7 +65,7 @@ final class RoomConnectionGuard {
             case disconnected:
                 joinInProgress = false;
                 setLoadingVisible(true);
-                scheduleReconnect();
+                // An unknown failed/terminal join still owns the host; no automatic rejoin.
                 break;
         }
     }
