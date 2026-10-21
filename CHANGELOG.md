@@ -1,4 +1,10 @@
 # 版本更新记录
+## [2.16.134] - 2026-10-21
+
+- Upgrade embedded app-slide to 0.2.108 (Slide 1.4.65) and refresh Bridge resources.
+- Serialize room/player session replacement and reject stale lifecycle callbacks.
+- Route dynamic configuration requests by the configured room region.
+
 ## [2.16.133] - 2026-10-12
 
 - 修复 JitPack 构建时 Maven Central 下载限流问题，增加 Google 托管镜像。
