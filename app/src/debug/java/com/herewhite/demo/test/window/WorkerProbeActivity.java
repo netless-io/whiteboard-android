@@ -34,6 +34,7 @@ public class WorkerProbeActivity extends Activity {
     private WhiteSdk sdk;
     private TextView status;
     private String mode;
+    private String roomOverrideMode;
     private boolean joined;
     private boolean busy;
     private boolean destroyed;
@@ -65,6 +66,9 @@ public class WorkerProbeActivity extends Activity {
         config.setRegion(Region.cn);
         config.setUseMultiViews(true);
         config.setEnableAppliancePlugin(true);
+        if (!getIntent().getBooleanExtra("remoteOnly", false)) config.setAppliancePluginOptions(optionsFor(mode));
+        String dynamicUrl = getIntent().getStringExtra("dynamicConfigUrl");
+        if (dynamicUrl != null) { Map<String, String> urls = new LinkedHashMap<>(); urls.put("cn-hz", dynamicUrl); config.setDynamicConfig(urls); }
         sdk = new WhiteSdk(board, this, config);
     }
 
@@ -72,6 +76,10 @@ public class WorkerProbeActivity extends Activity {
         super.onNewIntent(intent);
         // Preserve credentials from the launch intent when sending an action only.
         String action = intent.getStringExtra("workerAction");
+        if (intent.hasExtra("workerOverrideMode")) {
+            String override = intent.getStringExtra("workerOverrideMode");
+            roomOverrideMode = "sdk".equals(override) ? null : override;
+        }
         if ("join".equals(action)) joinRoom();
         if ("leave".equals(action)) leaveRoom();
     }
@@ -90,13 +98,7 @@ public class WorkerProbeActivity extends Activity {
         params.setRegion(Region.cn);
         params.setWritable(false);
         params.setWindowParams(new WindowParams());
-        Map<String, Object> extras = new LinkedHashMap<>();
-        extras.put("useWorker", "mainThread".equals(mode) ? "mainThread" : "auto");
-        extras.put("useSimple", !"dual".equals(mode));
-        extras.put("allowImageBitmapFallback", true);
-        AppliancePluginOptions options = new AppliancePluginOptions();
-        options.setExtras(extras);
-        params.setAppliancePluginOptions(options);
+        if (roomOverrideMode != null) params.setAppliancePluginOptions(optionsFor(roomOverrideMode));
         busy = true;
         record("joining");
         sdk.joinRoom(params, new Promise<Room>() {
@@ -112,6 +114,15 @@ public class WorkerProbeActivity extends Activity {
                 record("join_error");
             }
         });
+    }
+
+    private AppliancePluginOptions optionsFor(String workerMode) {
+        Map<String, Object> extras = new LinkedHashMap<>();
+        extras.put("useWorker", "mainThread".equals(workerMode) ? "mainThread" : "auto");
+        extras.put("useSimple", !"dual".equals(workerMode));
+        extras.put("allowImageBitmapFallback", true);
+        AppliancePluginOptions options = new AppliancePluginOptions(); options.setExtras(extras);
+        return options;
     }
 
     private void leaveRoom() {

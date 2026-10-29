@@ -67,6 +67,12 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private boolean enableRtcAudioEffectIntercept = false;
     private boolean enableSyncedStore = false;
     private boolean enableAppliancePlugin = false;
+    private com.herewhite.sdk.domain.AppliancePluginOptions appliancePluginOptions;
+
+    /** Optional SDK defaults; explicit RoomParams values take precedence per field. */
+    public com.herewhite.sdk.domain.AppliancePluginOptions getAppliancePluginOptions() { return appliancePluginOptions; }
+    public void setAppliancePluginOptions(com.herewhite.sdk.domain.AppliancePluginOptions options) { appliancePluginOptions = options; }
+
     private boolean disableNewPencilStroke = false;
     private LoggerOptions loggerOptions;
     private String appIdentifier;
