@@ -8,6 +8,37 @@ import static org.junit.Assert.assertFalse;
 
 public class RoomParamsTest {
     @Test
+    public void appPreloadSelectionSurvivesSdkJsonCopy() throws Exception {
+        WhiteSdkConfiguration config = new WhiteSdkConfiguration("app");
+        assertFalse(config.toJSON().has("preloadBuiltinApps"));
+        java.util.List<String> kinds = new java.util.ArrayList<>(java.util.Arrays.asList("Slide", "Presentation"));
+        config.setPreloadBuiltinApps(kinds);
+        kinds.clear();
+        WhiteSdkConfiguration copy = Utils.deepCopy(config, WhiteSdkConfiguration.class);
+        assertEquals("[\"Slide\",\"Presentation\"]", copy.toJSON().getJSONArray("preloadBuiltinApps").toString());
+        config.getPreloadBuiltinApps().clear();
+        assertEquals(2, config.getPreloadBuiltinApps().size());
+        config.setPreloadBuiltinApps(java.util.Collections.emptyList());
+        assertEquals(0, Utils.deepCopy(config, WhiteSdkConfiguration.class).toJSON().getJSONArray("preloadBuiltinApps").length());
+        config.setPreloadBuiltinApps(null);
+        assertFalse(config.toJSON().has("preloadBuiltinApps"));
+        assertFalse(config.isEnableModelPreload());
+    }
+
+    @Test
+    public void modelPreloadOptInSurvivesSdkJsonCopy() throws Exception {
+        WhiteSdkConfiguration config = new WhiteSdkConfiguration("app");
+        assertFalse(config.isEnableModelPreload());
+        assertFalse(config.toJSON().getBoolean("enableModelPreload"));
+        config.setEnableModelPreload(true);
+        WhiteSdkConfiguration copy = Utils.deepCopy(config, WhiteSdkConfiguration.class);
+        org.junit.Assert.assertTrue(copy.isEnableModelPreload());
+        org.junit.Assert.assertTrue(copy.toJSON().getBoolean("enableModelPreload"));
+        config.setEnableModelPreload(false);
+        assertFalse(Utils.deepCopy(config, WhiteSdkConfiguration.class).toJSON().getBoolean("enableModelPreload"));
+    }
+
+    @Test
     public void serializesUndoCacheScenesCountOnlyWhenConfigured() throws Exception {
         RoomParams params = new RoomParams("room-uuid", "room-token", "uid");
 
