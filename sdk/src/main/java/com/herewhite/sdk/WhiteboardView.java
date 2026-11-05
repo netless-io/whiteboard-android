@@ -265,4 +265,5 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
     void attachSdk(WhiteSdk whiteSdk) {
         this.whiteSdk = whiteSdk;
     }
+    boolean ownsSdk(WhiteSdk candidate) { return whiteSdk == candidate; }
 }

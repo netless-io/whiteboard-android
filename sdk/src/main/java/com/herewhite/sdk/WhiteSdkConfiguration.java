@@ -825,6 +825,12 @@ public class WhiteSdkConfiguration extends WhiteObject {
         /** 是否允许缩放 Slide 内容，默认为 false。 */
         private boolean enableScale = false;
 
+        /** Whether Slide shares PPT media volume across the room. Default false. */
+        private boolean enableSharedMediaVolume = false;
+
+        public boolean isEnableSharedMediaVolume() { return enableSharedMediaVolume; }
+        public void setEnableSharedMediaVolume(boolean enabled) { enableSharedMediaVolume = enabled; }
+
         /**
          * Slide 同步事件队列策略。Fifo 按顺序处理全部事件；LatestPendingRender 允许交互模式跳过积压的中间页面渲染。
          * 未设置时由 Slide 使用 Fifo。

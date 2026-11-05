@@ -14,6 +14,8 @@ import org.json.JSONObject;
  * @since 2.9.13
  */
 public interface CommonCallback {
+    /** Once per SDK preparation batch. Optional preload failures report warn and do not gate joinRoom. */
+    default void onPreloadStateChange(com.herewhite.sdk.domain.WhitePreloadResult result) {}
 
     /**
      * SDK 出现未捕获的全局错误回调。

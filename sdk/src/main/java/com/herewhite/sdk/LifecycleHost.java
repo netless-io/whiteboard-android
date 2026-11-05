@@ -22,6 +22,14 @@ public final class LifecycleHost {
     private boolean initialized, invalid;
     private boolean reloading;
     private Object[] sdkInitArgs;
+    private Setup setup;
+    private static final class Setup {
+        final String key;
+        final List<Pending> waiters = new ArrayList<>();
+        boolean completed;
+        SDKError error;
+        Setup(Object[] args) { key = Utils.toJson(args); }
+    }
     interface Pending { void fail(SDKError error); }
     interface Start { void run(long generation); }
     private Pending pending;
@@ -56,8 +64,74 @@ public final class LifecycleHost {
         handshake(false);
     }
     void configure(Object[] args, Runnable bind) {
+        configure(args, bind, null);
+    }
+    void configure(Object[] args, Runnable bind, Pending completion) {
         sdkInitArgs = args;
-        if ("idle".equals(state) && replacement == null) { bind.run(); send(0, "sdk.newWhiteSdk", args, null); }
+        if ("idle".equals(state) && replacement == null) { bind.run(); startSetup(args, completion); }
+    }
+    private void startSetup(Object[] args, Pending completion) {
+        if (invalid) { if (completion != null) completion.fail(new SDKError("HostInvalid")); return; }
+        String key = Utils.toJson(args);
+        if (setup != null && setup.key.equals(key)) {
+            if (completion != null) {
+                if (setup.completed) completion.fail(setup.error); else setup.waiters.add(completion);
+            }
+            return;
+        }
+        Setup previous = setup;
+        Setup attempt = new Setup(args);
+        setup = attempt;
+        if (completion != null) attempt.waiters.add(completion);
+        if (previous != null) finishSetup(previous, new SDKError("Cancelled"));
+        // A cancellation callback may synchronously install a different SDK.
+        if (setup != attempt || invalid) return;
+        send(0, "sdk.newWhiteSdk", args, (OnReturnValue<String>) value -> {
+            Runnable finish = () -> { if (setup == attempt && !invalid) finishSetup(attempt, SDKError.promiseError(value)); };
+            if (Looper.myLooper() == Looper.getMainLooper()) finish.run(); else handler.post(finish);
+        });
+    }
+    private void finishSetup(Setup attempt, SDKError error) {
+        if (attempt.completed) return;
+        attempt.completed = true; attempt.error = error;
+        List<Pending> callbacks = new ArrayList<>(attempt.waiters); attempt.waiters.clear();
+        for (Pending callback : callbacks) {
+            try { callback.fail(error); }
+            catch (RuntimeException exception) { com.herewhite.sdk.internal.Logger.error("SDK preparation callback failed", exception); }
+        }
+    }
+    Object setupToken() { return setup; }
+    boolean isSetupCurrent(Object token) { return !invalid && token != null && setup == token && setup.completed && setup.error == null; }
+    void observePreload(Object[] args, OnReturnValue<String> completion) { send(0, "sdk.observePreload", args, completion); }
+    /** An explicit readiness wait only. Construction/background warming has no new deadline. */
+    void prepare(Object[] args, Runnable bind, long timeoutMs, Promise<Void> promise) {
+        handler.post(() -> {
+            if (promise == null) return;
+            if (timeoutMs <= 0) { promise.catchEx(new SDKError("InvalidPreparationOptions")); return; }
+            if (invalid) { promise.catchEx(new SDKError("HostInvalid")); return; }
+            if (setup == null || !setup.key.equals(Utils.toJson(args))) {
+                if (!"idle".equals(state) || replacement != null) { promise.catchEx(new SDKError("Busy")); return; }
+                configure(args, bind);
+            }
+            final boolean[] settled = {false};
+            Pending done = error -> {
+                if (settled[0]) return;
+                settled[0] = true;
+                if (error == null) promise.then(null); else promise.catchEx(error);
+            };
+            Setup attempt = setup;
+            final Pending[] waiter = new Pending[1];
+            Runnable deadline = () -> { attempt.waiters.remove(waiter[0]); done.fail(new SDKError("PrepareTimeout")); };
+            waiter[0] = error -> { handler.removeCallbacks(deadline); done.fail(error); };
+            handler.postDelayed(deadline, timeoutMs);
+            startSetup(args, waiter[0]);
+        });
+    }
+    void cancelPreparation() {
+        handler.post(() -> {
+            Setup previous = setup; setup = null;
+            if (previous != null) finishSetup(previous, new SDKError("Cancelled"));
+        });
     }
     void replace(String key, Object[] args, long timeout, Runnable bind, Start start, Pending fail) {
         handler.post(() -> {
@@ -86,9 +160,8 @@ public final class LifecycleHost {
                     sdkInitArgs = request.sdkArgs;
                     whenReady(() -> {
                         if (!request.current() || !current(request.generation)) return;
-                        send(0, "sdk.newWhiteSdk", request.sdkArgs, (OnReturnValue<String>) setup -> {
+                        startSetup(request.sdkArgs, setupError -> {
                             if (!request.current() || !current(request.generation)) return;
-                            SDKError setupError = SDKError.promiseError(setup);
                             if (setupError != null) finish(request.generation, false);
                             request.finish(setupError);
                         });
@@ -113,7 +186,7 @@ public final class LifecycleHost {
                 } catch (Exception error) { invalidate(); return; }
                 work = new ArrayList<>(ready); ready.clear();
             }
-            if (restoreSdk && sdkInitArgs != null) send(0, "sdk.newWhiteSdk", sdkInitArgs, null);
+            if (restoreSdk && sdkInitArgs != null) startSetup(sdkInitArgs, null);
             for (Runnable task : work) task.run();
         });
     }
@@ -216,6 +289,8 @@ public final class LifecycleHost {
         if (documentId == null || invalid) return;
         if (!"idle".equals(state) || (generation > 0 && (closeResult == null || SDKError.promiseError(closeResult) != null))) { invalidate(); return; }
         documentId = null; generation++; ready.clear(); closeResult = null; closing = null; reloading = true;
+        Setup previous = setup; setup = null;
+        if (previous != null) finishSetup(previous, new SDKError("Cancelled"));
     }
     synchronized void pageFinished() {
         if (!reloading || invalid) return;
@@ -224,6 +299,7 @@ public final class LifecycleHost {
     public synchronized void invalidate() {
         if (invalid) return;
         invalid = true; state = "blocked"; ready.clear();
+        if (setup != null) finishSetup(setup, new SDKError("HostInvalid"));
         if (replacement != null) replacement.finish(new SDKError("HostInvalid"));
         Pending cancel = pending; pending = null; if (cancel != null) cancel.fail(new SDKError("HostInvalid"));
         if (closing != null) { List<OnReturnValue<String>> callbacks = closing; closing = null;

@@ -6,7 +6,6 @@ import android.widget.ImageView;
 
 import com.herewhite.demo.R;
 import com.herewhite.demo.common.SampleBaseActivity;
-import com.herewhite.demo.common.DynamicConfigDemoConfig;
 import com.herewhite.demo.databinding.ActivityWindowAppliancePluginBinding;
 import com.herewhite.sdk.CommonCallback;
 import com.herewhite.sdk.RoomParams;
@@ -204,7 +203,6 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
     protected WhiteSdkConfiguration generateSdkConfig() {
         WhiteSdkConfiguration configuration = new WhiteSdkConfiguration(demoAPI.getAppId(), true);
         configuration.setRegion(Region.cn);
-        configuration.setDynamicConfig(DynamicConfigDemoConfig.getRegionUrls());
         configuration.setUseMultiViews(true);
         configuration.setEnableAppliancePlugin(true);
         BackgroundImageLoadOptions loadOptions = new BackgroundImageLoadOptions();
@@ -224,7 +222,7 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
     protected RoomParams generateRoomParams() {
         RoomParams roomParams = super.generateRoomParams();
         roomParams.setRegion(Region.cn);
-        roomParams.setWritable(false);
+        roomParams.setWritable(true);
         roomParams.setAppliancePluginOptions(getAppliancePluginOptions());
         WindowParams windowParams = new WindowParams()
                 .setChessboard(false)
@@ -232,12 +230,13 @@ public class WindowAppliancePluginActivity extends SampleBaseActivity {
                 .setUseBoxesStatus(false)
                 .setForceMaximized(true)
                 .setLazySetupInMaximizedMode(true)
-                .setMaxCachedAppsInMaximizedMode(5)
+                .setMaxCachedAppsInMaximizedMode(4)
+                .setOriginSize(originSize())
                 .setOverwriteStyles(
                         ".telebox-collector{display:none !important;}" +
                                 ".vjs-p .player-controller{display:none !important;}" +
                                 ".netless-app-slide-wb-view {clip-path: none !important;}" +
-                                ".telebox-box.telebox-blur.telebox-maximized {display: none !important;}" +
+                                ".telebox-box.telebox-blur.telebox-maximized .netless-app-presentation-content img { display: none !important; }" +
                                 ".netless-app-slide-content [data-resizable-scroll=\"true\"] ~ .scroll-bar { display: none !important;}" +
                                 ".netless-app-slide-content [data-resizable-scroll=\"true\"] { width: 100% !important; height: 100% !important;}"
                 );

@@ -11,6 +11,17 @@ import static org.junit.Assert.assertNull;
 
 public class SlideNavigationButtonModeTest {
     @Test
+    public void sharedMediaVolumeDefaultsOffAndPreservesExplicitBoolean() throws Exception {
+        WhiteSdkConfiguration config = new WhiteSdkConfiguration("app-id");
+        assertFalse(config.toJSON().getJSONObject("slideAppOptions").getBoolean("enableSharedMediaVolume"));
+        config.getSlideAppOptions().setEnableSharedMediaVolume(true);
+        com.google.gson.Gson gson = new com.google.gson.Gson();
+        WhiteSdkConfiguration copy = gson.fromJson(gson.toJson(config), WhiteSdkConfiguration.class);
+        assertEquals(Boolean.TRUE, copy.toJSON().getJSONObject("slideAppOptions").get("enableSharedMediaVolume"));
+        config.getSlideAppOptions().setEnableSharedMediaVolume(false);
+        assertEquals(Boolean.FALSE, config.toJSON().getJSONObject("slideAppOptions").get("enableSharedMediaVolume"));
+    }
+    @Test
     public void omitsUnsetModeToPreserveAppSlideDefault() throws Exception {
         WhiteSdkConfiguration config = new WhiteSdkConfiguration("app-id");
         assertNull(config.getSlideAppOptions().getNavigationButtonMode());

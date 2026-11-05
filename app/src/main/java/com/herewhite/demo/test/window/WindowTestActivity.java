@@ -592,7 +592,7 @@ public class WindowTestActivity extends AppCompatActivity {
 
         // String darkMode = darkModeStyle();
         WindowParams windowParams = new WindowParams().setContainerSizeRatio(3f / 4).setChessboard(true).setDebug(true)
-                .setUseBoxesStatus(true)
+                .setUseBoxesStatus(false)
                 // .setOverwriteStyles(cursorUserHideStyle())
                 // .setOverwriteStyles(darkModeStyle())
                 .setCollectorStyles(styleMap);
