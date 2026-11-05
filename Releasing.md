@@ -4,6 +4,12 @@ Releasing
 Cutting a Release
 -----------------
 
+Complete the release E2E acceptance gate before committing and publishing.
+Follow the workspace [Native release E2E input prerequisites](../../docs/native-release-e2e-acceptance.md):
+wait for initialization and the current View's input readiness before every real
+gesture, including after leave/rejoin. Fixed sleeps do not replace readiness
+checks, and drawing counts, synchronization and transaction assertions stay strict.
+
 1. Update `CHANGELOG.md`.
 
    Build Bridge from a clean committed checkout with registry dependencies, then
