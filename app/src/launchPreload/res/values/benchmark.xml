@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">白板预加载 Demo</string>
+    <string name="sdk_app_id">unconfigured</string>
+    <string name="sdk_app_token"></string>
+    <string name="room_uuid"></string>
+    <string name="room_token"></string>
+</resources>

@@ -16,6 +16,17 @@ public class StartActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String roomUuid = getIntent().getStringExtra(SampleBaseActivity.EXTRA_ROOM_UUID);
+        String roomToken = getIntent().getStringExtra(SampleBaseActivity.EXTRA_ROOM_TOKEN);
+        if (roomUuid != null && !roomUuid.isEmpty()
+                && roomToken != null && !roomToken.isEmpty()) {
+            Intent intent = new Intent(this, WindowAppliancePluginActivity.class);
+            intent.putExtra(SampleBaseActivity.EXTRA_ROOM_UUID, roomUuid);
+            intent.putExtra(SampleBaseActivity.EXTRA_ROOM_TOKEN, roomToken);
+            startActivity(intent);
+            finish();
+            return;
+        }
         setContentView(R.layout.activity_start);
         setupDemoItems();
     }

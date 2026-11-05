@@ -28,6 +28,24 @@ android {
         }
     }
 
+    if (project.hasProperty('initBenchmark')) {
+        sourceSets {
+            debug.assets.srcDir file("$buildDir/generated/init-benchmark-assets")
+        }
+    }
+
+    if (project.hasProperty('slideNavigationRegression')) {
+        buildTypes.debug.applicationIdSuffix = ".slidenav"
+        sourceSets.debug.assets.srcDir file("$buildDir/generated/slide-navigation-assets")
+    }
+
+    if (project.hasProperty('launchPreloadBenchmark')) {
+        buildTypes.debug.applicationIdSuffix = ".preloadbench"
+        sourceSets.debug.manifest.srcFile 'src/launchPreload/AndroidManifest.xml'
+        sourceSets.debug.res.setSrcDirs(['src/launchPreload/res'])
+        sourceSets.debug.assets.srcDir file("$buildDir/generated/launch-preload-assets")
+    }
+
     tasks.withType(JavaCompile) {
         options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
     }

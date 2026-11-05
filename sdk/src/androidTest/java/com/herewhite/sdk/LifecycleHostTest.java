@@ -18,12 +18,14 @@ public class LifecycleHostTest {
         catch(Exception e){ throw new AssertionError(e); }
     }
     static class Raw implements JsBridgeInterface {
-        boolean dropHandshake, holdSetup, holdLeave;
+        boolean dropHandshake, holdSetup, holdLeave, holdPreload;
         Runnable completeLeave;
         int leaves;
         OnReturnValue<Object> handshake, setup;
         long setupGeneration;
         int setups;
+        int observations;
+        OnReturnValue<Object> preload;
         @SuppressWarnings("unchecked") public <T> void callHandler(String method,Object[] args,OnReturnValue<T> callback) {
             if (method.equals("sdk.getLifecycle")) {
                 handshake=(OnReturnValue<Object>)callback;
@@ -37,12 +39,16 @@ public class LifecycleHostTest {
                     } else if (method.equals("sdk.leaveRoom")) {
                         leaves++; completeLeave=()->callback.onValue((T)envelope(generation,"{}"));
                         if (!holdLeave) completeLeave.run();
+                    } else if (method.equals("sdk.observePreload")) {
+                        observations++; preload=(OnReturnValue<Object>)callback;
+                        if (!holdPreload) completePreload("{\"state\":\"success\",\"message\":\"\"}");
                     } else callback.onValue((T)envelope(generation,"{}"));
                 } catch(Exception e){throw new AssertionError(e);}
             }
         }
         void ready(){try { handshake.onValue(new JSONObject().put("value","{\"documentId\":\"unit-doc\"}")); } catch(Exception e){throw new AssertionError(e);} }
         void completeSetup(){setup.onValue(envelope(setupGeneration,"{}"));}
+        void completePreload(String result){preload.onValue(envelope(0,result));}
         public <T> void callHandler(String m,OnReturnValue<T> c){callHandler(m,null,c);}
         public void callHandler(String m,Object[] a){callHandler(m,a,null);}
         public void addJavascriptObject(Object o,String n){}
@@ -99,5 +105,34 @@ public class LifecycleHostTest {
             try {host.stateEvent(envelope(g,new JSONObject().put("state","idle")));}catch(Exception e){throw new AssertionError(e);}
             assertEquals(-1,host.admit(e->{}));host.invalidate();
         });
+    }
+
+    @Test public void prepareWaitsForSetupAndSharesConstructorWork() throws Exception {
+        Raw raw=new Raw();raw.holdSetup=true;LifecycleHost host=new LifecycleHost(raw);
+        CountDownLatch done=new CountDownLatch(1);AtomicInteger completed=new AtomicInteger();
+        main(()->{host.claim();host.configure(new Object[]{"config"},()->{});host.prepare(new Object[]{"config"},()->{},2000,new com.herewhite.sdk.domain.Promise<Void>() {
+            public void then(Void value){completed.incrementAndGet();done.countDown();}
+            public void catchEx(SDKError error){fail(error.getMessage());}
+        });});
+        main(()->{assertEquals(1,raw.setups);assertEquals(0,completed.get());raw.completeSetup();});
+        assertTrue(done.await(2,TimeUnit.SECONDS));assertEquals(1,completed.get());main(host::invalidate);
+    }
+    @Test public void prepareMissingBridgeTimesOutOnceWithoutStartingRoom() throws Exception {
+        Raw raw=new Raw();raw.dropHandshake=true;LifecycleHost host=new LifecycleHost(raw);
+        CountDownLatch done=new CountDownLatch(1);AtomicInteger calls=new AtomicInteger();
+        main(()->{host.claim();host.configure(new Object[]{"config"},()->{});host.prepare(new Object[]{"config"},()->{},100,new com.herewhite.sdk.domain.Promise<Void>() {
+            public void then(Void value){fail("missing Bridge cannot prepare");}
+            public void catchEx(SDKError error){assertEquals("PrepareTimeout",error.getMessage());calls.incrementAndGet();done.countDown();}
+        });});
+        assertTrue(done.await(2,TimeUnit.SECONDS));main(raw::ready);main(()->assertEquals(1,calls.get()));main(host::invalidate);
+    }
+    @Test public void prepareReportsConstructorFailureWithoutWaitingForDeadline() throws Exception {
+        Raw raw=new Raw();raw.holdSetup=true;LifecycleHost host=new LifecycleHost(raw);CountDownLatch done=new CountDownLatch(1);
+        main(()->{host.claim();host.configure(new Object[]{"bad-config"},()->{});host.prepare(new Object[]{"bad-config"},()->{},2000,new com.herewhite.sdk.domain.Promise<Void>() {
+            public void then(Void value){fail("expected constructor failure");}
+            public void catchEx(SDKError error){assertEquals("SdkSetupFailed",error.getMessage());done.countDown();}
+        });});
+        main(()->raw.setup.onValue(envelope(0,"{\"__error\":{\"message\":\"SdkSetupFailed\"}}")));
+        assertTrue(done.await(1,TimeUnit.SECONDS));main(host::invalidate);
     }
 }

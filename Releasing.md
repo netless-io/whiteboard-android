@@ -4,7 +4,18 @@ Releasing
 Cutting a Release
 -----------------
 
+Complete the release E2E acceptance gate before committing and publishing.
+Follow the workspace [Native release E2E input prerequisites](../../docs/native-release-e2e-acceptance.md):
+wait for initialization and the current View's input readiness before every real
+gesture, including after leave/rejoin. Fixed sleeps do not replace readiness
+checks, and drawing counts, synchronization and transaction assertions stay strict.
+
 1. Update `CHANGELOG.md`.
+
+   Build Bridge from a clean committed checkout with registry dependencies, then
+   run `./copy_js_bundle.sh /absolute/path/to/bridge/build`. The argument is
+   optional and defaults to `../Whiteboard-bridge/build`. Update `carrot.yml`
+   to that Bridge commit and verify that its short-hash marker is empty.
 
 2. Set versions:
    ```shell
@@ -27,7 +38,23 @@ Cutting a Release
    git push -v origin refs/heads/master:refs/heads/master
    git push origin $RELEASE_VERSION
    ```
-5. Trigger Jitpack build
+5. Request the Maven POM to trigger or retrieve the JitPack build, then query its status.
    ```shell
-   curl https://jitpack.io/api/builds/com.github.netless-io/whiteboard-android/$RELEASE_VERSION
+   curl --fail --location --max-time 60 \
+     "https://jitpack.io/com/github/netless-io/whiteboard-android/${RELEASE_VERSION}/whiteboard-android-${RELEASE_VERSION}.pom"
+   curl --fail --location --max-time 30 \
+     "https://jitpack.io/api/builds/com.github.netless-io/whiteboard-android/${RELEASE_VERSION}"
    ```
+
+   The build-status API only queries the outcome; it is not a build trigger.
+   If a request returns HTTP 429, retain the existing tag and response evidence,
+   allow time before retrying, and do not recreate the tag or repeatedly trigger requests.
+
+6. Verify publication before announcing Maven availability:
+   - Build status is `ok` and its commit matches the release tag.
+   - Anonymous POM and AAR downloads succeed at the published coordinates.
+   - The POM version, AAR SDK version and embedded Bridge resources match the release.
+
+   A pushed tag, a GitHub Release, or a `Queued` entry alone does not confirm
+   that the package is available to Maven consumers. See the workspace
+   `docs/upgrade-release.md` for operator identity and release verification requirements.

@@ -37,6 +37,39 @@ public class WhiteSdkConfiguration extends WhiteObject {
     @SerializedName("dynamicConfig")
     private Map<String, String> dynamicConfig;
 
+    @SerializedName("enableModelPreload")
+    private boolean enableModelPreload = false;
+
+    @SerializedName("preloadBuiltinApps")
+    private List<String> preloadBuiltinApps;
+
+    /**
+     * SDK 构造时后台预加载的 App 类。未配置时默认 Slide、Presentation；空列表关闭。
+     * 可选值大小写固定：Slide、Presentation、MediaPlayer、DocsViewer。
+     * 仅加载类，不创建 App 或加载课件内容，独立于 enableModelPreload。
+     */
+    public void setPreloadBuiltinApps(List<String> kinds) {
+        preloadBuiltinApps = kinds == null ? null : new ArrayList<>(kinds);
+    }
+
+    /** null 表示采用默认列表；返回值为独立副本。 */
+    public List<String> getPreloadBuiltinApps() {
+        return preloadBuiltinApps == null ? null : new ArrayList<>(preloadBuiltinApps);
+    }
+
+    /** 是否提前查询并下载房间模型。默认 false，由正常入房握手加载模型。 */
+    public boolean isEnableModelPreload() {
+        return enableModelPreload;
+    }
+
+    /**
+     * 仅对已完成服务端准备的项目和区域显式开启。必须在构造 WhiteSdk 前设置。
+     * 关闭时不请求模型预加载接口；不影响动态配置、教具或课件资源策略。
+     */
+    public void setEnableModelPreload(boolean enableModelPreload) {
+        this.enableModelPreload = enableModelPreload;
+    }
+
     /** Region -> public OSS latest.json URL for this platform; no credentials required.
      * Unmapped regions or failed downloads keep local parameters. Download timeout is 5 seconds.
      */
@@ -67,6 +100,14 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private boolean enableRtcAudioEffectIntercept = false;
     private boolean enableSyncedStore = false;
     private boolean enableAppliancePlugin = false;
+    private com.herewhite.sdk.domain.AppliancePluginOptions appliancePluginOptions;
+
+    /** Optional SDK defaults; explicit RoomParams values take precedence per field.
+     * Omit to use plugin defaults, including useWorker: "auto", unless overridden by dynamic configuration.
+     */
+    public com.herewhite.sdk.domain.AppliancePluginOptions getAppliancePluginOptions() { return appliancePluginOptions; }
+    public void setAppliancePluginOptions(com.herewhite.sdk.domain.AppliancePluginOptions options) { appliancePluginOptions = options; }
+
     private boolean disableNewPencilStroke = false;
     private LoggerOptions loggerOptions;
     private String appIdentifier;
@@ -629,6 +670,11 @@ public class WhiteSdkConfiguration extends WhiteObject {
         return enableAppliancePlugin;
     }
 
+    /**
+     * 在构造 WhiteSdk 前设为 true，可独立启动教具渲染准备；不依赖 enableModelPreload。
+     * 无需设置 appliancePluginOptions。未被配置覆盖时，插件默认 useWorker 为 "auto"，
+     * 按能力、缓存和页面可见性决定是否执行探针。
+     */
     public void setEnableAppliancePlugin(boolean enableAppliancePlugin) {
         this.enableAppliancePlugin = enableAppliancePlugin;
         __nativeConfigDefaults.remove("enableAppliancePlugin");
@@ -778,6 +824,12 @@ public class WhiteSdkConfiguration extends WhiteObject {
 
         /** 是否允许缩放 Slide 内容，默认为 false。 */
         private boolean enableScale = false;
+
+        /** Whether Slide shares PPT media volume across the room. Default false. */
+        private boolean enableSharedMediaVolume = false;
+
+        public boolean isEnableSharedMediaVolume() { return enableSharedMediaVolume; }
+        public void setEnableSharedMediaVolume(boolean enabled) { enableSharedMediaVolume = enabled; }
 
         /**
          * Slide 同步事件队列策略。Fifo 按顺序处理全部事件；LatestPendingRender 允许交互模式跳过积压的中间页面渲染。

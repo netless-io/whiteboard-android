@@ -21,6 +21,8 @@ import com.herewhite.sdk.domain.Promise;
 import com.herewhite.sdk.domain.ReloadBackgroundImageParams;
 import com.herewhite.sdk.domain.ReloadBackgroundImageResult;
 import com.herewhite.sdk.domain.SDKError;
+import com.herewhite.sdk.domain.WhitePreloadResult;
+import android.os.Handler;
 import com.herewhite.sdk.domain.UrlInterrupter;
 import com.herewhite.sdk.domain.WindowRegisterAppParams;
 import com.herewhite.sdk.internal.Logger;
@@ -53,7 +55,7 @@ import wendu.dsbridge.special.OnReturnValue;
  * `WhiteSdk` 类。
  */
 public class WhiteSdk {
-    private final static String SDK_VERSION = "2.16.134";
+    private final static String SDK_VERSION = "2.16.135";
 
     private final static Gson gson = new Gson();
     private static AudioMixerBridge sAudioMixerBridge;
@@ -67,6 +69,10 @@ public class WhiteSdk {
     private final int densityDpi;
     private final boolean onlyCallbackRemoteStateModify;
     private final WhiteSdkConfiguration initializationConfig;
+    private final Handler preparationHandler = new Handler(Looper.getMainLooper());
+    private WhitePreloadResult preloadResult;
+    private Object preloadSetupToken;
+    private boolean preloadObserved, preloadDelivered;
     private RtcJsInterfaceImpl rtcJsInterface;
     @Nullable
     private AudioMixerImplement audioMixerImplement;
@@ -185,7 +191,43 @@ public class WhiteSdk {
         addVolumeTag(context, copyConfig);
         initializationConfig = copyConfig;
 
-        lifecycle.configure(new Object[]{copyConfig}, this::bindCallbacks);
+        lifecycle.configure(new Object[]{copyConfig}, this::bindCallbacks, error -> {
+            if (error == null) observePreload();
+        });
+    }
+
+    /** Wait for Bridge handshake and JS SDK construction; optional preload tasks are not awaited. */
+    public void prepareCompletion(Promise<Void> completion) { prepareCompletion(15000, completion); }
+
+    /** Explicit readiness wait in milliseconds. Does not change constructor or joinRoom timeouts. */
+    public void prepareCompletion(long timeoutMs, Promise<Void> completion) {
+        lifecycle.prepare(new Object[]{initializationConfig}, this::bindCallbacks, timeoutMs, completion);
+    }
+
+    public void cancelPreparation() { lifecycle.cancelPreparation(); }
+
+    private void observePreload() {
+        preparationHandler.post(() -> {
+            if (preloadObserved) return;
+            preloadObserved = true;
+            preloadSetupToken = lifecycle.setupToken();
+            lifecycle.observePreload(new Object[]{initializationConfig}, value -> preparationHandler.post(() -> {
+                if (!lifecycle.isSetupCurrent(preloadSetupToken) || SDKError.promiseError(value) != null) return;
+                try {
+                    WhitePreloadResult result = new WhitePreloadResult(new JSONObject(value));
+                    if (result.isValid()) { preloadResult = result; deliverPreloadResult(); }
+                } catch (Exception ignored) {}
+            }));
+        });
+    }
+
+    private void deliverPreloadResult() {
+        CommonCallback callback = sdkJsInterface.getCommonCallback();
+        if (preloadDelivered || preloadResult == null || callback == null || !lifecycle.isSetupCurrent(preloadSetupToken) ||
+                (bridge instanceof WhiteboardView && !((WhiteboardView) bridge).ownsSdk(this))) return;
+        preloadDelivered = true;
+        try { callback.onPreloadStateChange(preloadResult); }
+        catch (RuntimeException error) { Logger.error("onPreloadStateChange callback failed", error); }
     }
 
     private void bindCallbacks() {
@@ -272,6 +314,7 @@ public class WhiteSdk {
      */
     public void setCommonCallbacks(CommonCallback commonCallback) {
         sdkJsInterface.setCommonCallbacks(commonCallback);
+        preparationHandler.post(this::deliverPreloadResult);
     }
 
     /**
@@ -327,6 +370,7 @@ public class WhiteSdk {
 
     private void joinRoomAfterReplacement(final RoomParams roomParams, final RoomListener roomListener, final Promise<Room> roomPromise, final long generation) {
         if (!lifecycle.continueJoin(generation, roomPromise::catchEx)) return;
+        observePreload();
         JsBridgeInterface scopedBridge = lifecycle.bridge(generation);
         Room room = new Room(roomParams.getUuid(), scopedBridge, densityDpi, onlyCallbackRemoteStateModify);
         room.setRoomListener(roomListener);

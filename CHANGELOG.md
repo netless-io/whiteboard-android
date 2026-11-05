@@ -1,4 +1,13 @@
 # 版本更新记录
+## [2.16.135] - 2026-11-06
+
+- Add constructor App preloading via `preloadBuiltinApps`: omitted selects Slide and Presentation; an empty list disables it. Model preloading remains disabled by default through `enableModelPreload`.
+- Add `prepareCompletion` for SDK initialization and a single `onPreloadStateChange` callback (`success` or `warn`, with a message) for configured optional preloading. Optional preparation failures no longer force a retry before room connection.
+- Allow Appliance options at SDK construction, while preserving per-room overrides and normal rendering initialization as fallback.
+- Upgrade embedded white-web-sdk to 2.16.62, WindowManager to 1.0.28, Appliance Plugin to 1.1.48 and app-slide to 0.2.109. Expose `SlideAppOptions.enableSharedMediaVolume`, default false.
+- Include Appliance fixes for live drawing during initialization, Text editing and transaction completion, and synchronized Text previews during Selector scaling.
+- Add launch-page preload demos and debug-only initialization/E2E tools; align preparation cancellation and callback ownership with the current SDK instance.
+
 ## [2.16.134] - 2026-10-21
 
 - Upgrade embedded app-slide to 0.2.108 (Slide 1.4.65) and refresh Bridge resources.

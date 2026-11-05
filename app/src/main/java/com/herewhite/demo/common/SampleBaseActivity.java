@@ -236,7 +236,6 @@ abstract public class SampleBaseActivity extends BaseActivity {
         }
 
         final int teardownGeneration = ++roomGeneration;
-        final Room oldRoom = room;
         room = null;
         AtomicBoolean completed = new AtomicBoolean();
         Runnable continueJoin = () -> completeRoomRecreation(teardownGeneration, completed);

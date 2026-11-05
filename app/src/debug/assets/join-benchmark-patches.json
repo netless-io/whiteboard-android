@@ -1,0 +1,32 @@
+{
+  "web-sdk.a5dc9172.js": [
+    {
+      "needle": "p.info(\"[joinRoom] join room start, deviceType: \"+",
+      "replacement": "window.__wbInitBench.mark(\"T1\"),p.info(\"[joinRoom] join room start, deviceType: \"+"
+    },
+    {
+      "needle": "this.logger.info(\"[joinRoom] join room success\")",
+      "replacement": "window.__wbInitBench.mark(\"T2\"),this.logger.info(\"[joinRoom] join room success\")"
+    }
+  ],
+  "main.4c19cc55.js": [
+    {
+      "needle": "case 11:return y=e.sent,null==l||l.info(\"[Bridge] WindowManager.mount success\")",
+      "replacement": "case 11:return y=e.sent,window.__wbInitBench.mark(\"T3\"),null==l||l.info(\"[Bridge] WindowManager.mount success\")"
+    },
+    {
+      "needle": "case 68:window.appliancePlugin=ie,null==re||re.info(\"[Bridge] ApplianceMultiPlugin.getInstance success\")",
+      "replacement": "case 68:window.appliancePlugin=ie,window.__wbInitBench.mark(\"T4\"),null==re||re.info(\"[Bridge] ApplianceMultiPlugin.getInstance success\")"
+    }
+  ],
+  "netless.ea5984d6.js": [
+    {
+      "needle": "console.log(\"[Slide] setup @ 0.2.108\")",
+      "replacement": "(window.__wbInitBench.mark(\"T5_SETUP\",{appId:e.appId,taskId:e.storage.state.taskId}),console.log(\"[Slide] setup @ 0.2.108\"))"
+    },
+    {
+      "needle": "i.readyPromise.then((function(){S||t.onReady()}))",
+      "replacement": "i.readyPromise.then((function(){S||(window.__wbInitBench.mark(\"T5_READY\",{appId:e.appId,taskId:e.storage.state.taskId}),t.onReady())}))"
+    }
+  ]
+}
