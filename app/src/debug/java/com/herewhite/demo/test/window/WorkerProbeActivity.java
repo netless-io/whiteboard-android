@@ -66,6 +66,7 @@ public class WorkerProbeActivity extends Activity {
         config.setRegion(Region.cn);
         config.setUseMultiViews(true);
         config.setEnableAppliancePlugin(true);
+        config.setEnablePreLoadAppliancePlugin(getIntent().getBooleanExtra("preload", true));
         if (!getIntent().getBooleanExtra("remoteOnly", false)) config.setAppliancePluginOptions(optionsFor(mode));
         String dynamicUrl = getIntent().getStringExtra("dynamicConfigUrl");
         if (dynamicUrl != null) { Map<String, String> urls = new LinkedHashMap<>(); urls.put("cn-hz", dynamicUrl); config.setDynamicConfig(urls); }

@@ -207,6 +207,7 @@ public class WhiteSdk {
     public void cancelPreparation() { lifecycle.cancelPreparation(); }
 
     private void observePreload() {
+        if (!initializationConfig.hasOptionalPreload()) return;
         preparationHandler.post(() -> {
             if (preloadObserved) return;
             preloadObserved = true;

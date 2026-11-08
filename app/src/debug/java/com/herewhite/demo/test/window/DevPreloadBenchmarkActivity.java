@@ -69,6 +69,8 @@ public final class DevPreloadBenchmarkActivity extends Activity {
             config.setApiHosts(Arrays.asList("api-cn-hz.netless.group"));
             config.setUseMultiViews(true);
             config.setEnableAppliancePlugin(true);
+            config.setEnablePreLoadAppliancePlugin(preload);
+            if (preload) config.setPreloadBuiltinApps(Arrays.asList("Slide", "Presentation"));
             config.setPreloadDynamicPPT(false);
             config.getSlideAppOptions().setEnableScale(true);
             config.getSlideAppOptions().setEnableGlobalClick(false);
@@ -83,18 +85,18 @@ public final class DevPreloadBenchmarkActivity extends Activity {
                     .setOriginSize(new WindowOriginSize(1280, 720)));
 
             pendingParams = params;
-            if (preload) {
-                view.prepared = () -> runOnUiThread(() -> {
-                    if (destroyed || joinStarted) return;
-                    view.evaluateJavascript("window.__devPrepare()", null);
-                });
-                view.failed = () -> runOnUiThread(() -> emit("ERROR", "local_sdk_preparation_failed", null));
-                view.postDelayed(() -> { if (!destroyed && !joinStarted) emit("ERROR", "local_sdk_preparation_timeout", null); }, 90000);
-            }
             view.startEntry();
             emit("T-1", null, null);
             sdk = new WhiteSdk(view, this, config);
-            if (!preload) beginJoin(params);
+            if (preload) sdk.prepareCompletion(new Promise<Void>() {
+                @Override public void then(Void ignored) {
+                    // Wait only for base JS; join consumes matching optional tasks itself.
+                    emit("PRELOAD_READY", null, null);
+                    beginJoin(params);
+                }
+                @Override public void catchEx(SDKError error) { emit("ERROR", "base_preparation_failed", null); }
+            });
+            else beginJoin(params);
         } catch (Exception error) {
             // Config errors contain field/asset names only; never serialize an Intent or SDKError.
             emit("ERROR", "init_failed_" + error.getClass().getSimpleName(), null);
