@@ -55,7 +55,7 @@ import wendu.dsbridge.special.OnReturnValue;
  * `WhiteSdk` 类。
  */
 public class WhiteSdk {
-    private final static String SDK_VERSION = "2.16.135";
+    private final static String SDK_VERSION = "2.16.136";
 
     private final static Gson gson = new Gson();
     private static AudioMixerBridge sAudioMixerBridge;
@@ -207,6 +207,7 @@ public class WhiteSdk {
     public void cancelPreparation() { lifecycle.cancelPreparation(); }
 
     private void observePreload() {
+        if (!initializationConfig.hasOptionalPreload()) return;
         preparationHandler.post(() -> {
             if (preloadObserved) return;
             preloadObserved = true;

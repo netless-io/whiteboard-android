@@ -1,4 +1,9 @@
 # 版本更新记录
+
+## [2.16.136] - 2026-11-09
+- 更新 White Web SDK 至 2.16.63、Appliance Plugin 至 1.1.49、WindowManager 至 1.0.29。
+- 可选预加载默认关闭：App 类需显式配置；教具探针通过 enablePreLoadAppliancePlugin 显式开启，普通入房沿用后置初始化。
+- 对齐候课预加载与普通入房 Demo、基础准备完成和可选预加载状态回调。
 ## [2.16.135] - 2026-11-06
 
 - Add constructor App preloading via `preloadBuiltinApps`: omitted selects Slide and Presentation; an empty list disables it. Model preloading remains disabled by default through `enableModelPreload`.

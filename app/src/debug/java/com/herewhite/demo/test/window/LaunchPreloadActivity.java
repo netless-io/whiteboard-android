@@ -118,18 +118,15 @@ public final class LaunchPreloadActivity extends StartActivity {
             }
             config.setUseMultiViews(true);
             config.setEnableAppliancePlugin(true);
-            // Debug-only timing control: both groups enable the real plugin.
-            // The late group's constructor preparation is skipped by benchmark JS.
-            boolean applianceEarly = "early".equals(getIntent().getStringExtra("appliancePreparationMode"));
+            // Explicit preload entry; the ordinary entry leaves all optional work off.
+            boolean applianceEarly = preparing && !"late".equals(getIntent().getStringExtra("appliancePreparationMode"));
+            config.setEnablePreLoadAppliancePlugin(applianceEarly);
             if (applianceEarly) config.setAppliancePluginOptions(new AppliancePluginOptions());
-            // Direct control explicitly skips all optional App class warmup.
-            // Prepared entry omits the list: Bridge chooses Slide + Presentation.
-            boolean directDefaultAppWarmup = getIntent().getBooleanExtra("directDefaultAppWarmup", false);
-            if ((!preparing && !directDefaultAppWarmup) || getIntent().getBooleanExtra("skipAppWarmup", false)) {
-                config.setPreloadBuiltinApps(java.util.Collections.emptyList());
+            if (preparing && !getIntent().getBooleanExtra("skipAppWarmup", false)) {
+                config.setPreloadBuiltinApps(java.util.Arrays.asList("Slide", "Presentation"));
             }
             // Default keeps the model option omitted. Only the dev model A/B arm opts in.
-            if (getIntent().getBooleanExtra("enableModelPreload", false)) config.setEnableModelPreload(true);
+            if (preparing && getIntent().getBooleanExtra("enableModelPreload", false)) config.setEnableModelPreload(true);
             config.setPreloadDynamicPPT(false);
             config.getSlideAppOptions().setEnableScale(true);
             config.getSlideAppOptions().setEnableGlobalClick(false);
@@ -145,12 +142,25 @@ public final class LaunchPreloadActivity extends StartActivity {
             params.setWindowParams(new WindowParams().setForceMaximized(true)
                     .setLazySetupInMaximizedMode(true).setMaxCachedAppsInMaximizedMode(4)
                     .setUseBoxesStatus(false).setOriginSize(new WindowOriginSize(1280, 720)));
-            if (preparing) whiteboard.setupComplete = () -> runOnUiThread(() -> {
-                if (!destroyed && preloadMode) whiteboard.evaluateJavascript("window.__launchPrepare()", null);
-            });
             whiteboard.startEntry();
             emit(preparing ? "T-1" : "SDK_CONSTRUCT_BEGIN", null);
-            sdk = new WhiteSdk(whiteboard, this, config);
+            sdk = new WhiteSdk(whiteboard, this, config, new com.herewhite.sdk.CommonCallback() {
+                @Override public void onPreloadStateChange(com.herewhite.sdk.domain.WhitePreloadResult result) {
+                    emit("PRELOAD_" + result.getState().toUpperCase(), null);
+                }
+            });
+            if (preparing) sdk.prepareCompletion(new Promise<Void>() {
+                @Override public void then(Void value) {
+                    if (destroyed) return;
+                    // Base JS is ready; optional preload continues in the background.
+                    // joinRoom may be called now and will reuse only needed resources.
+                    ready = true;
+                    status.setText("白板基础准备完成，可入房");
+                    joinButton.setEnabled(true);
+                    emit("PRELOAD_READY", null);
+                }
+                @Override public void catchEx(SDKError error) { emit("ERROR", "prepare_failed"); }
+            });
         } catch (Exception error) {
             status.setText("请先配置测试房间凭据");
             emit("ERROR", "init_" + error.getClass().getSimpleName());
@@ -220,9 +230,6 @@ public final class LaunchPreloadActivity extends StartActivity {
     }
 
     public final class Probe {
-        @JavascriptInterface public boolean shouldDeferAppliancePreparation() {
-            return "late".equals(getIntent().getStringExtra("appliancePreparationMode"));
-        }
         @JavascriptInterface public void prepared(String json) {
             runOnUiThread(() -> {
                 if (destroyed || ready || !preloadMode) return;

@@ -7,6 +7,7 @@ import android.os.SystemClock;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -29,9 +30,11 @@ public class ReleaseE2EActivity extends Activity {
     private Room room;
     private JsonObject credentials;
     private int preloadCallbacks;
+    private boolean destroyed;
 
     @Override public void onCreate(Bundle saved) {
         super.onCreate(saved);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         view = new WhiteboardView(this);
         view.getSettings().setAllowUniversalAccessFromFileURLs(true);
         setContentView(view, new ViewGroup.LayoutParams(-1, -1));
@@ -50,13 +53,36 @@ public class ReleaseE2EActivity extends Activity {
             setContentView(message);
             return;
         }
+        long delay = Math.max(0, Math.min(10000, getIntent().getLongExtra("initDelayMs", 0)));
+        new Handler(Looper.getMainLooper()).postDelayed(this::initializeSdk, delay);
+    }
+
+    private void initializeSdk() {
+        if (destroyed) return;
         WhiteSdkConfiguration config = new WhiteSdkConfiguration(credentials.get("appIdentifier").getAsString(), true);
         config.setRegion(Region.cn);
-        config.setUseMultiViews(true);
-        config.setEnableAppliancePlugin(true);
+        config.setUseMultiViews(getIntent().getBooleanExtra("multiViews", true));
+        config.setEnableAppliancePlugin(getIntent().getBooleanExtra("enablePlugin", true));
+        boolean preloading = getIntent().getBooleanExtra("preload", false);
+        config.setEnablePreLoadAppliancePlugin(getIntent().getBooleanExtra("appliancePreload", preloading));
+        if (preloading) config.setPreloadBuiltinApps(java.util.Arrays.asList("Slide", "Presentation"));
+        if (getIntent().getBooleanExtra("enableModelPreload", false)) config.setEnableModelPreload(true);
+        if (getIntent().hasExtra("dynamicConfig")) {
+            java.util.Map<String, String> urls = gson.fromJson(getIntent().getStringExtra("dynamicConfig"),
+                    new com.google.gson.reflect.TypeToken<java.util.Map<String, String>>() {}.getType());
+            config.setDynamicConfig(urls);
+        }
         if ("empty".equals(getIntent().getStringExtra("apps")))
             config.setPreloadBuiltinApps(Collections.emptyList());
-        // Omit enableModelPreload: the release default must remain false.
+        String workerMode = getIntent().getStringExtra("workerMode");
+        if (workerMode != null) {
+            AppliancePluginOptions options = new AppliancePluginOptions();
+            Map<String, Object> extras = new LinkedHashMap<>();
+            extras.put("useWorker", "mainThread".equals(workerMode) ? "mainThread" : "auto");
+            extras.put("useSimple", !"dual".equals(workerMode));
+            options.setExtras(extras); config.setAppliancePluginOptions(options);
+        }
+        // Optional flags are set before constructing the SDK, just like host code.
         if (getIntent().hasExtra("sharedMediaVolume"))
             config.getSlideAppOptions().setEnableSharedMediaVolume(getIntent().getBooleanExtra("sharedMediaVolume", false));
         config.getSlideAppOptions().setEnableScale(true);
@@ -74,11 +100,23 @@ public class ReleaseE2EActivity extends Activity {
         });
         Map<String, Object> configuration = new LinkedHashMap<>();
         configuration.put("apps", "empty".equals(getIntent().getStringExtra("apps"))
-                ? Collections.emptyList() : "omitted: Slide/Presentation");
+                ? Collections.emptyList() : config.getPreloadBuiltinApps());
         configuration.put("sharedMediaVolume", config.getSlideAppOptions().isEnableSharedMediaVolume());
-        configuration.put("modelOptionOmitted", true);
-        configuration.put("appliance", "constructor");
+        configuration.put("enableModelPreload", config.isEnableModelPreload());
+        configuration.put("appliance", !config.isEnableAppliancePlugin() ? "disabled"
+                : config.isEnablePreLoadAppliancePlugin() ? "constructor" : "post-room");
+        configuration.put("sdk", config);
         publish("configuration", configuration);
+        if (getIntent().getBooleanExtra("immediateJoin", false)) {
+            // Exercise the original host flow: construct, then join immediately,
+            // without calling prepareCompletion or waiting for preload callbacks.
+            Intent request = new Intent(getIntent());
+            request.putExtra("action", "join");
+            request.putExtra("requestId", "immediateJoin");
+            request.putExtra("uid", "android-immediate-" + SystemClock.elapsedRealtime());
+            onNewIntent(request);
+            return;
+        }
         sdk.prepareCompletion(new Promise<Void>() {
             @Override public void then(Void value) { publish("prepared", "ready"); }
             @Override public void catchEx(SDKError error) { publishError("prepared", error); }
@@ -126,6 +164,11 @@ public class ReleaseE2EActivity extends Activity {
                 MemberState state = gson.fromJson(intent.getStringExtra("payload"), MemberState.class);
                 room.setMemberState(state);
                 publish(id, "configured");
+            } else if ("enableUndo".equals(action)) {
+                // Single-board rooms keep the legacy disableSerialization=true default.
+                // Opt in explicitly before testing the public undo/redo APIs.
+                room.disableSerialization(false);
+                publish(id, "enabled");
             } else if ("docs".equals(action)) {
                 WindowDocsEvent event = gson.fromJson(intent.getStringExtra("payload"), WindowDocsEvent.class);
                 room.dispatchDocsEvent(event, new Promise<DispatchDocsEventResult>() {
@@ -183,6 +226,7 @@ public class ReleaseE2EActivity extends Activity {
     }
 
     @Override public void onDestroy() {
+        destroyed = true;
         if (sdk != null) sdk.releaseRoom();
         if (view != null) view.destroy();
         super.onDestroy();

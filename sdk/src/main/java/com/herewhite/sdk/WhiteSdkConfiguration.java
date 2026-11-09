@@ -44,7 +44,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private List<String> preloadBuiltinApps;
 
     /**
-     * SDK 构造时后台预加载的 App 类。未配置时默认 Slide、Presentation；空列表关闭。
+     * SDK 构造时后台预加载的 App 类。未配置或空列表时关闭；非空列表显式开启。
      * 可选值大小写固定：Slide、Presentation、MediaPlayer、DocsViewer。
      * 仅加载类，不创建 App 或加载课件内容，独立于 enableModelPreload。
      */
@@ -52,7 +52,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
         preloadBuiltinApps = kinds == null ? null : new ArrayList<>(kinds);
     }
 
-    /** null 表示采用默认列表；返回值为独立副本。 */
+    /** null 表示关闭预加载；返回值为独立副本。 */
     public List<String> getPreloadBuiltinApps() {
         return preloadBuiltinApps == null ? null : new ArrayList<>(preloadBuiltinApps);
     }
@@ -100,6 +100,7 @@ public class WhiteSdkConfiguration extends WhiteObject {
     private boolean enableRtcAudioEffectIntercept = false;
     private boolean enableSyncedStore = false;
     private boolean enableAppliancePlugin = false;
+    private boolean enablePreLoadAppliancePlugin = false;
     private com.herewhite.sdk.domain.AppliancePluginOptions appliancePluginOptions;
 
     /** Optional SDK defaults; explicit RoomParams values take precedence per field.
@@ -670,14 +671,27 @@ public class WhiteSdkConfiguration extends WhiteObject {
         return enableAppliancePlugin;
     }
 
-    /**
-     * 在构造 WhiteSdk 前设为 true，可独立启动教具渲染准备；不依赖 enableModelPreload。
-     * 无需设置 appliancePluginOptions。未被配置覆盖时，插件默认 useWorker 为 "auto"，
-     * 按能力、缓存和页面可见性决定是否执行探针。
-     */
+    /** 启用教具插件功能。默认不预加载；在入房后的原初始化点准备探针与 Worker。 */
     public void setEnableAppliancePlugin(boolean enableAppliancePlugin) {
         this.enableAppliancePlugin = enableAppliancePlugin;
         __nativeConfigDefaults.remove("enableAppliancePlugin");
+    }
+
+    /** 是否在构造时预准备教具探针和所需 Worker。默认 false，必须同时启用教具插件。 */
+    public boolean isEnablePreLoadAppliancePlugin() { return enablePreLoadAppliancePlugin; }
+
+    /**
+     * 在构造 WhiteSdk 前显式开启。首份 SDK 教具配置在预准备时固定，
+     * 后续 RoomParams 不覆盖它；关闭时仍可在首次入房使用 RoomParams 配置。
+     * 不隐式开启 enableAppliancePlugin，不依赖模型或 App 类预加载。
+     */
+    public void setEnablePreLoadAppliancePlugin(boolean enabled) { enablePreLoadAppliancePlugin = enabled; }
+
+    /** Internal frozen-snapshot gate; avoids even a Bridge observation call on ordinary joins. */
+    boolean hasOptionalPreload() {
+        return enableModelPreload || dynamicConfig != null ||
+                (preloadBuiltinApps != null && !preloadBuiltinApps.isEmpty()) ||
+                (enableAppliancePlugin && enablePreLoadAppliancePlugin);
     }
 
     /**
