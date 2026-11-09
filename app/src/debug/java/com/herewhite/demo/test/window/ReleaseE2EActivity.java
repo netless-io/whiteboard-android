@@ -107,6 +107,16 @@ public class ReleaseE2EActivity extends Activity {
                 : config.isEnablePreLoadAppliancePlugin() ? "constructor" : "post-room");
         configuration.put("sdk", config);
         publish("configuration", configuration);
+        if (getIntent().getBooleanExtra("immediateJoin", false)) {
+            // Exercise the original host flow: construct, then join immediately,
+            // without calling prepareCompletion or waiting for preload callbacks.
+            Intent request = new Intent(getIntent());
+            request.putExtra("action", "join");
+            request.putExtra("requestId", "immediateJoin");
+            request.putExtra("uid", "android-immediate-" + SystemClock.elapsedRealtime());
+            onNewIntent(request);
+            return;
+        }
         sdk.prepareCompletion(new Promise<Void>() {
             @Override public void then(Void value) { publish("prepared", "ready"); }
             @Override public void catchEx(SDKError error) { publishError("prepared", error); }
