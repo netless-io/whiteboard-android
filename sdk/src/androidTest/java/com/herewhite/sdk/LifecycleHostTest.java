@@ -60,6 +60,39 @@ public class LifecycleHostTest {
         main(()->host.replace(key,new Object[]{},5000,()->{},g->{assertTrue(host.continueJoin(g,e->fail(e.getMessage())));assertTrue(host.finish(g,true));done.countDown();},e->fail(e.getMessage())));
         assertTrue(done.await(2,TimeUnit.SECONDS));
     }
+    @Test public void destroyedOwnerAllowsSameIdentityWithoutExplicitLeave() throws Exception {
+        Raw oldRaw=new Raw(),newRaw=new Raw();LifecycleHost old=new LifecycleHost(oldRaw),fresh=new LifecycleHost(newRaw);
+        String key="destroy-rejoin-"+System.nanoTime();main(()->{old.claim();fresh.claim();});
+        activate(old,key);main(old::destroy);activate(fresh,key);
+        main(()->{assertEquals(0,oldRaw.leaves);assertTrue(fresh.current(1));fresh.destroy();});
+    }
+    @Test public void destroyingOldOwnerUnblocksAnAlreadyWaitingReplacement() throws Exception {
+        Raw oldRaw=new Raw(),newRaw=new Raw();LifecycleHost old=new LifecycleHost(oldRaw),fresh=new LifecycleHost(newRaw);
+        String key="destroy-during-leave-"+System.nanoTime();main(()->{old.claim();fresh.claim();});activate(old,key);oldRaw.holdLeave=true;
+        CountDownLatch joined=new CountDownLatch(1);
+        main(()->fresh.replace(key,new Object[]{},5000,()->{},g->{assertTrue(fresh.continueJoin(g,e->fail(e.getMessage())));assertTrue(fresh.finish(g,true));joined.countDown();},e->fail(e.getMessage())));
+        main(()->{assertEquals(1,oldRaw.leaves);assertFalse(fresh.current(1));old.destroy();});
+        assertTrue(joined.await(2,TimeUnit.SECONDS));
+        main(()->{oldRaw.completeLeave.run();old.destroy();assertTrue(fresh.current(1));fresh.destroy();});
+    }
+    @Test public void repeatedDestroyRejoinDoesNotAccumulateOwners() throws Exception {
+        java.lang.reflect.Field field=LifecycleHost.class.getDeclaredField("owners");field.setAccessible(true);
+        int initial=((java.util.Map<?,?>)field.get(null)).size();
+        for(int i=0;i<50;i++) {
+            Raw raw=new Raw();LifecycleHost host=new LifecycleHost(raw);main(host::claim);
+            activate(host,"destroy-capacity-"+i+"-"+System.nanoTime());main(host::destroy);
+        }
+        assertTrue(((java.util.Map<?,?>)field.get(null)).size() <= initial);
+    }
+    @Test public void realWebViewDestroyRetiresItsLifecycle() {
+        main(()->{
+            WhiteboardView view=new WhiteboardView(androidx.test.core.app.ApplicationProvider.getApplicationContext());
+            LifecycleHost host=view.lifecycle;long generation=host.admit(e->{});assertTrue(host.finish(generation,true));
+            view.destroy();
+            host.leave(generation,result->assertNull(SDKError.promiseError(result)));
+            assertFalse(host.current(generation));
+        });
+    }
     @Test public void replacementDoesNotCloseOwnerThatChangedIdentityDuringLocalLeave() throws Exception {
         Raw rawA=new Raw(),rawB=new Raw();LifecycleHost a=new LifecycleHost(rawA),b=new LifecycleHost(rawB);
         String key="owner-race-"+System.nanoTime();main(()->{a.claim();b.claim();});

@@ -160,9 +160,12 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
     }
 
     @Override
-    public void destroy() { lifecycle.invalidate(); super.destroy(); }
+    public void destroy() {
+        super.destroy();
+        lifecycle.destroy();
+    }
 
-    public void invalidateLifecycle() { lifecycle.invalidate(); }
+    public void invalidateLifecycle() { lifecycle.destroy(); }
     public void lifecyclePageStarted() { lifecycle.pageStarted(); }
     public void lifecyclePageFinished() { lifecycle.pageFinished(); }
 

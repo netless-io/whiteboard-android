@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.herewhite.sdk.test">
     <uses-permission android:name="android.permission.INTERNET" />
-    <application android:usesCleartextTraffic="true" />
+    <application android:usesCleartextTraffic="true">
+        <activity android:name="com.herewhite.sdk.DestroyedHostReentryDeviceTest$HostActivity" android:exported="false" />
+    </application>
 </manifest>

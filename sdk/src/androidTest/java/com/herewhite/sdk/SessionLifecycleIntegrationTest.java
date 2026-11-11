@@ -199,11 +199,13 @@ public class SessionLifecycleIntegrationTest {
         SystemClock.sleep(8000);JSONObject held=snapshot("reconnectingAfter8s");assertEquals("reconnecting",held.getJSONArray("rooms").getJSONObject(0).getString("phase"));assertEquals(1,held.getInt("joinStarts"));
         gate(false);phase("connected",60);assertEquals(1,open(snapshot("recovered")));assertEquals(1,snapshot("onePublicJoin").getInt("joinStarts"));leave();
     }
-    @Test public void reconnectingLeaveTerminalBlocksRejoin() throws Exception {
+    @Test public void reconnectingLeaveWaitsForRecoveryThenAllowsRejoin() throws Exception {
         bootstrap();join();gate(true);js("window.__lifecycleProbe.closeTransport(0)");phase("reconnecting",10);
         CountDownLatch done=new CountDownLatch(1);AtomicReference<String> failure=new AtomicReference<>();
         main(()->sdk.leaveRoom(new Promise<Object>(){public void then(Object v){done.countDown();}public void catchEx(SDKError e){failure.set(e.getMessage());done.countDown();}}));
-        assertTrue(done.await(25,TimeUnit.SECONDS));assertEquals("CloseUnconfirmed",failure.get());expectedBlocked=true;phase("disconnected",10);rejectDuplicate("CloseUnconfirmed");gate(false);SystemClock.sleep(3000);assertEquals(1,snapshot("terminalRetryRejected").getInt("joinStarts"));
+        assertFalse(done.await(500,TimeUnit.MILLISECONDS));assertEquals(1,snapshot("waitingForRecovery").getInt("joinStarts"));
+        gate(false);assertTrue(done.await(25,TimeUnit.SECONDS));assertNull(failure.get());phase("disconnected",10);
+        assertEquals(0,open(snapshot("confirmedLeave")));join();assertEquals(2,snapshot("rejoined").getInt("joinStarts"));leave();
     }
     @Test public void initialTimeoutKeepsOneCreateAndLateSuccessIsCleaned() throws Exception {
         bootstrap();js("window.__originalJoin=window.sdk.joinRoom;window.sdk.joinRoom=function(p,c){return window.__originalJoin(p,c).then(function(r){return new Promise(function(done){setTimeout(function(){done(r)},48000)})})};true");

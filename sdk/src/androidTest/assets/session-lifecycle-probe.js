@@ -15,7 +15,7 @@
         return bridgeCall(method,value);
     };
     function dereference(entry) { return entry && typeof entry.deref === 'function' ? entry.deref() : entry; }
-    function transport(room) {
+    function transport(room) { if (!room || room.phase !== 'connected') return {};
         var session = room.magix && room.magix.socketSession;
         var connection = session && session.connection;
         return { session: session, connection: connection,
@@ -62,7 +62,7 @@
     }
     var originalJoin = window.sdk.joinRoom.bind(window.sdk);
     window.sdk.joinRoom = function (params, callbacks) {
-        probe.joinStarts++;
+        probe.joinStarts++; probe.events.push({at:Date.now(),type:'join-start'});
         return originalJoin(params, callbacks).then(function (room) {
             probe.rooms.push(room);
             // Akko caches its WebSocket constructor at module load. Observe the
@@ -70,6 +70,7 @@
             var roomId = probe.rooms.length;
             observe(room, roomId);
             room.callbacks.on('onPhaseChanged', function(phase) {
+                if (phase === 'connected') observe(room, roomId);
                 probe.events.push({at:Date.now(), type:'room-phase', roomId:roomId, phase:phase});
             });
             if (probe.holdCreateMs) return new Promise(function(resolve){setTimeout(function(){resolve(room)},probe.holdCreateMs)});
@@ -95,7 +96,7 @@
                     roomId: index+1,
                     session: room.logger && room.logger.context && room.logger.context.session,
                     serverSession: current.session && current.session.session,
-                    connectionSession: current.connection && current.connection.sessionBuild.session,
+                    connectionSession: current.connection && current.connection.sessionBuild && current.connection.sessionBuild.session,
                     socketId: entry && entry.id,
                     observerId: room.observerId,
                     uid: room.uid,
@@ -123,6 +124,25 @@
         var socket = transport(dereference(probe.rooms[index])).socket;
         socket.close(4001,'lifecycle transport fault');
         return socket.readyState;
+    };
+    probe.reconnectOnNextLeave = function() {
+        var original = window.bridge.getFunction('sdk.leaveRoom').function;
+        window.bridge.registerAsync('sdk.leaveRoom', function() {
+            var args = arguments;
+            // Restore immediately: inject one transport fault, never another join.
+            window.bridge.registerAsync('sdk.leaveRoom', original);
+            probe.closeTransport(0);
+            var began = Date.now();
+            var timer = setInterval(function() {
+                var phase = dereference(probe.rooms[0]).phase;
+                if (phase === 'reconnecting' || Date.now() - began > 5000) {
+                    clearInterval(timer);
+                    probe.reconnectLeavePhase = phase;
+                    original.apply(null, args);
+                }
+            }, 10);
+        });
+        return true;
     };
     probe.weakenRoomReferences = function() {
         if (typeof WeakRef !== 'function') throw new Error('WeakRef required for lifecycle retention control');

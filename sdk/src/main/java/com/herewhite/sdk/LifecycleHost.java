@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.lang.ref.WeakReference;
 import wendu.dsbridge.special.OnReturnValue;
 
 /** Internal owner of one actual WebView. Releasing listeners never releases this slot. */
@@ -20,6 +22,7 @@ public final class LifecycleHost {
     private long generation;
     private String state = "idle";
     private boolean initialized, invalid;
+    private boolean destroyed;
     private boolean reloading;
     private Object[] sdkInitArgs;
     private Setup setup;
@@ -36,11 +39,26 @@ public final class LifecycleHost {
     private final List<Runnable> ready = new ArrayList<>();
     private List<OnReturnValue<String>> closing;
     private String closeResult;
-    // Process-local ownership survives release/detach and a replacement WebView.
-    private static final Map<String, LifecycleHost> owners = new HashMap<>();
+    // Coordinate live Views without keeping abandoned Views/Activities alive.
+    private static final Map<String, WeakReference<LifecycleHost>> owners = new HashMap<>();
     private static final Map<String, Replacement> replacements = new HashMap<>();
     private Replacement replacement;
     private String identity;
+    private Runnable joinDeadline, leaveDeadline;
+    private static LifecycleHost owner(String key) {
+        Iterator<Map.Entry<String, WeakReference<LifecycleHost>>> entries = owners.entrySet().iterator();
+        while (entries.hasNext()) {
+            LifecycleHost host = entries.next().getValue().get();
+            if (host == null || host.destroyed) entries.remove();
+        }
+        WeakReference<LifecycleHost> reference = owners.get(key);
+        return reference == null ? null : reference.get();
+    }
+    private void releaseOwner() {
+        WeakReference<LifecycleHost> reference = identity == null ? null : owners.get(identity);
+        if (reference != null && reference.get() == this) owners.remove(identity);
+        identity = null;
+    }
     private static final class Replacement {
         final LifecycleHost host; final String key; final Start start; final Pending fail; final Object[] sdkArgs; final Runnable bind; final long timeout;
         long generation;
@@ -53,7 +71,7 @@ public final class LifecycleHost {
         void finish(SDKError error) {
             if (!current()) return;
             waiting = false; replacements.remove(key); host.replacement = null;
-            if (error != null) fail.fail(error); else { owners.put(key, host); host.identity = key; start.run(generation); }
+            if (error != null) fail.fail(error); else { owners.put(key, new WeakReference<>(host)); host.identity = key; start.run(generation); }
         }
     }
 
@@ -155,7 +173,8 @@ public final class LifecycleHost {
                     // One creation budget covers readiness, setup and join after both owners leave.
                     request.generation = begin(request::finish, request.timeout);
                     if (request.generation < 0) { request.finish(new SDKError(rejection())); return; }
-                    owners.put(key, this); identity = key;
+                    owner(key); // Sweep collected entries before registering another identity.
+                    owners.put(key, new WeakReference<>(this)); identity = key;
                     request.bind.run();
                     sdkInitArgs = request.sdkArgs;
                     whenReady(() -> {
@@ -168,7 +187,7 @@ public final class LifecycleHost {
                     });
                 };
                 // The target owner may have switched identity while this host was closing.
-                LifecycleHost old = owners.get(key);
+                LifecycleHost old = owner(key);
                 if (old != null && old != this) old.leave(old.generation, closed);
                 else closed.onValue("{}");
             });
@@ -199,7 +218,8 @@ public final class LifecycleHost {
         if (invalid || !"idle".equals(state)) return -1;
         state = "joining"; generation++; pending = onCancelled; closing = null; closeResult = null;
         final long admitted = generation;
-        if (timeout != null) handler.postDelayed(() -> {
+        if (timeout != null) {
+            joinDeadline = () -> {
             Pending fail;
             synchronized (this) {
                 if (generation != admitted || pending == null || !"joining".equals(state)) return;
@@ -208,7 +228,9 @@ public final class LifecycleHost {
             // The original request's timeout result wins over the leave's cancellation.
             fail.fail(new SDKError("JoinTimeout"));
             leave(admitted, null);
-        }, timeout);
+            };
+            handler.postDelayed(joinDeadline, timeout);
+        }
         return admitted;
     }
     synchronized boolean continueJoin(long target, Pending onCancelled) {
@@ -219,6 +241,7 @@ public final class LifecycleHost {
     synchronized String rejection() { return invalid ? "HostInvalid" : "active".equals(state) ? "AlreadyJoined" : "Busy"; }
     synchronized boolean finish(long target, boolean success) {
         if (invalid || target != generation || pending == null) return false;
+        cancelJoinDeadline();
         pending = null;
         if (success) state = "active";
         else if (!"idle".equals(state) && !"closing".equals(state)) state = "blocked";
@@ -247,23 +270,32 @@ public final class LifecycleHost {
         });
     }
     private static String error(String code) { return "{\"__error\":{\"message\":\"" + code + "\"}}"; }
+    private void cancelJoinDeadline() {
+        if (joinDeadline != null) handler.removeCallbacks(joinDeadline);
+        joinDeadline = null;
+    }
     synchronized void leave(long target, OnReturnValue<String> callback) {
+        if (destroyed) { if (callback != null) callback.onValue("{\"closed\":true}"); return; }
         if (invalid || target != generation) { if (callback != null) callback.onValue(error("StaleScope")); return; }
         if (closeResult != null) { if (callback != null) callback.onValue(closeResult); return; }
         if (closing != null) { if (callback != null) closing.add(callback); return; }
         if ("idle".equals(state)) { if (callback != null) callback.onValue("{\"closed\":true}"); return; }
         state = "closing";
+        cancelJoinDeadline();
         closing = new ArrayList<>(); if (callback != null) closing.add(callback);
         Pending cancel = pending; pending = null;
         if (cancel != null) cancel.fail(new SDKError("Cancelled"));
-        handler.postDelayed(() -> finishLeave(target, error("LeaveTimeout")), 20000);
+        leaveDeadline = () -> finishLeave(target, error("LeaveTimeout"));
+        handler.postDelayed(leaveDeadline, 20000);
         send(target, "sdk.leaveRoom", null, (OnReturnValue<String>) value -> finishLeave(target, value));
     }
     private synchronized void finishLeave(long target, String value) {
         if (target != generation || closeResult != null) return;
+        if (leaveDeadline != null) handler.removeCallbacks(leaveDeadline);
+        leaveDeadline = null;
         closeResult = value;
         state = SDKError.promiseError(value) == null ? "idle" : "blocked";
-        if ("idle".equals(state) && identity != null && owners.get(identity) == this) owners.remove(identity);
+        if ("idle".equals(state)) releaseOwner();
         List<OnReturnValue<String>> callbacks = closing; closing = null;
         if (callbacks != null) for (OnReturnValue<String> callback : callbacks) callback.onValue(value);
     }
@@ -299,11 +331,24 @@ public final class LifecycleHost {
     public synchronized void invalidate() {
         if (invalid) return;
         invalid = true; state = "blocked"; ready.clear();
+        cancelJoinDeadline();
+        if (leaveDeadline != null) handler.removeCallbacks(leaveDeadline);
+        leaveDeadline = null;
         if (setup != null) finishSetup(setup, new SDKError("HostInvalid"));
         if (replacement != null) replacement.finish(new SDKError("HostInvalid"));
         Pending cancel = pending; pending = null; if (cancel != null) cancel.fail(new SDKError("HostInvalid"));
         if (closing != null) { List<OnReturnValue<String>> callbacks = closing; closing = null;
             for (OnReturnValue<String> callback : callbacks) callback.onValue(error("HostInvalid")); }
+    }
+    /** Called only after WebView destruction or a confirmed renderer exit. */
+    public synchronized void destroy() {
+        if (destroyed) return;
+        destroyed = true;
+        releaseOwner();
+        List<OnReturnValue<String>> callbacks = closing; closing = null;
+        invalidate();
+        closeResult = "{\"closed\":true}";
+        if (callbacks != null) for (OnReturnValue<String> callback : callbacks) callback.onValue(closeResult);
     }
     void leave(Promise<Object> promise) {
         handler.post(() -> {
