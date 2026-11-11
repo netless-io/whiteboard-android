@@ -69,6 +69,8 @@ abstract class WhiteSdkIntegrationTestHost {
             WhiteSdkConfiguration configuration = new WhiteSdkConfiguration(credentials.appIdentifier, true);
             configuration.setUserCursor(true);
             configuration.setUseMultiViews(useMultiViews);
+            String apiHosts = InstrumentationRegistry.getArguments().getString("whiteboard.test.apiHosts");
+            if (apiHosts != null && !apiHosts.isEmpty()) configuration.setApiHosts(java.util.Arrays.asList(apiHosts.split(",")));
             sdk = new WhiteSdk(whiteboardView, ApplicationProvider.getApplicationContext(), configuration);
             if (beforeJoin != null) {
                 beforeJoin.run();

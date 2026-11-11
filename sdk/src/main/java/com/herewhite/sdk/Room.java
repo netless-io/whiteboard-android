@@ -374,13 +374,12 @@ public class Room extends Displayer {
      * @param promise 完成回调，其中返回值为插入文字的 id
      */
     public void insertText(int x, int y, String text, Promise<String> promise) {
-        bridge.callHandler("room.insertText", new Object[]{x, y, text}, new OnReturnValue<String>() {
-            @Override
-            public void onValue(String id) {
-                if (promise != null) {
-                    promise.then(id);
-                }
-            }
+        bridge.callHandler("room.insertText", new Object[]{x, y, text}, (OnReturnValue<Object>) value -> {
+            if (promise == null) return;
+            SDKError error = bridgeResponseError(value);
+            if (error != null) promise.catchEx(error);
+            else if (value instanceof String) promise.then((String) value);
+            else promise.catchEx(new SDKError("Expected string text identifier"));
         });
     }
 
@@ -1141,10 +1140,12 @@ public class Room extends Displayer {
      * @param promise
      */
     public void nextPage(@Nullable Promise<Boolean> promise) {
-        bridge.callHandler("room.nextPage", (OnReturnValue<Boolean>) result -> {
-            if (promise != null) {
-                promise.then(result);
-            }
+        bridge.callHandler("room.nextPage", (OnReturnValue<Object>) value -> {
+            if (promise == null) return;
+            SDKError error = bridgeResponseError(value);
+            if (error != null) promise.catchEx(error);
+            else if (value instanceof Boolean) promise.then((Boolean) value);
+            else promise.catchEx(new SDKError("Expected boolean page result"));
         });
     }
 
@@ -1158,10 +1159,12 @@ public class Room extends Displayer {
      * @param promise
      */
     public void prevPage(@Nullable Promise<Boolean> promise) {
-        bridge.callHandler("room.prevPage", (OnReturnValue<Boolean>) result -> {
-            if (promise != null) {
-                promise.then(result);
-            }
+        bridge.callHandler("room.prevPage", (OnReturnValue<Object>) value -> {
+            if (promise == null) return;
+            SDKError error = bridgeResponseError(value);
+            if (error != null) promise.catchEx(error);
+            else if (value instanceof Boolean) promise.then((Boolean) value);
+            else promise.catchEx(new SDKError("Expected boolean page result"));
         });
     }
 
@@ -1389,11 +1392,25 @@ public class Room extends Displayer {
 
     // 关闭窗口
     public void closeApp(String appId, Promise<Boolean> promise) {
-        bridge.callHandler("room.closeApp", new Object[]{appId}, value -> {
-            if (promise != null) {
-                promise.then(true);
-            }
+        bridge.callHandler("room.closeApp", new Object[]{appId}, (OnReturnValue<Object>) value -> {
+            if (promise == null) return;
+            SDKError error = bridgeResponseError(value);
+            if (error != null) promise.catchEx(error);
+            else if (value == null || value == JSONObject.NULL) promise.then(true);
+            else promise.catchEx(new SDKError("Expected an empty closeApp result"));
         });
+    }
+
+    // IDs and booleans are not JSON objects; only inspect the standard error envelope.
+    private SDKError bridgeResponseError(Object value) {
+        if (!(value instanceof String) && !(value instanceof JSONObject)) return null;
+        String json = String.valueOf(value).trim();
+        if (!json.startsWith("{")) return null;
+        try {
+            return SDKError.promiseError(json);
+        } catch (RuntimeException error) {
+            return new SDKError("Invalid Bridge response: " + error.getMessage());
+        }
     }
 
     /**
