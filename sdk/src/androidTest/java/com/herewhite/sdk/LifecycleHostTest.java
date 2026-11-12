@@ -20,7 +20,9 @@ public class LifecycleHostTest {
     static class Raw implements JsBridgeInterface {
         boolean dropHandshake, holdSetup, holdLeave, holdPreload;
         Runnable completeLeave;
-        int leaves;
+        int leaves, recoveries;
+        boolean throwLeave;
+        String leaveError;
         OnReturnValue<Object> handshake, setup;
         long setupGeneration;
         int setups;
@@ -30,6 +32,7 @@ public class LifecycleHostTest {
             if (method.equals("sdk.getLifecycle")) {
                 handshake=(OnReturnValue<Object>)callback;
                 if (!dropHandshake) ready();
+            } else if (method.equals("sdk.continueAfterLeaveFailure")) { recoveries++;
             } else if (callback != null) {
                 try {
                     long generation=((JSONObject)args[0]).getJSONObject("__whiteScope").getLong("generation");
@@ -37,13 +40,14 @@ public class LifecycleHostTest {
                         setups++;setup=(OnReturnValue<Object>)callback;setupGeneration=generation;
                         if (!holdSetup) completeSetup();
                     } else if (method.equals("sdk.leaveRoom")) {
-                        leaves++; completeLeave=()->callback.onValue((T)envelope(generation,"{}"));
+                        leaves++; if(throwLeave) throw new IllegalStateException("synthetic transport failure");
+                        completeLeave=()->callback.onValue((T)envelope(generation,leaveError == null ? "{}" : leaveError));
                         if (!holdLeave) completeLeave.run();
                     } else if (method.equals("sdk.observePreload")) {
                         observations++; preload=(OnReturnValue<Object>)callback;
                         if (!holdPreload) completePreload("{\"state\":\"success\",\"message\":\"\"}");
                     } else callback.onValue((T)envelope(generation,"{}"));
-                } catch(Exception e){throw new AssertionError(e);}
+                } catch(RuntimeException e){throw e;} catch(Exception e){throw new AssertionError(e);}
             }
         }
         void ready(){try { handshake.onValue(new JSONObject().put("value","{\"documentId\":\"unit-doc\"}")); } catch(Exception e){throw new AssertionError(e);} }
@@ -59,6 +63,35 @@ public class LifecycleHostTest {
         CountDownLatch done=new CountDownLatch(1);
         main(()->host.replace(key,new Object[]{},5000,()->{},g->{assertTrue(host.continueJoin(g,e->fail(e.getMessage())));assertTrue(host.finish(g,true));done.countDown();},e->fail(e.getMessage())));
         assertTrue(done.await(2,TimeUnit.SECONDS));
+    }
+    @Test public void failedLeavePermitsSameAndCrossHostReplacement() throws Exception {
+        for(boolean cross:new boolean[]{false,true}) {
+            Raw raw=new Raw();LifecycleHost a=new LifecycleHost(raw),b=cross?new LifecycleHost(new Raw()):a;
+            String key="failed-replace-"+System.nanoTime();main(()->{a.claim();if(cross)b.claim();});activate(a,key);
+            raw.leaveError="{\"__error\":{\"message\":\"synthetic close failure\"}}";activate(b,key);
+            main(()->{assertEquals(1,raw.recoveries);assertTrue(b.current(cross?1:3));raw.completeLeave.run();assertTrue(b.current(cross?1:3));a.destroy();b.destroy();});
+        }
+    }
+    @Test public void explicitFailedLeaveRemainsObservableAndNextJoinRecoversCachedFailure() throws Exception {
+        Raw raw=new Raw();LifecycleHost host=new LifecycleHost(raw);main(host::claim);String key="cached-failure-"+System.nanoTime();activate(host,key);
+        raw.leaveError="{\"__error\":{\"message\":\"synthetic close failure\"}}";
+        main(()->host.leave(1,value->assertEquals("synthetic close failure",SDKError.promiseError(value).getMessage())));
+        activate(host,key+"-other-identity");main(()->{assertEquals(1,raw.leaves);assertEquals(1,raw.recoveries);assertTrue(host.current(3));host.destroy();});
+    }
+    @Test public void timeoutReplacementFencesLateOldReply() throws Exception {
+        Raw raw=new Raw();LifecycleHost host=new LifecycleHost(raw);main(host::claim);String key="leave-timeout-"+System.nanoTime();activate(host,key);raw.holdLeave=true;
+        CountDownLatch joined=new CountDownLatch(1);
+        main(()->host.replace(key,new Object[]{},5000,()->{},g->{assertTrue(host.continueJoin(g,e->fail(e.getMessage())));assertTrue(host.finish(g,true));joined.countDown();},e->fail(e.getMessage())));
+        main(()->{
+            assertEquals(1,raw.leaves);
+            try { java.lang.reflect.Method finish=LifecycleHost.class.getDeclaredMethod("finishLeave",long.class,String.class);finish.setAccessible(true);finish.invoke(host,1L,"{\"__error\":{\"message\":\"LeaveTimeout\"}}"); }
+            catch(Exception e){throw new AssertionError(e);}
+        });
+        assertTrue(joined.await(2,TimeUnit.SECONDS));main(()->{raw.completeLeave.run();assertEquals(1,raw.recoveries);assertTrue(host.current(3));host.destroy();});
+    }
+    @Test public void synchronousLeaveExceptionDoesNotBlockReplacement() throws Exception {
+        Raw raw=new Raw();LifecycleHost host=new LifecycleHost(raw);main(host::claim);String key="throw-leave-"+System.nanoTime();activate(host,key);raw.throwLeave=true;
+        activate(host,key);main(()->{assertEquals(1,raw.recoveries);assertTrue(host.current(3));host.destroy();});
     }
     @Test public void destroyedOwnerAllowsSameIdentityWithoutExplicitLeave() throws Exception {
         Raw oldRaw=new Raw(),newRaw=new Raw();LifecycleHost old=new LifecycleHost(oldRaw),fresh=new LifecycleHost(newRaw);

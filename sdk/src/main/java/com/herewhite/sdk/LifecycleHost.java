@@ -162,14 +162,13 @@ public final class LifecycleHost {
             if (!request.current()) return;
             if (invalid) { request.finish(new SDKError("HostInvalid")); return; }
             // Close this host as well when switching identity/room on the same View.
-            leave(generation, value -> {
+            final long localGeneration = generation;
+            leave(localGeneration, value -> {
                 if (!request.current()) return;
                 SDKError error = SDKError.promiseError(value);
-                if (error != null) { request.finish(error); return; }
+                if (error != null) continueAfterFailedLeave(localGeneration, value);
                 OnReturnValue<String> closed = result -> {
                     if (!request.current()) return;
-                    SDKError closeError = SDKError.promiseError(result);
-                    if (closeError != null) { request.finish(closeError); return; }
                     // One creation budget covers readiness, setup and join after both owners leave.
                     request.generation = begin(request::finish, request.timeout);
                     if (request.generation < 0) { request.finish(new SDKError(rejection())); return; }
@@ -188,7 +187,14 @@ public final class LifecycleHost {
                 };
                 // The target owner may have switched identity while this host was closing.
                 LifecycleHost old = owner(key);
-                if (old != null && old != this) old.leave(old.generation, closed);
+                if (old != null && old != this) {
+                    final long oldGeneration = old.generation;
+                    old.leave(oldGeneration, result -> {
+                        if (!request.current()) return;
+                        if (SDKError.promiseError(result) != null) old.continueAfterFailedLeave(oldGeneration, result);
+                        closed.onValue("{}");
+                    });
+                }
                 else closed.onValue("{}");
             });
         });
@@ -274,6 +280,21 @@ public final class LifecycleHost {
         if (joinDeadline != null) handler.removeCallbacks(joinDeadline);
         joinDeadline = null;
     }
+    private synchronized void continueAfterFailedLeave(long target, String result) {
+        if (target != generation) return;
+        SDKError failure = SDKError.promiseError(result);
+        String message = failure == null ? "LeaveFailed" : failure.getMessage();
+        com.herewhite.sdk.internal.Logger.error("Previous room leave failed; continuing replacement: " + message, null);
+        try { send(target, "sdk.continueAfterLeaveFailure", new Object[]{message}, null); }
+        catch (RuntimeException error) { com.herewhite.sdk.internal.Logger.error("Failed to notify old room logger", error); }
+        releaseOwner();
+        cancelJoinDeadline();
+        if (leaveDeadline != null) handler.removeCallbacks(leaveDeadline);
+        leaveDeadline = null;
+        generation++; // Fence replies and events from the retired room before any new creation.
+        closeResult = null;
+        state = invalid ? "blocked" : "idle";
+    }
     synchronized void leave(long target, OnReturnValue<String> callback) {
         if (destroyed) { if (callback != null) callback.onValue("{\"closed\":true}"); return; }
         if (invalid || target != generation) { if (callback != null) callback.onValue(error("StaleScope")); return; }
@@ -287,7 +308,11 @@ public final class LifecycleHost {
         if (cancel != null) cancel.fail(new SDKError("Cancelled"));
         leaveDeadline = () -> finishLeave(target, error("LeaveTimeout"));
         handler.postDelayed(leaveDeadline, 20000);
-        send(target, "sdk.leaveRoom", null, (OnReturnValue<String>) value -> finishLeave(target, value));
+        try { send(target, "sdk.leaveRoom", null, (OnReturnValue<String>) value -> finishLeave(target, value)); }
+        catch (RuntimeException error) {
+            com.herewhite.sdk.internal.Logger.error("Previous room leave threw", error);
+            finishLeave(target, error("LeaveFailed"));
+        }
     }
     private synchronized void finishLeave(long target, String value) {
         if (target != generation || closeResult != null) return;
