@@ -76,4 +76,30 @@ public class LeaveFailureRecoveryIntegrationTest extends WhiteSdkIntegrationTest
     }
     @Test public void singleWindowFailureRecovery() throws Exception {exercise(false);}
     @Test public void multiWindowFailureRecovery() throws Exception {exercise(true);}
+    @Test public void navigationRestoresSameViewAndSdk() throws Exception {
+        multi=true;credentials=TestCredentialProvider.requireRoomCredentials();uid="android-navigation-"+System.currentTimeMillis();initialize();
+        for(String mode:new String[]{"reload","html","url","js-reload","js-navigate","failed-reload"})for(int i=0;i<10;i++){
+            if(i%2==1)this.<Void>call(reply->sdk.prepareCompletion(reply),null);
+            join();if(mode.equals("failed-reload"))inject();
+            WhiteSdk sameSdk=sdk;WhiteboardView sameView=whiteboardView;
+            if(mode.startsWith("js-")){
+                main(()->whiteboardView.evaluateJavascript(mode.equals("js-reload")?"location.reload()":"location.href='about:blank'",null));
+                boolean navigated=false;
+                for(int n=0;n<100&&!navigated;n++){
+                    AtomicReference<Boolean> invalid=new AtomicReference<>(false);
+                    main(()->{try{java.lang.reflect.Field f=LifecycleHost.class.getDeclaredField("navigationInvalid");f.setAccessible(true);invalid.set(f.getBoolean(whiteboardView.lifecycle));}catch(Exception e){throw new AssertionError(e);}});
+                    navigated=invalid.get();if(!navigated)Thread.sleep(50);
+                }
+                assertTrue("JS navigation must really happen",navigated);
+            }else main(()->{
+                if(mode.equals("html"))whiteboardView.loadDataWithBaseURL(null,"<title>navigation</title>","text/html","UTF-8",null);
+                else if(mode.equals("url"))whiteboardView.loadUrl("about:blank");
+                else whiteboardView.reload();
+            });
+            // Native reload/load APIs are followed immediately by public join, with no explicit leave.
+            join();assertSame(sameSdk,sdk);assertSame(sameView,whiteboardView);
+            this.<Object>call(reply->sdk.leaveRoom(reply),null);
+            System.out.println("NAVIGATION PASS "+mode+" "+(i+1)+"/10");
+        }
+    }
 }

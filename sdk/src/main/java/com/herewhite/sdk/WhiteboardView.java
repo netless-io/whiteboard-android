@@ -127,6 +127,7 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
 
     private void init() {
         if (isInEditMode()) return;
+        lifecycle.setDocumentRecovery(() -> WhiteboardView.super.loadUrl(entryUrl));
         getSettings().setMediaPlaybackRequiresUserGesture(false);
         getSettings().setTextZoom(100);
         setWebChromeClient(new FixWebChromeClient());
@@ -167,10 +168,25 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
 
     public void invalidateLifecycle() { lifecycle.destroy(); }
     public void lifecyclePageStarted() { lifecycle.pageStarted(); }
-    public void lifecyclePageFinished() { lifecycle.pageFinished(); }
+    public void lifecyclePageFinished() {
+        if (!entryUrl.equals(getUrl())) lifecycle.documentUnavailable();
+        else lifecycle.pageFinished();
+    }
 
     @Override
     public void reload() { lifecycle.prepareReload(); super.reload(); }
+
+    @Override
+    public void loadUrl(String url) {
+        if (lifecycle != null) lifecycle.prepareReload();
+        super.loadUrl(url);
+    }
+
+    @Override
+    public void loadDataWithBaseURL(String baseUrl, String data, String mimeType, String encoding, String historyUrl) {
+        if (lifecycle != null) lifecycle.prepareReload();
+        super.loadDataWithBaseURL(baseUrl, data, mimeType, encoding, historyUrl);
+    }
 
     private void initWebViewClients() {
         whiteWebViewClient = new WhiteWebViewClient();

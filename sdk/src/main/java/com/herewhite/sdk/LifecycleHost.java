@@ -24,6 +24,11 @@ public final class LifecycleHost {
     private boolean initialized, invalid;
     private boolean destroyed;
     private boolean reloading;
+    private boolean navigationInvalid;
+    private boolean recoveringNavigation;
+    private long documentEpoch;
+    private String retiredDocument;
+    private Runnable reloadDocument;
     private Object[] sdkInitArgs;
     private Setup setup;
     private static final class Setup {
@@ -76,6 +81,15 @@ public final class LifecycleHost {
     }
 
     LifecycleHost(JsBridgeInterface raw) { this.raw = raw; }
+    void setDocumentRecovery(Runnable action) { reloadDocument = action; }
+    private void recoverNavigation() {
+        if (!navigationInvalid || destroyed) return;
+        navigationInvalid = false; invalid = false; documentEpoch++;
+        releaseOwner(); retiredDocument = documentId; documentId = null;
+        generation++; state = "idle"; closeResult = null; closing = null; setup = null; ready.clear();
+        reloading = true; recoveringNavigation = true;
+        if (reloadDocument != null) reloadDocument.run();
+    }
     synchronized void claim() {
         if (initialized) return;
         initialized = true;
@@ -85,6 +99,7 @@ public final class LifecycleHost {
         configure(args, bind, null);
     }
     void configure(Object[] args, Runnable bind, Pending completion) {
+        recoverNavigation();
         sdkInitArgs = args;
         if ("idle".equals(state) && replacement == null) { bind.run(); startSetup(args, completion); }
     }
@@ -125,6 +140,7 @@ public final class LifecycleHost {
     void prepare(Object[] args, Runnable bind, long timeoutMs, Promise<Void> promise) {
         handler.post(() -> {
             if (promise == null) return;
+            recoverNavigation();
             if (timeoutMs <= 0) { promise.catchEx(new SDKError("InvalidPreparationOptions")); return; }
             if (invalid) { promise.catchEx(new SDKError("HostInvalid")); return; }
             if (setup == null || !setup.key.equals(Utils.toJson(args))) {
@@ -153,6 +169,7 @@ public final class LifecycleHost {
     }
     void replace(String key, Object[] args, long timeout, Runnable bind, Start start, Pending fail) {
         handler.post(() -> {
+            recoverNavigation();
             Replacement request = new Replacement(this, key, args, timeout, bind, start, fail);
             Replacement previous = replacements.put(key, request);
             Replacement local = replacement;
@@ -200,14 +217,17 @@ public final class LifecycleHost {
         });
     }
     private void handshake(boolean restoreSdk) {
+        final long epoch = documentEpoch;
         raw.callHandler("sdk.getLifecycle", (OnReturnValue<JSONObject>) result -> {
             List<Runnable> work;
             synchronized (this) {
-                if (invalid) return;
+                if (invalid || epoch != documentEpoch || documentId != null) return;
                 try {
                     JSONObject envelope = result instanceof JSONObject ? result : new JSONObject(String.valueOf(result));
                     JSONObject value = new JSONObject(envelope.getString("value"));
-                    documentId = value.getString("documentId");
+                    String nextDocument = value.getString("documentId");
+                    if (nextDocument.equals(retiredDocument)) return;
+                    documentId = nextDocument; reloading = false; recoveringNavigation = false;
                 } catch (Exception error) { invalidate(); return; }
                 work = new ArrayList<>(ready); ready.clear();
             }
@@ -341,21 +361,41 @@ public final class LifecycleHost {
             if ("blocked".equals(next) || ("idle".equals(next) && closeResult != null && SDKError.promiseError(closeResult) == null)) state = next;
         }
     }
-    public synchronized void pageStarted() { if (documentId != null) invalidate(); }
+    public void documentNavigating(Object envelope) {
+        final long epoch = documentEpoch;
+        if (unwrap(envelope, false) != REJECTED) handler.post(() -> { if (epoch == documentEpoch) prepareReload(); });
+    }
+    synchronized void documentUnavailable() {
+        if (destroyed || invalid || recoveringNavigation) return;
+        navigationInvalid = true;
+        invalidate();
+    }
+    public synchronized void pageStarted() { if (documentId != null) prepareReload(); }
     synchronized void prepareReload() {
         if (documentId == null || invalid) return;
-        if (!"idle".equals(state) || (generation > 0 && (closeResult == null || SDKError.promiseError(closeResult) != null))) { invalidate(); return; }
-        documentId = null; generation++; ready.clear(); closeResult = null; closing = null; reloading = true;
+        if (!"idle".equals(state) || (generation > 0 && (closeResult == null || SDKError.promiseError(closeResult) != null))) {
+            // Navigation may destroy JS before it replies. Retire this document, not the View.
+            navigationInvalid = true;
+            try { send(generation, "sdk.leaveRoom", null, (OnReturnValue<String>) value -> {
+                SDKError failure = SDKError.promiseError(value);
+                if (failure != null) com.herewhite.sdk.internal.Logger.error("Room close during navigation: " + failure.getMessage(), null);
+            }); } catch (RuntimeException error) { com.herewhite.sdk.internal.Logger.error("Room close during navigation", error); }
+            com.herewhite.sdk.internal.Logger.error("Room document navigated; closure unconfirmed, next join will restore the SDK page", null);
+            invalidate(); return;
+        }
+        retiredDocument = documentId; documentId = null; documentEpoch++;
+        generation++; ready.clear(); closeResult = null; closing = null; reloading = true;
         Setup previous = setup; setup = null;
         if (previous != null) finishSetup(previous, new SDKError("Cancelled"));
     }
     synchronized void pageFinished() {
         if (!reloading || invalid) return;
-        reloading = false; handshake(true);
+        handshake(true);
     }
     public synchronized void invalidate() {
         if (invalid) return;
         invalid = true; state = "blocked"; ready.clear();
+        documentEpoch++;
         cancelJoinDeadline();
         if (leaveDeadline != null) handler.removeCallbacks(leaveDeadline);
         leaveDeadline = null;

@@ -85,6 +85,9 @@ public class SdkJsInterfaceImpl {
     public void lifecycleState(Object args) { if (lifecycle != null) lifecycle.stateEvent(args); }
 
     @JavascriptInterface
+    public void documentNavigating(Object args) { if (lifecycle != null) lifecycle.documentNavigating(args); }
+
+    @JavascriptInterface
     public String urlInterrupter(Object input) {
         Object scopedArgs = input;
         if (lifecycle != null) { scopedArgs = lifecycle.unwrap(input, true); if (scopedArgs == LifecycleHost.REJECTED) { return null; } }

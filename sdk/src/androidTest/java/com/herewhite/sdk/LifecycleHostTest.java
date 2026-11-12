@@ -23,6 +23,7 @@ public class LifecycleHostTest {
         int leaves, recoveries;
         boolean throwLeave;
         String leaveError;
+        String document = "unit-doc";
         OnReturnValue<Object> handshake, setup;
         long setupGeneration;
         int setups;
@@ -41,17 +42,19 @@ public class LifecycleHostTest {
                         if (!holdSetup) completeSetup();
                     } else if (method.equals("sdk.leaveRoom")) {
                         leaves++; if(throwLeave) throw new IllegalStateException("synthetic transport failure");
-                        completeLeave=()->callback.onValue((T)envelope(generation,leaveError == null ? "{}" : leaveError));
+                        final String source = document;
+                        completeLeave=()->callback.onValue((T)wrapped(source,generation,leaveError == null ? "{}" : leaveError));
                         if (!holdLeave) completeLeave.run();
                     } else if (method.equals("sdk.observePreload")) {
                         observations++; preload=(OnReturnValue<Object>)callback;
                         if (!holdPreload) completePreload("{\"state\":\"success\",\"message\":\"\"}");
-                    } else callback.onValue((T)envelope(generation,"{}"));
+                    } else callback.onValue((T)wrapped(document,generation,"{}"));
                 } catch(RuntimeException e){throw e;} catch(Exception e){throw new AssertionError(e);}
             }
         }
-        void ready(){try { handshake.onValue(new JSONObject().put("value","{\"documentId\":\"unit-doc\"}")); } catch(Exception e){throw new AssertionError(e);} }
-        void completeSetup(){setup.onValue(envelope(setupGeneration,"{}"));}
+        static JSONObject wrapped(String document,long generation,Object value){JSONObject e=envelope(generation,value);try{e.getJSONObject("scope").put("documentId",document);return e;}catch(Exception x){throw new AssertionError(x);}}
+        void ready(){try { handshake.onValue(new JSONObject().put("value",new JSONObject().put("documentId",document).toString())); } catch(Exception e){throw new AssertionError(e);} }
+        void completeSetup(){setup.onValue(wrapped(document,setupGeneration,"{}"));}
         void completePreload(String result){preload.onValue(envelope(0,result));}
         public <T> void callHandler(String m,OnReturnValue<T> c){callHandler(m,null,c);}
         public void callHandler(String m,Object[] a){callHandler(m,a,null);}
@@ -92,6 +95,21 @@ public class LifecycleHostTest {
     @Test public void synchronousLeaveExceptionDoesNotBlockReplacement() throws Exception {
         Raw raw=new Raw();LifecycleHost host=new LifecycleHost(raw);main(host::claim);String key="throw-leave-"+System.nanoTime();activate(host,key);raw.throwLeave=true;
         activate(host,key);main(()->{assertEquals(1,raw.recoveries);assertTrue(host.current(3));host.destroy();});
+    }
+    @Test public void activeNavigationRecoversSameHostAndFencesOldLeave() throws Exception {
+        Raw raw=new Raw();LifecycleHost host=new LifecycleHost(raw);main(host::claim);String key="navigate-"+System.nanoTime();activate(host,key);
+        main(()->{raw.holdLeave=true;host.prepareReload();assertFalse(host.current(1));host.setDocumentRecovery(()->{raw.document="new-doc";host.pageFinished();});});
+        activate(host,key);main(()->{raw.completeLeave.run();assertTrue(host.current(3));host.destroy();});
+    }
+    @Test public void navigationCancelsOldSetupButNewJoinStillStarts() throws Exception {
+        Raw raw=new Raw();raw.holdSetup=true;LifecycleHost host=new LifecycleHost(raw);AtomicInteger errors=new AtomicInteger();
+        main(()->{host.claim();host.replace("old-nav-"+System.nanoTime(),new Object[]{},5000,()->{},g->fail("old join"),e->errors.incrementAndGet());});
+        main(()->{host.prepareReload();assertEquals(1,errors.get());raw.holdSetup=false;host.setDocumentRecovery(()->{raw.document="new-doc";host.pageFinished();});});
+        activate(host,"new-nav-"+System.nanoTime());main(host::destroy);
+    }
+    @Test public void foreignIdleDocumentRecoversButDestroyedHostCannotRevive() throws Exception {
+        Raw raw=new Raw();LifecycleHost host=new LifecycleHost(raw);main(()->{host.claim();host.documentUnavailable();host.setDocumentRecovery(()->{raw.document="new-doc";host.pageFinished();});});
+        activate(host,"foreign-"+System.nanoTime());main(()->{host.prepareReload();host.destroy();host.replace("destroyed-"+System.nanoTime(),new Object[]{},5000,()->{},g->fail("destroyed join"),e->assertEquals("HostInvalid",e.getMessage()));});
     }
     @Test public void destroyedOwnerAllowsSameIdentityWithoutExplicitLeave() throws Exception {
         Raw oldRaw=new Raw(),newRaw=new Raw();LifecycleHost old=new LifecycleHost(oldRaw),fresh=new LifecycleHost(newRaw);
