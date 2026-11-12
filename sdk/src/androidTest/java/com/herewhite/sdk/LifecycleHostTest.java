@@ -107,6 +107,31 @@ public class LifecycleHostTest {
         main(()->{host.prepareReload();assertEquals(1,errors.get());raw.holdSetup=false;host.setDocumentRecovery(()->{raw.document="new-doc";host.pageFinished();});});
         activate(host,"new-nav-"+System.nanoTime());main(host::destroy);
     }
+    @Test public void validRedirectedSdkDocumentCompletesReloadHandshake() throws Exception {
+        Raw raw=new Raw();LifecycleHost host=new LifecycleHost(raw);main(host::claim);
+        main(()->{
+            host.prepareReload();raw.document="redirected-sdk-doc";
+            host.pageFinished(host.documentEpoch(),true);
+        });
+        activate(host,"redirected-sdk-"+System.nanoTime());main(host::destroy);
+    }
+    @Test public void latePageProbeCannotInvalidateReplacementDocument() throws Exception {
+        Raw raw=new Raw();LifecycleHost host=new LifecycleHost(raw);main(host::claim);
+        main(()->{
+            long retired=host.documentEpoch();host.prepareReload();raw.document="replacement-sdk-doc";
+            host.pageFinished(retired,false);
+            host.pageFinished(host.documentEpoch(),true);
+        });
+        activate(host,"late-page-probe-"+System.nanoTime());main(host::destroy);
+    }
+    @Test public void unavailablePageStillRecoversOnNextExplicitJoin() throws Exception {
+        Raw raw=new Raw();LifecycleHost host=new LifecycleHost(raw);main(host::claim);
+        main(()->{
+            host.pageFinished(host.documentEpoch(),false);
+            host.setDocumentRecovery(()->{raw.document="restored-sdk-doc";host.pageFinished(host.documentEpoch(),true);});
+        });
+        activate(host,"unavailable-page-"+System.nanoTime());main(host::destroy);
+    }
     @Test public void foreignIdleDocumentRecoversButDestroyedHostCannotRevive() throws Exception {
         Raw raw=new Raw();LifecycleHost host=new LifecycleHost(raw);main(()->{host.claim();host.documentUnavailable();host.setDocumentRecovery(()->{raw.document="new-doc";host.pageFinished();});});
         activate(host,"foreign-"+System.nanoTime());main(()->{host.prepareReload();host.destroy();host.replace("destroyed-"+System.nanoTime(),new Object[]{},5000,()->{},g->fail("destroyed join"),e->assertEquals("HostInvalid",e.getMessage()));});

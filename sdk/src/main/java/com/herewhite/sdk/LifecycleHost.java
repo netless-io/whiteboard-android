@@ -392,6 +392,12 @@ public final class LifecycleHost {
         if (!reloading || invalid) return;
         handshake(true);
     }
+    synchronized long documentEpoch() { return documentEpoch; }
+    synchronized void pageFinished(long epoch, boolean sdkAvailable) {
+        if (epoch != documentEpoch || destroyed || invalid) return;
+        if (sdkAvailable) pageFinished();
+        else documentUnavailable();
+    }
     public synchronized void invalidate() {
         if (invalid) return;
         invalid = true; state = "blocked"; ready.clear();

@@ -169,8 +169,15 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
     public void invalidateLifecycle() { lifecycle.destroy(); }
     public void lifecyclePageStarted() { lifecycle.pageStarted(); }
     public void lifecyclePageFinished() {
-        if (!entryUrl.equals(getUrl())) lifecycle.documentUnavailable();
-        else lifecycle.pageFinished();
+        final long epoch = lifecycle.documentEpoch();
+        // Redirects and URL normalization can change a valid SDK entry URL.
+        // Probe the current document; the lifecycle handshake validates its ID.
+        evaluateJavascript("document.readyState === 'complete' ? !!(window.bridge && window.bridge.getFunction && window.bridge.getFunction('sdk.getLifecycle')) : null",
+                value -> {
+                    if ("true".equals(value) || "false".equals(value)) {
+                        lifecycle.pageFinished(epoch, "true".equals(value));
+                    }
+                });
     }
 
     @Override
@@ -178,6 +185,12 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
 
     @Override
     public void loadUrl(String url) {
+        // Executing a javascript: URL keeps the current document and Room alive.
+        if (url != null && url.trim().regionMatches(true, 0, "javascript:", 0, 11)) {
+            // DSBridge recognizes only the lowercase prefix; preserve the script body.
+            super.loadUrl("javascript:" + url.substring(url.indexOf(':') + 1));
+            return;
+        }
         if (lifecycle != null) lifecycle.prepareReload();
         super.loadUrl(url);
     }
