@@ -60,6 +60,10 @@ public class ReleaseE2EActivity extends Activity {
     private void initializeSdk() {
         if (destroyed) return;
         WhiteSdkConfiguration config = new WhiteSdkConfiguration(credentials.get("appIdentifier").getAsString(), true);
+        if (credentials.has("apiHosts")) {
+            config.setApiHosts(gson.fromJson(credentials.get("apiHosts"),
+                    new com.google.gson.reflect.TypeToken<java.util.List<String>>() {}.getType()));
+        }
         config.setRegion(Region.cn);
         config.setUseMultiViews(getIntent().getBooleanExtra("multiViews", true));
         config.setEnableAppliancePlugin(getIntent().getBooleanExtra("enablePlugin", true));
@@ -106,6 +110,7 @@ public class ReleaseE2EActivity extends Activity {
         configuration.put("appliance", !config.isEnableAppliancePlugin() ? "disabled"
                 : config.isEnablePreLoadAppliancePlugin() ? "constructor" : "post-room");
         configuration.put("sdk", config);
+        configuration.put("nativeVersion", WhiteSdk.Version());
         publish("configuration", configuration);
         if (getIntent().getBooleanExtra("immediateJoin", false)) {
             // Exercise the original host flow: construct, then join immediately,
