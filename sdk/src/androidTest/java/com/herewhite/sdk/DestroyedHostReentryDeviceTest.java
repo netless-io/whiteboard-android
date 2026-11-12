@@ -20,8 +20,10 @@ import static org.junit.Assert.*;
 /** Ordinary public join/exit API matrix, with real WebViews and a real room. */
 public class DestroyedHostReentryDeviceTest {
     public static class HostActivity extends android.app.Activity {
+        static volatile HostActivity current;
         android.widget.FrameLayout boards;
-        @Override public void onCreate(android.os.Bundle state){super.onCreate(state);boards=new android.widget.FrameLayout(this);setContentView(boards);}
+        @Override public void onCreate(android.os.Bundle state){super.onCreate(state);current=this;boards=new android.widget.FrameLayout(this);setContentView(boards);}
+        @Override public void onDestroy(){if(current==this)current=null;super.onDestroy();}
     }
     HostActivity activity;
     boolean preloaded;
@@ -146,7 +148,13 @@ public class DestroyedHostReentryDeviceTest {
         credentials=TestCredentialProvider.requireRoomCredentials();
         android.content.Context context=InstrumentationRegistry.getInstrumentation().getTargetContext();
         android.content.Intent intent=new android.content.Intent(context,HostActivity.class).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
-        activity=(HostActivity)InstrumentationRegistry.getInstrumentation().startActivitySync(intent);
+        if(InstrumentationRegistry.getArguments().getString("matrixExternalLaunch","false").equals("true")){
+            android.os.Bundle status=new android.os.Bundle();status.putString("backgroundAction","{\"id\":0,\"action\":\"launch\",\"category\":\"com.herewhite.sdk.DESTROYED_HOST_LAUNCH\"}");
+            InstrumentationRegistry.getInstrumentation().sendStatus(2,status);
+            long deadline=SystemClock.elapsedRealtime()+45000;
+            while(HostActivity.current==null){assertTrue("Launcher Activity creation",SystemClock.elapsedRealtime()<deadline);SystemClock.sleep(100);}
+            activity=HostActivity.current;
+        } else activity=(HostActivity)InstrumentationRegistry.getInstrumentation().startActivitySync(intent);
         try(InputStream in=InstrumentationRegistry.getInstrumentation().getContext().getAssets().open("session-lifecycle-probe.js")) {
             java.io.ByteArrayOutputStream out=new java.io.ByteArrayOutputStream();byte[] bytes=new byte[8192];int n;while((n=in.read(bytes))>0)out.write(bytes,0,n);probe=out.toString("UTF-8");
         }
@@ -155,13 +163,18 @@ public class DestroyedHostReentryDeviceTest {
         initialize();
         int repeats=Integer.parseInt(InstrumentationRegistry.getArguments().getString("matrixRepeats","20"));
         String only=InstrumentationRegistry.getArguments().getString("matrixCase","");
-        String[] cases={"destroy-first","leave-await-destroy","disconnect-await-destroy","leave-destroy-without-wait","disconnect-destroy-without-wait","live-takeover-then-destroy-A","destroy-A-during-takeover","releaseRoom-destroy-first","releaseRoom-live-takeover","duplicate-exit-destroy","different-uid-live","different-room-live","destroy-B-during-takeover"};
+        String[] cases={"destroy-first","removeView-live-takeover","leave-await-destroy","disconnect-await-destroy","leave-destroy-without-wait","disconnect-destroy-without-wait","live-takeover-then-destroy-A","destroy-A-during-takeover","releaseRoom-destroy-first","releaseRoom-live-takeover","duplicate-exit-destroy","different-uid-live","different-room-live","destroy-B-during-takeover"};
         for(String name:cases) {if(!only.isEmpty()&&!only.equals(name))continue;for(int iteration=1;iteration<=repeats;iteration++) {
             Host a=null,b=null,c=null;long started=SystemClock.elapsedRealtime();
             String uid="android-destroy-"+name+"-"+iteration+"-"+System.currentTimeMillis();
             try {
                 java.util.List<Exit> exits=new java.util.ArrayList<>();
                 a=create();join(a,uid);joined(a);String oldSession=snapshot(a).getJSONArray("rooms").getJSONObject(0).getString("connectionSession");
+                if(name.equals("removeView-live-takeover")){
+                    Host old=a;main(()->activity.boards.removeView(old.view));
+                    assertNull("Old View removed without explicit destroy",a.view.getParent());
+                    assertEquals("Removal alone retains the old Room until SDK replacement",1,open(connectedSnapshot(a)));
+                }
                 if(name.startsWith("releaseRoom")){Host old=a;main(old.sdk::releaseRoom);}
                 if(name.equals("leave-await-destroy")||name.equals("disconnect-await-destroy")) {
                     exited(exit(a,name.startsWith("disconnect")?"disconnect":"leave"));destroy(a);
@@ -183,6 +196,8 @@ public class DestroyedHostReentryDeviceTest {
                 for(Exit exit:exits)exited(exit);
                 exited(exit(active,"leave"));assertEquals(0,open(snapshot(active)));
                 Log.i("DestroyedHostMatrix","PASS "+name+" "+iteration+"/"+repeats+" durationMs="+(SystemClock.elapsedRealtime()-started));
+                android.os.Bundle status=new android.os.Bundle();status.putString("stream","DETACH_MATRIX PASS "+name+" "+iteration+"/"+repeats+"\n");
+                InstrumentationRegistry.getInstrumentation().sendStatus(2,status);
             } catch(Throwable e) {Log.e("DestroyedHostMatrix","FAIL "+name+" "+iteration+" "+e.getClass().getSimpleName());throw e;}
             finally {destroy(a);destroy(b);destroy(c);}
         }}
