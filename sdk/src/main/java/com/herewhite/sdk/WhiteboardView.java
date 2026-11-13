@@ -127,6 +127,7 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
 
     private void init() {
         if (isInEditMode()) return;
+        lifecycle.setDocumentRecovery(() -> WhiteboardView.super.loadUrl(entryUrl));
         getSettings().setMediaPlaybackRequiresUserGesture(false);
         getSettings().setTextZoom(100);
         setWebChromeClient(new FixWebChromeClient());
@@ -160,14 +161,45 @@ public class WhiteboardView extends DWebView implements JsBridgeInterface {
     }
 
     @Override
-    public void destroy() { lifecycle.invalidate(); super.destroy(); }
+    public void destroy() {
+        super.destroy();
+        lifecycle.destroy();
+    }
 
-    public void invalidateLifecycle() { lifecycle.invalidate(); }
+    public void invalidateLifecycle() { lifecycle.destroy(); }
     public void lifecyclePageStarted() { lifecycle.pageStarted(); }
-    public void lifecyclePageFinished() { lifecycle.pageFinished(); }
+    public void lifecyclePageFinished() {
+        final long epoch = lifecycle.documentEpoch();
+        // Redirects and URL normalization can change a valid SDK entry URL.
+        // Probe the current document; the lifecycle handshake validates its ID.
+        evaluateJavascript("document.readyState === 'complete' ? !!(window.bridge && window.bridge.getFunction && window.bridge.getFunction('sdk.getLifecycle')) : null",
+                value -> {
+                    if ("true".equals(value) || "false".equals(value)) {
+                        lifecycle.pageFinished(epoch, "true".equals(value));
+                    }
+                });
+    }
 
     @Override
     public void reload() { lifecycle.prepareReload(); super.reload(); }
+
+    @Override
+    public void loadUrl(String url) {
+        // Executing a javascript: URL keeps the current document and Room alive.
+        if (url != null && url.trim().regionMatches(true, 0, "javascript:", 0, 11)) {
+            // DSBridge recognizes only the lowercase prefix; preserve the script body.
+            super.loadUrl("javascript:" + url.substring(url.indexOf(':') + 1));
+            return;
+        }
+        if (lifecycle != null) lifecycle.prepareReload();
+        super.loadUrl(url);
+    }
+
+    @Override
+    public void loadDataWithBaseURL(String baseUrl, String data, String mimeType, String encoding, String historyUrl) {
+        if (lifecycle != null) lifecycle.prepareReload();
+        super.loadDataWithBaseURL(baseUrl, data, mimeType, encoding, historyUrl);
+    }
 
     private void initWebViewClients() {
         whiteWebViewClient = new WhiteWebViewClient();

@@ -31,9 +31,11 @@ public class ReleaseE2EActivity extends Activity {
     private JsonObject credentials;
     private int preloadCallbacks;
     private boolean destroyed;
+    private Intent configurationIntent;
 
     @Override public void onCreate(Bundle saved) {
         super.onCreate(saved);
+        configurationIntent = new Intent(getIntent());
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         view = new WhiteboardView(this);
         view.getSettings().setAllowUniversalAccessFromFileURLs(true);
@@ -60,21 +62,25 @@ public class ReleaseE2EActivity extends Activity {
     private void initializeSdk() {
         if (destroyed) return;
         WhiteSdkConfiguration config = new WhiteSdkConfiguration(credentials.get("appIdentifier").getAsString(), true);
+        if (credentials.has("apiHosts")) {
+            config.setApiHosts(gson.fromJson(credentials.get("apiHosts"),
+                    new com.google.gson.reflect.TypeToken<java.util.List<String>>() {}.getType()));
+        }
         config.setRegion(Region.cn);
-        config.setUseMultiViews(getIntent().getBooleanExtra("multiViews", true));
-        config.setEnableAppliancePlugin(getIntent().getBooleanExtra("enablePlugin", true));
-        boolean preloading = getIntent().getBooleanExtra("preload", false);
-        config.setEnablePreLoadAppliancePlugin(getIntent().getBooleanExtra("appliancePreload", preloading));
+        config.setUseMultiViews(configurationIntent.getBooleanExtra("multiViews", true));
+        config.setEnableAppliancePlugin(configurationIntent.getBooleanExtra("enablePlugin", true));
+        boolean preloading = configurationIntent.getBooleanExtra("preload", false);
+        config.setEnablePreLoadAppliancePlugin(configurationIntent.getBooleanExtra("appliancePreload", preloading));
         if (preloading) config.setPreloadBuiltinApps(java.util.Arrays.asList("Slide", "Presentation"));
-        if (getIntent().getBooleanExtra("enableModelPreload", false)) config.setEnableModelPreload(true);
-        if (getIntent().hasExtra("dynamicConfig")) {
-            java.util.Map<String, String> urls = gson.fromJson(getIntent().getStringExtra("dynamicConfig"),
+        if (configurationIntent.getBooleanExtra("enableModelPreload", false)) config.setEnableModelPreload(true);
+        if (configurationIntent.hasExtra("dynamicConfig")) {
+            java.util.Map<String, String> urls = gson.fromJson(configurationIntent.getStringExtra("dynamicConfig"),
                     new com.google.gson.reflect.TypeToken<java.util.Map<String, String>>() {}.getType());
             config.setDynamicConfig(urls);
         }
-        if ("empty".equals(getIntent().getStringExtra("apps")))
+        if ("empty".equals(configurationIntent.getStringExtra("apps")))
             config.setPreloadBuiltinApps(Collections.emptyList());
-        String workerMode = getIntent().getStringExtra("workerMode");
+        String workerMode = configurationIntent.getStringExtra("workerMode");
         if (workerMode != null) {
             AppliancePluginOptions options = new AppliancePluginOptions();
             Map<String, Object> extras = new LinkedHashMap<>();
@@ -83,8 +89,8 @@ public class ReleaseE2EActivity extends Activity {
             options.setExtras(extras); config.setAppliancePluginOptions(options);
         }
         // Optional flags are set before constructing the SDK, just like host code.
-        if (getIntent().hasExtra("sharedMediaVolume"))
-            config.getSlideAppOptions().setEnableSharedMediaVolume(getIntent().getBooleanExtra("sharedMediaVolume", false));
+        if (configurationIntent.hasExtra("sharedMediaVolume"))
+            config.getSlideAppOptions().setEnableSharedMediaVolume(configurationIntent.getBooleanExtra("sharedMediaVolume", false));
         config.getSlideAppOptions().setEnableScale(true);
         config.getSlideAppOptions().setEnableGlobalClick(false);
         config.getSlideAppOptions().setSyncEventQueuePolicy(SlideSyncEventQueuePolicy.LatestPendingRender);
@@ -99,18 +105,19 @@ public class ReleaseE2EActivity extends Activity {
             @Override public void sdkSetupFail(SDKError error) { publishError("setupFailure", error); }
         });
         Map<String, Object> configuration = new LinkedHashMap<>();
-        configuration.put("apps", "empty".equals(getIntent().getStringExtra("apps"))
+        configuration.put("apps", "empty".equals(configurationIntent.getStringExtra("apps"))
                 ? Collections.emptyList() : config.getPreloadBuiltinApps());
         configuration.put("sharedMediaVolume", config.getSlideAppOptions().isEnableSharedMediaVolume());
         configuration.put("enableModelPreload", config.isEnableModelPreload());
         configuration.put("appliance", !config.isEnableAppliancePlugin() ? "disabled"
                 : config.isEnablePreLoadAppliancePlugin() ? "constructor" : "post-room");
         configuration.put("sdk", config);
+        configuration.put("nativeVersion", WhiteSdk.Version());
         publish("configuration", configuration);
-        if (getIntent().getBooleanExtra("immediateJoin", false)) {
+        if (configurationIntent.getBooleanExtra("immediateJoin", false)) {
             // Exercise the original host flow: construct, then join immediately,
             // without calling prepareCompletion or waiting for preload callbacks.
-            Intent request = new Intent(getIntent());
+            Intent request = new Intent(configurationIntent);
             request.putExtra("action", "join");
             request.putExtra("requestId", "immediateJoin");
             request.putExtra("uid", "android-immediate-" + SystemClock.elapsedRealtime());
@@ -130,7 +137,16 @@ public class ReleaseE2EActivity extends Activity {
         String id = intent.getStringExtra("requestId");
         try {
             if (sdk == null) throw new IllegalStateException("Runtime room fixture is unavailable");
-            if ("join".equals(action)) {
+            if ("recreateHost".equals(action)) {
+                sdk.releaseRoom();
+                ((ViewGroup) view.getParent()).removeView(view);
+                view.destroy(); room = null; sdk = null;
+                preloadCallbacks = 0; results.clear();
+                view = new WhiteboardView(this);
+                view.getSettings().setAllowUniversalAccessFromFileURLs(true);
+                setContentView(view, new ViewGroup.LayoutParams(-1, -1));
+                initializeSdk(); publish(id, "recreated");
+            } else if ("join".equals(action)) {
                 RoomParams params = new RoomParams(credentials.get("uuid").getAsString(),
                         credentials.get("roomToken").getAsString(), intent.getStringExtra("uid"));
                 params.setRegion(Region.cn);

@@ -1,3 +1,11 @@
+## [2.16.137] - 2026-11-12
+
+- Fix stale room ownership after host destruction and preserve internal leave-before-join replacement for live hosts.
+- Report failed/timed-out room cleanup and continue replacement; isolate stale callbacks and recover explicit joins after document navigation.
+- Preserve successful room API return formats while propagating errors and completing unsupported/failed Bridge operations.
+- Keep JavaScript loadUrl calls in the current room and accept valid Bridge handshakes after custom-entry redirects.
+- Embed Bridge 6b1e3cd without changing Web SDK 2.16.63, WindowManager 1.0.29, Appliance Plugin 1.1.49 or app-slide 0.2.109.
+
 # 版本更新记录
 
 ## [2.16.136] - 2026-11-09

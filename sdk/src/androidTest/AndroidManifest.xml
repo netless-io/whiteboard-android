@@ -1,4 +1,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.herewhite.sdk.test">
     <uses-permission android:name="android.permission.INTERNET" />
-    <application android:usesCleartextTraffic="true" />
+    <application android:usesCleartextTraffic="true">
+        <activity android:name="com.herewhite.sdk.DestroyedHostReentryDeviceTest$HostActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.herewhite.sdk.DESTROYED_HOST_LAUNCH" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.herewhite.sdk.BackgroundLifecycleDeviceTest$HostActivity" android:exported="true" android:launchMode="singleTask"
+            android:label="Whiteboard lifecycle test" android:icon="@android:drawable/ic_menu_edit">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
 </manifest>
