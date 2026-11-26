@@ -134,7 +134,10 @@ public class SdkJsInterfaceImpl {
             if (jsonObject != null) {
                 String url = jsonObject.optString("url");
                 String message = jsonObject.optString("message");
-                slideListener.onSlideResourceMaxRetries(url, message);
+                String slideId = jsonObject.optString("slideId");
+                int pageIndex = jsonObject.optInt("pageIndex", -1);
+                boolean isPreload = jsonObject.optBoolean("isPreload", true);
+                slideListener.onSlideResourceMaxRetries(url, message, slideId, pageIndex, isPreload);
             }
         }
     }
