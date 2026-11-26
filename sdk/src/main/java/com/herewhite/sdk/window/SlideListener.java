@@ -52,6 +52,19 @@ public interface SlideListener {
     }
 
     /**
+     * Slide 资源加载重试耗尽回调，包含失败页的上下文。
+     *
+     * @param url 加载失败的资源 URL。
+     * @param message 错误信息。
+     * @param slideId Slide 实例 ID，旧资源包可能返回空字符串。
+     * @param pageIndex 失败页码，从 1 开始，-1 表示未知。
+     * @param isPreload 为 true 时该资源错误未阻塞当前页渲染，旧资源包默认为 true。
+     */
+    default void onSlideResourceMaxRetries(String url, String message, String slideId, int pageIndex, boolean isPreload) {
+        onSlideResourceMaxRetries(url, message);
+    }
+
+    /**
      * Slide 页面状态变化回调。
      *
      * <p>当多窗口 SlideApp 页面索引或页面数量变化时触发。页码从 1 开始。
